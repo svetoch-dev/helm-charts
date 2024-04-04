@@ -8,7 +8,7 @@ repository:
   url: YOUR_INFRA_REPO_URL
   charts: argocd/charts/infra
   envs: argocd/environments
-  envs_from_charts: ../../../environments/
+  envs_from_charts: ../../../environments
   revision: master
 
 manifests:
