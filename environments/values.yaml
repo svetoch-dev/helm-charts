@@ -5,6 +5,7 @@ repository:
   revision: master
   env_chart: argocd/charts/infra/environment
   envs_chart: argocd/charts/infra/environments
+  root_from_charts: "../../.."
 
 root:
   enabled: true
