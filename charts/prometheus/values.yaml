@@ -1,0 +1,280 @@
+global:
+  rbac:
+    create: true
+    pspEnabled: true
+    pspAnnotations: {}
+
+  imagePullSecrets: []
+
+alertmanager-configs:
+  enabled: false
+  configs:
+    main:
+      enabled: true
+      selector:
+        alertmanager: main
+
+prometheus-node-exporter:
+  enabled: false
+  kubeRBACProxy:
+    enabled: false
+  service:
+    enabled: true
+    annotations: {}
+  prometheus:
+    monitor:
+      enabled: true
+      additionalLabels:
+        prometheus: main
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_pod_node_name]
+          action: Replace
+          regex: (.*)
+          targetLabel: node
+
+  releaseLabel: false
+  serviceAccount:
+    create: false
+  verticalPodAutoscaler:
+    enabled: false
+  nodeSelector:
+    kubernetes.io/os: linux
+
+kube-state-metrics:
+  enabled: false
+  image:
+    registry: docker.io
+    repository: bitnami/kube-state-metrics
+
+  extraArgs:
+    metric-labels-allowlist: "pods=[*]"
+
+  kubeResources:
+    certificatesigningrequests: false
+    configmaps: false
+    cronjobs: true
+    daemonsets: true
+    deployments: true
+    endpoints: false
+    horizontalpodautoscalers: false
+    ingresses: false
+    jobs: false
+    limitranges: false
+    mutatingwebhookconfigurations: false
+    namespaces: false
+    networkpolicies: false
+    nodes: false
+    persistentvolumeclaims: true
+    persistentvolumes: true
+    poddisruptionbudgets: false
+    pods: true
+    replicasets: false
+    replicationcontrollers: false
+    resourcequotas: false
+    secrets: false
+    services: false
+    statefulsets: true
+    storageclasses: false
+    verticalpodautoscalers: false
+    validatingwebhookconfigurations: false
+    volumeattachments: false
+
+  serviceMonitor:
+    enabled: true
+    metricRelabelings:
+      # ADD COMMON pod and LABEL TO ALL METRICS
+      # values based on orgiginal exported_pod label (container also)
+      - sourceLabels:
+          - "exported_pod"
+        targetLabel: "pod"
+      - sourceLabels:
+          - "exported_container"
+        targetLabel: "container"
+      - sourceLabels:
+          - "exported_namespace"
+        targetLabel: "namespace"
+
+    namespace: prometheus
+
+    labels:
+      prometheus: main
+
+operator:
+  commonLabels:
+    prometheus: main
+
+  enabled: true
+
+  defaultRules:
+    create: false
+  grafana:
+    enabled: false
+  kubeApiServer:
+    enabled: false
+  kubelet:
+    enabled: true
+    namespace: prometheus
+    serviceMonitor:
+      cAdvisorMetricRelabelings:
+        # Drop cgroup metrics with no pod.
+        - sourceLabels: [id, pod]
+          action: drop
+          regex: ".+;"
+  kubeControllerManager:
+    enabled: false
+  coreDns:
+    enabled: false
+  kubeEtcd:
+    enabled: false
+  kubeScheduler:
+    enabled: false
+  kubeProxy:
+    enabled: false
+  kubeStateMetrics:
+    enabled: false
+  nodeExporter:
+    enabled: false
+  prometheus:
+    enabled: false
+  alertmanager:
+    enabled: false
+
+  prometheusOperator:
+    enabled: false
+    admissionWebhooks:
+      enabled: false
+    tls:
+      enabled: false
+    kubeletService:
+      enabled: true
+      namespace: prometheus
+
+
+prometheus-blackbox-exporter:
+  enabled: false
+
+  config:
+    modules:
+      http_2xx:
+        prober: http
+        timeout: 30s
+        http:
+          valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+          valid_status_codes: [200]
+          method: GET
+          no_follow_redirects: true
+          fail_if_not_ssl: true
+          headers:
+            X-Healthcheck-Agent: "blackbox-exporter"
+
+probes:
+  enabled: false
+  probes: {}
+
+kong-plugins:
+  enabled: false
+  plugins: {}
+
+prometheus-main:
+  enabled: true
+
+  service:
+    enabled: true
+
+  servicemonitor:
+    enabled: true
+    prometheusSelector:
+      prometheus: main
+    endpoints:
+      - port: http
+        path: /metrics
+
+  thanosService:
+    enabled: true
+    annotations:
+      konghq.com/protocol: grpc
+
+  thanosServiceMonitor:
+    enabled: true
+    prometheusSelector:
+      prometheus: main
+    endpoints:
+      - port: http
+        path: /metrics
+
+  prometheus:
+    spec:
+      enableAdminAPI: true
+      thanos:
+        image: quay.io/thanos/thanos:v0.31.0
+        version: v0.31.0
+        objectStorageConfig:
+          key: objstore.yml
+          name: thanos
+
+      ruleSelector:
+        matchLabels:
+          prometheus: main
+
+      serviceMonitorSelector:
+        matchLabels:
+          prometheus: main
+
+      podMonitorSelector:
+        matchLabels:
+          prometheus: main
+
+      probeSelector:
+        matchLabels:
+          prometheus: main
+
+      retention: 8h
+
+      alerting:
+        alertmanagers:
+          - name: "{{ .Release.Name }}-alertmanager-main"
+            namespace: prometheus
+            port: http
+
+
+alertmanager-main:
+  enabled: false
+
+  service:
+    enabled: true
+
+  config:
+    global:
+      resolve_timeout: 30m
+    route:
+      receiver: 'null'
+      group_by: [env, alertname]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 3h
+    receivers:
+      - name: 'null'
+    templates:
+      - "/etc/alertmanager/config/*.tmpl"
+
+  servicemonitor:
+    enabled: true
+    prometheusSelector:
+      prometheus: main
+    endpoints:
+      - port: http
+        path: /metrics
+  alertmanager:
+    spec:
+      alertmanagerConfigSelector:
+        matchLabels:
+          alertmanager: main
+
+
+prometheus-postgres-exporter:
+  enabled: false
+
+prometheus-rules:
+  enabled: false
+  #PrometheusRules: {}
+  #PrometheusAlerts: {}

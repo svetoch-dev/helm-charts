@@ -1,0 +1,6 @@
+external-dns:
+  enabled: false
+  serviceAccount:
+    create: false
+  sources:
+    - service

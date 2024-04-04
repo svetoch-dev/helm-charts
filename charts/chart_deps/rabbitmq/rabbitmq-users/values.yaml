@@ -1,0 +1,14 @@
+users: {}
+#  chents:
+#    enabled: true
+#    cluster:
+#      name: rmq-gcp-prd
+#      namespace: rabbitmq
+#    tags:
+#      - policymaker
+#    vhosts:
+#      chents:
+#        permissions:
+#          write: ".*"
+#          configure: ".*"
+#          read: ".*"

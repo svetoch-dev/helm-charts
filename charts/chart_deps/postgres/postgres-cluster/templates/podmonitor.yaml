@@ -1,0 +1,37 @@
+{{- if .Values.podMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ template "postgres-cluster.fullname" . }}
+  labels:
+{{- if .Values.podMonitor.labels }}
+{{ toYaml .Values.podMonitor.labels | indent 4 }}
+    {{- if .Values.podMonitor.prometheusSelector }}
+    {{ tpl (toYaml .Values.podMonitor.prometheusSelector) . | nindent 4}}
+    {{- end }}
+    {{- include "postgres-cluster.labels" . | nindent 4 }}
+{{- else }}
+    {{- if .Values.podMonitor.prometheusSelector }}
+    {{ tpl (toYaml .Values.podMonitor.prometheusSelector) . | nindent 4}}
+    {{- end }}
+    {{- include "postgres-cluster.labels" . | nindent 4 }}
+{{- end }}
+spec:
+  {{- with .Values.podMonitor.podMetricsEndpoints }}
+  podMetricsEndpoints:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  jobLabel: {{ template "postgres-cluster.fullname" . }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+    {{- include "postgres-cluster.podSelectorLabels" . | nindent 6 }}
+{{- if .Values.podMonitor.podTargetLabels }}
+  podTargetLabels:
+{{- range .Values.podMonitor.podTargetLabels }}
+  - {{ . }}
+{{- end }}
+{{- end }}
+{{- end }}

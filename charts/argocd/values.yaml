@@ -1,0 +1,33 @@
+argo-cd:
+  enabled: false
+  crds:
+    install: false
+
+  configs:
+    cm:
+      create: true
+    params:
+      server.insecure: true
+
+  redis:
+    enabled: false
+
+  redis-ha:
+    hardAntiAffinity: false
+    haproxy:
+      hardAntiAffinity: false
+
+  controller:
+    replicas: 1
+
+  server:
+    replicas: 2
+
+  repoServer:
+    replicas: 2
+
+  applicationSet:
+    replicaCount: 2
+
+certificates:
+  enabled: false

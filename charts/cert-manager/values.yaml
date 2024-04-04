@@ -1,0 +1,9 @@
+cluster_issuers: {}
+
+certificates:
+  enabled: false
+
+cert-manager:
+  enabled: false
+  cainjector:
+    enabled: true

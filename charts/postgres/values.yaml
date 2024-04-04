@@ -1,0 +1,148 @@
+postgres-operator:
+  enabled: false
+  configGeneral:
+    enable_crd_registration: false
+    docker_image: gramal/spilo:15-f0c5f71
+
+  podServiceAccount:
+    name: "postgres"
+  configKubernetes:
+    pod_environment_configmap: postgres/postgres-pod-envs
+    enable_pod_antiaffinity: true
+    enable_cross_namespace_secret: false
+    inherited_labels:
+      - "app.kubernetes.io/instance"
+      - "app.kubernetes.io/name"
+      - "app.kubernetes.io/version"
+
+  configLogicalBackup:
+    logical_backup_docker_image: "registry.opensource.zalan.do/acid/logical-backup:v1.10.1"
+
+postgres-pod-envs:
+  #This is needed by default for all wal-e cloned instances
+  #Without this wal-e clone will not work due to this
+  #https://github.com/zalando/spilo/blob/3.0-p1/postgres-appliance/scripts/restore_command.sh#L39
+  CLONE_WALG_DOWNLOAD_CONCURRENCY: "2"
+
+postgres-main:
+  enabled: false
+#######################
+# Configuration example
+# for 2 dbs
+#######################
+#  teamId: someTeam
+#  replicas: 2
+#  resources:
+#    limits:
+#      cpu: 3000m
+#      memory: 12Gi
+#    requests:
+#      cpu: 1000m
+#      memory: 3Gi
+#  volume:
+#    size: 10Gi
+#    storageClass: premium-rwo
+#  databases:
+#    db1: db1_owner
+#    db2: db2_owner
+#  preparedDatabases:
+#    db1:
+#      defaultUsers: true
+#      secretNamespace: app1
+#      schemas:
+#        public:
+#          defaultRoles: false
+#    db2:
+#      defaultUsers: true
+#      secretNamespace: app2
+#      schemas:
+#        public:
+#          defaultRoles: false
+#  logicalBackup:
+#    enabled: true
+#    schedule: "40 00 * * *"
+#  postgresql:
+#    version: "15"
+#    parameters:
+#      password_encryption: "scram-sha-256"
+#      max_connections: "200"
+#      work_mem: "65536"
+#      max_standby_archive_delay: "400000"
+#      max_standby_streaming_delay: "400000"
+#  sidecars:
+#    - name: "postgres-exporter"
+#      image: "gramal/postgres-exporter:v0.15.0-aac0dc6"
+#      ports:
+#        - containerPort: 9187
+#          name: metrics
+#      resources:
+#        limits:
+#          cpu: 200m
+#          memory: 50Mi
+#        requests:
+#          cpu: 10m
+#          memory: 15Mi
+#      env:
+#        - name: DATA_SOURCE_NAME
+#          value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/chents?sslmode=disable"
+#        - name: PG_EXPORTER_COLLECTOR_DATABASE
+#          value: "true"
+#        - name: PG_EXPORTER_COLLECTOR_LOCKS
+#          value: "true"
+#        - name: PG_EXPORTER_COLLECTOR_REPLICATION
+#          value: "true"
+#        - name: PG_EXPORTER_COLLECTOR_REPLICATION_SLOT
+#          value: "true"
+#        - name: PG_EXPORTER_COLLECTOR_STAT_BGWRITER
+#          value: "true"
+#        - name: PG_EXPORTER_COLLECTOR_STAT_DATABASE
+#          value: "true"
+#        - name: PG_EXPORTER_COLLECTOR_STAT_USER_TABLES
+#          value: "true"
+#        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_INDEXES
+#          value: "true"
+#        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_TABLES
+#          value: "true"
+#        - name: PG_EXPORTER_COLLECTOR_WAL
+#          value: "true"
+#        - name: PG_EXPORTER_DISABLE_SETTINGS_METRICS
+#          value: "false"
+#    - name: "postgres-exporter-2"
+#      image: "gramal/postgres-exporter:v0.15.0-aac0dc6"
+#      ports:
+#        - containerPort: 9188
+#          name: metrics-2
+#      resources:
+#        limits:
+#          cpu: 200m
+#          memory: 50Mi
+#        requests:
+#          cpu: 10m
+#          memory: 15Mi
+#      env:
+#        - name: PG_EXPORTER_WEB_LISTEN_ADDRESS
+#          value: "9188"
+#        - name: DATA_SOURCE_NAME
+#          value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/db1?sslmode=disable"
+#        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_INDEXES
+#          value: "true"
+#        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_TABLES
+#          value: "true"
+#
+#  podMonitor:
+#    enabled: true
+#    prometheusSelector:
+#      prometheus: main
+#    podMetricsEndpoints:
+#      - targetPort: 9187
+#        relabelings:
+#          - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
+#            action: Replace
+#            regex: (.*)
+#            targetLabel: label_app_kubernetes_io_instance
+#      - targetPort: 9188
+#        relabelings:
+#          - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
+#            action: Replace
+#            regex: (.*)
+#            targetLabel: label_app_kubernetes_io_instance

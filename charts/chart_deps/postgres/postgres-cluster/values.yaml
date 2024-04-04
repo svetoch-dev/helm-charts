@@ -1,0 +1,52 @@
+replicas: 2
+users: {}
+databases: {}
+preparedDatabases: {}
+postgresql:
+  parameters:
+    password_encryption: scram-sha-256
+    #Common paramters for
+    #improving performance on ssd disks
+    random_page_cost: "1.1"
+    effective_io_concurrency: "200"
+env: {}
+volume: {}
+podAnnotations: {}
+serviceAnnotations: {}
+tolerations: {}
+resources: {}
+patroni: {}
+logicalBackup:
+  enabled: false
+  schedule: "30 00 * * *"
+connectionPooler: {}
+sidecars: {}
+#  - name: "postgres-exporter"
+#    image: "quay.io/prometheuscommunity/postgres-exporter:v0.15.0"
+#    ports:
+#      - containerPort: 9187
+#        name: metrics
+#    resources:
+#      limits:
+#        cpu: 100m
+#        memory: 128Mi
+#      requests:
+#        cpu: 100m
+#        memory: 128Mi
+#    env:
+#      - name: DATA_SOURCE_NAME
+#        value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/postgres?sslmode=disable"
+teamId: "main"
+nodeAffinity: {}
+podMonitor:
+  enabled: false
+  labels: {}
+  prometheusSelector: {}
+  podTargetLabels: []
+  podMetricsEndpoints:
+    - targetPort: 9187
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
+          action: Replace
+          regex: (.*)
+          targetLabel: label_app_kubernetes_io_instance

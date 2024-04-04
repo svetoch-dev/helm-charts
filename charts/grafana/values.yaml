@@ -1,0 +1,26 @@
+grafana-operator:
+  enabled: false
+
+grafana-main:
+  enabled: false
+  selector:
+    grafana: main
+  config:
+    log:
+      mode: "console"
+    auth:
+      disable_login_form: "true"
+    users:
+      allow_sign_up: "false"
+      allow_org_create: "false"
+      auto_assign_org: "true"
+      auto_assign_org_role: Admin
+      default_theme: dark
+    alerting:
+      enabled: "false"
+
+datasource:
+  enabled: true
+
+dashboard:
+  enabled: true
