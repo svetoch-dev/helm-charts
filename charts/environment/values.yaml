@@ -6,9 +6,9 @@ env:
 
 repository:
   url: YOUR_INFRA_REPO_URL
-  charts: argocd/charts
+  charts: argocd/charts/infra
   envs: argocd/environments
-  envs_from_charts: ../../environments/
+  envs_from_charts: ../../../environments/
   revision: master
 
 manifests:
@@ -23,7 +23,6 @@ chart_apps: {}
 #    enabled: false
 #    chart: argocd/charts/argocd
 #    name: omega-argocd
-#    directory: {}
 #    revision:
 #    labels: {}
 #    finalizers: {}

@@ -3,8 +3,8 @@ labels: {}
 repository:
   url: YOUR_INFRA_REPO_URL
   revision: master
-  env_chart: argocd/charts/environment
-  envs_chart: argocd/charts/environments
+  env_chart: argocd/charts/infra/environment
+  envs_chart: argocd/charts/infra/environments
 
 root:
   enabled: true
