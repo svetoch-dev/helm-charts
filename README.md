@@ -1,7 +1,6 @@
 # Helm charts
 
 ## Structure
-`charts` folder is where all charts are stored.
 * there are highlevel charts and charts that are used as a dependency to highlevel charts
 * highlevel charts represent a service or stack (for example konghq, prometheus)
 * Chart that are used as dependencies (dependency charts) to highlevel charts are placed in `charts/chart_deps` folder 
