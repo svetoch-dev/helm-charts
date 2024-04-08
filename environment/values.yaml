@@ -7,6 +7,7 @@ env:
 repository:
   url: YOUR_INFRA_REPO_URL
   charts: argocd/charts/infra
+  app_charts: argocd/charts/app
   envs: argocd/environments
   envs_from_charts: ../../../environments
   revision: master
