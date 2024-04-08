@@ -31,6 +31,8 @@ spec:
   - repoURL: {{ $chart_app_obj.repo_url | default $.Values.repository.url }}
     {{- if $chart_app_obj.chart }}
     path: {{ $chart_app_obj.chart }}
+    {{- else if eq $chart_app_obj.app }}
+    path: {{ printf "%s/%s" $.Values.repository.app_charts $chart_app_name  }}
     {{- else }}
     path: {{ printf "%s/%s" $.Values.repository.charts $chart_app_name  }}
     {{- end }}
@@ -60,6 +62,8 @@ spec:
     repoURL: {{ $chart_app_obj.repo_url | default $.Values.repository.url }}
     {{- if $chart_app_obj.chart }}
     path: {{ $chart_app_obj.chart }}
+    {{- else if $chart_app_obj.app }}
+    path: {{ printf "%s/%s" $.Values.repository.app_charts $chart_app_name  }}
     {{- else }}
     path: {{ printf "%s/%s" $.Values.repository.charts $chart_app_name  }}
     {{- end }}
