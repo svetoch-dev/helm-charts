@@ -1,5 +1,6 @@
 # Helm charts
 
+
 ## Structure
 * there are highlevel charts and charts that are used as a dependency to highlevel charts
 * highlevel charts represent a service or stack (for example konghq, prometheus)
