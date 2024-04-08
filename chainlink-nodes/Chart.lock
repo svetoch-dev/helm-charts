@@ -1,6 +1,6 @@
 dependencies:
-- name: chainlink
-  repository: file://../chart_deps/blockchain/chainlink
+- name: postgres-cluster
+  repository: file://../chart_deps/postgres/postgres-cluster
   version: 0.1.0
 - name: chainlink
   repository: file://../chart_deps/blockchain/chainlink
@@ -23,5 +23,8 @@ dependencies:
 - name: chainlink
   repository: file://../chart_deps/blockchain/chainlink
   version: 0.1.0
-digest: sha256:d04e7efb119f4c0b1874ef17ca28a4d4e59ca4cbdb12b8c9f2f04fffbcedaeb2
-generated: "2023-08-11T18:09:40.642149704+03:00"
+- name: chainlink
+  repository: file://../chart_deps/blockchain/chainlink
+  version: 0.1.0
+digest: sha256:4efaf6e8423171795c26fcf67a76a9d568f91cee49b61e81efa76960a2981928
+generated: "2024-02-29T10:18:43.737502601+03:00"

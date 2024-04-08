@@ -19,18 +19,18 @@ dependencies:
   version: 0.1.0
 - name: prometheus-postgres-exporter
   repository: file://../chart_deps/prometheus/postgres-exporter
-  version: 5.0.0
+  version: 5.3.0
 - name: prometheus-blackbox-exporter
   repository: https://prometheus-community.github.io/helm-charts
-  version: 8.2.0
+  version: 8.11.0
 - name: prometheus-node-exporter
   repository: https://prometheus-community.github.io/helm-charts
-  version: 4.25.0
+  version: 4.30.3
 - name: kube-state-metrics
   repository: https://charts.bitnami.com/bitnami
-  version: 3.1.6
+  version: 3.14.2
 - name: kube-prometheus-stack
   repository: https://prometheus-community.github.io/helm-charts
-  version: 47.6.1
-digest: sha256:c608b74a5db724a874a7f8ffc0ab262385841faadce2072527d4f4215c182eca
-generated: "2024-01-01T11:38:17.36152234Z"
+  version: 56.9.0
+digest: sha256:a16297e555ae671240b5d0510aaac356f795fee1d182e77aafbbc6953c552fe7
+generated: "2024-02-25T17:10:37.510176099Z"

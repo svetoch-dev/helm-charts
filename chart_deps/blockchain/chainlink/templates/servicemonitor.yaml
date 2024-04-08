@@ -1,14 +1,23 @@
-{{ if .Values.prometheus }}
-
+{{- $service_monitor := .Values.serviceMonitor -}}
+{{- if and $service_monitor.enabled }}
+---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "chainlink.fullname" . }}-metrics
+  name: {{ include "chainlink.fullname" . }}
+  labels:
+    {{- include "chainlink.labels" $ | nindent 4 }}
+    {{- toYaml $service_monitor.selector | nindent 4 }}
 spec:
   endpoints:
-  - interval: 5s
+  - port: http
+    {{- if $service_monitor.interval }}
+    interval: {{ $service_monitor.interval }}
+    {{- end }}
+    {{- if $service_monitor.scrapeTimeout }}
+    scrapeTimeout: {{ $service_monitor.scrapeTimeout }}
+    {{- end }}
     path: /metrics
-    port: http
     metricRelabelings:
     - sourceLabels: [__name__]
       targetLabel: __name__
@@ -19,5 +28,4 @@ spec:
   selector:
     matchLabels:
       {{- include "chainlink.selectorLabels" . | nindent 6 }}
-
 {{ end }}

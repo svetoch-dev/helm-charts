@@ -2,6 +2,11 @@ apiVersion: v2
 name: chainlink-nodes
 version: 1.0.0
 dependencies:
+  - name: postgres-cluster
+    version: 0.1.0
+    repository: file://../chart_deps/postgres/postgres-cluster
+    alias: postgres-cluster
+    condition: postgres-cluster.enabled
   - name: chainlink
     version: 0.1.0
     repository: file://../chart_deps/blockchain/chainlink

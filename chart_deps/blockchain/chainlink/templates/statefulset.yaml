@@ -90,16 +90,16 @@ spec:
               port: http
           env:
           {{- with .Values.global.environmentFromSecrets }}
-          {{- toYaml . | nindent 12 }}
+          {{- tpl (toYaml .) $ | nindent 12 }}
           {{- end }}
           {{- with .Values.environmentFromSecrets }}
-          {{- toYaml . | nindent 12 }}
+          {{- tpl (toYaml .) $ | nindent 12 }}
           {{- end }}
           {{- with .Values.environment }}
-          {{- toYaml . | nindent 12 }}
+          {{- tpl (toYaml .) $ | nindent 12 }}
           {{- end }}
           {{- with .Values.global.environment }}
-          {{- toYaml . | nindent 12 }}
+          {{- tpl (toYaml .) $ | nindent 12 }}
           {{- end }}
           volumeMounts:
             {{- if $app_configs }}

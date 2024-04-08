@@ -1,6 +1,6 @@
 global:
   image:
-    tag: 2.1.1
+    tag: 2.9.0
 node-1:
   enabled: false
 node-2:
@@ -17,3 +17,10 @@ node-7:
   enabled: false
 node-8:
   enabled: false
+
+postgres-cluster:
+  enabled: false
+  podMonitor:
+    enabled: false
+    prometheusSelector:
+      prometheus: main

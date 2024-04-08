@@ -7,8 +7,8 @@ postgresql:
     password_encryption: scram-sha-256
     #Common paramters for
     #improving performance on ssd disks
-    random_page_cost: "1.1"
-    effective_io_concurrency: "200"
+    random_page_cost: '1.1'
+    effective_io_concurrency: '200'
 env: {}
 volume: {}
 podAnnotations: {}
@@ -50,3 +50,8 @@ podMonitor:
           action: Replace
           regex: (.*)
           targetLabel: label_app_kubernetes_io_instance
+
+#clone:
+#  uid: "f53488f7-5f33-4db1-a068-fcc1664b9de6"
+#  cluster: "main-gcp-prd-postgres-cluster"
+#  timestamp: "2024-03-17T17:45:00+00:00"

@@ -5,6 +5,7 @@ kong-plugins:
 kong:
   enabled: true
   env:
+    admin_listen: "127.0.0.1:8444 http2 ssl"
     database: "off"
     nginx_worker_processes: "1"
     nginx_main_worker_processes: "1"
