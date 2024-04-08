@@ -4,11 +4,11 @@
 ## Structure
 * there are highlevel charts and charts that are used as a dependency to highlevel charts
 * highlevel charts represent a service or stack (for example konghq, prometheus)
-* Chart that are used as dependencies (dependency charts) to highlevel charts are placed in `charts/chart_deps` folder 
+* Chart that are used as dependencies (dependency charts) are placed in `charts/chart_deps` folder 
 * highlevel chart is a subset of external or dependency (the ones in `charts/chart_deps`) charts
 
 ## TBD
-* Add docs for each module
+* Add docs for each chart
 
 ## More info
 
