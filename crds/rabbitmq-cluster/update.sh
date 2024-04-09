@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-CRDS_VERSION="v2.5.0"
+CRDS_VERSION="v2.7.0"
 
 for file in `ls | grep -E 'yml|yaml'`
 do
@@ -15,3 +15,4 @@ do
   echo "Removing ${CRDS_OLD_VERSION}.${CRDS_NAME}"
   rm "${CRDS_OLD_VERSION}.${CRDS_NAME}"
 done
+#script doesn't work

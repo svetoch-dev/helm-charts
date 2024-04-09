@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
-CRDS_VERSION="v2.11.0"
+CRDS_VERSION="v3.1.0"
 
 #We download crds from official konghq chart
 #chart version does not match kong ingress version
 #so we need to introduce additional var here
-HELM_CHART_VERSION="2.27.0"
+HELM_CHART_VERSION="2.37.1"
 
 for file in `ls | grep -E 'yml|yaml'`
 do
