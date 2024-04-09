@@ -38,6 +38,15 @@ crds:
 #      revision: test
 #    konghq:
 #      enabled: true
+#    postgres-operator:
+#      enabled: true
+#    redis-operator:
+#      enabled: true
+#    rabbitmq-cluster:
+#      enabled: true
+#    rabbitmq-messaging-topology:
+#      enabled: true
+
   labels: {}
   finalizers: {}
   syncPolicy: {}
