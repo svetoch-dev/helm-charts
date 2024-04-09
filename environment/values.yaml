@@ -19,6 +19,38 @@ manifests:
   labels: {}
   finalizers: {}
   syncPolicy: {}
+
+crds:
+  enabled: false
+  operators: {}
+#    argocd:
+#      enabled: true
+#    grafana-operator:
+#      enabled: true
+#    prometheus-operator:
+#      enabled: true
+#    cert-manager:
+#      enabled: true
+#      directory:
+#        recurse: true
+#    external-dns:
+#      enabled: true
+#      revision: test
+#    konghq:
+#      enabled: true
+#    postgres-operator:
+#      enabled: true
+#    redis-operator:
+#      enabled: true
+#    rabbitmq-cluster:
+#      enabled: true
+#    rabbitmq-messaging-topology:
+#      enabled: true
+
+  labels: {}
+  finalizers: {}
+  syncPolicy: {}
+
 chart_apps: {}
 #  argocd:
 #    enabled: false
