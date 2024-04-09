@@ -3,8 +3,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.14.0
   name: bindings.rabbitmq.com
 spec:
   group: rabbitmq.com
@@ -24,14 +23,19 @@ spec:
         description: Binding is the Schema for the bindings API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -52,27 +56,32 @@ spec:
                 - queue
                 type: string
               rabbitmqClusterReference:
-                description: Reference to the RabbitmqCluster that the binding will
-                  be created in. Required property.
+                description: |-
+                  Reference to the RabbitmqCluster that the binding will be created in.
+                  Required property.
                 properties:
                   connectionSecret:
-                    description: Secret contains the http management uri for the RabbitMQ
-                      cluster. The Secret must contain the key `uri`, `username` and
-                      `password` or operator will error. Have to set either name or
-                      connectionSecret, but not both.
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
                     properties:
                       name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
                   name:
-                    description: The name of the RabbitMQ cluster to reference. Have
-                      to set either name or connectionSecret, but not both.
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
                     type: string
                   namespace:
-                    description: The namespace of the RabbitMQ cluster to reference.
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
@@ -119,9 +128,9 @@ spec:
                   type: object
                 type: array
               observedGeneration:
-                description: observedGeneration is the most recent successful generation
-                  observed for this Binding. It corresponds to the Binding's generation,
-                  which is updated on mutation by the API Server.
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this Binding. It corresponds to the
+                  Binding's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object
@@ -135,8 +144,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.14.0
   name: exchanges.rabbitmq.com
 spec:
   group: rabbitmq.com
@@ -156,14 +164,19 @@ spec:
         description: Exchange is the Schema for the exchanges API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -183,27 +196,32 @@ spec:
                 description: Required property; cannot be updated
                 type: string
               rabbitmqClusterReference:
-                description: Reference to the RabbitmqCluster that the exchange will
-                  be created in. Required property.
+                description: |-
+                  Reference to the RabbitmqCluster that the exchange will be created in.
+                  Required property.
                 properties:
                   connectionSecret:
-                    description: Secret contains the http management uri for the RabbitMQ
-                      cluster. The Secret must contain the key `uri`, `username` and
-                      `password` or operator will error. Have to set either name or
-                      connectionSecret, but not both.
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
                     properties:
                       name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
                   name:
-                    description: The name of the RabbitMQ cluster to reference. Have
-                      to set either name or connectionSecret, but not both.
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
                     type: string
                   namespace:
-                    description: The namespace of the RabbitMQ cluster to reference.
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
@@ -249,9 +267,9 @@ spec:
                   type: object
                 type: array
               observedGeneration:
-                description: observedGeneration is the most recent successful generation
-                  observed for this Exchange. It corresponds to the Exchange's generation,
-                  which is updated on mutation by the API Server.
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this Exchange. It corresponds to the
+                  Exchange's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object
@@ -265,8 +283,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.14.0
   name: federations.rabbitmq.com
 spec:
   group: rabbitmq.com
@@ -286,20 +303,26 @@ spec:
         description: Federation is the Schema for the federations API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
           spec:
-            description: 'FederationSpec defines the desired state of Federation For
-              how to configure federation upstreams, see: https://www.rabbitmq.com/federation-reference.html.'
+            description: |-
+              FederationSpec defines the desired state of Federation
+              For how to configure federation upstreams, see: https://www.rabbitmq.com/federation-reference.html.
             properties:
               ackMode:
                 enum:
@@ -323,27 +346,32 @@ spec:
               queue:
                 type: string
               rabbitmqClusterReference:
-                description: Reference to the RabbitmqCluster that this federation
-                  upstream will be created in. Required property.
+                description: |-
+                  Reference to the RabbitmqCluster that this federation upstream will be created in.
+                  Required property.
                 properties:
                   connectionSecret:
-                    description: Secret contains the http management uri for the RabbitMQ
-                      cluster. The Secret must contain the key `uri`, `username` and
-                      `password` or operator will error. Have to set either name or
-                      connectionSecret, but not both.
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
                     properties:
                       name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
                   name:
-                    description: The name of the RabbitMQ cluster to reference. Have
-                      to set either name or connectionSecret, but not both.
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
                     type: string
                   namespace:
-                    description: The namespace of the RabbitMQ cluster to reference.
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
@@ -352,13 +380,17 @@ spec:
               trustUserId:
                 type: boolean
               uriSecret:
-                description: Secret contains the AMQP URI(s) for the upstream. The
-                  Secret must contain the key `uri` or operator will error. `uri`
-                  should be one or multiple uris separated by ','. Required property.
+                description: |-
+                  Secret contains the AMQP URI(s) for the upstream.
+                  The Secret must contain the key `uri` or operator will error.
+                  `uri` should be one or multiple uris separated by ','.
+                  Required property.
                 properties:
                   name:
-                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                      TODO: Add other useful fields. apiVersion, kind, uid?'
+                    description: |-
+                      Name of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                      TODO: Add other useful fields. apiVersion, kind, uid?
                     type: string
                 type: object
                 x-kubernetes-map-type: atomic
@@ -401,9 +433,9 @@ spec:
                   type: object
                 type: array
               observedGeneration:
-                description: observedGeneration is the most recent successful generation
-                  observed for this Federation. It corresponds to the Federation's
-                  generation, which is updated on mutation by the API Server.
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this Federation. It corresponds to the
+                  Federation's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object
@@ -417,8 +449,163 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.14.0
+  name: operatorpolicies.rabbitmq.com
+spec:
+  group: rabbitmq.com
+  names:
+    categories:
+    - all
+    - rabbitmq
+    kind: OperatorPolicy
+    listKind: OperatorPolicyList
+    plural: operatorpolicies
+    singular: operatorpolicy
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: OperatorPolicy is the Schema for the operator policies API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: |-
+              OperatorPolicySpec defines the desired state of OperatorPolicy
+              https://www.rabbitmq.com/parameters.html#operator-policies
+            properties:
+              applyTo:
+                default: queues
+                description: |-
+                  What this operator policy applies to: 'queues', 'classic_queues', 'quorum_queues', 'streams'.
+                  Default to 'queues'.
+                enum:
+                - queues
+                - classic_queues
+                - quorum_queues
+                - streams
+                type: string
+              definition:
+                description: OperatorPolicy definition. Required property.
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+              name:
+                description: Required property; cannot be updated
+                type: string
+              pattern:
+                description: |-
+                  Regular expression pattern used to match queues, e.g. "^my-queue$".
+                  Required property.
+                type: string
+              priority:
+                default: 0
+                description: |-
+                  Default to '0'.
+                  In the event that more than one operator policy can match a given queue, the operator policy with the greatest priority applies.
+                type: integer
+              rabbitmqClusterReference:
+                description: |-
+                  Reference to the RabbitmqCluster that the operator policy will be created in.
+                  Required property.
+                properties:
+                  connectionSecret:
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
+                    properties:
+                      name:
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
+                        type: string
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  name:
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
+                    type: string
+                  namespace:
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
+                      Defaults to the namespace of the requested resource if omitted.
+                    type: string
+                type: object
+              vhost:
+                default: /
+                description: Default to vhost '/'; cannot be updated
+                type: string
+            required:
+            - definition
+            - name
+            - pattern
+            - rabbitmqClusterReference
+            type: object
+          status:
+            description: OperatorPolicyStatus defines the observed state of OperatorPolicy
+            properties:
+              conditions:
+                items:
+                  properties:
+                    lastTransitionTime:
+                      description: The last time this Condition status changed.
+                      format: date-time
+                      type: string
+                    message:
+                      description: Full text reason for current status of the condition.
+                      type: string
+                    reason:
+                      description: One word, camel-case reason for current status
+                        of the condition.
+                      type: string
+                    status:
+                      description: True, False, or Unknown
+                      type: string
+                    type:
+                      description: Type indicates the scope of the custom resource
+                        status addressed by the condition.
+                      type: string
+                  required:
+                  - status
+                  - type
+                  type: object
+                type: array
+              observedGeneration:
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this OperatorPolicy. It corresponds to the
+                  OperatorPolicy's generation, which is updated on mutation by the API Server.
+                format: int64
+                type: integer
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.14.0
   name: permissions.rabbitmq.com
 spec:
   group: rabbitmq.com
@@ -438,14 +625,19 @@ spec:
         description: Permission is the Schema for the permissions API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -453,8 +645,9 @@ spec:
             description: PermissionSpec defines the desired state of Permission
             properties:
               permissions:
-                description: 'Permissions to grant to the user in the specific vhost;
-                  required property. See RabbitMQ doc for more information: https://www.rabbitmq.com/access-control.html#user-management'
+                description: |-
+                  Permissions to grant to the user in the specific vhost; required property.
+                  See RabbitMQ doc for more information: https://www.rabbitmq.com/access-control.html#user-management
                 properties:
                   configure:
                     type: string
@@ -464,27 +657,32 @@ spec:
                     type: string
                 type: object
               rabbitmqClusterReference:
-                description: Reference to the RabbitmqCluster that both the provided
-                  user and vhost are. Required property.
+                description: |-
+                  Reference to the RabbitmqCluster that both the provided user and vhost are.
+                  Required property.
                 properties:
                   connectionSecret:
-                    description: Secret contains the http management uri for the RabbitMQ
-                      cluster. The Secret must contain the key `uri`, `username` and
-                      `password` or operator will error. Have to set either name or
-                      connectionSecret, but not both.
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
                     properties:
                       name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
                   name:
-                    description: The name of the RabbitMQ cluster to reference. Have
-                      to set either name or connectionSecret, but not both.
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
                     type: string
                   namespace:
-                    description: The namespace of the RabbitMQ cluster to reference.
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
@@ -498,8 +696,10 @@ spec:
                   be updated
                 properties:
                   name:
-                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                      TODO: Add other useful fields. apiVersion, kind, uid?'
+                    description: |-
+                      Name of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                      TODO: Add other useful fields. apiVersion, kind, uid?
                     type: string
                 type: object
                 x-kubernetes-map-type: atomic
@@ -542,9 +742,9 @@ spec:
                   type: object
                 type: array
               observedGeneration:
-                description: observedGeneration is the most recent successful generation
-                  observed for this Permission. It corresponds to the Permission's
-                  generation, which is updated on mutation by the API Server.
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this Permission. It corresponds to the
+                  Permission's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object
@@ -558,8 +758,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.14.0
   name: policies.rabbitmq.com
 spec:
   group: rabbitmq.com
@@ -579,26 +778,37 @@ spec:
         description: Policy is the Schema for the policies API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
           spec:
-            description: PolicySpec defines the desired state of Policy https://www.rabbitmq.com/parameters.html#policies
+            description: |-
+              PolicySpec defines the desired state of Policy
+              https://www.rabbitmq.com/parameters.html#policies
             properties:
               applyTo:
                 default: all
-                description: 'What this policy applies to: ''queues'', ''exchanges'',
-                  or ''all''. Default to ''all''.'
+                description: |-
+                  What this policy applies to: 'queues', 'classic_queues', 'quorum_queues', 'streams', 'exchanges', or 'all'.
+                  Default to 'all'.
                 enum:
                 - queues
+                - classic_queues
+                - quorum_queues
+                - streams
                 - exchanges
                 - all
                 type: string
@@ -610,37 +820,43 @@ spec:
                 description: Required property; cannot be updated
                 type: string
               pattern:
-                description: Regular expression pattern used to match queues and exchanges,
-                  e.g. "^amq.". Required property.
+                description: |-
+                  Regular expression pattern used to match queues and exchanges, e.g. "^amq.".
+                  Required property.
                 type: string
               priority:
                 default: 0
-                description: Default to '0'. In the event that more than one policy
-                  can match a given exchange or queue, the policy with the greatest
-                  priority applies.
+                description: |-
+                  Default to '0'.
+                  In the event that more than one policy can match a given exchange or queue, the policy with the greatest priority applies.
                 type: integer
               rabbitmqClusterReference:
-                description: Reference to the RabbitmqCluster that the exchange will
-                  be created in. Required property.
+                description: |-
+                  Reference to the RabbitmqCluster that the policy will be created in.
+                  Required property.
                 properties:
                   connectionSecret:
-                    description: Secret contains the http management uri for the RabbitMQ
-                      cluster. The Secret must contain the key `uri`, `username` and
-                      `password` or operator will error. Have to set either name or
-                      connectionSecret, but not both.
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
                     properties:
                       name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
                   name:
-                    description: The name of the RabbitMQ cluster to reference. Have
-                      to set either name or connectionSecret, but not both.
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
                     type: string
                   namespace:
-                    description: The namespace of the RabbitMQ cluster to reference.
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
@@ -684,9 +900,9 @@ spec:
                   type: object
                 type: array
               observedGeneration:
-                description: observedGeneration is the most recent successful generation
-                  observed for this Policy. It corresponds to the Policy's generation,
-                  which is updated on mutation by the API Server.
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this Policy. It corresponds to the
+                  Policy's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object
@@ -700,8 +916,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.14.0
   name: queues.rabbitmq.com
 spec:
   group: rabbitmq.com
@@ -721,14 +936,19 @@ spec:
         description: Queue is the Schema for the queues API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -736,10 +956,9 @@ spec:
             description: QueueSpec defines the desired state of Queue
             properties:
               arguments:
-                description: 'Queue arguments in the format of KEY: VALUE. e.g. x-delivery-limit:
-                  10000. Configuring queues through arguments is not recommended because
-                  they cannot be updated once set; we recommend configuring queues
-                  through policies instead.'
+                description: |-
+                  Queue arguments in the format of KEY: VALUE. e.g. x-delivery-limit: 10000.
+                  Configuring queues through arguments is not recommended because they cannot be updated once set; we recommend configuring queues through policies instead.
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
               autoDelete:
@@ -753,27 +972,32 @@ spec:
                 description: Name of the queue; required property.
                 type: string
               rabbitmqClusterReference:
-                description: Reference to the RabbitmqCluster that the queue will
-                  be created in. Required property.
+                description: |-
+                  Reference to the RabbitmqCluster that the queue will be created in.
+                  Required property.
                 properties:
                   connectionSecret:
-                    description: Secret contains the http management uri for the RabbitMQ
-                      cluster. The Secret must contain the key `uri`, `username` and
-                      `password` or operator will error. Have to set either name or
-                      connectionSecret, but not both.
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
                     properties:
                       name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
                   name:
-                    description: The name of the RabbitMQ cluster to reference. Have
-                      to set either name or connectionSecret, but not both.
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
                     type: string
                   namespace:
-                    description: The namespace of the RabbitMQ cluster to reference.
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
@@ -817,9 +1041,9 @@ spec:
                   type: object
                 type: array
               observedGeneration:
-                description: observedGeneration is the most recent successful generation
-                  observed for this Queue. It corresponds to the Queue's generation,
-                  which is updated on mutation by the API Server.
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this Queue. It corresponds to the
+                  Queue's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object
@@ -833,8 +1057,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.14.0
   name: schemareplications.rabbitmq.com
 spec:
   group: rabbitmq.com
@@ -848,19 +1071,25 @@ spec:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: 'SchemaReplication is the Schema for the schemareplications API
-          This feature requires Tanzu RabbitMQ with schema replication plugin. For
-          more information, see: https://tanzu.vmware.com/rabbitmq and https://www.rabbitmq.com/definitions-standby.html.'
+        description: |-
+          SchemaReplication is the Schema for the schemareplications API
+          This feature requires Tanzu RabbitMQ with schema replication plugin.
+          For more information, see: https://tanzu.vmware.com/rabbitmq and https://www.rabbitmq.com/definitions-standby.html.
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -868,33 +1097,38 @@ spec:
             description: SchemaReplicationSpec defines the desired state of SchemaReplication
             properties:
               endpoints:
-                description: endpoints should be one or multiple endpoints separated
-                  by ','. Must provide either spec.endpoints or endpoints in spec.upstreamSecret.
-                  When endpoints are provided in both spec.endpoints and spec.upstreamSecret,
-                  spec.endpoints takes precedence.
+                description: |-
+                  endpoints should be one or multiple endpoints separated by ','.
+                  Must provide either spec.endpoints or endpoints in spec.upstreamSecret.
+                  When endpoints are provided in both spec.endpoints and spec.upstreamSecret, spec.endpoints takes
+                  precedence.
                 type: string
               rabbitmqClusterReference:
                 description: Reference to the RabbitmqCluster that schema replication
                   would be set for. Must be an existing cluster.
                 properties:
                   connectionSecret:
-                    description: Secret contains the http management uri for the RabbitMQ
-                      cluster. The Secret must contain the key `uri`, `username` and
-                      `password` or operator will error. Have to set either name or
-                      connectionSecret, but not both.
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
                     properties:
                       name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
                   name:
-                    description: The name of the RabbitMQ cluster to reference. Have
-                      to set either name or connectionSecret, but not both.
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
                     type: string
                   namespace:
-                    description: The namespace of the RabbitMQ cluster to reference.
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
@@ -905,25 +1139,25 @@ spec:
                   vault:
                     properties:
                       secretPath:
-                        description: Path in Vault to access a KV (Key-Value) secret
-                          with the fields username and password to be used for replication.
-                          For example "secret/data/rabbitmq/config". Optional; if
-                          not provided, username and password will come from upstreamSecret
-                          instead. Have to set either secretBackend.vault.secretPath
-                          or upstreamSecret, but not both.
+                        description: |-
+                          Path in Vault to access a KV (Key-Value) secret with the fields username and password to be used for replication.
+                          For example "secret/data/rabbitmq/config".
+                          Optional; if not provided, username and password will come from upstreamSecret instead.
+                          Have to set either secretBackend.vault.secretPath or upstreamSecret, but not both.
                         type: string
                     type: object
                 type: object
               upstreamSecret:
-                description: Defines a Secret which contains credentials to be used
-                  for schema replication. The Secret must contain the keys `username`
-                  and `password` in its Data field, or operator will error. Have to
-                  set either secretBackend.vault.secretPath or spec.upstreamSecret,
-                  but not both.
+                description: |-
+                  Defines a Secret which contains credentials to be used for schema replication.
+                  The Secret must contain the keys `username` and `password` in its Data field, or operator will error.
+                  Have to set either secretBackend.vault.secretPath or spec.upstreamSecret, but not both.
                 properties:
                   name:
-                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                      TODO: Add other useful fields. apiVersion, kind, uid?'
+                    description: |-
+                      Name of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                      TODO: Add other useful fields. apiVersion, kind, uid?
                     type: string
                 type: object
                 x-kubernetes-map-type: atomic
@@ -960,9 +1194,9 @@ spec:
                   type: object
                 type: array
               observedGeneration:
-                description: observedGeneration is the most recent successful generation
-                  observed for this Queue. It corresponds to the Queue's generation,
-                  which is updated on mutation by the API Server.
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this Queue. It corresponds to the
+                  Queue's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object
@@ -976,8 +1210,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.14.0
   name: shovels.rabbitmq.com
 spec:
   group: rabbitmq.com
@@ -997,20 +1230,26 @@ spec:
         description: Shovel is the Schema for the shovels API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
           spec:
-            description: 'ShovelSpec defines the desired state of Shovel For how to
-              configure Shovel, see: https://www.rabbitmq.com/shovel.html.'
+            description: |-
+              ShovelSpec defines the desired state of Shovel
+              For how to configure Shovel, see: https://www.rabbitmq.com/shovel.html.
             properties:
               ackMode:
                 enum:
@@ -1065,27 +1304,32 @@ spec:
               prefetchCount:
                 type: integer
               rabbitmqClusterReference:
-                description: Reference to the RabbitmqCluster that this Shovel will
-                  be created in. Required property.
+                description: |-
+                  Reference to the RabbitmqCluster that this Shovel will be created in.
+                  Required property.
                 properties:
                   connectionSecret:
-                    description: Secret contains the http management uri for the RabbitMQ
-                      cluster. The Secret must contain the key `uri`, `username` and
-                      `password` or operator will error. Have to set either name or
-                      connectionSecret, but not both.
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
                     properties:
                       name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
                   name:
-                    description: The name of the RabbitMQ cluster to reference. Have
-                      to set either name or connectionSecret, but not both.
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
                     type: string
                   namespace:
-                    description: The namespace of the RabbitMQ cluster to reference.
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
@@ -1117,14 +1361,17 @@ spec:
                 description: amqp091 configuration
                 type: string
               uriSecret:
-                description: Secret contains the AMQP URI(s) to configure Shovel destination
-                  and source. The Secret must contain the key `destUri` and `srcUri`
-                  or operator will error. Both fields should be one or multiple uris
-                  separated by ','. Required property.
+                description: |-
+                  Secret contains the AMQP URI(s) to configure Shovel destination and source.
+                  The Secret must contain the key `destUri` and `srcUri` or operator will error.
+                  Both fields should be one or multiple uris separated by ','.
+                  Required property.
                 properties:
                   name:
-                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                      TODO: Add other useful fields. apiVersion, kind, uid?'
+                    description: |-
+                      Name of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                      TODO: Add other useful fields. apiVersion, kind, uid?
                     type: string
                 type: object
                 x-kubernetes-map-type: atomic
@@ -1167,9 +1414,9 @@ spec:
                   type: object
                 type: array
               observedGeneration:
-                description: observedGeneration is the most recent successful generation
-                  observed for this Shovel. It corresponds to the Shovel's generation,
-                  which is updated on mutation by the API Server.
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this Shovel. It corresponds to the
+                  Shovel's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object
@@ -1183,8 +1430,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.14.0
   name: superstreams.rabbitmq.com
 spec:
   group: rabbitmq.com
@@ -1204,14 +1450,19 @@ spec:
         description: SuperStream is the Schema for the queues API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -1223,38 +1474,44 @@ spec:
                 type: string
               partitions:
                 default: 3
-                description: Number of partitions to create within this super stream.
+                description: |-
+                  Number of partitions to create within this super stream.
                   Defaults to '3'.
                 type: integer
               rabbitmqClusterReference:
-                description: Reference to the RabbitmqCluster that the SuperStream
-                  will be created in. Required property.
+                description: |-
+                  Reference to the RabbitmqCluster that the SuperStream will be created in.
+                  Required property.
                 properties:
                   connectionSecret:
-                    description: Secret contains the http management uri for the RabbitMQ
-                      cluster. The Secret must contain the key `uri`, `username` and
-                      `password` or operator will error. Have to set either name or
-                      connectionSecret, but not both.
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
                     properties:
                       name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
                   name:
-                    description: The name of the RabbitMQ cluster to reference. Have
-                      to set either name or connectionSecret, but not both.
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
                     type: string
                   namespace:
-                    description: The namespace of the RabbitMQ cluster to reference.
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
               routingKeys:
-                description: Routing keys to use for each of the partitions in the
-                  SuperStream If unset, the routing keys for the partitions will be
-                  set to the index of the partitions
+                description: |-
+                  Routing keys to use for each of the partitions in the SuperStream
+                  If unset, the routing keys for the partitions will be set to the index of the partitions
                 items:
                   type: string
                 type: array
@@ -1296,9 +1553,9 @@ spec:
                   type: object
                 type: array
               observedGeneration:
-                description: observedGeneration is the most recent successful generation
-                  observed for this SuperStream. It corresponds to the SuperStream's
-                  generation, which is updated on mutation by the API Server.
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this SuperStream. It corresponds to the
+                  SuperStream's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
               partitions:
@@ -1318,8 +1575,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.14.0
   name: topicpermissions.rabbitmq.com
 spec:
   group: rabbitmq.com
@@ -1336,14 +1592,19 @@ spec:
         description: TopicPermission is the Schema for the topicpermissions API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -1364,27 +1625,32 @@ spec:
                     type: string
                 type: object
               rabbitmqClusterReference:
-                description: Reference to the RabbitmqCluster that both the provided
-                  user and vhost are. Required property.
+                description: |-
+                  Reference to the RabbitmqCluster that both the provided user and vhost are.
+                  Required property.
                 properties:
                   connectionSecret:
-                    description: Secret contains the http management uri for the RabbitMQ
-                      cluster. The Secret must contain the key `uri`, `username` and
-                      `password` or operator will error. Have to set either name or
-                      connectionSecret, but not both.
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
                     properties:
                       name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
                   name:
-                    description: The name of the RabbitMQ cluster to reference. Have
-                      to set either name or connectionSecret, but not both.
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
                     type: string
                   namespace:
-                    description: The namespace of the RabbitMQ cluster to reference.
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
@@ -1398,8 +1664,10 @@ spec:
                   be updated.
                 properties:
                   name:
-                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                      TODO: Add other useful fields. apiVersion, kind, uid?'
+                    description: |-
+                      Name of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                      TODO: Add other useful fields. apiVersion, kind, uid?
                     type: string
                 type: object
                 x-kubernetes-map-type: atomic
@@ -1442,9 +1710,9 @@ spec:
                   type: object
                 type: array
               observedGeneration:
-                description: observedGeneration is the most recent successful generation
-                  observed for this TopicPermission. It corresponds to the TopicPermission's
-                  generation, which is updated on mutation by the API Server.
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this TopicPermission. It corresponds to the
+                  TopicPermission's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object
@@ -1458,8 +1726,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.14.0
   name: users.rabbitmq.com
 spec:
   group: rabbitmq.com
@@ -1479,14 +1746,19 @@ spec:
         description: User is the Schema for the users API.
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -1494,55 +1766,63 @@ spec:
             description: Spec configures the desired state of the User object.
             properties:
               importCredentialsSecret:
-                description: Defines a Secret used to pre-define the username and
-                  password set for this User. User objects created with this field
-                  set will not have randomly-generated credentials, and will instead
-                  import the username/password values from this Secret. The Secret
-                  must contain the keys `username` and `password` in its Data field,
-                  or the import will fail. Note that this import only occurs at creation
-                  time, and is ignored once a password has been set on a User.
+                description: |-
+                  Defines a Secret used to pre-define the username and password set for this User. User objects created
+                  with this field set will not have randomly-generated credentials, and will instead import
+                  the username/password values from this Secret.
+                  The Secret must contain the keys `username` and `password` in its Data field, or the import will fail.
+                  Note that this import only occurs at creation time, and is ignored once a password has been set
+                  on a User.
                 properties:
                   name:
-                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                      TODO: Add other useful fields. apiVersion, kind, uid?'
+                    description: |-
+                      Name of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                      TODO: Add other useful fields. apiVersion, kind, uid?
                     type: string
                 type: object
                 x-kubernetes-map-type: atomic
               rabbitmqClusterReference:
-                description: Reference to the RabbitmqCluster that the user will be
-                  created for. This cluster must exist for the User object to be created.
+                description: |-
+                  Reference to the RabbitmqCluster that the user will be created for. This cluster must
+                  exist for the User object to be created.
                 properties:
                   connectionSecret:
-                    description: Secret contains the http management uri for the RabbitMQ
-                      cluster. The Secret must contain the key `uri`, `username` and
-                      `password` or operator will error. Have to set either name or
-                      connectionSecret, but not both.
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
                     properties:
                       name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
                   name:
-                    description: The name of the RabbitMQ cluster to reference. Have
-                      to set either name or connectionSecret, but not both.
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
                     type: string
                   namespace:
-                    description: The namespace of the RabbitMQ cluster to reference.
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
               tags:
-                description: List of permissions tags to associate with the user.
-                  This determines the level of access to the RabbitMQ management UI
-                  granted to the user. Omitting this field will lead to a user than
-                  can still connect to the cluster through messaging protocols, but
-                  cannot perform any management actions. For more information, see
-                  https://www.rabbitmq.com/management.html#permissions.
+                description: |-
+                  List of permissions tags to associate with the user. This determines the level of
+                  access to the RabbitMQ management UI granted to the user. Omitting this field will
+                  lead to a user than can still connect to the cluster through messaging protocols,
+                  but cannot perform any management actions.
+                  For more information, see https://www.rabbitmq.com/management.html#permissions.
                 items:
-                  description: UserTag defines the level of access to the management
-                    UI allocated to the user. For more information, see https://www.rabbitmq.com/management.html#permissions.
+                  description: |-
+                    UserTag defines the level of access to the management UI allocated to the user.
+                    For more information, see https://www.rabbitmq.com/management.html#permissions.
                   enum:
                   - management
                   - policymaker
@@ -1587,15 +1867,17 @@ spec:
                   user credentials.
                 properties:
                   name:
-                    description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                      TODO: Add other useful fields. apiVersion, kind, uid?'
+                    description: |-
+                      Name of the referent.
+                      More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                      TODO: Add other useful fields. apiVersion, kind, uid?
                     type: string
                 type: object
                 x-kubernetes-map-type: atomic
               observedGeneration:
-                description: observedGeneration is the most recent successful generation
-                  observed for this User. It corresponds to the User's generation,
-                  which is updated on mutation by the API Server.
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this User. It corresponds to the
+                  User's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
               username:
@@ -1614,8 +1896,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.12.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.14.0
   name: vhosts.rabbitmq.com
 spec:
   group: rabbitmq.com
@@ -1635,14 +1916,19 @@ spec:
         description: Vhost is the Schema for the vhosts API
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
             type: string
           metadata:
             type: object
@@ -1650,8 +1936,9 @@ spec:
             description: VhostSpec defines the desired state of Vhost
             properties:
               defaultQueueType:
-                description: Default queue type for this vhost; can be set to quorum,
-                  classic or stream. Supported in RabbitMQ 3.11.12 or above.
+                description: |-
+                  Default queue type for this vhost; can be set to quorum, classic or stream.
+                  Supported in RabbitMQ 3.11.12 or above.
                 enum:
                 - quorum
                 - classic
@@ -1661,27 +1948,32 @@ spec:
                 description: Name of the vhost; see https://www.rabbitmq.com/vhosts.html.
                 type: string
               rabbitmqClusterReference:
-                description: Reference to the RabbitmqCluster that the vhost will
-                  be created in. Required property.
+                description: |-
+                  Reference to the RabbitmqCluster that the vhost will be created in.
+                  Required property.
                 properties:
                   connectionSecret:
-                    description: Secret contains the http management uri for the RabbitMQ
-                      cluster. The Secret must contain the key `uri`, `username` and
-                      `password` or operator will error. Have to set either name or
-                      connectionSecret, but not both.
+                    description: |-
+                      Secret contains the http management uri for the RabbitMQ cluster.
+                      The Secret must contain the key `uri`, `username` and `password` or operator will error.
+                      Have to set either name or connectionSecret, but not both.
                     properties:
                       name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                          TODO: Add other useful fields. apiVersion, kind, uid?'
+                        description: |-
+                          Name of the referent.
+                          More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                          TODO: Add other useful fields. apiVersion, kind, uid?
                         type: string
                     type: object
                     x-kubernetes-map-type: atomic
                   name:
-                    description: The name of the RabbitMQ cluster to reference. Have
-                      to set either name or connectionSecret, but not both.
+                    description: |-
+                      The name of the RabbitMQ cluster to reference.
+                      Have to set either name or connectionSecret, but not both.
                     type: string
                   namespace:
-                    description: The namespace of the RabbitMQ cluster to reference.
+                    description: |-
+                      The namespace of the RabbitMQ cluster to reference.
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
@@ -1725,9 +2017,9 @@ spec:
                   type: object
                 type: array
               observedGeneration:
-                description: observedGeneration is the most recent successful generation
-                  observed for this Vhost. It corresponds to the Vhost's generation,
-                  which is updated on mutation by the API Server.
+                description: |-
+                  observedGeneration is the most recent successful generation observed for this Vhost. It corresponds to the
+                  Vhost's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object
