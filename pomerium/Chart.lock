@@ -1,0 +1,6 @@
+dependencies:
+- name: pomerium
+  repository: https://helm.pomerium.io
+  version: 34.0.1
+digest: sha256:e131d560e1b3fa04b48dc92a1451b4e6024441a2fbf23bd945784bd3fe739b04
+generated: "2024-04-20T08:54:42.829643516Z"
