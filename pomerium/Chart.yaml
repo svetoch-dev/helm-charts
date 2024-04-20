@@ -2,7 +2,7 @@ apiVersion: v2
 name: pomerium
 version: 0.1.0
 dependencies:
-  #https://github.com/pomerium/pomerium-helm/blob/pomerium-34.0.1/charts/pomerium
+  #https://github.com/pomerium/pomerium-helm/tree/pomerium-34.0.1/charts/pomerium
   - name: pomerium
     version: 34.0.1
     repository: https://helm.pomerium.io
