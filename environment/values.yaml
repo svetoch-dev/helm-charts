@@ -46,6 +46,8 @@ crds:
 #      enabled: true
 #    rabbitmq-messaging-topology:
 #      enabled: true
+#    pomerium:
+#      enabled: true
 
   labels: {}
   finalizers: {}
