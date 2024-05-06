@@ -1,4 +1,4 @@
-{{- $app_image_tag := ternary .Values.image.tag .Values.global.image.tag (not .Values.global.image.tag) }}
+{{- $app_image_tag := ternary .Values.global.image.tag .Values.image.tag (not .Values.image.tag) }}
 {{- $app_nodeSelector := ternary .Values.nodeSelector .Values.global.nodeSelector ( hasKey .Values "nodeSelector") }}
 {{- $app_tolerations := ternary .Values.tolerations .Values.global.tolerations ( hasKey .Values "tolerations") }}
 {{- $app_affinity := ternary .Values.affinity .Values.global.affinity ( hasKey .Values "affinity") }}
