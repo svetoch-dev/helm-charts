@@ -29,7 +29,7 @@ grafana-main:
             app.kubernetes.io/instance: grafana-gcp-int
 
 datasource:
-  enabled: true
+  enabled: false
   datasources:
     - name: thanos-query-int
       selector:
@@ -44,7 +44,10 @@ datasource:
           prometheusType: Thanos
 
 dashboard:
-  enabled: true
+  enabled: false
+
+common-dashboard:
+  enabled: false
   dashboards:
     - name: services
       folder: general
