@@ -2,7 +2,7 @@ dependencies:
 - name: grafana-dashboards
   repository: file://../chart_deps/grafana/dashboards
   version: 0.1.0
-- name: grafana-common-dashboards
+- name: grafana-dashboards
   repository: file://../chart_deps/grafana/dashboards
   version: 0.1.0
 - name: grafana-datasources
@@ -14,5 +14,5 @@ dependencies:
 - name: grafana-operator
   repository: oci://ghcr.io/grafana/helm-charts
   version: v5.9.0
-digest: sha256:196f3b0b5d39aea47fdf71f8a3a8f2275c8e83844873f9eb1b2463bcdf15f1d2
-generated: "2024-05-15T19:55:10.111110324Z"
+digest: sha256:7fad13a85c544e9b66ebaa8f4340fd162c3ab054a2edd725a454a0407cdd5dd9
+generated: "2024-05-16T07:02:46.15864918Z"

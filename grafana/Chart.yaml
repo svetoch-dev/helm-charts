@@ -8,7 +8,7 @@ dependencies:
     repository: file://../chart_deps/grafana/dashboards
     alias: dashboard
     condition: dashboard.enabled
-  - name: grafana-common-dashboards
+  - name: grafana-dashboards
     version: 0.1.0
     repository: file://../chart_deps/grafana/dashboards
     alias: common-dashboard
