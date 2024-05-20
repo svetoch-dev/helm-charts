@@ -31,7 +31,7 @@ spec:
   - repoURL: {{ $chart_app_obj.repo_url | default $.Values.repository.url }}
     {{- if $chart_app_obj.chart }}
     path: {{ $chart_app_obj.chart }}
-    {{- else if eq $chart_app_obj.app }}
+    {{- else if $chart_app_obj.app }}
     path: {{ printf "%s/%s" $.Values.repository.app_charts $chart_app_name  }}
     {{- else }}
     path: {{ printf "%s/%s" $.Values.repository.charts $chart_app_name  }}
@@ -53,6 +53,12 @@ spec:
     {{- end }}
       valueFiles:
         - {{ printf "%s/%s/%s/values.yaml" $.Values.repository.envs_from_charts $.Values.env.name $chart_app_name }}
+    {{- end }}
+    {{- if $chart_app_obj.values }}
+    {{- with $chart_app_obj.values }}
+      values:
+    {{- tpl (toYaml .) $ | nindent 8 }}
+    {{- end }}
     {{- end }}
     {{- with $chart_app_obj.values_sources }}
     {{- toYaml . | nindent 2 }}
@@ -84,6 +90,12 @@ spec:
     {{- end }}
       valueFiles:
         - {{ printf "%s/%s/%s/values.yaml" $.Values.repository.envs_from_charts $.Values.env.name $chart_app_name }}
+    {{- end }}
+    {{- if $chart_app_obj.values }}
+    {{- with $chart_app_obj.values }}
+      values:
+    {{- tpl (toYaml .) $ | nindent 8 }}
+    {{- end }}
     {{- end }}
   {{- end }}
   {{- with $chart_app_obj.syncPolicy }}

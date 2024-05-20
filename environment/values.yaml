@@ -1,5 +1,11 @@
 labels: {}
 
+company:
+  name:
+  gcp:
+    project_id:
+  domain:
+
 env:
   name: YOUR_ENV_NAME_GOES_HERE
   server: YOUR_K8S_API_URL
@@ -11,6 +17,7 @@ repository:
   envs: argocd/environments
   envs_from_charts: ../../../environments
   revision: master
+
 
 manifests:
   enabled: false
