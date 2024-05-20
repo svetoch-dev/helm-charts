@@ -61,7 +61,7 @@ spec:
     {{- end }}
     {{- end }}
     {{- if $chart_app_obj.values }}
-      values: {{- tpl $chart_app_obj.values $ | nindent 8 }}
+      values: {{ tpl (toYaml $chart_app_obj.values) $ | nindent 8 }}
     {{- end }}
     {{- with $chart_app_obj.values_sources }}
     {{- toYaml . | nindent 2 }}
@@ -101,7 +101,7 @@ spec:
     {{- end }}
     {{- end }}
     {{- if $chart_app_obj.values }}
-      values: {{- tpl $chart_app_obj.values $ | nindent 8 }}
+      values: {{ tpl (toYaml $chart_app_obj.values) $ | nindent 8 }}
     {{- end }}
   {{- end }}
   {{- with $chart_app_obj.syncPolicy }}
