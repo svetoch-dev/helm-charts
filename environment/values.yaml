@@ -60,6 +60,31 @@ crds:
   syncPolicy: {}
 
 chart_apps:
+  argocd:
+    enabled: false
+    values: |
+      controller:
+        serviceAccount:
+          annotations:
+            {{- if .Values.company.gcp.project_id }}
+            iam.gke.io/gcp-service-account: argocd@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+            {{- end }}
+      server:
+        serviceAccount:
+          annotations:
+            {{- if .Values.company.gcp.project_id }}
+            iam.gke.io/gcp-service-account: argocd@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+            {{- end }}
+
+      ingress:
+        hostname: "argocd.int.{{ .Values.company.domain.name }}"
+        paths:
+          - /
+        pathType: ImplementationSpecific
+        tls:
+          - hosts:
+            - argocd.int.{{ .Values.company.domain.name }}
+            secretName: argocd-tls
   thanos:
     enabled: false
     values: |
