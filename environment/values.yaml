@@ -1,17 +1,18 @@
 labels: {}
 
 company:
-  name:
+  name: #example
   gcp:
-    project_id:
+    project_id: #example-production
   domain:
+    name: #example.com
 
 env:
-  name: YOUR_ENV_NAME_GOES_HERE
-  server: YOUR_K8S_API_URL
+  name: #aws-prd or aws-int or aws-stg
+  server: #https://2.2.2.2
 
 repository:
-  url: YOUR_INFRA_REPO_URL
+  url: #git@github.com:ggramal/infrared.git
   charts: argocd/charts/infra
   app_charts: argocd/charts/app
   envs: argocd/environments
@@ -58,7 +59,57 @@ crds:
   finalizers: {}
   syncPolicy: {}
 
-chart_apps: {}
+chart_apps:
+  thanos:
+    enabled: false
+    values: |
+      prd:
+        compactor:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.project_id }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+        storegateway:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.project_id }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+        query:
+          stores:
+            - thanos.prd.{{ .Values.company.domain.name }}
+      dev:
+        compactor:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.project_id }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+        storegateway:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.project_id }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+        query:
+          stores:
+            - thanos.dev.{{ .Values.company.domain.name }}
+      int:
+        compactor:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.project_id }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+        storegateway:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.project_id }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+
+
 #  argocd:
 #    enabled: false
 #    chart: argocd/charts/argocd
