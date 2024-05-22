@@ -4,8 +4,12 @@ company:
   name: #example
   gcp:
     project_id: #example-production
-  domain:
-    name: #example.com
+  domains:
+    root: #example.com
+    env: #int.example.com, dev.example.com, prd.example.com etc
+    argocd: #argocd.int.example.com
+    thanos: #thanos.prd.example.com
+
 
 env:
   name: #aws-prd or aws-int or aws-stg
@@ -78,9 +82,7 @@ chart_apps:
               {{- end }}
 
           ingress:
-            hostname: "argocd.int.{{ .Values.company.domain.name }}"
-            pathType: ImplementationSpecific
-            tls: true
+            hostname: "{{ .Values.company.domains.argocd }}"
   thanos:
     enabled: false
     values: |
@@ -97,9 +99,6 @@ chart_apps:
               {{- if .Values.company.gcp.project_id }}
               iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
               {{- end }}
-        query:
-          stores:
-            - thanos.prd.{{ .Values.company.domain.name }}:443
       dev:
         compactor:
           serviceAccount:
@@ -113,9 +112,6 @@ chart_apps:
               {{- if .Values.company.gcp.project_id }}
               iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
               {{- end }}
-        query:
-          stores:
-            - thanos.dev.{{ .Values.company.domain.name }}:443
       int:
         compactor:
           serviceAccount:

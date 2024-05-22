@@ -94,6 +94,12 @@ spec:
       valueFiles:
         - {{ printf "%s/%s/%s/values.yaml" $.Values.repository.envs_from_charts $.Values.env.name $chart_app_name }}
     {{- end }}
+    {{- if $chart_app_obj.parameters }}
+    {{- with $chart_app_obj.parameters }}
+      parameters:
+    {{- tpl (toYaml .) $ | nindent 8 }}
+    {{- end }}
+    {{- end }}
     {{- if $chart_app_obj.valuesObject }}
     {{- with $chart_app_obj.valuesObject }}
       valuesObject:
