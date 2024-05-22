@@ -84,18 +84,12 @@ kube-state-metrics:
     metricRelabelings:
       # ADD COMMON pod and LABEL TO ALL METRICS
       # values based on orgiginal exported_pod label (container also)
-      - sourceLabels:
-          - "exported_pod"
+      - sourceLabels: ["exported_pod"]
         targetLabel: "pod"
-      - sourceLabels:
-          - "exported_container"
+      - sourceLabels: ["exported_container", "label_app_kubernetes_io_name"]
         targetLabel: "container"
-      - sourceLabels:
-          - "exported_namespace"
+      - sourceLabels: ["exported_namespace"]
         targetLabel: "namespace"
-      - sourceLabels:
-          - "label_app_kubernetes_io_name"
-        targetLabel: "container"
 
     namespace: prometheus
 
