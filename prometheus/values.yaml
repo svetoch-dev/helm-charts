@@ -47,7 +47,7 @@ kube-state-metrics:
     repository: bitnami/kube-state-metrics
 
   extraArgs:
-    metric-labels-allowlist: "pods=[*],deployments=[*]"
+    metric-labels-allowlist: "pods=[*],deployments=[label_app_kubernetes_io_name, namespace, deployment]"
 
   kubeResources:
     certificatesigningrequests: false
@@ -93,6 +93,9 @@ kube-state-metrics:
       - sourceLabels:
           - "exported_namespace"
         targetLabel: "namespace"
+      - sourceLabels:
+          - "label_app_kubernetes_io_name"
+        targetLabel: "container"
 
     namespace: prometheus
 
