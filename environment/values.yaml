@@ -66,9 +66,9 @@ chart_apps:
   grafana:
     enabled: false
     parameters:
-    - name: "grafana-main.domain.env"
+    - name: "gloabal.domain.env"
       value: "{{ .Values.company.domain.env }}"
-    - name: "grafana-main.domain.root"
+    - name: "global.domain.root"
       value: "{{ .Values.company.domain.root }}"
   konghq:
     enabled: false
@@ -80,9 +80,9 @@ chart_apps:
   cert-manager:
     enabled: false
     parameters:
-    - name: "domain.env"
+    - name: "global.domain.env"
       value: "{{ .Values.company.domain.env }}"
-    - name: "domain.root"
+    - name: "global.domain.root"
       value: "{{ .Values.company.domain.root }}"
   argocd:
     enabled: false
