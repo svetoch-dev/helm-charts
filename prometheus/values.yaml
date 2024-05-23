@@ -86,8 +86,9 @@ kube-state-metrics:
       # values based on orgiginal exported_pod label (container also)
       - sourceLabels: ["exported_pod"]
         targetLabel: "pod"
-      - sourceLabels: ["exported_container", "label_app_kubernetes_io_name"]
-        separator: ","
+      - sourceLabels: ["exported_container"]
+        targetLabel: "container"
+      - sourceLabels: ["label_app_kubernetes_io_name"]
         targetLabel: "container"
       - sourceLabels: ["exported_namespace"]
         targetLabel: "namespace"
