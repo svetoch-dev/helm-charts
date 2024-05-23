@@ -68,8 +68,8 @@ chart_apps:
     parameters:
     - name: "domain.env"
       value: "{{ .Values.company.domain.env }}"
-    - name: "domain.env"
-      value: "{{ .Values.company.domain.env }}"
+    - name: "domain.root"
+      value: "{{ .Values.company.domain.root }}"
   argocd:
     enabled: false
     parameters:
@@ -93,9 +93,9 @@ chart_apps:
     enabled: false
     parameters:
     - name: "prd.query.stores[0]"
-      value: "thanos.prd.{{ .Values.company.domains.root }}:443"
+      value: "thanos.prd.{{ .Values.company.domain.root }}:443"
     - name: "dev.query.stores[0]"
-      value: "thanos.dev.{{ .Values.company.domains.root }}:443"
+      value: "thanos.dev.{{ .Values.company.domain.root }}:443"
     values: |
       prd:
         compactor:
