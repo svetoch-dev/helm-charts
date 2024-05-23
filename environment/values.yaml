@@ -63,6 +63,13 @@ crds:
   syncPolicy: {}
 
 chart_apps:
+  konghq:
+    enabled: false
+    values: |
+      kong:
+        proxy:
+          annotations:
+            external-dns.alpha.kubernetes.io/hostname: "*.{{ .Values.company.domain.env }}"
   cert-manager:
     enabled: false
     parameters:
