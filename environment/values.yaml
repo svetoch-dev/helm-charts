@@ -13,6 +13,7 @@ company:
 env:
   name: #aws-prd or aws-int or aws-stg
   server: #https://2.2.2.2
+  short_name: #pre/prd/int/dev/etc
 
 repository:
   url: #git@github.com:ggramal/infrared.git
@@ -63,6 +64,14 @@ crds:
   syncPolicy: {}
 
 chart_apps:
+  postgres:
+    enabled: false
+    values: |
+      postgres-operator:
+        configAwsOrGcp:
+          wal_gs_bucket: "{{ .Values.company.name }}-postgres-{{ .Values.env.short_name }}"
+        configLogicalBackup:
+          logical_backup_s3_bucket: "{{ .Values.company.name }}-postgres-backup-{{ .Values.env.short_name }}"
   grafana:
     enabled: false
     parameters:
