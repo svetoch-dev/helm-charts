@@ -73,7 +73,7 @@ chart_apps:
   argocd:
     enabled: false
     parameters:
-    - name: "server.ingress.hostname"
+    - name: "argo-cd.server.ingress.hostname"
       value: "argocd.{{ .Values.company.domain.env }}"
     values: |
       argo-cd:
