@@ -81,12 +81,15 @@ kube-state-metrics:
 
   serviceMonitor:
     enabled: true
+    relabelings:
+      - sourceLabels: ["label_app_kubernetes_io_name"]
+        targetLabel: "container"
     metricRelabelings:
       # ADD COMMON pod and LABEL TO ALL METRICS
       # values based on orgiginal exported_pod label (container also)
       - sourceLabels: ["exported_pod"]
         targetLabel: "pod"
-      - sourceLabels: ["exported_container", "label_app_kubernetes_io_name"]
+      - sourceLabels: ["exported_container"]
         targetLabel: "container"
       - sourceLabels: ["exported_namespace"]
         targetLabel: "namespace"
