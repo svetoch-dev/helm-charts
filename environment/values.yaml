@@ -112,6 +112,16 @@ chart_apps:
               {{- if .Values.company.gcp.enabled }}
               iam.gke.io/gcp-service-account: argocd@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
               {{- end }}
+  prometheus:
+    enabled: false
+    values: |
+      prometheus-main:
+        serviceAccount:
+          annotations:
+            {{- if .Values.company.gcp.enabled }}
+            iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+            {{- end }}
+
   thanos:
     enabled: false
     parameters:
