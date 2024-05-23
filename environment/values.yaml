@@ -114,6 +114,11 @@ chart_apps:
               {{- end }}
   prometheus:
     enabled: false
+    parameters:
+    - name: "global.domain.env"
+      value: "{{ .Values.company.domain.env }}"
+    - name: "global.domain.root"
+      value: "{{ .Values.company.domain.root }}"
     values: |
       prometheus-main:
         serviceAccount:
