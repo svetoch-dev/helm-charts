@@ -66,9 +66,9 @@ chart_apps:
   grafana:
     enabled: false
     parameters:
-    - name: "domain.env"
+    - name: "grafana-main.domain.env"
       value: "{{ .Values.company.domain.env }}"
-    - name: "domain.root"
+    - name: "grafana-main.domain.root"
       value: "{{ .Values.company.domain.root }}"
   konghq:
     enabled: false
