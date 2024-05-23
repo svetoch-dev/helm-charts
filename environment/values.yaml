@@ -3,12 +3,11 @@ labels: {}
 company:
   name: #example
   gcp:
+    enabled: false
     project_id: #example-production
-  domains:
+  domain:
     root: #example.com
     env: #int.example.com, dev.example.com, prd.example.com etc
-    argocd: #argocd.int.example.com
-    thanos: #thanos.prd.example.com
 
 
 env:
@@ -64,66 +63,78 @@ crds:
   syncPolicy: {}
 
 chart_apps:
+  cert-manager:
+    enabled: false
+    parameters:
+    - name: "domain.env"
+      value: "{{ .Values.company.domain.env }}"
+    - name: "domain.env"
+      value: "{{ .Values.company.domain.env }}"
   argocd:
     enabled: false
+    parameters:
+    - name: "server.ingress.hostname"
+      value: "argocd.{{ .Values.company.domain.env }}"
     values: |
       argo-cd:
         controller:
           serviceAccount:
             annotations:
-              {{- if .Values.company.gcp.project_id }}
-              iam.gke.io/gcp-service-account: argocd@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: argocd@{{ .Values.company.gcp.enabled }}.iam.gserviceaccount.com
               {{- end }}
         server:
           serviceAccount:
             annotations:
-              {{- if .Values.company.gcp.project_id }}
-              iam.gke.io/gcp-service-account: argocd@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: argocd@{{ .Values.company.gcp.enabled }}.iam.gserviceaccount.com
               {{- end }}
-
-          ingress:
-            hostname: "{{ .Values.company.domains.argocd }}"
   thanos:
     enabled: false
+    parameters:
+    - name: "prd.query.stores[0]"
+      value: "thanos.prd.{{ .Values.company.domains.root }}:443"
+    - name: "dev.query.stores[0]"
+      value: "thanos.dev.{{ .Values.company.domains.root }}:443"
     values: |
       prd:
         compactor:
           serviceAccount:
             annotations:
-              {{- if .Values.company.gcp.project_id }}
-              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.enabled }}.iam.gserviceaccount.com
               {{- end }}
         storegateway:
           serviceAccount:
             annotations:
-              {{- if .Values.company.gcp.project_id }}
-              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.enabled }}.iam.gserviceaccount.com
               {{- end }}
       dev:
         compactor:
           serviceAccount:
             annotations:
-              {{- if .Values.company.gcp.project_id }}
-              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.enabled }}.iam.gserviceaccount.com
               {{- end }}
         storegateway:
           serviceAccount:
             annotations:
-              {{- if .Values.company.gcp.project_id }}
-              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.enabled }}.iam.gserviceaccount.com
               {{- end }}
       int:
         compactor:
           serviceAccount:
             annotations:
-              {{- if .Values.company.gcp.project_id }}
-              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.enabled }}.iam.gserviceaccount.com
               {{- end }}
         storegateway:
           serviceAccount:
             annotations:
-              {{- if .Values.company.gcp.project_id }}
-              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.enabled }}.iam.gserviceaccount.com
               {{- end }}
 
 

@@ -7,6 +7,6 @@ metadata:
 spec:
   {{- with $cluster_issuer_obj.acme }}
   acme:
-  {{- toYaml . | nindent 4 }}
+  {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
 {{ end -}}

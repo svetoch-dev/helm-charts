@@ -1,3 +1,7 @@
+domain:
+  root: #example.com
+  env: #prd.example.com int.exmple.com dev.example.com etc
+
 cluster_issuers: {}
 
 certificates:
