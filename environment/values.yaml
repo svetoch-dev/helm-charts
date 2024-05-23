@@ -63,6 +63,13 @@ crds:
   syncPolicy: {}
 
 chart_apps:
+  grafana:
+    enabled: false
+    parameters:
+    - name: "domain.env"
+      value: "{{ .Values.company.domain.env }}"
+    - name: "domain.root"
+      value: "{{ .Values.company.domain.root }}"
   konghq:
     enabled: false
     values: |
