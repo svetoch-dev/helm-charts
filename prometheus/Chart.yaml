@@ -52,26 +52,26 @@ dependencies:
     version: 5.3.0
     alias: prometheus-postgres-exporter
     condition: prometheus-postgres-exporter.enabled
-  #https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-blackbox-exporter
+  #https://github.com/prometheus-community/helm-charts/tree/prometheus-blackbox-exporter-8.17.0/charts/prometheus-blackbox-exporter
   - name: prometheus-blackbox-exporter
     repository: https://prometheus-community.github.io/helm-charts
-    version: 8.11.0
+    version: 8.17.0
     alias: prometheus-blackbox-exporter
     condition: prometheus-blackbox-exporter.enabled
-  #https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter
+  #https://github.com/prometheus-community/helm-charts/tree/prometheus-node-exporter-4.34.0/charts/prometheus-node-exporter
   - name: prometheus-node-exporter
     repository: https://prometheus-community.github.io/helm-charts
-    version: 4.30.3
+    version: 4.34.0
     alias: prometheus-node-exporter
     condition: prometheus-node-exporter.enabled
-  #https://github.com/bitnami/charts/tree/main/bitnami/kube-state-metrics
+  #https://github.com/bitnami/charts/tree/kube-state-metrics/4.1.1/bitnami/kube-state-metrics
   - name: kube-state-metrics
-    version: 3.14.2
-    repository: https://charts.bitnami.com/bitnami
+    version: 4.1.1
+    repository: oci://registry-1.docker.io/bitnamicharts
     condition: kube-state-metrics.enabled
-  #https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+  #https://github.com/prometheus-community/helm-charts/tree/kube-prometheus-stack-58.6.0/charts/kube-prometheus-stack
   - name: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
-    version: 56.9.0
+    version: 58.6.0
     alias: operator
     condition: operator.enabled
