@@ -4,10 +4,14 @@ company:
   name: #example
   gcp:
     enabled: false
+    bucket:
+      prefix:
     project_id: #example-production
   domain:
     root: #example.com
     env: #int.example.com, dev.example.com, prd.example.com etc
+  network:
+    int_nat_gw:
 
 
 env:
@@ -69,9 +73,9 @@ chart_apps:
     values: |
       postgres-operator:
         configAwsOrGcp:
-          wal_gs_bucket: "{{ .Values.company.name }}-postgres-{{ .Values.env.short_name }}"
+          wal_gs_bucket: "{{ .Values.company.gcp.bucket.prefix }}-postgres-{{ .Values.env.short_name }}"
         configLogicalBackup:
-          logical_backup_s3_bucket: "{{ .Values.company.name }}-postgres-backup-{{ .Values.env.short_name }}"
+          logical_backup_s3_bucket: "{{ .Values.company.gcp.bucket.prefix }}-postgres-backup-{{ .Values.env.short_name }}"
   grafana:
     enabled: false
     parameters:
@@ -119,6 +123,8 @@ chart_apps:
       value: "{{ .Values.company.domain.env }}"
     - name: "global.domain.root"
       value: "{{ .Values.company.domain.root }}"
+    - name: "global.envs.int.natgw"
+      value: "{{ .Values.company.network.int_nat_gw }}"
     values: |
       prometheus-main:
         serviceAccount:
