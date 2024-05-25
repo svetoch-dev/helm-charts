@@ -41,18 +41,18 @@ servicemonitor:
   prometheusSelector: {}
   labels: {}
   targetLabels: []
-  endpoints:
-    - port: http
-      path: /metrics
+  #endpoints:
+  #  - port: http
+  #    path: /metrics
 
 thanosSericeMonitor:
   enabled: false
   prometheusSelector: {}
   labels: {}
   targetLabels: []
-  endpoints:
-    - port: http
-      path: /metrics
+  #endpoints:
+  #  - port: http
+  #    path: /metrics
 
 thanosIngress:
   enabled: false
