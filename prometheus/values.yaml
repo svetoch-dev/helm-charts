@@ -275,4 +275,16 @@ prometheus-postgres-exporter:
 prometheus-rules:
   enabled: false
   #PrometheusRules: {}
-  #PrometheusAlerts: {}
+  PrometheusAlerts:
+    prometheus-main:
+      team: sre
+      selector:
+        prometheus: main
+      WarningMetric:
+        interval: "31s"
+        rules:
+          # postgres
+          - name: "Postgres logical backup error"
+            for: "2h"
+            description: "Cronjob {{ $labels.cronjob }} failed"
+            expr: ((kube_cronjob_next_schedule_time - on(cronjob, exported_namespace) kube_cronjob_status_last_successful_time)/3600) > 25
