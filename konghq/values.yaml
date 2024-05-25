@@ -41,6 +41,10 @@ kong:
       ''"upstream_addr": "$upstream_addr" }'''
   proxy:
     externalTrafficPolicy: Local
+    annotations:
+      #external-dns.alpha.kubernetes.io/hostname
+      #set in environment/values.yaml
+      external-dns.alpha.kubernetes.io/ttl: "60"
   ingressController:
     admissionWebhook:
       enabled: false
