@@ -43,6 +43,13 @@ alertmanager-configs:
               - name: alertname
                 value: "Pods_waiting_state"
             equal: ['container']
+          - sourceMatch:
+              - name: alertname
+                value: "Pods_waiting_state"
+            targetMatch:
+              - name: alertname
+                value: "Container_too_many_restarts"
+            equal: ['container']
 
 prometheus-node-exporter:
   enabled: false
@@ -375,3 +382,8 @@ prometheus-rules:
             for: "1m"
             description: "Some container located on node {{ $labels.node }} was killed by OOM killer"
             expr: increase(node_vmstat_oom_kill[10m]) > 0
+          # Deployment
+          Container_too_many_restarts:
+            for: "1m"
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} too many restarts (>10 in 1h)"
+            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[1h]) > 10
