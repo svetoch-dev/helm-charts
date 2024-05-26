@@ -50,6 +50,13 @@ alertmanager-configs:
               - name: alertname
                 value: "Container_too_many_restarts"
             equal: ['container']
+          - sourceMatch:
+              - name: alertname
+                value: "Pod_replicas_not_ready"
+            targetMatch:
+              - name: alertname
+                value: "Container_too_many_restarts"
+            equal: ['container']
 
 prometheus-node-exporter:
   enabled: false
