@@ -24,24 +24,24 @@ alertmanager-configs:
             equal: ['alertname', 'persistentvolumeclaim']
           - sourceMatch:
               - name: alertname
-                value: "OOM killed pods"
+                value: "OOM_killed_pods"
             targetMatch:
               - name: alertname
-                value: "OOM killed pods (on node)"
+                value: "OOM_killed_pods_(on_node)"
             equal: ['node']
           - sourceMatch:
               - name: alertname
-                value: "OOM killed pods"
+                value: "OOM_killed_pods"
             targetMatch:
               - name: alertname
-                value: "High memory usage"
+                value: "High_memory_usage"
             equal: ['container', 'pod']
           - sourceMatch:
               - name: alertname
-                value: "Pod replicas not ready"
+                value: "Pod_replicas_not_ready"
             targetMatch:
               - name: alertname
-                value: "Pods waiting state"
+                value: "Pods_waiting_state"
             equal: ['container']
 
 prometheus-node-exporter:
@@ -303,7 +303,7 @@ prometheus-postgres-exporter:
 
 prometheus-rules:
   enabled: false
-  #PrometheusRules: {}
+  PrometheusRules: {}
   PrometheusAlerts:
     prometheus-main:
       team: sre
@@ -338,12 +338,16 @@ prometheus-rules:
             expr: sum by (pod, container, namespace, reason) (kube_pod_container_status_waiting_reason{exported_namespace="kube-system", reason!="OOMKilled"})>0
           Pod_replicas_not_ready:
             for: "15m"
-            description: "Pods replicas less than specified for '{{ $labels.deployment }}'"
+            description: "Pods replicas less than specified for '{{ $labels.deployment }}' for > 15m"
             expr: (kube_deployment_spec_replicas * on (deployment) group_left (container) kube_deployment_labels) != (kube_deployment_status_replicas_available * on (deployment) group_left (container) kube_deployment_labels)
           Daemonset_not_ready:
             for: "15m"
-            description: "daemonset '{{ $labels.daemonset }}' not scheduled in 10m"
+            description: "daemonset '{{ $labels.daemonset }}' not scheduled in 15m"
             expr: kube_daemonset_status_number_misscheduled > 1
+          RabbitMQ_High_memory(watermark)_usage:
+            for: "20m"
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of 'Memory high watermark' limit for > 20m"
+            expr: sum by (container,pod,namespace) (container_memory_working_set_bytes{container="rabbitmq"}) / on(container,pod,namespace) rabbitmq_detailed_resident_memory_limit_bytes > 0.9
       WarningMetric:
         interval: "31s"
         rules:
@@ -361,20 +365,16 @@ prometheus-rules:
           High_postgres_container_cpu_throttling:
             for: "1h"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} throttled for >1h with throttle of {{ humanizeDuration $value }}"
-            expr: rate(container_cpu_cfs_throttled_seconds_total{container="postgres"}[5m]) > 0.3
+            expr: rate(container_cpu_cfs_throttled_seconds_total{container="postgres"}[5m]) > 0.1
           High_cpu_throttling:
             for: "1h"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} throttled for >1h with throttle of {{ humanizeDuration $value }}"
-            expr: rate(container_cpu_cfs_throttled_seconds_total{container!~"postgres|"}[5m]) > 0.4
+            expr: rate(container_cpu_cfs_throttled_seconds_total{container!~"postgres"}[5m]) > 0.2
           High_memory_usage:
             for: "30m"
-            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of Memory limit"
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of Memory limit for > 30m"
             expr: sum by (container, pod, namespace) (container_memory_working_set_bytes{namespace!="kube-system"}) / on (container, pod, namespace) kube_pod_container_resource_limits{unit="byte"} > 0.9
-          RabbitMQ_High_memory(watermark)_usage:
-            for: "30m"
-            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of 'Memory high watermark' limit"
-            expr: sum by (container,pod,namespace) (container_memory_working_set_bytes{container="rabbitmq"}) / on(container,pod,namespace) rabbitmq_detailed_resident_memory_limit_bytes > 0.9
-          OOM_killed_pod_(on_node):
+          OOM_killed_pods_(on_node):
             for: "1m"
             description: "Some container located on node {{ $labels.node }} was killed by OOM killer"
             expr: increase(node_vmstat_oom_kill[10m]) > 0
