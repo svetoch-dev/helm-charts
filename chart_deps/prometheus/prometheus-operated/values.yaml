@@ -112,9 +112,9 @@ prometheus:
 
     paused: false
 
-    image: "quay.io/prometheus/prometheus:v2.50.1"
+    image: "quay.io/prometheus/prometheus:v2.52.0"
 
-    version: "v2.50.1"
+    version: "v2.52.0"
 
     imagePullPolicy: IfNotPresent
 
