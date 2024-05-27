@@ -1,16 +1,32 @@
 labels: {}
 
+company:
+  name: #example
+  gcp:
+    enabled: false
+    bucket:
+      prefix:
+    project_id: #example-production
+  domain:
+    root: #example.com
+    env: #int.example.com, dev.example.com, prd.example.com etc
+  network:
+    int_nat_gw:
+
+
 env:
-  name: YOUR_ENV_NAME_GOES_HERE
-  server: YOUR_K8S_API_URL
+  name: #aws-prd or aws-int or aws-stg
+  server: #https://2.2.2.2
+  short_name: #pre/prd/int/dev/etc
 
 repository:
-  url: YOUR_INFRA_REPO_URL
+  url: #git@github.com:ggramal/infrared.git
   charts: argocd/charts/infra
   app_charts: argocd/charts/app
   envs: argocd/environments
   envs_from_charts: ../../../environments
   revision: master
+
 
 manifests:
   enabled: false
@@ -51,7 +67,121 @@ crds:
   finalizers: {}
   syncPolicy: {}
 
-chart_apps: {}
+chart_apps:
+  postgres:
+    enabled: false
+    values: |
+      postgres-operator:
+        configAwsOrGcp:
+          wal_gs_bucket: "{{ .Values.company.gcp.bucket.prefix }}-postgres-{{ .Values.env.short_name }}"
+        configLogicalBackup:
+          logical_backup_s3_bucket: "{{ .Values.company.gcp.bucket.prefix }}-postgres-backup-{{ .Values.env.short_name }}"
+  grafana:
+    enabled: false
+    parameters:
+    - name: "global.domain.env"
+      value: "{{ .Values.company.domain.env }}"
+    - name: "global.domain.root"
+      value: "{{ .Values.company.domain.root }}"
+  konghq:
+    enabled: false
+    values: |
+      kong:
+        proxy:
+          annotations:
+            external-dns.alpha.kubernetes.io/hostname: "*.{{ .Values.company.domain.env }}."
+  cert-manager:
+    enabled: false
+    parameters:
+    - name: "global.domain.env"
+      value: "{{ .Values.company.domain.env }}"
+    - name: "global.domain.root"
+      value: "{{ .Values.company.domain.root }}"
+  argocd:
+    enabled: false
+    parameters:
+    - name: "argo-cd.server.ingress.hostname"
+      value: "argocd.{{ .Values.company.domain.env }}"
+    values: |
+      argo-cd:
+        controller:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: argocd@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+        server:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: argocd@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+  prometheus:
+    enabled: false
+    parameters:
+    - name: "global.domain.env"
+      value: "{{ .Values.company.domain.env }}"
+    - name: "global.domain.root"
+      value: "{{ .Values.company.domain.root }}"
+    - name: "global.envs.int.natgw"
+      value: "{{ .Values.company.network.int_nat_gw }}"
+    values: |
+      prometheus-main:
+        serviceAccount:
+          annotations:
+            {{- if .Values.company.gcp.enabled }}
+            iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+            {{- end }}
+
+  thanos:
+    enabled: false
+    parameters:
+    - name: "prd.query.stores[0]"
+      value: "thanos.prd.{{ .Values.company.domain.root }}:443"
+    - name: "dev.query.stores[0]"
+      value: "thanos.dev.{{ .Values.company.domain.root }}:443"
+    values: |
+      prd:
+        compactor:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+        storegateway:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+      dev:
+        compactor:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+        storegateway:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+      int:
+        compactor:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+        storegateway:
+          serviceAccount:
+            annotations:
+              {{- if .Values.company.gcp.enabled }}
+              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
+              {{- end }}
+
+
 #  argocd:
 #    enabled: false
 #    chart: argocd/charts/argocd
