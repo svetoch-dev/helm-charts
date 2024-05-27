@@ -41,18 +41,18 @@ servicemonitor:
   prometheusSelector: {}
   labels: {}
   targetLabels: []
-  endpoints:
-    - port: http
-      path: /metrics
+  #endpoints:
+  #  - port: http
+  #    path: /metrics
 
 thanosSericeMonitor:
   enabled: false
   prometheusSelector: {}
   labels: {}
   targetLabels: []
-  endpoints:
-    - port: http
-      path: /metrics
+  #endpoints:
+  #  - port: http
+  #    path: /metrics
 
 thanosIngress:
   enabled: false
@@ -112,9 +112,9 @@ prometheus:
 
     paused: false
 
-    image: "quay.io/prometheus/prometheus:v2.50.1"
+    image: "quay.io/prometheus/prometheus:v2.52.0"
 
-    version: "v2.50.1"
+    version: "v2.52.0"
 
     imagePullPolicy: IfNotPresent
 
