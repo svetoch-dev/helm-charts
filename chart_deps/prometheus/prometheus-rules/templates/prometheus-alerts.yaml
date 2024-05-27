@@ -42,11 +42,11 @@ spec:
       interval: {{ .CriticalMetric.interval }}
       {{- end }}
       rules:
-        {{- range $key, $val := .CriticalMetric.rules }}
+        {{- range $key, $critMetricRule := .CriticalMetric.rules }}
         - alert: {{ $key }}
           expr: |
-            {{- $val.expr | nindent 12}}
-          for: {{ $val.for }}
+            {{- $critMetricRule.expr | nindent 12}}
+          for: {{ $critMetricRule.for }}
           labels:
             env: {{ $alert.env }}
             severity: critical
@@ -54,9 +54,9 @@ spec:
             namespace: {{ $namespace }}
           annotations:
             summary: |
-              {{- $val.summary | default $key | nindent 14  }}
+              {{- $critMetricRule.summary | default $key | nindent 14  }}
             description: |
-              {{- $val.description | nindent 14 }}
+              {{- $critMetricRule.description | nindent 14 }}
   {{- end }}
   {{- end }}
   {{- if .WarningMetric }}
@@ -65,11 +65,11 @@ spec:
       interval: {{ .WarningMetric.interval }}
       {{- end }}
       rules:
-        {{- range $key, $val := .WarningMetric.rules }}
+        {{- range $key, $warnMetricRule := .WarningMetric.rules }}
         - alert: {{ $key }}
           expr: |
-            {{- $val.expr | nindent 12}}
-          for: {{ $val.for }}
+            {{- $warnMetricRule.expr | nindent 12}}
+          for: {{ $warnMetricRule.for }}
           labels:
             env: {{ $alert.env }}
             severity: medium
@@ -77,9 +77,9 @@ spec:
             namespace: {{ $namespace }}
           annotations:
             summary: |
-              {{- $val.summary | default $key | nindent 14  }}
+              {{- $warnMetricRule.summary | default $key | nindent 14  }}
             description: |
-              {{- $val.description | nindent 14 }}
+              {{- $warnMetricRule.description | nindent 14 }}
   {{- end }}
   {{- end }}
 {{- end }}
