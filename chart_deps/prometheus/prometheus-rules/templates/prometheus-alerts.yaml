@@ -43,6 +43,7 @@ spec:
       {{- end }}
       rules:
         {{- range $critMetricRuleName, $critMetricRule := .CriticalMetric.rules }}
+        {{- if not $critMetricRule.disabled}}
         - alert: {{ $critMetricRuleName }}
           expr: |
             {{- $critMetricRule.expr | nindent 12}}
@@ -57,6 +58,7 @@ spec:
               {{- $critMetricRule.summary | default $critMetricRuleName | nindent 14  }}
             description: |
               {{- $critMetricRule.description | nindent 14 }}
+        {{- end }}
   {{- end }}
   {{- end }}
   {{- if .WarningMetric }}
@@ -66,6 +68,7 @@ spec:
       {{- end }}
       rules:
         {{- range $warnMetricRuleName, $warnMetricRule := .WarningMetric.rules }}
+        {{- if not $warnMetricRule.disabled}}
         - alert: {{ $warnMetricRuleName }}
           expr: |
             {{- $warnMetricRule.expr | nindent 12}}
@@ -80,6 +83,7 @@ spec:
               {{- $warnMetricRule.summary | default $warnMetricRuleName | nindent 14  }}
             description: |
               {{- $warnMetricRule.description | nindent 14 }}
+        {{- end }}
   {{- end }}
   {{- end }}
 {{- end }}
