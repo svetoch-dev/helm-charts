@@ -1,7 +1,18 @@
 labels: {}
 
+company:
+  name: #example
+  gcp:
+    enabled: false
+    bucket:
+      prefix:
+  domain:
+    root: #example.com
+  network:
+    int_nat_gw:
+
 repository:
-  url: YOUR_INFRA_REPO_URL
+  url: #git@github.com:ggramal/infrared.git
   revision: master
   env_chart: argocd/charts/infra/environment
   envs_chart: argocd/charts/infra/environments
