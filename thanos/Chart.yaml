@@ -33,6 +33,6 @@ dependencies:
   #https://github.com/bitnami/charts/tree/20ea1e44daf4da3438fbac5f867030d09868315b/bitnami/thanos
   - name: thanos
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 13.2.2
+    version: 14.0.2
     alias: dev
     condition: dev.enabled
