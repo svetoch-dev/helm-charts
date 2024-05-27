@@ -21,13 +21,13 @@ dependencies:
   #https://github.com/bitnami/charts/tree/4440601576022526f79ff6a465fb49b7466d6d3d/bitnami/thanos
   - name: thanos
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 14.0.2
+    version: 15.5.0
     alias: int
     condition: int.enabled
   #https://github.com/bitnami/charts/tree/4440601576022526f79ff6a465fb49b7466d6d3d/bitnami/thanos
   - name: thanos
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 14.0.2
+    version: 15.5.0
     alias: prd
     condition: prd.enabled
   #https://github.com/bitnami/charts/tree/20ea1e44daf4da3438fbac5f867030d09868315b/bitnami/thanos
