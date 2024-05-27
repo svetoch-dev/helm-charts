@@ -1,3 +1,9 @@
+global:
+  #Used to render company specific templates
+  domain:
+    root: #example.com
+    env: #prd.example.com int.exmple.com dev.example.com etc
+
 grafana-operator:
   enabled: false
   env:

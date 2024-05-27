@@ -5,6 +5,15 @@ global:
     pspAnnotations: {}
 
   imagePullSecrets: []
+  #Used to render company specific templates
+  domain:
+    root: #example.com
+    env: #prd.example.com int.exmple.com dev.example.com etc
+
+  envs:
+    int:
+      natgw:
+
 
 alertmanager-configs:
   enabled: false
