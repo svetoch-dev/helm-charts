@@ -8,7 +8,7 @@ PrometheusAlerts: {}
 #          source: "chicken exporter"
 #      CriticalMetric:
 #        # Deployment
-#        - name: "chickens_are_not_ok"
+#        chickens_are_not_ok:
 #          for: "20m"
 #          description: "More than 10 percent chickens are not ok"
 #          expr: "name:chicken_not_ok:percent > 10"

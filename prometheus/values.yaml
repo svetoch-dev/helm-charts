@@ -22,6 +22,50 @@ alertmanager-configs:
       enabled: true
       selector:
         alertmanager: main
+      spec:
+        inhibitRules:
+          - sourceMatch:
+              - name: severity
+                value: "critical"
+            targetMatch:
+              - name: severity
+                value: "medium"
+            equal: ['alertname', 'persistentvolumeclaim']
+          - sourceMatch:
+              - name: alertname
+                value: "OOM_killed_pods"
+            targetMatch:
+              - name: alertname
+                value: "OOM_killed_pods_(on_node)"
+            equal: ['node']
+          - sourceMatch:
+              - name: alertname
+                value: "OOM_killed_pods"
+            targetMatch:
+              - name: alertname
+                value: "High_memory_usage"
+            equal: ['container', 'pod']
+          - sourceMatch:
+              - name: alertname
+                value: "Pod_replicas_not_ready"
+            targetMatch:
+              - name: alertname
+                value: "Pods_waiting_state"
+            equal: ['container']
+          - sourceMatch:
+              - name: alertname
+                value: "Pods_waiting_state"
+            targetMatch:
+              - name: alertname
+                value: "Container_too_many_restarts"
+            equal: ['container']
+          - sourceMatch:
+              - name: alertname
+                value: "Pod_replicas_not_ready"
+            targetMatch:
+              - name: alertname
+                value: "Container_too_many_restarts"
+            equal: ['container']
 
 prometheus-node-exporter:
   enabled: false
@@ -56,7 +100,7 @@ kube-state-metrics:
     repository: bitnami/kube-state-metrics
 
   extraArgs:
-    metric-labels-allowlist: "pods=[*]"
+    metric-labels-allowlist: "pods=[*],deployments=[*]"
 
   kubeResources:
     certificatesigningrequests: false
@@ -93,14 +137,12 @@ kube-state-metrics:
     metricRelabelings:
       # ADD COMMON pod and LABEL TO ALL METRICS
       # values based on orgiginal exported_pod label (container also)
-      - sourceLabels:
-          - "exported_pod"
+      - sourceLabels: ["exported_pod"]
         targetLabel: "pod"
-      - sourceLabels:
-          - "exported_container"
+      - sourceLabels: ["exported_container", "label_app_kubernetes_io_name"]
+        separator: ""
         targetLabel: "container"
-      - sourceLabels:
-          - "exported_namespace"
+      - sourceLabels: ["exported_namespace"]
         targetLabel: "namespace"
 
     namespace: prometheus
@@ -158,10 +200,8 @@ operator:
       enabled: true
       namespace: prometheus
 
-
 prometheus-blackbox-exporter:
   enabled: false
-
   config:
     modules:
       http_2xx:
@@ -182,11 +222,10 @@ probes:
 
 kong-plugins:
   enabled: false
-  plugins: {}
+  plugins: []
 
 prometheus-main:
   enabled: true
-
   service:
     enabled: true
 
@@ -215,8 +254,8 @@ prometheus-main:
     spec:
       enableAdminAPI: true
       thanos:
-        image: quay.io/thanos/thanos:v0.34.1
-        version: v0.34.1
+        image: quay.io/thanos/thanos:v0.35.0
+        version: v0.35.0
         objectStorageConfig:
           key: objstore.yml
           name: thanos
@@ -245,7 +284,6 @@ prometheus-main:
             namespace: prometheus
             port: http
 
-
 alertmanager-main:
   enabled: false
 
@@ -259,7 +297,7 @@ alertmanager-main:
       receiver: 'null'
       group_by: [env, alertname]
       group_wait: 30s
-      group_interval: 5m
+      group_interval: 10m
       repeat_interval: 3h
     receivers:
       - name: 'null'
@@ -285,5 +323,83 @@ prometheus-postgres-exporter:
 
 prometheus-rules:
   enabled: false
-  #PrometheusRules: {}
-  #PrometheusAlerts: {}
+  PrometheusRules: {}
+  PrometheusAlerts:
+    prometheus-main:
+      team: sre
+      selector:
+        prometheus: main
+      CriticalMetric:
+        interval: "31s"
+        rules:
+          # pvc
+          PVC_low_capacity:
+            for: "15m"
+            description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity < 5%"
+            expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes*100) < 5
+          # Postgres
+          Available_postgresql_connections_are_running_out:
+            for: "15m"
+            description: "There are {{ $value }} available postgres (pod {{ $labels.pod }}) connections left, located in namespace {{ $labels.namespace }}"
+            expr: (sum by (pod, namespace) (pg_stat_activity_count) / sum by (pod, namespace) (pg_settings_max_connections) > 0.90) or (sum by (pod, namespace) (pg_settings_max_connections) - sum by (pod, namespace) (pg_stat_activity_count) < 20)
+          # Resources
+          OOM_killed_pods:
+            for: "0m"
+            description: "Container {{ $labels.exported_container }} in pod {{ $labels.exported_pod }} located in namespace {{ $labels.exported_namespace }} (node {{ $labels.node }}) was killed by OOM killer"
+            expr: ((increase(kube_pod_container_status_restarts_total[10m]) > 0) and ignoring (reason) kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}) * on (exported_pod) group_left (node) kube_pod_info > 0
+          # Deployment
+          Pods_waiting_state:
+            for: "20m"
+            description: "Container {{ $labels.container }} in {{ $labels.pod }} waiting with reason {{ $labels.reason }} for >20 minutes"
+            expr: sum by (pod, container, namespace, reason) (kube_pod_container_status_waiting_reason{exported_namespace!="kube-system", reason!="OOMKilled"})>0
+          Pods_waiting_state_kube-system:
+            for: "1h"
+            description: "Container {{ $labels.container }} in {{ $labels.pod }} waiting with reason {{ $labels.reason }} for >1h"
+            expr: sum by (pod, container, namespace, reason) (kube_pod_container_status_waiting_reason{exported_namespace="kube-system", reason!="OOMKilled"})>0
+          Pod_replicas_not_ready:
+            for: "15m"
+            description: "Pods replicas less than specified for '{{ $labels.deployment }}' for > 15m"
+            expr: (kube_deployment_spec_replicas * on (deployment) group_left (container) kube_deployment_labels) != (kube_deployment_status_replicas_available * on (deployment) group_left (container) kube_deployment_labels)
+          Daemonset_not_ready:
+            for: "15m"
+            description: "daemonset '{{ $labels.daemonset }}' not scheduled in 15m"
+            expr: kube_daemonset_status_number_misscheduled > 1
+          RabbitMQ_High_memory(watermark)_usage:
+            for: "20m"
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of 'Memory high watermark' limit for > 20m"
+            expr: sum by (container,pod,namespace) (container_memory_working_set_bytes{container="rabbitmq"}) / on(container,pod,namespace) rabbitmq_detailed_resident_memory_limit_bytes > 0.9
+      WarningMetric:
+        interval: "31s"
+        rules:
+          # postgres
+          Postgres_logical_backup_error:
+            for: "2h"
+            description: "Cronjob {{ $labels.cronjob }} failed"
+            expr: ((kube_cronjob_next_schedule_time - on(cronjob, exported_namespace) kube_cronjob_status_last_successful_time)/3600) > 25
+          # PVC
+          PVC_low_capacity:
+            for: "1h"
+            description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity < 10%"
+            expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes*100) < 10
+          # Resources
+          High_postgres_container_cpu_throttling:
+            for: "1h"
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} throttled for >1h with throttle of {{ humanizeDuration $value }}"
+            expr: rate(container_cpu_cfs_throttled_seconds_total{container="postgres"}[5m]) > 0.1
+          High_cpu_throttling:
+            for: "1h"
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} throttled for >1h with throttle of {{ humanizeDuration $value }}"
+            expr: rate(container_cpu_cfs_throttled_seconds_total{container!~"postgres"}[5m]) > 0.2
+          High_memory_usage:
+            for: "30m"
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of Memory limit for > 30m"
+            expr: sum by (container, pod, namespace) (container_memory_working_set_bytes{namespace!="kube-system"}) / on (container, pod, namespace) kube_pod_container_resource_limits{unit="byte"} > 0.9
+          OOM_killed_pods_(on_node):
+            for: "1m"
+            description: "Some container located on node {{ $labels.node }} was killed by OOM killer"
+            expr: increase(node_vmstat_oom_kill[10m]) > 0
+          # Deployment
+          Container_too_many_restarts:
+            for: "1m"
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} too many restarts (>10 in 1h)"
+            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[1h]) > 10
