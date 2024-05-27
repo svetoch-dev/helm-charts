@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 # Configur KongPlugins CRD
 
-plugins: {}
+plugins: []
 #- name: zipkin
 #  global: True
 #  object_name: zipkin-global
