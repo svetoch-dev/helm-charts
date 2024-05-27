@@ -29,6 +29,17 @@ spec:
     helm:
       valueFiles:
         - {{ printf "%s/environments/%s/env.yaml" $.Values.repository.root_from_charts $env_name }}
+    {{- with $env_obj.parameters }}
+      parameters:
+    {{- tpl (toYaml .) $ | nindent 8 }}
+    {{- end }}
+    {{- with $env_obj.valuesObject }}
+      valuesObject:
+    {{- tpl (toYaml .) $ | nindent 8 }}
+    {{- end }}
+    {{- if $env_obj.values }}
+      values: {{ tpl (toYaml $env_obj.values) $ | nindent 8 }}
+    {{- end }}
   {{- with $env_obj.syncPolicy }}
   syncPolicy:
   {{- toYaml . | nindent 4 }}
