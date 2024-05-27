@@ -213,7 +213,7 @@ probes:
 
 kong-plugins:
   enabled: false
-  plugins: {}
+  plugins: []
 
 prometheus-main:
   enabled: true
