@@ -1,3 +1,9 @@
+# v3.0.1
+
+Fixes:
+  * `grafana`: fix `User exists` issues with oauth login https://github.com/grafana/grafana/issues/70203#issuecomment-1603895013
+
+
 # v3.0.0
 
 Braking changes:

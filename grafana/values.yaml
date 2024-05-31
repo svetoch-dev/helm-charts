@@ -19,6 +19,10 @@ grafana-main:
       mode: "console"
     auth:
       disable_login_form: "true"
+    auth.generic_oauth:
+      #Fixes issues with user exists for oauth login
+      #https://github.com/grafana/grafana/issues/70203#issuecomment-1603895013
+      oauth_allow_insecure_email_lookup: "true"
     users:
       allow_sign_up: "false"
       allow_org_create: "false"
