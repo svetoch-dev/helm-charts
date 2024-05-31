@@ -19,6 +19,8 @@ grafana-main:
       mode: "console"
     auth:
       disable_login_form: "true"
+    auth.generic_oauth:
+      oauth_allow_insecure_email_lookup: "true"
     users:
       allow_sign_up: "false"
       allow_org_create: "false"
