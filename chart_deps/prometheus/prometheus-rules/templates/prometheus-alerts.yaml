@@ -48,6 +48,9 @@ spec:
           expr: |
             {{- $critMetricRule.expr | nindent 12}}
           for: {{ $critMetricRule.for }}
+          {{- with $critMetricRule.keep_firing_for }}
+          keep_firing_for: {{ . }}
+          {{- end }}
           labels:
             env: {{ $alert.env }}
             severity: critical
@@ -73,6 +76,9 @@ spec:
           expr: |
             {{- $warnMetricRule.expr | nindent 12}}
           for: {{ $warnMetricRule.for }}
+          {{- with $warnMetricRule.keep_firing_for }}
+          keep_firing_for: {{ . }}
+          {{- end }}
           labels:
             env: {{ $alert.env }}
             severity: medium

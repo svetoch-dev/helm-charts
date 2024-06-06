@@ -10,6 +10,7 @@ PrometheusAlerts: {}
 #        # Deployment
 #        chickens_are_not_ok:
 #          for: "20m"
+#          keep_firing_for: "30m"
 #          description: "More than 10 percent chickens are not ok"
 #          expr: "name:chicken_not_ok:percent > 10"
 PrometheusRules: {}
