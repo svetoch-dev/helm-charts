@@ -400,6 +400,7 @@ prometheus-rules:
             expr: increase(node_vmstat_oom_kill[10m]) > 0
           # Deployment
           Container_too_many_restarts:
-            for: "1m"
-            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} too many restarts (>10 in 1h)"
-            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[1h]) > 10
+            for: "10m"
+            keep_firing_for: "12m"
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} too many restarts (>10 for 10m)"
+            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[5m]) > 10

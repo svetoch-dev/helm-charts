@@ -1,8 +1,16 @@
+# v3.0.2
+
+Enhancement:
+  * `prometheus`: 
+    * New attribute `keep_firing_for` is added for alert rules
+    * Change increase period for `Container_too_many_restarts` alert
+  
+
+
 # v3.0.1
 
 Fixes:
   * `grafana`: fix `User exists` issues with oauth login https://github.com/grafana/grafana/issues/70203#issuecomment-1603895013
-
 
 # v3.0.0
 
