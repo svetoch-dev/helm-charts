@@ -6,13 +6,9 @@ global:
 
 grafana-operator:
   enabled: false
-  env:
-    - name: RELATED_IMAGE_GRAFANA
-      value: "docker.io/grafana/grafana:9.5.19"
-    - name: WATCH_NAMESPACE
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.annotations['olm.targetNamespaces']
+  #env:
+  #  - name: RELATED_IMAGE_GRAFANA
+  #    value: "docker.io/grafana/grafana:9.5.19"
 
 grafana-main:
   enabled: false
