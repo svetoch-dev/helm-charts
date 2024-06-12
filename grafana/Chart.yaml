@@ -25,7 +25,7 @@ dependencies:
     condition: grafana-main.enabled
   #https://github.com/grafana/grafana-operator/tree/v5.9.2/deploy/helm/grafana-operator
   - name: grafana-operator
-    version: v5.9.0
+    version: v5.9.2
     alias: grafana-operator
     condition: grafana-operator.enabled
     repository: oci://ghcr.io/grafana/helm-charts
