@@ -43,17 +43,22 @@ spec:
                           items:
                             type: string
                           type: array
+                          x-kubernetes-list-type: atomic
                       required:
                       - key
                       - operator
                       type: object
                     type: array
+                    x-kubernetes-list-type: atomic
                   matchLabels:
                     additionalProperties:
                       type: string
                     type: object
                 type: object
                 x-kubernetes-map-type: atomic
+                x-kubernetes-validations:
+                - message: Value is immutable
+                  rule: self == oldSelf
               name:
                 type: string
               resyncPeriod:
@@ -66,6 +71,7 @@ spec:
               type:
                 enum:
                 - alertmanager
+                - prometheus-alertmanager
                 - dingding
                 - discord
                 - email
@@ -76,6 +82,7 @@ spec:
                 - pagerduty
                 - pushover
                 - sensugo
+                - sensu
                 - slack
                 - teams
                 - telegram
@@ -83,6 +90,8 @@ spec:
                 - victorops
                 - webhook
                 - wecom
+                - hipchat
+                - oncall
                 type: string
             required:
             - instanceSelector

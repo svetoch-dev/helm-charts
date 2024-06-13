@@ -1,16 +1,31 @@
+# 3.1.0
+
+New features:
+  * `Grafana-operator` update to `v5.9.2`
+  * `Grafana crds` update to `v5.9.2`
+  * `Grafana` update to `v10.4.3`
+
+Fixes:
+  * `grafana`: 
+    * fix `found duplicate series for the match group`  on `PG master role` dashboard
+    * fix `multiple matches for labels: many-to-one matching must be explicit` on `Mem usage per node` dashboard
+    * fix not displayed memory limit on `Mem usage per node` dashboard for some pods
+    * perhaps fix `multiple matches for labels: many-to-one matching must be explicit` on `CPU usage per node` dashboard
+
+
 # v3.0.2
 
 Enhancement:
   * `prometheus`: 
     * New attribute `keep_firing_for` is added for alert rules
     * Change increase period for `Container_too_many_restarts` alert
-  
 
 
 # v3.0.1
 
 Fixes:
   * `grafana`: fix `User exists` issues with oauth login https://github.com/grafana/grafana/issues/70203#issuecomment-1603895013
+
 
 # v3.0.0
 
