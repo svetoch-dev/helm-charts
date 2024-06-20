@@ -4,15 +4,20 @@ PrometheusAlerts: {}
 #      selector:
 #        prometheus: chicken-coop-1
 #      AbsentMetricCritical:
-#        - metric: "chicken_not_ok"
-#          source: "chicken exporter"
+#        disabled: true
+#        rules:
+#          chicken_not_ok:
+#            disabled: true
+#            source: "chicken exporter"
 #      CriticalMetric:
-#        # Deployment
-#        chickens_are_not_ok:
-#          for: "20m"
-#          keep_firing_for: "30m"
-#          description: "More than 10 percent chickens are not ok"
-#          expr: "name:chicken_not_ok:percent > 10"
+#        rules:
+#          # Deployment
+#          chickens_are_not_ok:
+#            disabled: true
+#            for: "20m"
+#            keep_firing_for: "30m"
+#            description: "More than 10 percent chickens are not ok"
+#            expr: "name:chicken_not_ok:percent > 10"
 PrometheusRules: {}
 #  - name: chicken
 #    namespace: default

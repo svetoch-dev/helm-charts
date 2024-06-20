@@ -1,4 +1,7 @@
-# 3.1.1
+# 4.0.0
+
+Braking changes:
+  * `chart_deps/prometheus/prometheus-rules`: Chart attribute `PrometheusAlerts.prometheus-main.AbsentMetricCritical` type changed from list to dict
 
 New features:
  * `Prometheus` new alerts:
@@ -38,7 +41,7 @@ Fixes:
 # v3.0.0
 
 Braking changes:
-  * `chart_deps/prometheus/prometheus-rules`: Chart attribute `PrometheusAlerts.CriticalMetric` and `PrometheusAlerts.WarningMetric` type changed from list to dict
+  * `chart_deps/prometheus/prometheus-rules`: Chart attribute `PrometheusAlerts.prometheus-main.CriticalMetric` and `PrometheusAlerts.prometheus-main.WarningMetric` type changed from list to dict
 
 New features:
   * `environment,environments`: now support company related attributes and set company related fields

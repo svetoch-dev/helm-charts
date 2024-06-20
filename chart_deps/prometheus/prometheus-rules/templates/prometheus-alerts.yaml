@@ -12,16 +12,17 @@ metadata:
 {{- $tm := "30m" }}
 spec:
   groups:
-  {{- if .AbsentMetricCritical }}
+  {{- if not .AbsentMetricCritical.disabled }}
     - name: "AbsentMetricCritical"
       {{- if .AbsentMetricCritical.interval }}
       interval: {{ .AbsentMetricCritical.interval }}
       {{- end }}
       rules:
-  {{- range .AbsentMetricCritical.rules }}
-  {{- $parts := split "{" .metric }}
+        {{- range $absentMetricRuleName, $absentMetricRule := .AbsentMetricCritical.rules }}
+        {{- if not $absentMetricRule.disabled}}
+        {{- $parts := split "{" $absentMetricRuleName }}
         - alert: absent_{{$parts._0}}
-          expr: absent({{.metric}})
+          expr: absent({{$absentMetricRuleName}})
           for: {{$tm}}
           labels:
             env: {{ $alert.env }}
@@ -30,11 +31,12 @@ spec:
             team: {{ $alert.team }}
           annotations:
             summary: |
-              Critical metrics is Absent {{ $name }} {{ .metric }}
+              Critical metrics is Absent {{ $name }} {{ $absentMetricRuleName }}
             description: |
-              There are no metric {{.metric}} from {{.source}} in {{ $name }}.
-              Check the source {{.source}} instance and scrape process
-  {{- end }}
+              There are no metric {{$absentMetricRuleName}} from {{$absentMetricRule.source}} in {{ $name }}.
+              Check the source {{$absentMetricRule.source}} instance and scrape process
+        {{- end }}
+        {{- end }}
   {{- end }}
   {{- if .CriticalMetric }}
     - name: CriticalMetric
@@ -62,7 +64,7 @@ spec:
             description: |
               {{- $critMetricRule.description | nindent 14 }}
         {{- end }}
-  {{- end }}
+        {{- end }}
   {{- end }}
   {{- if .WarningMetric }}
     - name: WarningMetric
@@ -90,6 +92,6 @@ spec:
             description: |
               {{- $warnMetricRule.description | nindent 14 }}
         {{- end }}
-  {{- end }}
+        {{- end }}
   {{- end }}
 {{- end }}

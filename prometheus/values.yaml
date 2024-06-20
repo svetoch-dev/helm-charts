@@ -329,6 +329,8 @@ prometheus-rules:
       team: sre
       selector:
         prometheus: main
+      AbsentMetricCritical:
+        disabled: true
       CriticalMetric:
         interval: "31s"
         rules:
