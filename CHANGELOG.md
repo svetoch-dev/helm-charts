@@ -4,9 +4,12 @@ Braking changes:
   * `chart_deps/prometheus/prometheus-rules`: Chart attribute `PrometheusAlerts.prometheus-main.AbsentMetricCritical` type changed from list to dict
 
 New features:
- * `Prometheus` new alerts:
-   * `Statefulset_not_ready`
-   * `DB_transactions_per_seconds_below_norm`
+  * `Prometheus`:
+    * new common alert `Statefulset_not_ready`
+    * new common alert `DB_transactions_per_seconds_below_norm`
+    * new common alert `ErrorRateIncreasedFor_5XX`
+    * new common alert `api`
+    * new common `AbsentMetricCritical` alerts
 
 
 # 3.1.0

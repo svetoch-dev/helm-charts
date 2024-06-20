@@ -331,7 +331,7 @@ prometheus-rules:
         prometheus: main
       AbsentMetricCritical:
         rules:
-          probe_success{job="api"}:
+          probe_success:
             source: "prometheus-blackbox-exporter"
           kong_http_requests_total:
             source: "kong exporter"
@@ -345,7 +345,7 @@ prometheus-rules:
             description: "KongHQ error rate is high for {{ $labels.exported_service }} service"
           # Blackbox
           api:
-            expr: probe_success{job="api"} == 0
+            expr: probe_success == 0
             for: 2m
             description: URL {{$labels.instance}} is down/unreachable.
             summary: "{{$labels.instance}} is down"
