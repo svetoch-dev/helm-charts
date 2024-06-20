@@ -335,6 +335,8 @@ prometheus-rules:
             source: "prometheus-blackbox-exporter"
           kong_http_requests_total:
             source: "kong exporter"
+          pg_stat_database_xact_commit{datname!~"^(postgres|template[0-9]*|default|cloudsqladmin|unknown)$"}:
+            source: "prometheus-portgres-exporter"
       CriticalMetric:
         interval: "31s"
         rules:
