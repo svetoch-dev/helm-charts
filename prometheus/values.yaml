@@ -341,14 +341,14 @@ prometheus-rules:
           #Kong (nginx)
           ErrorRateIncreasedFor_5XX:
             expr: sum by (exported_service) (rate(kong_http_requests_total{code=~"5.."}[10m])) / sum by (exported_service) (rate(kong_http_requests_total[10m])) > 0.1
-            for: 10m
+            for: "10m"
             description: "KongHQ error rate is high for {{ $labels.exported_service }} service"
           # Blackbox
           api:
             expr: probe_success == 0
-            for: 2m
-            description: URL {{$labels.instance}} is down/unreachable.
-            summary: "{{$labels.instance}} is down"
+            for: "2m"
+            description: "URL {{ $labels.instance }} is down/unreachable"
+            summary: "{{ $labels.instance }} is down"
           # pvc
           PVC_low_capacity:
             for: "15m"
@@ -363,9 +363,9 @@ prometheus-rules:
           # There are some transactions from postgres exporter
           # so we the Transactions per second cant be 0 and we need to
           # check against a small average number like 0.3
-          expr: sum by (datname, label_app_kubernetes_io_instance) (rate(pg_stat_database_xact_commit{datname!~"^(postgres|template[0-9]*|default|cloudsqladmin|unknown)$"}[5m])) < 0.5
-          for: 2m
-          description: "Transactions per second for database {{ $labels.datname }} in {{ $labels.label_app_kubernetes_io_instance }} service is below norm"
+            expr: sum by (datname, label_app_kubernetes_io_instance) (rate(pg_stat_database_xact_commit{datname!~"^(postgres|template[0-9]*|default|cloudsqladmin|unknown)$"}[5m])) < 0.5
+            for: "2m"
+            description: "Transactions per second for database {{ $labels.datname }} in {{ $labels.label_app_kubernetes_io_instance }} service is below norm"
           # Resources
           OOM_killed_pods:
             for: "0m"
