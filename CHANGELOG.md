@@ -1,3 +1,10 @@
+# 3.1.1
+
+New features:
+ * `Prometheus`:
+   * New alert `Statefulset_not_ready`
+
+
 # 3.1.0
 
 New features:

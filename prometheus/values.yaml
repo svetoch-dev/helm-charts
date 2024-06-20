@@ -364,6 +364,10 @@ prometheus-rules:
             for: "15m"
             description: "daemonset '{{ $labels.daemonset }}' not scheduled in 15m"
             expr: kube_daemonset_status_number_misscheduled > 1
+          Statefulset_not_ready:
+            for: "15m"
+            description: "StatefulSet {{ $labels.statefulset }} in namespace {{ $labels.namespace }} has not matched the expected number of replicas for >15 minutes"
+            expr: kube_statefulset_status_replicas_ready != kube_statefulset_status_replicas
           RabbitMQ_High_memory(watermark)_usage:
             for: "20m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of 'Memory high watermark' limit for > 20m"
