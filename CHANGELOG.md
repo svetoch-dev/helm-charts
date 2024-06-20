@@ -1,8 +1,9 @@
 # 3.1.1
 
 New features:
- * `Prometheus`:
-   * New alert `Statefulset_not_ready`
+ * `Prometheus` new alerts:
+   * `Statefulset_not_ready`
+   * `DB_transactions_per_seconds_below_norm`
 
 
 # 3.1.0
