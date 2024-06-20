@@ -330,10 +330,25 @@ prometheus-rules:
       selector:
         prometheus: main
       AbsentMetricCritical:
-        disabled: true
+        rules:
+          probe_success{job="api"}:
+            source: "prometheus-blackbox-exporter"
+          kong_http_requests_total:
+            source: "kong exporter"
       CriticalMetric:
         interval: "31s"
         rules:
+          #Kong (nginx)
+          ErrorRateIncreasedFor_5XX:
+            expr: sum by (exported_service) (rate(kong_http_requests_total{code=~"5.."}[10m])) / sum by (exported_service) (rate(kong_http_requests_total[10m])) > 0.1
+            for: 10m
+            description: "KongHQ error rate is high for {{ $labels.exported_service }} service"
+          # Blackbox
+          api:
+            expr: probe_success{job="api"} == 0
+            for: 2m
+            description: URL {{$labels.instance}} is down/unreachable.
+            summary: "{{$labels.instance}} is down"
           # pvc
           PVC_low_capacity:
             for: "15m"
