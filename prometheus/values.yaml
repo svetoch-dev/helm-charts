@@ -322,7 +322,7 @@ prometheus-postgres-exporter:
   enabled: false
 
 prometheus-rules:
-  enabled: false
+  enabled: true
   PrometheusRules: {}
   PrometheusAlerts:
     prometheus-main:
