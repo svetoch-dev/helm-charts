@@ -10,7 +10,7 @@ New features:
     * new common alert `ErrorRateIncreasedFor_5XX`
     * new common alert `api`
     * new common `AbsentMetricCritical` alerts
-    * Critical/Warning group of alerts can be disabled using the option .disabled: true
+    * Critical/Warning group of alerts can be disabled using the option .enabled: false
     * subcharts update
       * `prometheus-node-exporter` to `4.36.0`
       * `kube-prometheus-stack` to `60.2.0`
