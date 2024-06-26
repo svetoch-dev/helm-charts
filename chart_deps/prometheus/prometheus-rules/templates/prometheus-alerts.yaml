@@ -12,14 +12,14 @@ metadata:
 {{- $tm := "30m" }}
 spec:
   groups:
-  {{- if .AbsentMetricCritical.enabled | default true }}
+  {{- if .AbsentMetricCritical.enabled }}
     - name: AbsentMetricCritical
     {{- if .AbsentMetricCritical.interval }}
       interval: {{ .AbsentMetricCritical.interval }}
     {{- end }}
       rules:
       {{- range $absentMetricRuleName, $absentMetricRule := .AbsentMetricCritical.rules }}
-      {{- if $absentMetricRule.enabled | default true }}
+      {{- if $absentMetricRule.enabled }}
       {{- $parts := split "{" $absentMetricRuleName }}
         - alert: absent_{{$parts._0}}
           expr: absent({{$absentMetricRuleName}})
@@ -38,14 +38,14 @@ spec:
       {{- end }}
       {{- end }}
   {{- end -}}
-  {{- if .CriticalMetric.enabled | default true }}
+  {{- if .CriticalMetric.enabled }}
     - name: CriticalMetric
     {{- if .CriticalMetric.interval }}
       interval: {{ .CriticalMetric.interval }}
     {{- end }}
       rules:
       {{- range $critMetricRuleName, $critMetricRule := .CriticalMetric.rules }}
-      {{- if $critMetricRule.enabled | default true }}
+      {{- if $critMetricRule.enabled }}
         - alert: {{ $critMetricRuleName }}
           expr: |
             {{- $critMetricRule.expr | nindent 12 }}
@@ -66,14 +66,14 @@ spec:
       {{- end }}
       {{- end }}
   {{- end }}
-  {{- if .WarningMetric.enabled | default true }}
+  {{- if .WarningMetric.enabled }}
     - name: WarningMetric
     {{- if .WarningMetric.interval }}
       interval: {{ .WarningMetric.interval }}
     {{- end }}
       rules:
         {{- range $warnMetricRuleName, $warnMetricRule := .WarningMetric.rules }}
-        {{- if $warnMetricRule.enabled | default true }}
+        {{- if $warnMetricRule.enabled }}
         - alert: {{ $warnMetricRuleName }}
           expr: |
             {{- $warnMetricRule.expr | nindent 12}}
