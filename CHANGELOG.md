@@ -14,6 +14,7 @@ New features:
     * subcharts update
       * `prometheus-node-exporter` to `4.36.0`
       * `kube-prometheus-stack` to `60.2.0`
+      * `kube-state-metrics` to `4.2.5`
 
 # 3.1.0
 
