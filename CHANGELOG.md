@@ -9,6 +9,7 @@ New features:
     * new common alert `DB_transactions_per_seconds_below_norm`
     * new common alert `ErrorRateIncreasedFor_5XX`
     * new common alert `api`
+    * new commin alert `Postgres_replica_is_down`
     * new common `AbsentMetricCritical` alerts
     * Critical/Warning group of alerts can be disabled using the option .enabled: false
     * subcharts update

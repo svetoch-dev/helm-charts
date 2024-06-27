@@ -365,6 +365,11 @@ prometheus-rules:
             description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity < 5%"
             expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes*100) < 5
           # Postgres
+          Postgres_replica_is_down:
+            enabled: true
+            for: "5m"
+            description: "Postgres replica {{ $labels.label_app_kubernetes_io_instance }} in {{ $labels.namespace }} is down"
+            expr: sum by (label_app_kubernetes_io_instance, namespace) (pg_replication_is_replica) < 1
           Available_postgresql_connections_are_running_out:
             enabled: true
             for: "15m"
