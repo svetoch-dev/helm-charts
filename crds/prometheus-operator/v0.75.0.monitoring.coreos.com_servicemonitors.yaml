@@ -3,26 +3,26 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
-    operator.prometheus.io/version: 0.74.0
-  name: podmonitors.monitoring.coreos.com
+    controller-gen.kubebuilder.io/version: v0.15.0
+    operator.prometheus.io/version: 0.75.0
+  name: servicemonitors.monitoring.coreos.com
 spec:
   group: monitoring.coreos.com
   names:
     categories:
     - prometheus-operator
-    kind: PodMonitor
-    listKind: PodMonitorList
-    plural: podmonitors
+    kind: ServiceMonitor
+    listKind: ServiceMonitorList
+    plural: servicemonitors
     shortNames:
-    - pmon
-    singular: podmonitor
+    - smon
+    singular: servicemonitor
   scope: Namespaced
   versions:
   - name: v1
     schema:
       openAPIV3Schema:
-        description: PodMonitor defines monitoring for a set of pods.
+        description: ServiceMonitor defines monitoring for a set of services.
         properties:
           apiVersion:
             description: |-
@@ -42,8 +42,9 @@ spec:
           metadata:
             type: object
           spec:
-            description: Specification of desired Pod selection for target discovery
-              by Prometheus.
+            description: |-
+              Specification of desired Service selection for target discovery by
+              Prometheus.
             properties:
               attachMetadata:
                 description: |-
@@ -68,75 +69,11 @@ spec:
                   It requires Prometheus >= v2.28.0.
                 pattern: (^0|([0-9]*[.])?[0-9]+((K|M|G|T|E|P)i?)?B)$
                 type: string
-              jobLabel:
-                description: |-
-                  The label to use to retrieve the job name from.
-                  `jobLabel` selects the label from the associated Kubernetes `Pod`
-                  object which will be used as the `job` label for all metrics.
-
-
-                  For example if `jobLabel` is set to `foo` and the Kubernetes `Pod`
-                  object is labeled with `foo: bar`, then Prometheus adds the `job="bar"`
-                  label to all ingested metrics.
-
-
-                  If the value of this field is empty, the `job` label of the metrics
-                  defaults to the namespace and name of the PodMonitor object (e.g. `<namespace>/<name>`).
-                type: string
-              keepDroppedTargets:
-                description: |-
-                  Per-scrape limit on the number of targets dropped by relabeling
-                  that will be kept in memory. 0 means no limit.
-
-
-                  It requires Prometheus >= v2.47.0.
-                format: int64
-                type: integer
-              labelLimit:
-                description: |-
-                  Per-scrape limit on number of labels that will be accepted for a sample.
-
-
-                  It requires Prometheus >= v2.27.0.
-                format: int64
-                type: integer
-              labelNameLengthLimit:
-                description: |-
-                  Per-scrape limit on length of labels name that will be accepted for a sample.
-
-
-                  It requires Prometheus >= v2.27.0.
-                format: int64
-                type: integer
-              labelValueLengthLimit:
-                description: |-
-                  Per-scrape limit on length of labels value that will be accepted for a sample.
-
-
-                  It requires Prometheus >= v2.27.0.
-                format: int64
-                type: integer
-              namespaceSelector:
-                description: |-
-                  Selector to select which namespaces the Kubernetes `Pods` objects
-                  are discovered from.
-                properties:
-                  any:
-                    description: |-
-                      Boolean describing whether all namespaces are selected in contrast to a
-                      list restricting them.
-                    type: boolean
-                  matchNames:
-                    description: List of namespace names to select from.
-                    items:
-                      type: string
-                    type: array
-                type: object
-              podMetricsEndpoints:
-                description: List of endpoints part of this PodMonitor.
+              endpoints:
+                description: List of endpoints part of this ServiceMonitor.
                 items:
                   description: |-
-                    PodMetricsEndpoint defines an endpoint serving Prometheus metrics to be scraped by
+                    Endpoint defines an endpoint serving Prometheus metrics to be scraped by
                     Prometheus.
                   properties:
                     authorization:
@@ -156,10 +93,15 @@ spec:
                                 be a valid secret key.
                               type: string
                             name:
+                              default: ""
                               description: |-
                                 Name of the referent.
-                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                This field is effectively required, but due to backwards compatibility is
+                                allowed to be empty. Instances of this type with an empty value here are
+                                almost certainly wrong.
                                 TODO: Add other useful fields. apiVersion, kind, uid?
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                               type: string
                             optional:
                               description: Specify whether the Secret or its key must
@@ -198,10 +140,15 @@ spec:
                                 be a valid secret key.
                               type: string
                             name:
+                              default: ""
                               description: |-
                                 Name of the referent.
-                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                This field is effectively required, but due to backwards compatibility is
+                                allowed to be empty. Instances of this type with an empty value here are
+                                almost certainly wrong.
                                 TODO: Add other useful fields. apiVersion, kind, uid?
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                               type: string
                             optional:
                               description: Specify whether the Secret or its key must
@@ -221,10 +168,15 @@ spec:
                                 be a valid secret key.
                               type: string
                             name:
+                              default: ""
                               description: |-
                                 Name of the referent.
-                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                This field is effectively required, but due to backwards compatibility is
+                                allowed to be empty. Instances of this type with an empty value here are
+                                almost certainly wrong.
                                 TODO: Add other useful fields. apiVersion, kind, uid?
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                               type: string
                             optional:
                               description: Specify whether the Secret or its key must
@@ -235,11 +187,18 @@ spec:
                           type: object
                           x-kubernetes-map-type: atomic
                       type: object
+                    bearerTokenFile:
+                      description: |-
+                        File to read bearer token for scraping the target.
+
+
+                        Deprecated: use `authorization` instead.
+                      type: string
                     bearerTokenSecret:
                       description: |-
                         `bearerTokenSecret` specifies a key of a Secret containing the bearer
                         token for scraping targets. The secret needs to be in the same namespace
-                        as the PodMonitor object and readable by the Prometheus Operator.
+                        as the ServiceMonitor object and readable by the Prometheus Operator.
 
 
                         Deprecated: use `authorization` instead.
@@ -249,10 +208,15 @@ spec:
                             be a valid secret key.
                           type: string
                         name:
+                          default: ""
                           description: |-
                             Name of the referent.
-                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            This field is effectively required, but due to backwards compatibility is
+                            allowed to be empty. Instances of this type with an empty value here are
+                            almost certainly wrong.
                             TODO: Add other useful fields. apiVersion, kind, uid?
+                            More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                            TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                           type: string
                         optional:
                           description: Specify whether the Secret or its key must
@@ -419,10 +383,15 @@ spec:
                                   description: The key to select.
                                   type: string
                                 name:
+                                  default: ""
                                   description: |-
                                     Name of the referent.
-                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    This field is effectively required, but due to backwards compatibility is
+                                    allowed to be empty. Instances of this type with an empty value here are
+                                    almost certainly wrong.
                                     TODO: Add other useful fields. apiVersion, kind, uid?
+                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                                   type: string
                                 optional:
                                   description: Specify whether the ConfigMap or its
@@ -440,10 +409,15 @@ spec:
                                     be a valid secret key.
                                   type: string
                                 name:
+                                  default: ""
                                   description: |-
                                     Name of the referent.
-                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    This field is effectively required, but due to backwards compatibility is
+                                    allowed to be empty. Instances of this type with an empty value here are
+                                    almost certainly wrong.
                                     TODO: Add other useful fields. apiVersion, kind, uid?
+                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                                   type: string
                                 optional:
                                   description: Specify whether the Secret or its key
@@ -464,10 +438,15 @@ spec:
                                 be a valid secret key.
                               type: string
                             name:
+                              default: ""
                               description: |-
                                 Name of the referent.
-                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                This field is effectively required, but due to backwards compatibility is
+                                allowed to be empty. Instances of this type with an empty value here are
+                                almost certainly wrong.
                                 TODO: Add other useful fields. apiVersion, kind, uid?
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                               type: string
                             optional:
                               description: Specify whether the Secret or its key must
@@ -505,7 +484,7 @@ spec:
                         items:
                           type: string
                         type: array
-                      description: '`params` define optional HTTP URL parameters.'
+                      description: params define optional HTTP URL parameters.
                       type: object
                     path:
                       description: |-
@@ -516,7 +495,7 @@ spec:
                       type: string
                     port:
                       description: |-
-                        Name of the Pod port which this endpoint refers to.
+                        Name of the Service port which this endpoint refers to.
 
 
                         It takes precedence over `targetPort`.
@@ -659,11 +638,8 @@ spec:
                       - type: integer
                       - type: string
                       description: |-
-                        Name or number of the target port of the `Pod` object behind the Service, the
-                        port must be specified with container port property.
-
-
-                        Deprecated: use 'port' instead.
+                        Name or number of the target port of the `Pod` object behind the
+                        Service. The port must be specified with the container's port property.
                       x-kubernetes-int-or-string: true
                     tlsConfig:
                       description: TLS configuration to use when scraping the target.
@@ -680,10 +656,15 @@ spec:
                                   description: The key to select.
                                   type: string
                                 name:
+                                  default: ""
                                   description: |-
                                     Name of the referent.
-                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    This field is effectively required, but due to backwards compatibility is
+                                    allowed to be empty. Instances of this type with an empty value here are
+                                    almost certainly wrong.
                                     TODO: Add other useful fields. apiVersion, kind, uid?
+                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                                   type: string
                                 optional:
                                   description: Specify whether the ConfigMap or its
@@ -701,10 +682,15 @@ spec:
                                     be a valid secret key.
                                   type: string
                                 name:
+                                  default: ""
                                   description: |-
                                     Name of the referent.
-                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    This field is effectively required, but due to backwards compatibility is
+                                    allowed to be empty. Instances of this type with an empty value here are
+                                    almost certainly wrong.
                                     TODO: Add other useful fields. apiVersion, kind, uid?
+                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                                   type: string
                                 optional:
                                   description: Specify whether the Secret or its key
@@ -715,6 +701,10 @@ spec:
                               type: object
                               x-kubernetes-map-type: atomic
                           type: object
+                        caFile:
+                          description: Path to the CA cert in the Prometheus container
+                            to use for the targets.
+                          type: string
                         cert:
                           description: Client certificate to present when doing client-authentication.
                           properties:
@@ -726,10 +716,15 @@ spec:
                                   description: The key to select.
                                   type: string
                                 name:
+                                  default: ""
                                   description: |-
                                     Name of the referent.
-                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    This field is effectively required, but due to backwards compatibility is
+                                    allowed to be empty. Instances of this type with an empty value here are
+                                    almost certainly wrong.
                                     TODO: Add other useful fields. apiVersion, kind, uid?
+                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                                   type: string
                                 optional:
                                   description: Specify whether the ConfigMap or its
@@ -747,10 +742,15 @@ spec:
                                     be a valid secret key.
                                   type: string
                                 name:
+                                  default: ""
                                   description: |-
                                     Name of the referent.
-                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    This field is effectively required, but due to backwards compatibility is
+                                    allowed to be empty. Instances of this type with an empty value here are
+                                    almost certainly wrong.
                                     TODO: Add other useful fields. apiVersion, kind, uid?
+                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                    TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                                   type: string
                                 optional:
                                   description: Specify whether the Secret or its key
@@ -761,9 +761,17 @@ spec:
                               type: object
                               x-kubernetes-map-type: atomic
                           type: object
+                        certFile:
+                          description: Path to the client cert file in the Prometheus
+                            container for the targets.
+                          type: string
                         insecureSkipVerify:
                           description: Disable target certificate validation.
                           type: boolean
+                        keyFile:
+                          description: Path to the client key file in the Prometheus
+                            container for the targets.
+                          type: string
                         keySecret:
                           description: Secret containing the client key file for the
                             targets.
@@ -773,10 +781,15 @@ spec:
                                 be a valid secret key.
                               type: string
                             name:
+                              default: ""
                               description: |-
                                 Name of the referent.
-                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                This field is effectively required, but due to backwards compatibility is
+                                allowed to be empty. Instances of this type with an empty value here are
+                                almost certainly wrong.
                                 TODO: Add other useful fields. apiVersion, kind, uid?
+                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
                               type: string
                             optional:
                               description: Specify whether the Secret or its key must
@@ -801,6 +814,70 @@ spec:
                       type: boolean
                   type: object
                 type: array
+              jobLabel:
+                description: |-
+                  `jobLabel` selects the label from the associated Kubernetes `Service`
+                  object which will be used as the `job` label for all metrics.
+
+
+                  For example if `jobLabel` is set to `foo` and the Kubernetes `Service`
+                  object is labeled with `foo: bar`, then Prometheus adds the `job="bar"`
+                  label to all ingested metrics.
+
+
+                  If the value of this field is empty or if the label doesn't exist for
+                  the given Service, the `job` label of the metrics defaults to the name
+                  of the associated Kubernetes `Service`.
+                type: string
+              keepDroppedTargets:
+                description: |-
+                  Per-scrape limit on the number of targets dropped by relabeling
+                  that will be kept in memory. 0 means no limit.
+
+
+                  It requires Prometheus >= v2.47.0.
+                format: int64
+                type: integer
+              labelLimit:
+                description: |-
+                  Per-scrape limit on number of labels that will be accepted for a sample.
+
+
+                  It requires Prometheus >= v2.27.0.
+                format: int64
+                type: integer
+              labelNameLengthLimit:
+                description: |-
+                  Per-scrape limit on length of labels name that will be accepted for a sample.
+
+
+                  It requires Prometheus >= v2.27.0.
+                format: int64
+                type: integer
+              labelValueLengthLimit:
+                description: |-
+                  Per-scrape limit on length of labels value that will be accepted for a sample.
+
+
+                  It requires Prometheus >= v2.27.0.
+                format: int64
+                type: integer
+              namespaceSelector:
+                description: |-
+                  Selector to select which namespaces the Kubernetes `Endpoints` objects
+                  are discovered from.
+                properties:
+                  any:
+                    description: |-
+                      Boolean describing whether all namespaces are selected in contrast to a
+                      list restricting them.
+                    type: boolean
+                  matchNames:
+                    description: List of namespace names to select from.
+                    items:
+                      type: string
+                    type: array
+                type: object
               podTargetLabels:
                 description: |-
                   `podTargetLabels` defines the labels which are transferred from the
@@ -845,7 +922,7 @@ spec:
                 type: array
                 x-kubernetes-list-type: set
               selector:
-                description: Label selector to select the Kubernetes `Pod` objects.
+                description: Label selector to select the Kubernetes `Endpoints` objects.
                 properties:
                   matchExpressions:
                     description: matchExpressions is a list of label selector requirements.
@@ -873,11 +950,13 @@ spec:
                           items:
                             type: string
                           type: array
+                          x-kubernetes-list-type: atomic
                       required:
                       - key
                       - operator
                       type: object
                     type: array
+                    x-kubernetes-list-type: atomic
                   matchLabels:
                     additionalProperties:
                       type: string
@@ -888,6 +967,13 @@ spec:
                     type: object
                 type: object
                 x-kubernetes-map-type: atomic
+              targetLabels:
+                description: |-
+                  `targetLabels` defines the labels which are transferred from the
+                  associated Kubernetes `Service` object onto the ingested metrics.
+                items:
+                  type: string
+                type: array
               targetLimit:
                 description: |-
                   `targetLimit` defines a limit on the number of scraped targets that will

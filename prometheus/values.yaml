@@ -254,8 +254,8 @@ prometheus-main:
     spec:
       enableAdminAPI: true
       thanos:
-        image: quay.io/thanos/thanos:v0.35.0
-        version: v0.35.0
+        image: quay.io/thanos/thanos:v0.35.1
+        version: v0.35.1
         objectStorageConfig:
           key: objstore.yml
           name: thanos

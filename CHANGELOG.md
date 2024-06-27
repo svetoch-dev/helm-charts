@@ -15,6 +15,10 @@ New features:
       * `prometheus-node-exporter` to `4.36.0`
       * `kube-prometheus-stack` to `60.4.0`
       * `kube-state-metrics` to `4.2.5`
+      * `thanos` updated to `v0.35.1`
+    * `prometheus-operator` updated to version `v0.75.0`
+    * `prometheus` updated to `v2.53.0`
+  * `thanos` chart: subcharts updated to `15.7.10`
 
 # 3.1.0
 
