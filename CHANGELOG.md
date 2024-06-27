@@ -13,7 +13,7 @@ New features:
     * Critical/Warning group of alerts can be disabled using the option .enabled: false
     * subcharts update
       * `prometheus-node-exporter` to `4.36.0`
-      * `kube-prometheus-stack` to `60.2.0`
+      * `kube-prometheus-stack` to `60.4.0`
       * `kube-state-metrics` to `4.2.5`
 
 # 3.1.0
