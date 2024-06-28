@@ -1,3 +1,32 @@
+# 4.0.0
+
+Braking changes:
+  * `chart_deps/prometheus/prometheus-rules`: Chart attribute `PrometheusAlerts.prometheus-main.AbsentMetricCritical` type changed from list to dict
+
+New features:
+  * `Prometheus`:
+    * new common alert `Statefulset_not_ready`
+    * new common alert `DB_transactions_per_seconds_below_norm`
+    * new common alert `ErrorRateIncreasedFor_5XX`
+    * new common alert `api`
+    * new commin alert `Postgres_replica_is_down`
+    * new commin alert `Postgres_is_down`
+    * new common `AbsentMetricCritical` alerts
+    * Critical/Warning group of alerts can be disabled using the option .enabled: false
+    * subcharts update
+      * `prometheus-node-exporter` to `4.36.0`
+      * `kube-prometheus-stack` to `60.4.0`
+      * `kube-state-metrics` to `4.2.5`
+      * `thanos` updated to `v0.35.1`
+    * `prometheus-operator` updated to version `v0.75.0`
+    * `prometheus` updated to `v2.53.0`
+  * `thanos` chart: subcharts updated to `15.7.10`
+
+Fixes:
+  * `grafana`:
+    * fix `some pods were not displayed`
+
+
 # 3.1.0
 
 New features:
@@ -30,7 +59,7 @@ Fixes:
 # v3.0.0
 
 Braking changes:
-  * `chart_deps/prometheus/prometheus-rules`: Chart attribute `PrometheusAlerts.CriticalMetric` and `PrometheusAlerts.WarningMetric` type changed from list to dict
+  * `chart_deps/prometheus/prometheus-rules`: Chart attribute `PrometheusAlerts.prometheus-main.CriticalMetric` and `PrometheusAlerts.prometheus-main.WarningMetric` type changed from list to dict
 
 New features:
   * `environment,environments`: now support company related attributes and set company related fields
