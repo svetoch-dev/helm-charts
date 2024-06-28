@@ -22,6 +22,11 @@ New features:
     * `prometheus` updated to `v2.53.0`
   * `thanos` chart: subcharts updated to `15.7.10`
 
+Fixes:
+  * `grafana`:
+    * fix `some pods were not displayed`
+
+
 # 3.1.0
 
 New features:
