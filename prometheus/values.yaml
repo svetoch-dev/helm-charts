@@ -345,7 +345,8 @@ prometheus-rules:
           kong_http_requests_total:
             enabled: true
             source: "kong exporter"
-          pg_stat_database_xact_commit{datname!~"^(postgres|template[0-9]*|default|cloudsqladmin|unknown)$"}:
+          pg_stat_database_xact_commit:
+            query: "{datname!~'^(postgres|template[0-9]*|default|cloudsqladmin|unknown)$'}"
             enabled: true
             source: "prometheus-portgres-exporter"
           pg_up:

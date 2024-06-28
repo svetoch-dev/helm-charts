@@ -20,9 +20,9 @@ spec:
       rules:
       {{- range $absentMetricRuleName, $absentMetricRule := .AbsentMetricCritical.rules }}
       {{- if $absentMetricRule.enabled }}
-      {{- $parts := split "{" $absentMetricRuleName }}
-        - alert: absent_{{$parts._0}}
-          expr: absent({{$absentMetricRuleName}})
+      {{- $query := ($absentMetricRule.query | default "{}") }}
+        - alert: absent_{{$absentMetricRuleName}}
+          expr: absent({{$absentMetricRuleName}}{{$query}})
           for: {{ $tm }}
           labels:
             env: {{ $alert.env }}
