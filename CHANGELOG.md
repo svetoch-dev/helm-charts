@@ -1,3 +1,11 @@
+# 4.0.1
+
+Fixes:
+  * `grafana`:
+    * fix `incorrect display of max_connections on postgres panel when using more than 1 pg-exporter`
+  * `Prometheus`:
+    * fix alert `Available_postgresql_connections_are_running_out` for proper processing when using more than 1 pg-exporter
+
 # 4.0.0
 
 Braking changes:
