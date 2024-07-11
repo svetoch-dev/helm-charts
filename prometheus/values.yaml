@@ -390,7 +390,7 @@ prometheus-rules:
             enabled: true
             for: "15m"
             description: "There are {{ $value }} available postgres (pod {{ $labels.pod }}) connections left, located in namespace {{ $labels.namespace }}"
-            expr: (sum by (pod, namespace) (pg_stat_activity_count) / sum by (pod, namespace) (pg_settings_max_connections) > 0.90) or (sum by (pod, namespace) (pg_settings_max_connections) - sum by (pod, namespace) (pg_stat_activity_count) < 20)
+            expr: (sum by (pod, namespace) (pg_settings_max_connections) - sum by (pod, namespace) (pg_stat_activity_count{container=~"^.*[^0-9]$"}) < 20) or (sum by (pod, namespace) (pg_stat_activity_count{container=~"^.*[^0-9]$"}) / sum by (pod, namespace) (pg_settings_max_connections) > 0.90)
           DB_transactions_per_seconds_below_norm:
           # There are some transactions from postgres exporter
           # so we the Transactions per second cant be 0 and we need to
