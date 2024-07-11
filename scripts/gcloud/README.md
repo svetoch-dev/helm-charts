@@ -12,7 +12,7 @@ Script that creates first gcloud storage bucket, to be able to execute 'terrafor
 
 #### description
 
-* `your_project_name` - Name of your project, for example 'sparkperps' or 'dexfinance'.
+* `your_project_name` - Name of your project.
 
 This script dependents on file lifecycle.json.
 
@@ -21,8 +21,7 @@ This script dependents on file lifecycle.json.
 ### Examples
 
 ```
-$ ./bucket_initial.sh sparkperps
-$ ./bucket_initial.sh dexfinance
+$ ./bucket_initial.sh projectname
 ```
 
 
@@ -37,15 +36,15 @@ Script that enables api service compute.googleapis.com, to be able to execute 't
 
 #### description
 
-* `your_project_name-environment` - Name of your environment in the project, for example 'sparkperps-production' or 'dexfinance-development'.
+* `your_project_name-environment` - Name of your environment in the project.
 
  After executing this script, gcloud api service compute.googleapis.com enabled.
 
 ### Examples
 
 ```
-$ ./enable_api.sh sparkperps-production
-$ ./enable_api.sh dexfinance-development
+$ ./enable_api.sh projectname-production
+$ ./enable_api.sh projectname-development
 ```
 
 
@@ -63,7 +62,7 @@ Script that upgrades k8s clusters (GKE)
 
 #### description
 
-* `your_project_name-environment` - Name of your environment in the project, for example 'sparkperps-production' or 'dexfinance-development'.
+* `your_project_name-environment` - Name of your environment in the project.
 
  During script execution, postgres pdb resources are deleted. the postgres pod is transferred to a new node and pdb resources are re-created, if the postgres replica was moved first, then it is necessary to manually delete postgres pdb resources during script execution.
 
@@ -77,6 +76,6 @@ Attention! The gcloud cli commands cannot delete the node on which the patroni m
 
 ```
 $ ./enable_api.sh
-$ ./enable_api.sh  sparkperps-production
-$ ./enable_api.sh  dexfinance-development
+$ ./enable_api.sh  projectname-production
+$ ./enable_api.sh  projectname-development
 ```

@@ -53,7 +53,7 @@ env vars are populated
 
 ```
 $ CLUSTER=postgres-gcp-dev-postgres-main NAMESPACE=postgres pg_connect
-$ CLUSTER=postgres-gcp-dev-postgres-main NAMESPACE=vaults DB=vaults pg_creds
+$ CLUSTER=postgres-gcp-dev-postgres-main NAMESPACE=apps DB=apps pg_creds
 ```
 
 
