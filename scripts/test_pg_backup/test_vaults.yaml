@@ -1,0 +1,17 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: vaults-backend-gcp-prd-postgres-cluster-clone
+  namespace: vaults
+spec:
+  clone:
+    uid: "ebc1e399-b48b-4e25-8917-86a8b93f3365"
+    cluster: "vaults-backend-gcp-prd-postgres-cluster"
+    timestamp: "2024-03-20T09:00:00+00:00"
+  numberOfInstances: 1
+  teamId: vaults
+  postgresql:
+    version: '15'
+  volume:
+    size: 10Gi
+    storageClass: premium-rwo

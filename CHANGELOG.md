@@ -7,6 +7,8 @@ Fixes:
     * fix alert `Available_postgresql_connections_are_running_out` for proper processing when using more than 1 pg-exporter
     * fix alert `Available_postgresql_connections_are_running_out` the number of connections was displayed as a percentage
 
+New features:
+  * add folder with `scripts`
  
 # 4.0.0
 
