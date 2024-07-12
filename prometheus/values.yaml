@@ -442,12 +442,12 @@ prometheus-rules:
             enabled: true
             for: "5m"
             description: "Redis cluster has no node marked as master."
-            expr: count(redis_instance_info{role="master"}) == 0
+            expr: count by (job) (redis_instance_info{role="master"}) == 0
           Redis_too_many_masters:
             enabled: true
             for: "5m"
             description: "Redis cluster has too many({{ $value }}) nodes marked as master. "
-            expr: count(redis_instance_info{role="master"}) > 1
+            expr: count by (job) (redis_instance_info{role="master"}) > 1
       WarningMetric:
         enabled: true
         interval: "31s"
@@ -456,8 +456,8 @@ prometheus-rules:
           Redis_disconnected_slaves:
             enabled: true
             for: "15m"
-            description: "Redis cluster has too many({{ $value }}) nodes marked as master. "
-            expr: max (sum by (pod) (redis_connected_slaves{env="$env"})) < 2
+            description: "Redis not replicating for all slaves. Consider reviewing the redis replication status."
+            expr: count by (job) (redis_instance_info{role="slave"}) < 2
           # postgres
           Postgres_logical_backup_error:
             enabled: true

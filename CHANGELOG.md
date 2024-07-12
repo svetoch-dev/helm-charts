@@ -5,7 +5,7 @@ enhancements:
     * services dashboard - redis observability improvements
       * number of masters/slaves pannel
       * sentinel clients + sentinel current master
-  * `Prometheus`*
+  * `Prometheus`
     * new common alerts:
       * `Redis_missing_master`
       * `Redis_too_many_masters`
