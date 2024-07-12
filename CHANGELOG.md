@@ -1,3 +1,19 @@
+# 4.0.2
+
+enhancements:
+  * `grafana`:
+    * services dashboard - redis observability improvements
+      * number of masters/slaves pannel
+      * sentinel clients + sentinel current master
+  * `Prometheus`*
+    * new common alerts:
+      * `Redis_missing_master`
+      * `Redis_too_many_masters`
+      * `Redis_disconnected_slaves`
+
+New features:
+  * add folder with `scripts`
+
 # 4.0.1
 
 Fixes:

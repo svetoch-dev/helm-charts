@@ -369,12 +369,6 @@ prometheus-rules:
             for: "2m"
             description: "URL {{ $labels.instance }} is down/unreachable"
             summary: "{{ $labels.instance }} is down"
-          # pvc
-          PVC_low_capacity:
-            enabled: true
-            for: "15m"
-            description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity < 5%"
-            expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes*100) < 5
           # Postgres
           Postgres_is_down:
             enabled: true
@@ -405,7 +399,13 @@ prometheus-rules:
             for: "0m"
             description: "Container {{ $labels.exported_container }} in pod {{ $labels.exported_pod }} located in namespace {{ $labels.exported_namespace }} (node {{ $labels.node }}) was killed by OOM killer"
             expr: ((increase(kube_pod_container_status_restarts_total[10m]) > 0) and ignoring (reason) kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}) * on (exported_pod) group_left (node) kube_pod_info > 0
-          # Deployment
+          PVC_low_capacity:
+            enabled: true
+            for: "15m"
+            description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity < 5%"
+            expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes*100) < 5
+
+          # k8s
           Pods_waiting_state:
             enabled: true
             for: "20m"
@@ -431,28 +431,45 @@ prometheus-rules:
             for: "15m"
             description: "StatefulSet {{ $labels.statefulset }} in namespace {{ $labels.namespace }} has not matched the expected number of replicas for >15 minutes"
             expr: kube_statefulset_status_replicas_ready != kube_statefulset_status_replicas
+          # rmq
           RabbitMQ_High_memory(watermark)_usage:
             enabled: true
             for: "20m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of 'Memory high watermark' limit for > 20m"
             expr: sum by (container,pod,namespace) (container_memory_working_set_bytes{container="rabbitmq"}) / on(container,pod,namespace) rabbitmq_detailed_resident_memory_limit_bytes > 0.9
+          # redis
+          Redis_missing_master:
+            enabled: true
+            for: "5m"
+            description: "Redis cluster has no node marked as master."
+            expr: count(redis_instance_info{role="master"}) == 0
+          Redis_too_many_masters:
+            enabled: true
+            for: "5m"
+            description: "Redis cluster has too many({{ $value }}) nodes marked as master. "
+            expr: count(redis_instance_info{role="master"}) > 1
       WarningMetric:
         enabled: true
         interval: "31s"
         rules:
+          # redis
+          Redis_disconnected_slaves:
+            enabled: true
+            for: "15m"
+            description: "Redis cluster has too many({{ $value }}) nodes marked as master. "
+            expr: max (sum by (pod) (redis_connected_slaves{env="$env"})) < 2
           # postgres
           Postgres_logical_backup_error:
             enabled: true
             for: "2h"
             description: "Cronjob {{ $labels.cronjob }} failed"
             expr: ((kube_cronjob_next_schedule_time - on(cronjob, exported_namespace) kube_cronjob_status_last_successful_time)/3600) > 25
-          # PVC
+          # Resources
           PVC_low_capacity:
             enabled: true
             for: "1h"
             description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity < 10%"
             expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes*100) < 10
-          # Resources
           High_postgres_container_cpu_throttling:
             enabled: true
             for: "1h"
