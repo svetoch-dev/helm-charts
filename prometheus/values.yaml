@@ -73,6 +73,14 @@ alertmanager-configs:
               - name: alertname
                 value: "Postgres_replica_is_down"
             equal: ['label_app_kubernetes_io_instance']
+          - sourceMatch:
+              - name: alertname
+                value: "Redis_too_many_masters"
+            targetMatch:
+              - name: alertname
+                value: "Redis_disconnected_slaves"
+            equal: ['job']
+
 
 prometheus-node-exporter:
   enabled: false
