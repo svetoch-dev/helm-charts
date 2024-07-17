@@ -1,3 +1,12 @@
+# 4.0.3 
+
+New features:
+  * `Prometheus`:
+    * new common alerts:
+      * `Chainlink_node_states` (disabled by default)
+      * `Chainlink_multi_node_states` (disabled by default)
+
+
 # 4.0.2
 
 enhancements:
@@ -11,8 +20,6 @@ enhancements:
       * `Redis_too_many_masters`
       * `Redis_disconnected_slaves`
 
-New features:
-  * add folder with `scripts`
 
 # 4.0.1
 
@@ -25,7 +32,8 @@ Fixes:
 
 New features:
   * add folder with `scripts`
- 
+
+  
 # 4.0.0
 
 Braking changes:
