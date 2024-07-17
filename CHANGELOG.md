@@ -5,11 +5,13 @@ New features:
     * new common alerts:
       * `Chainlink_node_states` (disabled by default)
       * `Chainlink_multi_node_states` (disabled by default)
+    * subcharts update
+      * `prometheus-node-exporter` to `4.37.0`
 
 
 # 4.0.2
 
-enhancements:
+Enhancements:
   * `grafana`:
     * services dashboard - redis observability improvements
       * number of masters/slaves pannel
