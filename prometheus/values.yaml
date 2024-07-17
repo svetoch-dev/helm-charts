@@ -80,7 +80,13 @@ alertmanager-configs:
               - name: alertname
                 value: "Redis_disconnected_slaves"
             equal: ['job']
-
+          - sourceMatch:
+              - name: alertname
+                value: "Chainlink_multi_node_states"
+            targetMatch:
+              - name: alertname
+                value: "Chainlink_node_states"
+            equal: ['chainId']
 
 prometheus-node-exporter:
   enabled: false
@@ -456,6 +462,13 @@ prometheus-rules:
             for: "5m"
             description: "Redis cluster has too many({{ $value }}) nodes marked as master. "
             expr: count by (job) (redis_instance_info{role="master"}) > 1
+          # Chainlink node
+          Chainlink_multi_node_states:
+            enabled: false
+            expr: sum by (chainId) (chainlink_multi_node_states{state!="Alive"} > 0) > 1
+            for: "0m"
+            keep_firing_for: "15m"
+            description: "There are {{ $value }} EVM Nodes with chainId {{ $labels.chainId }} is down"
       WarningMetric:
         enabled: true
         interval: "31s"
@@ -505,3 +518,10 @@ prometheus-rules:
             keep_firing_for: "12m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} too many restarts (>10 for 10m)"
             expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[5m]) > 10
+          # Chainlink node
+          Chainlink_node_states:
+            enabled: false
+            for: "2m"
+            expr: chainlink_multi_node_states{state!="Alive"} > 0
+            keep_firing_for: "15m"
+            description: "EVM Node ({{ $labels.network }} chainId {{ $labels.chainId }}, container {{ $labels.container }}) is down"
