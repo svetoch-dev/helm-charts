@@ -2,7 +2,7 @@
 
 New features:
   * `grafana`:
-    * added new `traffic` dashboards for `nodes` and pods(`Resources`)
+    * added new `traffic` dashboards for `nodes` and `containers`
     * added the ability to view `PG connections by type` on the `Connection count` panel
     * added new panel `PG replication lag`
     * added the ability to view `PG dbs size` on the `PVC usage` panel
