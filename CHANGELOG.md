@@ -1,3 +1,12 @@
+# 4.0.4
+
+New features:
+  * `grafana`:
+    * added new traffic dashboards for nodes and pods(Resources)
+    * subcharts update
+      * `grafana-operator v5.9.2` to `5.12.0`
+      * `grafana crds v5.9.2` to `5.12.0`
+
 # 4.0.3 
 
 New features:
