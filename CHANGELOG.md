@@ -6,6 +6,8 @@ New features:
     * subcharts update
       * `grafana-operator v5.9.2` to `5.12.0`
       * `grafana crds v5.9.2` to `5.12.0`
+Fixes:
+  * fix `grafana appVersion` from `9.5` to `10.4` 
 
 # 4.0.3 
 
