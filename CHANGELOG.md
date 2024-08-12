@@ -1,3 +1,8 @@
+# 4.1.2
+
+Fixes:
+  * Adjust hpa to autoscaling/v2 interface
+
 # 4.1.1
 
 Fixes:
