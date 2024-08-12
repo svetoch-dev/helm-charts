@@ -1,4 +1,4 @@
-# 4.0.4
+# 4.1.0
 
 New features:
   * `grafana`:
