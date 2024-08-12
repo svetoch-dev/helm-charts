@@ -1,3 +1,8 @@
+# 4.1.1
+
+Fixes:
+  * autoscaling/v2 for hpa common helm charts
+
 # 4.1.0
 
 New features:
