@@ -1,7 +1,7 @@
 redis-operator:
   enabled: false
-#  image:
-#    tag: v1.3.0-rc1
+  image:
+    tag: v1.3.0-rc1
   monitoring:
     enabled: true
     serviceMonitor: true
