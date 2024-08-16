@@ -1,3 +1,9 @@
+# 4.2.0
+
+New features:
+  * `Redis-operator` update to `v1.3.0`
+  * `Redis-operator crds` update to `v1.3.0-rc1`
+
 # 4.1.2
 
 Fixes:
