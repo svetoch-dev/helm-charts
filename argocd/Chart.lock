@@ -5,5 +5,8 @@ dependencies:
 - name: certificates
   repository: file://../chart_deps/security/certificates
   version: 0.1.0
-digest: sha256:3c429773270e5a6e624054e5b6b7aa4b12a5dba89b2165633879a6692e39ddb0
-generated: "2024-03-21T19:55:20.427883809Z"
+- name: redis-operated
+  repository: file://../chart_deps/redis/redis-operated
+  version: 0.1.0
+digest: sha256:214fac327f1c2a30ea6d26f02ea2793557b26da763ce44ba766b8cd75867974d
+generated: "2024-08-16T19:34:02.242550308Z"

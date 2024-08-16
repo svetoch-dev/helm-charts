@@ -12,3 +12,8 @@ dependencies:
     repository: file://../chart_deps/security/certificates
     alias: certificates
     condition: certificates.enabled
+  - name: redis-operated
+    version: 0.1.0
+    repository: file://../chart_deps/redis/redis-operated
+    alias: redis
+    condition: redis.enabled
