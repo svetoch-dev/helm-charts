@@ -2,9 +2,9 @@ apiVersion: v2
 name: argocd
 version: 1.0.0
 dependencies:
-  #https://github.com/argoproj/argo-helm/tree/argo-cd-6.7.3/charts/argo-cd
+  #https://github.com/argoproj/argo-helm/tree/argo-cd-6.11.1/charts/argo-cd
   - name: argo-cd
-    version: 6.7.3
+    version: 6.11.1
     repository: https://argoproj.github.io/argo-helm
     condition: argo-cd.enabled
   - name: certificates

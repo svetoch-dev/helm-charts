@@ -3,6 +3,12 @@
 New features:
   * `Redis-operator` update to `v1.3.0`
   * `Redis-operator crds` update to `v1.3.0-rc1`
+  * `Argo-cd`:
+    * Added `Redis` to `argocd chart`
+    * subcharts update
+      * `argo-cd crds v2.10.4` to `v2.11.2`
+      * `argo-cd 6.7.3` to `6.11.1`
+  
 
 # 4.1.2
 
