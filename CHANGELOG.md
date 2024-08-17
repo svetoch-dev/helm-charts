@@ -6,8 +6,8 @@ New features:
   * `Argo-cd`:
     * Added `Redis` to `argocd chart`
     * subcharts update
-      * `argo-cd crds v2.10.4` to `v2.11.2`
-      * `argo-cd 6.7.3` to `6.11.1`
+      * `argo-cd crds v2.10.4` to `v2.12.1`
+      * `argo-cd v6.7.3` to `v7.4.4`
   
 
 # 4.1.2
