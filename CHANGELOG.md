@@ -1,14 +1,17 @@
 # 4.2.0
 
 New features:
-  * `Redis-operator` update to `v1.3.0`
-  * `Redis-operator crds` update to `v1.3.0-rc1`
-  * `Argo-cd`:
-    * Added `Redis` to `argocd chart`
+  * `redis-operator` update to `v1.3.0`
+  * `redis-operator crds` update to `v1.3.0-rc1`
+  * `argo-cd`:
+    * add `redis` to `argocd chart`
     * subcharts update
       * `argo-cd crds v2.10.4` to `v2.12.1`
       * `argo-cd v6.7.3` to `v7.4.4`
-  
+  * `grafana`: 
+
+Fixes:
+  * fix `grafana pg master panel` (at the moment of switching the pg master, a situation occurs when there are metrics of one pod on two nodes, and the metrics cannot be connected at this moment, at such moments, graphic broke down)
 
 # 4.1.2
 
