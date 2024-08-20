@@ -8,8 +8,7 @@ New features:
     * subcharts update
       * `argo-cd crds v2.10.4` to `v2.12.1`
       * `argo-cd v6.7.3` to `v7.4.4`
-  * `grafana`:
-    * update grafana `v10.4.3` to `v10.4.7`
+  * `grafana`: 
     * added new panel `Top 5 tables by insert` 
     * added new panel `Top 5 tables by update`
     * added new panel `Top 5 tables by delete`
