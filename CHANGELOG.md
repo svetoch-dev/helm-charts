@@ -15,6 +15,7 @@ New features:
     * added new panel `Top 5 tables by hot update`
     * added new panel `Top 5 tables by not hot update`
     * added new panel `Size of tables`
+    * added new panel `Estimated number of dead rows`
 
 Fixes:
   * fix `grafana pg master panel` (at the moment of switching the pg master, a situation occurs when there are metrics of one pod on two nodes, and the metrics cannot be connected at this moment, at such moments, graphic broke down)
