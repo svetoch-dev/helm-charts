@@ -18,8 +18,10 @@ New features:
     * added new panel `Rows waiting for vacuum (Estimated number of dead rows)`
 
 Fixes:
-  * fix `grafana pg master panel` (at the moment of switching the pg master, a situation occurs when there are metrics of one pod on two nodes, and the metrics cannot be connected at this moment, at such moments, graphic broke down)
-  * other fixes pg grafana panels
+  * `grafana pg panels`
+    * fix `master panel` (at the moment of switching the pg master, a situation occurs when there are metrics of one pod on two nodes, and the metrics cannot be connected at this moment, at such moments, graphic broke down)
+    * fix `master+slave metrics` (pg metrics were output from the master and slave, now only from the master)
+    * fix `sum of duplicated metrics` (fixed possible summation of duplicate metrics)
 
 # 4.1.2
 
