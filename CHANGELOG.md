@@ -16,6 +16,7 @@ New features:
     * added new panel `Top 5 tables by not Heap-Only Tuples (HOT) update`
     * added new panel `Size of tables`
     * added new panel `Rows waiting for vacuum (Estimated number of dead rows)`
+    * added new panel `top 5 transactions by duration`
 
 Fixes:
   * `grafana pg panels`
