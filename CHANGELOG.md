@@ -21,6 +21,7 @@ New features:
     * added new panel `Total number of rows received or affected by the operator (Top 5)`
 
 Fixes:
+  * fix script `GKE_upgrade` (if the user refused to delete the pdb, the script stopped working)
   * `grafana pg panels`
     * fix `master panel` (at the moment of switching the pg master, a situation occurs when there are metrics of one pod on two nodes, and the metrics cannot be connected at this moment, at such moments, graphic broke down)
     * fix `master+slave metrics` (pg metrics were output from the master and slave, now only from the master)
