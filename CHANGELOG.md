@@ -1,3 +1,32 @@
+# 4.2.0
+
+New features:
+  * `redis-operator` update to `v1.3.0`
+  * `redis-operator crds` update to `v1.3.0-rc1`
+  * `argo-cd`:
+    * added `redis` to `argocd chart`
+    * subcharts update
+      * `argo-cd crds v2.10.4` to `v2.12.2`
+      * `argo-cd v6.7.3` to `v7.4.5`
+  * `grafana`: 
+    * added new panel `Top 5 tables by insert` 
+    * added new panel `Top 5 tables by update`
+    * added new panel `Top 5 tables by delete`
+    * added new panel `Top 5 tables by Heap-Only Tuples (HOT) update`
+    * added new panel `Top 5 tables by not Heap-Only Tuples (HOT) update`
+    * added new panel `Size of tables`
+    * added new panel `Rows waiting for vacuum (Estimated number of dead rows)`
+    * added new panel `Top 5 transactions by duration`
+    * added new panel `Number of query executions`
+    * added new panel `Total number of rows received or affected by the operator (Top 5)`
+
+Fixes:
+  * fix script `GKE_upgrade` (if the user refused to delete the pdb, the script stopped working)
+  * `grafana pg panels`
+    * fix `master panel` (at the moment of switching the pg master, a situation occurs when there are metrics of one pod on two nodes, and the metrics cannot be connected at this moment, at such moments, graphic broke down)
+    * fix `master+slave metrics` (pg metrics were output from the master and slave, now only from the master)
+    * fix `sum of duplicated metrics` (fixed possible summation of duplicate metrics)
+
 # 4.1.2
 
 Fixes:

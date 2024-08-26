@@ -2,7 +2,7 @@ apiVersion: v2
 name: redis
 version: 0.1.0
 dependencies:
-  #https://github.com/spotahome/redis-operator/tree/v1.2.4/charts/redisoperator
+  #https://github.com/spotahome/redis-operator/tree/Chart-3.3.0/charts/redisoperator
   - name: redis-operator
     version: 3.3.0
     alias: redis-operator

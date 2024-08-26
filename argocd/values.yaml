@@ -13,6 +13,7 @@ argo-cd:
     enabled: false
 
   redis-ha:
+    enabled: false
     hardAntiAffinity: false
     haproxy:
       hardAntiAffinity: false
@@ -31,3 +32,14 @@ argo-cd:
 
 certificates:
   enabled: false
+
+redis:
+  enabled: false
+  redisServiceMonitor:
+    enabled: false
+    prometheusSelector:
+      prometheus: main
+  sentinelServiceMonitor:
+    enabled: false
+    prometheusSelector:
+      prometheus: main

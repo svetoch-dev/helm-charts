@@ -33,7 +33,7 @@ elif [[ "$entity" == "nodes" ]]; then
 				if [[ ("$delete_yes" == "yes") || ("$delete_yes" == "y") || ("$delete_yes" == "Y") ]]; then
 					kubectl delete pdb ${pdbs[$index]} -n ${pdbs[$(($index-1))]}
 				else
-					exit 1
+					echo "You have not deleted the pdb, you may have to delete it manually"
 				fi
 			fi
 		done
