@@ -75,3 +75,9 @@ dependencies:
     version: 60.4.0
     alias: operator
     condition: operator.enabled
+  #https://github.com/prometheus-community/helm-charts/tree/prometheus-stackdriver-exporter-4.6.0/charts/prometheus-stackdriver-exporter
+  - name: prometheus-stackdriver-exporter
+    repository: https://prometheus-community.github.io/helm-charts
+    version: 4.6.0
+    alias: prometheus-stackdriver-exporter
+    condition: prometheus-stackdriver-exporter.enabled

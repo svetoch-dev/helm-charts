@@ -1,3 +1,8 @@
+# 4.2.1
+
+New features:
+  * add `prometheus-stackdriver-exporter v4.6.0` to `prometheus chart`
+
 # 4.2.0
 
 New features:

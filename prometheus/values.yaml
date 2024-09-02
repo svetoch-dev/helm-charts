@@ -338,8 +338,10 @@ alertmanager-main:
         matchLabels:
           alertmanager: main
 
-
 prometheus-postgres-exporter:
+  enabled: false
+
+prometheus-stackdriver-exporter:
   enabled: false
 
 prometheus-rules:
