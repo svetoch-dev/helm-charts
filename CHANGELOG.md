@@ -4,6 +4,7 @@ New features:
   * `prometheus`:
     * add `prometheus-stackdriver-exporter v4.6.0` to `prometheus chart`
     * subcharts update `prometheus-node-exporter v4.37.0` to `v4.39.0`
+    * add alert `Pubsub_subscription_unacknowledged_messages`
   * added new common dashboard `common-google-cloud-dashboard` (`Google-cloud`) to `grafana`
 
 # 4.2.0
