@@ -343,6 +343,11 @@ prometheus-postgres-exporter:
 
 prometheus-stackdriver-exporter:
   enabled: false
+  serviceMonitor:
+    enabled: true
+    namespace: prometheus
+    additionalLabels:
+      prometheus: main
 
 prometheus-rules:
   enabled: false
