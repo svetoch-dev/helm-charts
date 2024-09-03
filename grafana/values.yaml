@@ -56,7 +56,7 @@ dashboard:
 common-google-cloud-dashboard:
   enabled: false
   dashboards:
-    - name: Google-cloud
+    - name: google-cloud
       folder: general
       resyncPeriod: 30m
       selector:
