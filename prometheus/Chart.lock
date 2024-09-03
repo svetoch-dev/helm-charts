@@ -25,7 +25,7 @@ dependencies:
   version: 8.17.0
 - name: prometheus-node-exporter
   repository: https://prometheus-community.github.io/helm-charts
-  version: 4.37.0
+  version: 4.39.0
 - name: kube-state-metrics
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 4.2.5
@@ -35,5 +35,5 @@ dependencies:
 - name: prometheus-stackdriver-exporter
   repository: https://prometheus-community.github.io/helm-charts
   version: 4.6.0
-digest: sha256:a3e668906871911faa067c852f8ef8c3145d818e8a5e06042e07b6883d1411f4
-generated: "2024-09-02T07:00:51.83400027Z"
+digest: sha256:7f338c171f6cc532ce85cdac25b1bd3b4a97dfaab24f013c3a7a236178a5c6ce
+generated: "2024-09-03T14:28:48.200242184Z"
