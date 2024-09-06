@@ -1,12 +1,12 @@
 dependencies:
 - name: thanos
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 15.7.10
+  version: 15.7.25
 - name: thanos
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 15.7.10
+  version: 15.7.25
 - name: thanos
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 15.7.10
-digest: sha256:ab716fbc597b2571daba163ea117c4d7ade5e29fb4ab551ce85e9cd95dd06de0
-generated: "2024-06-27T08:39:32.161501203Z"
+  version: 15.7.25
+digest: sha256:b3d6af6a7cfd04d717f2919101c9dbd878a7a09b0d9bc34c2777b04b326b205f
+generated: "2024-09-06T19:54:44.629813477Z"

@@ -2,11 +2,17 @@
 
 New features:
   * `prometheus`:
-    * add `prometheus-stackdriver-exporter v4.6.0` to `prometheus chart`
     * subcharts updates:
+      * add `prometheus-stackdriver-exporter v4.6.0`
       * `prometheus-node-exporter v4.37.0` to `v4.39.0`
       * `prometheus-blackbox-exporter v8.17.0` to `v9.0.0`
+      * `kube-prometheus-stack v60.4.0` to `v62.4.0`
+      * `kube-state-metrics v4.2.5` to `v4.2.13`
+      * `thanos v0.35.1` to `v0.36.1`
+    * `prometheus v2.53.0` updated to `v2.54.1`
     * add alert `Pubsub_subscription_unacknowledged_messages`
+  * `thanos` chart: subcharts `v15.7.10` updated to `v15.7.25`
+  * `prometheus-operator' + 'crds v0.75.0` updated to version `v0.76.0`
   * added new common dashboard `common-google-cloud-dashboard` (`Google-cloud`) to `grafana`
 
 # 4.2.0
