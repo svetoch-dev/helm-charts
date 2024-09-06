@@ -480,7 +480,7 @@ prometheus-rules:
           Pubsub_subscription_unacknowledged_messages:
             enabled: false
             for: "5m"
-            description: "There are {{ $value }} unacknowledged messages (a.k.a. backlog messages) in a subscription {{ $labels.subscription_id }} for > 5min"
+            description: "There are {{ $value }} unacknowledged messages (a.k.a. backlog messages) in a subscription '{{ $labels.subscription_id }}' for > 5min"
             expr: max by (subscription_id) (stackdriver_pubsub_subscription_pubsub_googleapis_com_subscription_num_undelivered_messages) > 100
       WarningMetric:
         enabled: true
