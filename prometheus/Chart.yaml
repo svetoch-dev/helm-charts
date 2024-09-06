@@ -52,10 +52,10 @@ dependencies:
     version: 5.3.0
     alias: prometheus-postgres-exporter
     condition: prometheus-postgres-exporter.enabled
-  #https://github.com/prometheus-community/helm-charts/tree/prometheus-blackbox-exporter-8.17.0/charts/prometheus-blackbox-exporter
+  #https://github.com/prometheus-community/helm-charts/tree/prometheus-blackbox-exporter-9.0.0/charts/prometheus-blackbox-exporter
   - name: prometheus-blackbox-exporter
     repository: https://prometheus-community.github.io/helm-charts
-    version: 8.17.0
+    version: 9.0.0
     alias: prometheus-blackbox-exporter
     condition: prometheus-blackbox-exporter.enabled
   #https://github.com/prometheus-community/helm-charts/tree/prometheus-node-exporter-4.36.0/charts/prometheus-node-exporter
