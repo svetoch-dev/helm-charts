@@ -33,6 +33,10 @@ pgadmin:
   image:
     repository: dpage/pgadmin4
     tag: 8.11.0
+  ports:
+    - name: http
+      containerPort: 80
+      protocol: TCP
 
 postgres-main:
   enabled: false
