@@ -1,6 +1,6 @@
 global:
   image:
-    tag: latest
+    tag: stub
 
 postgres-operator:
   enabled: false
@@ -31,7 +31,7 @@ postgres-pod-envs:
 pgadmin:
   enabled: false
   image:
-    name: dpage/pgadmin4
+    repository: dpage/pgadmin4
     tag: 8.11.0
 
 postgres-main:
