@@ -24,6 +24,12 @@ postgres-pod-envs:
   #https://github.com/zalando/spilo/blob/3.0-p1/postgres-appliance/scripts/restore_command.sh#L39
   CLONE_WALG_DOWNLOAD_CONCURRENCY: "2"
 
+pgadmin:
+  enabled: false
+  image:
+    name: dpage/pgadmin4
+    tag: 8.11.0
+
 postgres-main:
   enabled: false
 #######################
