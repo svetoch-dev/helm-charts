@@ -1,3 +1,7 @@
+global:
+  image:
+    tag: latest
+
 postgres-operator:
   enabled: false
   configGeneral:
