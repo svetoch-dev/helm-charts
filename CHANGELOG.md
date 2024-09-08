@@ -2,8 +2,8 @@
 
 New features:
   * `prometheus`:
+    * add `prometheus-stackdriver-exporter v4.6.0`
     * subcharts updates:
-      * add `prometheus-stackdriver-exporter v4.6.0`
       * `prometheus-node-exporter v4.37.0` to `v4.39.0`
       * `prometheus-blackbox-exporter v8.17.0` to `v9.0.0`
       * `kube-prometheus-stack v60.4.0` to `v62.4.0`
