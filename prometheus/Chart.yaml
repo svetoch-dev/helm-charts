@@ -69,10 +69,10 @@ dependencies:
     version: 4.2.13
     repository: oci://registry-1.docker.io/bitnamicharts
     condition: kube-state-metrics.enabled
-  #https://github.com/prometheus-community/helm-charts/tree/kube-prometheus-stack-62.4.0/charts/kube-prometheus-stack
+  #https://github.com/prometheus-community/helm-charts/tree/kube-prometheus-stack-62.6.0/charts/kube-prometheus-stack
   - name: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
-    version: 62.4.0
+    version: 62.6.0
     alias: operator
     condition: operator.enabled
   #https://github.com/prometheus-community/helm-charts/tree/prometheus-stackdriver-exporter-4.6.0/charts/prometheus-stackdriver-exporter
