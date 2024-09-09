@@ -275,8 +275,8 @@ prometheus-main:
     spec:
       enableAdminAPI: true
       thanos:
-        image: quay.io/thanos/thanos:v0.35.1
-        version: v0.35.1
+        image: quay.io/thanos/thanos:v0.36.1
+        version: v0.36.1
         objectStorageConfig:
           key: objstore.yml
           name: thanos
@@ -338,9 +338,16 @@ alertmanager-main:
         matchLabels:
           alertmanager: main
 
-
 prometheus-postgres-exporter:
   enabled: false
+
+prometheus-stackdriver-exporter:
+  enabled: false
+  serviceMonitor:
+    enabled: true
+    namespace: prometheus
+    additionalLabels:
+      prometheus: main
 
 prometheus-rules:
   enabled: false
@@ -469,6 +476,12 @@ prometheus-rules:
             for: "0m"
             keep_firing_for: "15m"
             description: "There are {{ $value }} EVM Nodes with chainId {{ $labels.chainId }} is down"
+          # Pubsub
+          Pubsub_subscription_unacknowledged_messages:
+            enabled: false
+            for: "5m"
+            description: "There are {{ $value }} unacknowledged messages (a.k.a. backlog messages) in a subscription '{{ $labels.subscription_id }}' for > 5min"
+            expr: max by (subscription_id) (stackdriver_pubsub_subscription_pubsub_googleapis_com_subscription_num_undelivered_messages) > 100
       WarningMetric:
         enabled: true
         interval: "31s"
