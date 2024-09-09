@@ -74,6 +74,13 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- if .Values.pvcs }}
+          volumeMounts:
+            {{- range $name, $pvc := .Values.pvcs }}
+            - name: {{ $name }}
+              mountPath: {{ $pvc.mountPath }}
+            {{- end }}
+          {{- end }}
       {{- with $app_nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -85,4 +92,12 @@ spec:
       {{- with $app_tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.pvcs }}
+      volumes:
+        {{- range $name, $pvc := .Values.pvcs }}
+        - name: {{ $name }}
+          persistentVolumeClaim:
+            claimName: {{ $name }}
+        {{- end }}
       {{- end }}
