@@ -1,3 +1,11 @@
+# 4.4.0
+New features:
+  * `chart_deps/apps/common`:
+    * initContainers support
+    * pvc support
+  * `postgres`:
+    * pgadmin service
+
 # 4.3.0
 
 New features:
