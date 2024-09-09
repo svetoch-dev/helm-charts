@@ -13,3 +13,8 @@ dependencies:
     repository: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
     alias: postgres-operator
     condition: postgres-operator.enabled
+  - name: common
+    version: 0.1.0
+    repository: file://../chart_deps/app/common/
+    alias: pgadmin
+    condition: pgadmin.enabled

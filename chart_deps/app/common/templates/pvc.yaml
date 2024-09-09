@@ -1,0 +1,25 @@
+{{- range $name, $pvc := .Values.pvcs }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    {{- include "common.labels" $ | nindent 4 }}
+    {{- if $pvc.labels }}
+    {{- toYaml $pvc.labels | nindent 4 }}
+    {{- end }}
+  name: {{ include "common.fullname" $ }}-{{ $name }}
+spec:
+  {{- if $pvc.accessModes }}
+  accessModes:
+  {{- toYaml $pvc.accessModes | nindent 4}}
+  {{- else }}
+  accessModes:
+  - ReadWriteOnce
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ $pvc.storage }}
+  {{- if $pvc.storageClass }}
+  storageClassName: {{ $pvc.storageClass }}
+  {{- end }}
+{{- end }}

@@ -1,3 +1,7 @@
+global:
+  image:
+    tag: stub
+
 postgres-operator:
   enabled: false
   configGeneral:
@@ -23,6 +27,16 @@ postgres-pod-envs:
   #Without this wal-e clone will not work due to this
   #https://github.com/zalando/spilo/blob/3.0-p1/postgres-appliance/scripts/restore_command.sh#L39
   CLONE_WALG_DOWNLOAD_CONCURRENCY: "2"
+
+pgadmin:
+  enabled: false
+  image:
+    repository: dpage/pgadmin4
+    tag: 8.11.0
+  ports:
+    - name: http
+      containerPort: 80
+      protocol: TCP
 
 postgres-main:
   enabled: false
