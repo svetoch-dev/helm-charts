@@ -35,6 +35,17 @@ spec:
       serviceAccountName: {{ include "common.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- range $name, $container := .Values.initContainers }}
+      initContainers:
+        - name: {{ $name }}
+          {{- with $container.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ $container.image }}"
+          {{- include "common.volumeMounts" $ | nindent 10 }}
+          {{- include "common.env" $ | nindent 10}}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -45,19 +56,7 @@ spec:
           command:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          env:
-          {{- with .Values.global.environmentFromSecrets }}
-          {{- tpl (toYaml .) $ | nindent 12 }}
-          {{- end }}
-          {{- with .Values.environmentFromSecrets }}
-          {{- tpl (toYaml .) $ | nindent 12 }}
-          {{- end }}
-          {{- with .Values.environment }}
-          {{- tpl (toYaml .) $ | nindent 12 }}
-          {{- end }}
-          {{- with .Values.global.environment }}
-          {{- tpl (toYaml .) $ | nindent 12 }}
-          {{- end }}
+          {{- include "common.env" . | nindent 10}}
           {{- with .Values.ports }}
           ports:
             {{- toYaml . | nindent 12 }}
@@ -74,13 +73,7 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- if .Values.pvcs }}
-          volumeMounts:
-            {{- range $name, $pvc := .Values.pvcs }}
-            - name: {{ $name }}
-              mountPath: {{ $pvc.mountPath }}
-            {{- end }}
-          {{- end }}
+          {{- include "common.volumeMounts" $ | nindent 10 }}
       {{- with $app_nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

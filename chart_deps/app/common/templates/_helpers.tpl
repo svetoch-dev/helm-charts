@@ -60,3 +60,30 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "common.env" }}
+env:
+{{- with .Values.global.environmentFromSecrets }}
+{{- tpl (toYaml .) $ | nindent 2 }}
+{{- end }}
+{{- with .Values.environmentFromSecrets }}
+{{- tpl (toYaml .) $ | nindent 2 }}
+{{- end }}
+{{- with .Values.environment }}
+{{- tpl (toYaml .) $ | nindent 2 }}
+{{- end }}
+{{- with .Values.global.environment }}
+{{- tpl (toYaml .) $ | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- define "common.volumeMounts" }}
+{{- if .Values.pvcs }}
+volumeMounts:
+  {{- range $name, $pvc := .Values.pvcs }}
+  - name: {{ $name }}
+    mountPath: {{ $pvc.mountPath }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
