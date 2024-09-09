@@ -28,6 +28,8 @@ pvcs: {}
 
 environment: {}
 
+initContainers: {}
+
 environmentFromSecrets: {}
 
 podAnnotations: {}
