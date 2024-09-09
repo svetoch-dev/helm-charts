@@ -98,6 +98,6 @@ spec:
         {{- range $name, $pvc := .Values.pvcs }}
         - name: {{ $name }}
           persistentVolumeClaim:
-            claimName: {{ $name }}
+            claimName: {{ include "common.fullname" $ }}-{{ $name }}
         {{- end }}
       {{- end }}
