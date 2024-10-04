@@ -1,6 +1,5 @@
 {{- with .Values.crds -}}
-{{- $name := "crds" -}}
-{{- $app_name := (printf "%s-%s" $name $.Values.env.name) }}
+{{- $app_name := (printf "%s-%s" "crds" $.Values.env.name) }}
 {{- if .enabled -}}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -29,7 +28,7 @@ spec:
   sources:
   {{- range $operator_name, $operator_obj := .operators }}
   {{- if $operator_obj.enabled }}
-  - path: {{ printf "%s/%s/%s" $.Values.repository.charts $name $operator_name }}
+  - path: {{ tpl (printf "%s/%s" $.Values.repository.paths.crds $operator_name) $ }}
     {{- with $operator_obj.directory }}
     directory:
     {{- toYaml . | nindent 6 }}

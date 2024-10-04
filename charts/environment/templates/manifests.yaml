@@ -1,6 +1,5 @@
 {{- with .Values.manifests -}}
-{{- $name := "manifests" -}}
-{{- $app_name := (printf "%s-%s" $name $.Values.env.name) }}
+{{- $app_name := (printf "%s-%s" "manifests" $.Values.env.name) }}
 {{- if .enabled -}}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -31,7 +30,7 @@ spec:
     directory:
     {{- toYaml . | nindent 6 }}
     {{- end }}
-    path: {{ printf "%s/%s/%s" $.Values.repository.envs $.Values.env.name $name  }}
+    path: {{ tpl $.Values.repository.paths.manifests $ }}
     repoURL: {{ $.Values.repository.url }}
     targetRevision: {{ .revision | default $.Values.repository.revision }}
   {{- with .syncPolicy }}

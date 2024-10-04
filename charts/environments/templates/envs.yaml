@@ -23,12 +23,12 @@ spec:
     namespace: argocd
   project: default
   source:
-    path: {{ $.Values.repository.env_chart}}
+    path: {{ $.Values.repository.paths.env_chart}}
     repoURL: {{ $.Values.repository.url }}
     targetRevision: {{ $env_obj.revision | default $.Values.repository.revision }}
     helm:
       valueFiles:
-        - {{ printf "%s/environments/%s/env.yaml" $.Values.repository.root_from_charts $env_name }}
+        - {{ tpl (printf "%s/environments/%s/env.yaml" $.Values.repository.paths.root_from_chart $env_name ) $ }}
     {{- with $env_obj.parameters }}
       parameters:
     {{- tpl (toYaml .) $ | nindent 8 }}

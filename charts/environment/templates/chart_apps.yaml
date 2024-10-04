@@ -1,6 +1,8 @@
 {{- range $chart_app_name, $chart_app_obj := .Values.chart_apps -}}
 {{- $app_name := (printf "%s-%s" $chart_app_name $.Values.env.name) }}
 {{- $app_name := ternary $app_name $chart_app_obj.name (not $chart_app_obj.name) }}
+{{- $chart_path := ternary $.Values.repository.paths.app_charts $.Values.repository.paths.charts (eq $chart_app_obj.app true) }}
+{{- $env_path := ternary $.Values.repository.paths.env_from_app_charts $.Values.repository.paths.env_from_charts (eq $chart_app_obj.app true) }}
 {{- if $chart_app_obj.enabled -}}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -31,10 +33,8 @@ spec:
   - repoURL: {{ $chart_app_obj.repo_url | default $.Values.repository.url }}
     {{- if $chart_app_obj.chart }}
     path: {{ $chart_app_obj.chart }}
-    {{- else if $chart_app_obj.app }}
-    path: {{ printf "%s/%s" $.Values.repository.app_charts $chart_app_name  }}
     {{- else }}
-    path: {{ printf "%s/%s" $.Values.repository.charts $chart_app_name  }}
+    path: {{ tpl (printf "%s/%s" $chart_path $chart_app_name) $ }}
     {{- end }}
     targetRevision: {{ $chart_app_obj.revision | default $.Values.repository.revision }}
     {{- if $chart_app_obj.helm }}
@@ -52,7 +52,7 @@ spec:
       releaseName: {{ $app_name }}
     {{- end }}
       valueFiles:
-        - {{ printf "%s/%s/%s/values.yaml" $.Values.repository.envs_from_charts $.Values.env.name $chart_app_name }}
+        - {{ tpl (printf "%s/%s/values.yaml" $env_path $chart_app_name) $ }}
     {{- end }}
     {{- with $chart_app_obj.parameters }}
       parameters:
@@ -73,10 +73,8 @@ spec:
     repoURL: {{ $chart_app_obj.repo_url | default $.Values.repository.url }}
     {{- if $chart_app_obj.chart }}
     path: {{ $chart_app_obj.chart }}
-    {{- else if $chart_app_obj.app }}
-    path: {{ printf "%s/%s" $.Values.repository.app_charts $chart_app_name  }}
     {{- else }}
-    path: {{ printf "%s/%s" $.Values.repository.charts $chart_app_name  }}
+    path: {{ tpl (printf "%s/%s" $chart_path $chart_app_name) $ }}
     {{- end }}
     targetRevision: {{ $chart_app_obj.revision | default $.Values.repository.revision }}
     {{- if $chart_app_obj.helm }}
@@ -94,7 +92,7 @@ spec:
       releaseName: {{ $app_name }}
     {{- end }}
       valueFiles:
-        - {{ printf "%s/%s/%s/values.yaml" $.Values.repository.envs_from_charts $.Values.env.name $chart_app_name }}
+        - {{ tpl (printf "%s/%s/values.yaml" $env_path $chart_app_name) $ }}
     {{- end }}
     {{- with $chart_app_obj.parameters }}
       parameters:

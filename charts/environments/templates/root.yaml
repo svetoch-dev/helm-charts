@@ -24,12 +24,12 @@ spec:
     namespace: argocd
   project: default
   source:
-    path: {{ $.Values.repository.envs_chart }}
+    path: {{ $.Values.repository.paths.envs_chart }}
     repoURL: {{ $.Values.repository.url }}
     targetRevision: {{ .revision | default $.Values.repository.revision }}
     helm:
       valueFiles:
-        - {{ printf "%s/envs.yaml" $.Values.repository.root_from_charts }}
+        - {{ tpl (printf "%s/envs.yaml" $.Values.repository.paths.root_from_chart) $ }}
   {{- with .syncPolicy }}
   syncPolicy:
   {{- toYaml . | nindent 4 }}
