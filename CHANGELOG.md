@@ -1,3 +1,23 @@
+# 5.0.0
+Braking changes:
+  * project directory structure has changed
+    * all chart related code is now under charts dir
+  * `charts/environment and charts/environments`:
+    * moved all folder related options of `repository` attr to `repository.paths`
+
+New features:
+  * `charts/environment and charts/environments`:
+    * path rendering are now wraped in tpl function 
+
+# 4.4.0
+New features:
+  * `chart_deps/apps/common`:
+    * initContainers support
+    * pvc support
+  * `postgres`:
+    * pgadmin service
+
+
 # 4.4.0
 New features:
   * `chart_deps/apps/common`:
