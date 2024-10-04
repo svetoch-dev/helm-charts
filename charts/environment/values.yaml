@@ -21,10 +21,11 @@ env:
 
 repository:
   url: #git@github.com:ggramal/infrared.git
-  charts: argocd/charts/infra
+  charts: argocd/charts/infra/charts
+  crds: argocd/charts/infra/crds
   app_charts: argocd/charts/app
   envs: argocd/environments
-  envs_from_charts: ../../../environments
+  envs_from_charts: ../../../../environments
   revision: master
 
 
