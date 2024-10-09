@@ -1,6 +1,5 @@
-{{- with .Values.crds -}}
-{{- $name := "crds" -}}
-{{- $app_name := (printf "%s-%s" $name $.Values.env.name) }}
+{{- with .Values.manifests -}}
+{{- $app_name := (printf "%s-%s" "manifests" $.Values.env.name) }}
 {{- if .enabled -}}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -26,18 +25,14 @@ spec:
     namespace: {{ .namespace }}
     {{- end }}
   project: {{ .project | default "default" }}
-  sources:
-  {{- range $operator_name, $operator_obj := .operators }}
-  {{- if $operator_obj.enabled }}
-  - path: {{ printf "%s/%s/%s" $.Values.repository.charts $name $operator_name }}
-    {{- with $operator_obj.directory }}
+  source:
+    {{- with .directory }}
     directory:
     {{- toYaml . | nindent 6 }}
     {{- end }}
+    path: {{ tpl $.Values.repository.paths.manifests $ }}
     repoURL: {{ $.Values.repository.url }}
-    targetRevision: {{ $operator_obj.revision | default $.Values.repository.revision }}
-  {{- end }}
-  {{- end }}
+    targetRevision: {{ .revision | default $.Values.repository.revision }}
   {{- with .syncPolicy }}
   syncPolicy:
   {{- toYaml . | nindent 4 }}

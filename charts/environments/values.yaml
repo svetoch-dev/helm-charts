@@ -14,9 +14,10 @@ company:
 repository:
   url: #git@github.com:ggramal/infrared.git
   revision: master
-  env_chart: argocd/charts/infra/environment
-  envs_chart: argocd/charts/infra/environments
-  root_from_charts: "../../.."
+  paths:
+    env_chart: argocd/charts/infra/charts/environment
+    envs_chart: argocd/charts/infra/charts/environments
+    root_from_chart: "../../../.."
 
 root:
   enabled: true
