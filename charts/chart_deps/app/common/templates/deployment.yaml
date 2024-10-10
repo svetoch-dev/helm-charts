@@ -23,7 +23,7 @@ spec:
     metadata:
       {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
       {{- end }}
       labels:
         {{- include "common.selectorLabels" . | nindent 8 }}
@@ -42,7 +42,7 @@ spec:
           command:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: "{{ $container.image }}"
+          image: "{{ tpl $container.image $ }}"
           {{- include "common.volumeMounts" $ | nindent 10 }}
           {{- include "common.env" $ | nindent 10}}
       {{- end }}
@@ -50,7 +50,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ $app_image_tag }}"
+          image: '{{ tpl (printf "%s:%s" .Values.image.repository $app_image_tag) . }}'
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.command }}
           command:
