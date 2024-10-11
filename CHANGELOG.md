@@ -1,3 +1,8 @@
+# 5.0.1
+Enhancements:
+  * `chart_deps/common/app`:  tpl all env related attributes
+  
+
 # 5.0.0
 Braking changes:
   * project directory structure has changed
