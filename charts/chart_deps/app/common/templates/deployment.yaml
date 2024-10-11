@@ -1,4 +1,5 @@
 {{- $app_image_tag := ternary .Values.global.image.tag .Values.image.tag (not .Values.image.tag) }}
+{{- $app_image_repo := ternary .Values.global.image.repository .Values.image.repository (not .Values.image.repository) }}
 {{- $app_nodeSelector := ternary .Values.nodeSelector .Values.global.nodeSelector ( hasKey .Values "nodeSelector") }}
 {{- $app_tolerations := ternary .Values.tolerations .Values.global.tolerations ( hasKey .Values "tolerations") }}
 {{- $app_affinity := ternary .Values.affinity .Values.global.affinity ( hasKey .Values "affinity") }}
@@ -50,7 +51,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: '{{ tpl (printf "%s:%s" .Values.image.repository $app_image_tag) . }}'
+          image: '{{ tpl (printf "%s:%s" $app_image_repo $app_image_tag) . }}'
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- with .Values.command }}
           command:

@@ -1,7 +1,10 @@
+# 5.0.2
+Enhancements:
+  * `chart_deps/common/app`: `image.repository` attribute can be set globally
+
 # 5.0.1
 Enhancements:
-  * `chart_deps/common/app`:  tpl all env related attributes
-  
+  * `chart_deps/common/app`: tpl all env related attributes
 
 # 5.0.0
 Braking changes:
