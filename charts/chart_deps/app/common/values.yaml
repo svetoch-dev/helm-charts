@@ -6,7 +6,9 @@ replicaCount: 1
 revisionHistoryLimit: 2
 
 image:
-  repository: override_me
+  #Must be set either in .Values.global.image
+  #or in .Values.image in chart instances
+  #repository: override_me
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   #tag: latest
