@@ -1,3 +1,8 @@
+global:
+  env:
+    name: #gcp-int|gcp-prd|gcp-dev
+    short_name: #int|prd|dev
+
 argo-cd:
   enabled: false
   crds:
@@ -43,3 +48,19 @@ redis:
     enabled: false
     prometheusSelector:
       prometheus: main
+
+probes:
+  enabled: false
+  probes:
+    argocd:
+      enabled: false
+      spec:
+        jobName: argocd
+        module: http_2xx
+        targets:
+          ingress:
+            selector:
+              matchLabels:
+                app.kubernetes.io/name: 'argocd-server'
+            namespaceSelector:
+              any: true

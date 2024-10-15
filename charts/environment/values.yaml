@@ -106,6 +106,8 @@ chart_apps:
     - name: "argo-cd.server.ingress.hostname"
       value: "argocd.{{ .Values.company.domain.env }}"
     values: |
+      global:
+        env: {{ .Values.env | toYaml | nindent 6 }}
       argo-cd:
         controller:
           serviceAccount:
