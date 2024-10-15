@@ -105,9 +105,9 @@ chart_apps:
     parameters:
     - name: "argo-cd.server.ingress.hostname"
       value: "argocd.{{ .Values.company.domain.env }}"
+    - name: "global.svc.prometheus.blackbox"
+      value: "prometheus-{{ .Values.global.env.name }}-prometheus-blackbox-exporter"
     values: |
-      global:
-        env: {{ .Values.env | toYaml | nindent 6 }}
       argo-cd:
         controller:
           serviceAccount:

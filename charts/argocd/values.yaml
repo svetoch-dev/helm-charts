@@ -1,8 +1,3 @@
-global:
-  env:
-    name: #gcp-int|gcp-prd|gcp-dev
-    short_name: #int|prd|dev
-
 argo-cd:
   enabled: false
   crds:
