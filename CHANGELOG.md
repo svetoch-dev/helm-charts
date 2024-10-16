@@ -1,11 +1,12 @@
-# 5.0.3
-Enhancements:
-  * `chart_deps/prometheus/probes`: tpl for  probes.spec
+# 5.1.0
+New features:
   * `argocd`:
     * add probes as dependency chart
     * add argocd server probe
   * `environment`: argocd default value for blackbox exporter host name
   
+Enhancements:
+  * `chart_deps/prometheus/probes`: tpl for  probes.spec
 
 # 5.0.2
 Enhancements:
