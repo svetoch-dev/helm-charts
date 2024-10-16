@@ -49,7 +49,11 @@ probes:
   probes:
     argocd:
       enabled: false
+      selector:
+        prometheus: main
       spec:
+        prober:
+          url: '{{ .Values.global.svc.prometheus.blackbox }}:9115'
         jobName: argocd
         module: http_2xx
         targets:
