@@ -17,3 +17,8 @@ dependencies:
     repository: file://../chart_deps/redis/redis-operated
     alias: redis
     condition: redis.enabled
+  - name: probes
+    version: 0.1.0
+    repository: file://../chart_deps/prometheus/probes
+    alias: probes
+    condition: probes.enabled

@@ -43,3 +43,23 @@ redis:
     enabled: false
     prometheusSelector:
       prometheus: main
+
+probes:
+  enabled: false
+  probes:
+    argocd:
+      enabled: false
+      selector:
+        prometheus: main
+      spec:
+        prober:
+          url: '{{ .Values.global.svc.prometheus.blackbox }}:9115'
+        jobName: argocd
+        module: http_2xx
+        targets:
+          ingress:
+            selector:
+              matchLabels:
+                app.kubernetes.io/name: 'argocd-server'
+            namespaceSelector:
+              any: true
