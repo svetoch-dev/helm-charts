@@ -107,20 +107,6 @@ chart_apps:
       value: "argocd.{{ .Values.company.domain.env }}"
     - name: "global.svc.prometheus.blackbox"
       value: "prometheus-{{ .Values.env.name }}-prometheus-blackbox-exporter.prometheus.svc.cluster.local"
-    values: |
-      argo-cd:
-        controller:
-          serviceAccount:
-            annotations:
-              {{- if .Values.company.gcp.enabled }}
-              iam.gke.io/gcp-service-account: argocd@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
-              {{- end }}
-        server:
-          serviceAccount:
-            annotations:
-              {{- if .Values.company.gcp.enabled }}
-              iam.gke.io/gcp-service-account: argocd@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
-              {{- end }}
   prometheus:
     enabled: false
     parameters:
@@ -130,14 +116,6 @@ chart_apps:
       value: "{{ .Values.company.domain.root }}"
     - name: "global.envs.int.natgw"
       value: "{{ .Values.company.network.int_nat_gw }}"
-    values: |
-      prometheus-main:
-        serviceAccount:
-          annotations:
-            {{- if .Values.company.gcp.enabled }}
-            iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
-            {{- end }}
-
   thanos:
     enabled: false
     parameters:
@@ -145,53 +123,3 @@ chart_apps:
       value: "thanos.prd.{{ .Values.company.domain.root }}:443"
     - name: "dev.query.stores[0]"
       value: "thanos.dev.{{ .Values.company.domain.root }}:443"
-    values: |
-      prd:
-        compactor:
-          serviceAccount:
-            annotations:
-              {{- if .Values.company.gcp.enabled }}
-              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
-              {{- end }}
-        storegateway:
-          serviceAccount:
-            annotations:
-              {{- if .Values.company.gcp.enabled }}
-              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
-              {{- end }}
-      dev:
-        compactor:
-          serviceAccount:
-            annotations:
-              {{- if .Values.company.gcp.enabled }}
-              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
-              {{- end }}
-        storegateway:
-          serviceAccount:
-            annotations:
-              {{- if .Values.company.gcp.enabled }}
-              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
-              {{- end }}
-      int:
-        compactor:
-          serviceAccount:
-            annotations:
-              {{- if .Values.company.gcp.enabled }}
-              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
-              {{- end }}
-        storegateway:
-          serviceAccount:
-            annotations:
-              {{- if .Values.company.gcp.enabled }}
-              iam.gke.io/gcp-service-account: thanos@{{ .Values.company.gcp.project_id }}.iam.gserviceaccount.com
-              {{- end }}
-
-
-#  argocd:
-#    enabled: false
-#    chart: argocd/charts/argocd
-#    name: omega-argocd
-#    revision:
-#    labels: {}
-#    finalizers: {}
-#    syncPolicy: {}
