@@ -45,7 +45,7 @@ datasource:
         type: prometheus
         isDefault: true
         access: proxy
-        url: http://thanos-gcp-int-int-query.prometheus.svc.cluster.local:9090
+        url: http://thanos-gcp-int-query.prometheus.svc.cluster.local:9090
         jsonData:
           manageAlerts: 'false'
           prometheusType: Thanos
