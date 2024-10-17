@@ -4,7 +4,7 @@ Braking changes:
   * `thanos`: remove env specific info from chart
 
 Enhancements:
-  * `grafana`: intoduce `global.env.name` attr to set env related params
+  * `grafana`: introduce `global.env.name` attr to set env related params
   * `argocd`: set prober url in chart values
 
 # 5.1.0
