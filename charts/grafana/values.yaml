@@ -3,6 +3,8 @@ global:
   domain:
     root: #example.com
     env: #prd.example.com int.exmple.com dev.example.com etc
+  env:
+    name: #aws-prd,aws-dev,gcp-prd
 
 grafana-operator:
   enabled: false
@@ -33,7 +35,7 @@ grafana-main:
       template:
         metadata:
           labels:
-            app.kubernetes.io/instance: grafana-gcp-int
+            app.kubernetes.io/instance: grafana-{{ .Values.global.env.name }}
 
 datasource:
   enabled: false
@@ -45,7 +47,7 @@ datasource:
         type: prometheus
         isDefault: true
         access: proxy
-        url: http://thanos-gcp-int-query.prometheus.svc.cluster.local:9090
+        url: http://thanos-{{ .Values.global.env.name }}-query.prometheus.svc.cluster.local:9090
         jsonData:
           manageAlerts: 'false'
           prometheusType: Thanos

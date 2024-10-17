@@ -86,6 +86,8 @@ chart_apps:
       value: "{{ .Values.company.domain.env }}"
     - name: "global.domain.root"
       value: "{{ .Values.company.domain.root }}"
+    - name: "global.env.name"
+      value: "{{ .Values.env.name }}"
   konghq:
     enabled: false
     values: |
