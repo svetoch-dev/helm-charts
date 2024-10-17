@@ -52,8 +52,8 @@ env vars are populated
 ### Examples
 
 ```
-$ CLUSTER=postgres-gcp-dev-postgres-main NAMESPACE=postgres pg_connect
-$ CLUSTER=postgres-gcp-dev-postgres-main NAMESPACE=apps DB=apps pg_creds
+$ CLUSTER=postgres-main NAMESPACE=postgres pg_connect
+$ CLUSTER=postgres-main NAMESPACE=apps DB=apps pg_creds
 ```
 
 

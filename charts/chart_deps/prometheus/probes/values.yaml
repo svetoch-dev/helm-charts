@@ -10,7 +10,7 @@ probes: {}
 #      jobName: "api"
 #      module: http_2xx
 #      prober:
-#        url: prometheus-gcp-prd-prometheus-blackbox-exporter:9115
+#        url: prometheus-blackbox-exporter:9115
 #      targets:
 #        staticConfig:
 #          static:

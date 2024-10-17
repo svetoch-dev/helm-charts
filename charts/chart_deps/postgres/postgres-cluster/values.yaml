@@ -50,8 +50,3 @@ podMonitor:
           action: Replace
           regex: (.*)
           targetLabel: label_app_kubernetes_io_instance
-
-#clone:
-#  uid: "f53488f7-5f33-4db1-a068-fcc1664b9de6"
-#  cluster: "main-gcp-prd-postgres-cluster"
-#  timestamp: "2024-03-17T17:45:00+00:00"
