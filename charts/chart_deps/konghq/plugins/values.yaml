@@ -10,5 +10,5 @@ plugins: []
 #  config:
 #    http_endpoint: "http://jaeger-collector.default.svc.cluster.local:9411/api/v2/spans"
 #    sample_ratio: 1
-#    default_service_name: "konghq-gcp-prd"
+#    default_service_name: "konghq"
 #    include_credential: "false"

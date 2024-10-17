@@ -250,6 +250,10 @@ prometheus-main:
   service:
     enabled: true
 
+  serviceAccount:
+    create: false
+    name: thanos
+
   servicemonitor:
     enabled: true
     prometheusSelector:

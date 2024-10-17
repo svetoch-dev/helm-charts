@@ -19,9 +19,15 @@ argo-cd:
       hardAntiAffinity: false
 
   controller:
+    serviceAccount:
+      create: false
+      name: argocd
     replicas: 1
 
   server:
+    serviceAccount:
+      create: false
+      name: argocd
     replicas: 2
 
   repoServer:
@@ -53,7 +59,7 @@ probes:
         prometheus: main
       spec:
         prober:
-          url: '{{ .Values.global.svc.prometheus.blackbox }}:9115'
+          url: 'prometheus-{{ .Values.global.environment.name }}-prometheus-blackbox-exporter.prometheus.svc.cluster.local:9115'
         jobName: argocd
         module: http_2xx
         targets:

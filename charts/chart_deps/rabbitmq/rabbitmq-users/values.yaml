@@ -2,7 +2,7 @@ users: {}
 #  chents:
 #    enabled: true
 #    cluster:
-#      name: rmq-gcp-prd
+#      name: rmq
 #      namespace: rabbitmq
 #    tags:
 #      - policymaker

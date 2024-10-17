@@ -22,17 +22,5 @@ dependencies:
   - name: thanos
     repository: oci://registry-1.docker.io/bitnamicharts
     version: 15.7.25
-    alias: int
-    condition: int.enabled
-  #https://github.com/bitnami/charts/tree/thanos/15.7.10/bitnami/thanos
-  - name: thanos
-    repository: oci://registry-1.docker.io/bitnamicharts
-    version: 15.7.25
-    alias: prd
-    condition: prd.enabled
-  #https://github.com/bitnami/charts/tree/thanos/15.7.10/bitnami/thanos
-  - name: thanos
-    repository: oci://registry-1.docker.io/bitnamicharts
-    version: 15.7.25
-    alias: dev
-    condition: dev.enabled
+    alias: thanos
+    condition: thanos.enabled

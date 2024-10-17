@@ -1,3 +1,12 @@
+# 6.0.0
+Braking changes:
+  * `argocd/thanos/promtheus`: service account creation in chart disabled. Instead use already created ones
+  * `thanos`: remove env specific info from chart
+
+Enhancements:
+  * `grafana`: introduce `global.env.name` attr to set env related params
+  * `argocd`: set prober url in chart values
+
 # 5.1.0
 New features:
   * `argocd`:
