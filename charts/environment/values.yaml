@@ -116,10 +116,3 @@ chart_apps:
       value: "{{ .Values.company.domain.root }}"
     - name: "global.envs.int.natgw"
       value: "{{ .Values.company.network.int_nat_gw }}"
-  thanos:
-    enabled: false
-    parameters:
-    - name: "prd.query.stores[0]"
-      value: "thanos.prd.{{ .Values.company.domain.root }}:443"
-    - name: "dev.query.stores[0]"
-      value: "thanos.dev.{{ .Values.company.domain.root }}:443"
