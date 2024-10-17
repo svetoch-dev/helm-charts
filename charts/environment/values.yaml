@@ -105,8 +105,8 @@ chart_apps:
     parameters:
     - name: "argo-cd.server.ingress.hostname"
       value: "argocd.{{ .Values.company.domain.env }}"
-    - name: "global.svc.prometheus.blackbox"
-      value: "prometheus-{{ .Values.env.name }}-prometheus-blackbox-exporter.prometheus.svc.cluster.local"
+    - name: "global.environment.name"
+      value: "{{ .Values.env.name }}"
   prometheus:
     enabled: false
     parameters:
