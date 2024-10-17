@@ -19,9 +19,15 @@ argo-cd:
       hardAntiAffinity: false
 
   controller:
+    serviceAccount:
+      create: false
+      name: argocd
     replicas: 1
 
   server:
+    serviceAccount:
+      create: false
+      name: argocd
     replicas: 2
 
   repoServer:
