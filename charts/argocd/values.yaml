@@ -11,7 +11,7 @@ global:
       env: #int.example.com, dev.example.com, prd.example.com etc
     network:
       int_nat_gw:
-  env:
+  environment:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2
     short_name: #pre/prd/int/dev/etc
