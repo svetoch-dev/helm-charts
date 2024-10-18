@@ -1,3 +1,7 @@
+# 7.0.0
+Braking changes:
+  * `argocd/cert-manager/prometheus/grafana`: use global structure same as environment chart globals
+
 # 6.0.0
 Braking changes:
   * `argocd/thanos/promtheus`: service account creation in chart disabled. Instead use already created ones
