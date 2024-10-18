@@ -74,6 +74,9 @@ chart_apps:
   postgres:
     enabled: false
     values: |
+      global:
+        company: {{ .Values.company | toYaml | nindent 6 }}
+        env: {{ .Values.env | toYaml | nindent 6 }}
       postgres-operator:
         configAwsOrGcp:
           wal_gs_bucket: "{{ .Values.company.gcp.bucket.prefix }}-postgres-{{ .Values.env.short_name }}"
@@ -81,13 +84,10 @@ chart_apps:
           logical_backup_s3_bucket: "{{ .Values.company.gcp.bucket.prefix }}-postgres-backup-{{ .Values.env.short_name }}"
   grafana:
     enabled: false
-    parameters:
-    - name: "global.domain.env"
-      value: "{{ .Values.company.domain.env }}"
-    - name: "global.domain.root"
-      value: "{{ .Values.company.domain.root }}"
-    - name: "global.env.name"
-      value: "{{ .Values.env.name }}"
+    values: |
+      global:
+        company: {{ .Values.company | toYaml | nindent 6 }}
+        env: {{ .Values.env | toYaml | nindent 6 }}
   konghq:
     enabled: false
     values: |
@@ -97,24 +97,22 @@ chart_apps:
             external-dns.alpha.kubernetes.io/hostname: "*.{{ .Values.company.domain.env }}."
   cert-manager:
     enabled: false
-    parameters:
-    - name: "global.domain.env"
-      value: "{{ .Values.company.domain.env }}"
-    - name: "global.domain.root"
-      value: "{{ .Values.company.domain.root }}"
+    values: |
+      global:
+        company: {{ .Values.company | toYaml | nindent 6 }}
+        env: {{ .Values.env | toYaml | nindent 6 }}
   argocd:
     enabled: false
     parameters:
     - name: "argo-cd.server.ingress.hostname"
       value: "argocd.{{ .Values.company.domain.env }}"
-    - name: "global.environment.name"
-      value: "{{ .Values.env.name }}"
+    values: |
+      global:
+        company: {{ .Values.company | toYaml | nindent 6 }}
+        environment: {{ .Values.env | toYaml | nindent 6 }}
   prometheus:
     enabled: false
-    parameters:
-    - name: "global.domain.env"
-      value: "{{ .Values.company.domain.env }}"
-    - name: "global.domain.root"
-      value: "{{ .Values.company.domain.root }}"
-    - name: "global.envs.int.natgw"
-      value: "{{ .Values.company.network.int_nat_gw }}"
+    values: |
+      global:
+        company: {{ .Values.company | toYaml | nindent 6 }}
+        env: {{ .Values.env | toYaml | nindent 6 }}
