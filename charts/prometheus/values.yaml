@@ -355,6 +355,9 @@ prometheus-postgres-exporter:
 
 prometheus-stackdriver-exporter:
   enabled: false
+  serviceAccount:
+    create: false
+    name: 'stackdriver-exporter'
   serviceMonitor:
     enabled: true
     namespace: prometheus
