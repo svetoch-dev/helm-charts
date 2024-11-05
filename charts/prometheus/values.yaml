@@ -355,6 +355,9 @@ prometheus-postgres-exporter:
 
 prometheus-stackdriver-exporter:
   enabled: false
+  serviceAccount:
+    create: false
+    name: 'stackdriver-exporter'
   serviceMonitor:
     enabled: true
     namespace: prometheus
@@ -550,3 +553,9 @@ prometheus-rules:
             expr: chainlink_multi_node_states{state!="Alive"} > 0
             keep_firing_for: "15m"
             description: "EVM Node ({{ $labels.network }} chainId {{ $labels.chainId }}, container {{ $labels.container }}) is down"
+          To_many_gcp_logs:
+            enabled: false
+            for: "5m"
+            description: "Container {{ $labels.container_name }} in pod {{ $labels.pod_name }} located in namespace {{ $labels.namespace_name }} sends to many logs ({{ $labels.log }})"
+            # since stackdriver has a problem with obtaining Delta metrics and the metrics are not accurate, we experimentally found that dividing the result by 5 gives the most accurate results. Therefore, we divide the result by 5
+            expr: rate(stackdriver_k_8_s_container_logging_googleapis_com_log_entry_count[10m])/5 > 1000

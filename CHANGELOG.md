@@ -1,6 +1,26 @@
+# 7.0.0
+Braking changes:
+  * `argocd/cert-manager/prometheus/grafana`: use global structure same as environment chart globals
+  * `prometheus/stackdriver-exporter:`: service account creation in chart disabled. Instead use already created ones
+
+New features:
+  * `grafana`:
+    * move `Api_calls_total` panel from `PubSub subscription`
+    * new panel `Number of logs`
+    * subchart update `grafana-operator` and crds `v5.12.0` to `v5.14.0`
+  * `prometheus`:
+    * new alert `To_many_gcp_logs`
+    * subcharts updates: 
+      * `prometheus-stackdriver-exporter` `v4.6.0` to `v4.6.2`
+      * `prometheus-blackbox-exporter` `v9.0.0` to `v9.0.1`
+      * `prometheus-node-exporter` `v4.39.0` to `v4.41.0`
+      * `kube-state-metrics` `v4.2.13` to `v4.2.14`
+      * `kube-prometheus-stack` `v62.6.0` to `v65.5.1`
+    * update prometheus-operator crds `v0.76.1` to `v0.77.2`
+
 # 6.0.0
 Braking changes:
-  * `argocd/thanos/promtheus`: service account creation in chart disabled. Instead use already created ones
+  * `argocd/thanos/prometheus`: service account creation in chart disabled. Instead use already created ones
   * `thanos`: remove env specific info from chart
 
 Enhancements:
@@ -15,7 +35,7 @@ New features:
   * `environment`: argocd default value for blackbox exporter host name
   
 Enhancements:
-  * `chart_deps/prometheus/probes`: tpl for  probes.spec
+  * `chart_deps/prometheus/probes`: tpl for probes.spec
 
 # 5.0.2
 Enhancements:
