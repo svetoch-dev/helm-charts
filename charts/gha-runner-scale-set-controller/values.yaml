@@ -1,4 +1,5 @@
 gha-runner-scale-set-controller:
   enabled: false
   serviceAccount:
-    enabled: false
+    name: "gha-runner"
+    create: false
