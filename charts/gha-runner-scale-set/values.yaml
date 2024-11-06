@@ -1,0 +1,6 @@
+gha-runner-scale-set:
+  enabled: false
+  minRunners: 0
+  controllerServiceAccount:
+    namespace: gha-operator
+    name: "gha-runner"
