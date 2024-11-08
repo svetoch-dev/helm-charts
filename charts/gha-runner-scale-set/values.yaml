@@ -1,6 +1,7 @@
 gha-runner-scale-set:
   enabled: false
-  minRunners: 0
+  containerMode:
+    type: "kubernetes"
   controllerServiceAccount:
     namespace: gha-operator
-    name: "gha-runner"
+    name: "gha-operator"
