@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workflow-pod
+data:
+  pod-template.yaml: '{"spec":{"serviceAccountName":"gha-runner-infrastructure-gha-rs-kube-mode"}}'
