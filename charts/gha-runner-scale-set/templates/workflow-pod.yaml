@@ -3,4 +3,13 @@ kind: ConfigMap
 metadata:
   name: workflow-pod
 data:
-  pod-template.yaml: '{"spec":{"serviceAccountName":"gha-runner-infrastructure-gha-rs-kube-mode"}}'
+  workflow-pod.yaml: |
+    ---
+    apiVersion: v1
+    kind: PodTemplate
+    metadata:
+      name: workflow-pod
+    spec:
+      serviceAccountName: gha-runner-infrastructure-gha-rs-kube-mode
+      securityContext:
+        fsGroup: 1001
