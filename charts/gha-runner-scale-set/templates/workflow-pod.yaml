@@ -10,6 +10,6 @@ data:
     metadata:
       name: workflow-pod
     spec:
-      serviceAccountName: gha-runner-infrastructure-gha-rs-kube-mode
+      serviceAccountName: runner
       securityContext:
         fsGroup: 1001
