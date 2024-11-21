@@ -6,7 +6,7 @@ gha-runner-scale-set:
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-        storage: 2Gi
+          storage: 2Gi
   controllerServiceAccount:
     namespace: gha-operator
     name: "gha-operator"
