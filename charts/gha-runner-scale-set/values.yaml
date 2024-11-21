@@ -10,3 +10,21 @@ gha-runner-scale-set:
   controllerServiceAccount:
     namespace: gha-operator
     name: "gha-operator"
+  template:
+    spec:
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: runner
+          image: ghcr.io/actions/actions-runner:latest
+          command: ["/home/runner/run.sh"]
+          env:
+            - name: ACTIONS_RUNNER_CONTAINER_HOOK_TEMPLATE
+              value: /home/runner/templates/workflow-pod.yaml
+          volumeMounts:
+            - mountPath: /home/runner/templates
+              name: templates
+      volumes:
+        - name: templates
+          configMap:
+            name: workflow-pod
