@@ -9,7 +9,8 @@ data:
     kind: PodTemplate
     metadata:
       name: workflow-pod
-      argocd.argoproj.io/instance: gha-runner-scale-set-gcp-int
+      labels:
+        argocd.argoproj.io/instance: gha-runner-scale-set-gcp-int
     spec:
       serviceAccountName: runner
       securityContext:
