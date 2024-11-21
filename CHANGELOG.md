@@ -18,6 +18,9 @@ New features:
       * `kube-prometheus-stack` `v62.6.0` to `v65.5.1`
     * update prometheus-operator crds `v0.76.1` to `v0.77.2`
 
+Fixes:
+  * `grafana`: fix variable `service`
+
 # 6.0.0
 Braking changes:
   * `argocd/thanos/prometheus`: service account creation in chart disabled. Instead use already created ones
