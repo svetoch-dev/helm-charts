@@ -5,6 +5,6 @@ gha-runner-scale-set-controller:
     create: true
   # this is the solution for listener pod problem (outOfSync).
   # https://github.com/actions/actions-runner-controller/issues/3533
-  flags:
-    excludeLabelPropagationPrefixes:
-      - "argocd.argoproj.io/instance"
+#  flags:
+#    excludeLabelPropagationPrefixes:
+#      - "argocd.argoproj.io/instance"
