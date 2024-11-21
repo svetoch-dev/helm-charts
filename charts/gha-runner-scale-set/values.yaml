@@ -1,5 +1,6 @@
 gha-runner-scale-set:
   enabled: false
+  kubernetesModeServiceAccount:
   containerMode:
     type: "kubernetes"
     kubernetesModeWorkVolumeClaim:
