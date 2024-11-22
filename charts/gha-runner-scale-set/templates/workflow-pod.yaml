@@ -1,0 +1,21 @@
+{{- if .Values.workflowConfigMap.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workflow-pod
+data:
+  workflow-pod.yaml: |
+    ---
+    apiVersion: v1
+    kind: PodTemplate
+    metadata:
+      name: {{ .Values.workflowConfigMap.name }}
+      {{- with .Values.workflowConfigMap.metaLabels }}
+      labels:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.workflowConfigMap.spec }}
+    spec:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- end }}

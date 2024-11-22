@@ -1,0 +1,36 @@
+gha-runner-scale-set:
+  enabled: false
+  kubernetesModeServiceAccount:
+  controllerServiceAccount:
+    name: "gha-operator"
+  containerMode:
+    type: "kubernetes"
+    kubernetesModeWorkVolumeClaim:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 2Gi
+  template:
+    spec:
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: runner
+          image: ghcr.io/actions/actions-runner:latest
+          command: ["/home/runner/run.sh"]
+          env:
+            - name: ACTIONS_RUNNER_CONTAINER_HOOK_TEMPLATE
+              value: /home/runner/templates/workflow-pod.yaml
+          volumeMounts:
+            - mountPath: /home/runner/templates
+              name: templates
+      volumes:
+        - name: templates
+          configMap:
+            name: workflow-pod
+workflowConfigMap:
+  enabled: false
+  name: workflow-pod
+  spec:
+    securityContext:
+      fsGroup: 1001

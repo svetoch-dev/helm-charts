@@ -1,0 +1,10 @@
+gha-runner-scale-set-controller:
+  enabled: false
+  serviceAccount:
+    name: "gha-operator"
+    create: true
+  # this is the solution for listener pod problem (outOfSync).
+  # https://github.com/actions/actions-runner-controller/issues/3533
+#  flags:
+#    excludeLabelPropagationPrefixes:
+#      - "argocd.argoproj.io/instance"
