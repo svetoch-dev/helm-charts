@@ -8,9 +8,6 @@ gha-runner-scale-set:
       resources:
         requests:
           storage: 2Gi
-  controllerServiceAccount:
-    namespace: gha-operator
-    name: "gha-operator"
   template:
     spec:
       securityContext:
