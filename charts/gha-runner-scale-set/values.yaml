@@ -1,6 +1,8 @@
 gha-runner-scale-set:
   enabled: false
   kubernetesModeServiceAccount:
+  controllerServiceAccount:
+    name: "gha-operator"
   containerMode:
     type: "kubernetes"
     kubernetesModeWorkVolumeClaim:
