@@ -28,7 +28,7 @@ gha-runner-scale-set:
         - name: templates
           configMap:
             name: workflow-pod
-configMap:
+workflowConfigMap:
   enabled: false
   name: workflow-pod
   spec:

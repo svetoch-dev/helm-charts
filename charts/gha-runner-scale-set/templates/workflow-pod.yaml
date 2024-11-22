@@ -1,4 +1,4 @@
-{{- if .Values.configMap.enabled -}}
+{{- if .Values.workflowConfigMap.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,12 +9,12 @@ data:
     apiVersion: v1
     kind: PodTemplate
     metadata:
-      name: {{ .Values.configMap.name }}
-      {{- with .Values.configMap.metaLabels }}
+      name: {{ .Values.workflowConfigMap.name }}
+      {{- with .Values.workflowConfigMap.metaLabels }}
       labels:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-    {{- with .Values.configMap.spec }}
+    {{- with .Values.workflowConfigMap.spec }}
     spec:
       {{- toYaml . | nindent 6 }}
     {{- end }}
