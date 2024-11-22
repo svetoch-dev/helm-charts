@@ -17,6 +17,8 @@ New features:
       * `kube-state-metrics` `v4.2.13` to `v4.2.14`
       * `kube-prometheus-stack` `v62.6.0` to `v65.5.1`
     * update prometheus-operator crds `v0.76.1` to `v0.77.2`
+  * `actions-runner-controller`:
+    * added `gha-runner-scale-set-controller` and `gha-runner-scale-set` for github self-hosted runners
 
 Fixes:
   * `grafana`: fix variable `service`
