@@ -372,51 +372,51 @@ prometheus-rules:
       selector:
         prometheus: main
       AbsentMetricCritical:
-        enabled: true
+        enabled: false
         rules:
           probe_success:
-            enabled: true
+            enabled: false
             source: "prometheus-blackbox-exporter"
           kong_http_requests_total:
-            enabled: true
+            enabled: false
             source: "kong exporter"
           pg_stat_database_xact_commit:
             query: "{datname!~'^(postgres|template[0-9]*|default|cloudsqladmin|unknown)$'}"
-            enabled: true
+            enabled: false
             source: "prometheus-portgres-exporter"
           pg_up:
-            enabled: true
+            enabled: false
             source: "prometheus-portgres-exporter"
       CriticalMetric:
-        enabled: true
+        enabled: false
         interval: "31s"
         rules:
           #Kong (nginx)
           ErrorRateIncreasedFor_5XX:
-            enabled: true
+            enabled: false
             expr: sum by (exported_service) (rate(kong_http_requests_total{code=~"5.."}[10m])) / sum by (exported_service) (rate(kong_http_requests_total[10m])) > 0.1
             for: "10m"
             description: "KongHQ error rate is high for {{ $labels.exported_service }} service"
           # Blackbox
           api:
-            enabled: true
+            enabled: false
             expr: probe_success == 0
             for: "2m"
             description: "URL {{ $labels.instance }} is down/unreachable"
             summary: "{{ $labels.instance }} is down"
           # Postgres
           Postgres_is_down:
-            enabled: true
+            enabled: false
             for: "5m"
             description: "Postgres {{ $labels.pod }} in {{ $labels.namespace }} is down"
             expr: pg_up == 0
           Postgres_replica_is_down:
-            enabled: true
+            enabled: false
             for: "5m"
             description: "Postgres replica {{ $labels.label_app_kubernetes_io_instance }} in {{ $labels.namespace }} is down"
             expr: sum by (label_app_kubernetes_io_instance, namespace) (pg_replication_is_replica) < 1
           Available_postgresql_connections_are_running_out:
-            enabled: true
+            enabled: false
             for: "15m"
             description: "There are {{ $value }} available postgres (pod {{ $labels.pod }}) connections left, located in namespace {{ $labels.namespace }}"
             expr: (sum by (pod, namespace) (pg_settings_max_connections) - sum by (pod, namespace) (pg_stat_activity_count{container=~"^.*[^0-9]$"}) < 20) or (sum by (pod, namespace) (pg_stat_activity_count{container=~"^.*[^0-9]$"}) / sum by (pod, namespace) (pg_settings_max_connections) > 0.90)
@@ -424,62 +424,62 @@ prometheus-rules:
           # There are some transactions from postgres exporter
           # so we the Transactions per second cant be 0 and we need to
           # check against a small average number like 0.5
-            enabled: true
+            enabled: false
             expr: sum by (datname, label_app_kubernetes_io_instance) (rate(pg_stat_database_xact_commit{datname!~"^(postgres|template[0-9]*|default|cloudsqladmin|unknown)$"}[5m])) < 0.5
             for: "2m"
             description: "Transactions per second for database {{ $labels.datname }} in {{ $labels.label_app_kubernetes_io_instance }} service is below norm"
           # Resources
           OOM_killed_pods:
-            enabled: true
+            enabled: false
             for: "0m"
             description: "Container {{ $labels.exported_container }} in pod {{ $labels.exported_pod }} located in namespace {{ $labels.exported_namespace }} (node {{ $labels.node }}) was killed by OOM killer"
             expr: ((increase(kube_pod_container_status_restarts_total[10m]) > 0) and ignoring (reason) kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}) * on (exported_pod) group_left (node) kube_pod_info > 0
           PVC_low_capacity:
-            enabled: true
+            enabled: false
             for: "15m"
             description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity < 5%"
             expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes*100) < 5
 
           # k8s
           Pods_waiting_state:
-            enabled: true
+            enabled: false
             for: "20m"
             description: "Container {{ $labels.container }} in {{ $labels.pod }} waiting with reason {{ $labels.reason }} for >20 minutes"
             expr: sum by (pod, container, namespace, reason) (kube_pod_container_status_waiting_reason{exported_namespace!="kube-system", reason!="OOMKilled"})>0
           Pods_waiting_state_kube-system:
-            enabled: true
+            enabled: false
             for: "1h"
             description: "Container {{ $labels.container }} in {{ $labels.pod }} waiting with reason {{ $labels.reason }} for >1h"
             expr: sum by (pod, container, namespace, reason) (kube_pod_container_status_waiting_reason{exported_namespace="kube-system", reason!="OOMKilled"})>0
           Pod_replicas_not_ready:
-            enabled: true
+            enabled: false
             for: "15m"
             description: "Pods replicas less than specified for '{{ $labels.deployment }}' for > 15m"
             expr: (kube_deployment_spec_replicas * on (deployment) group_left (container) kube_deployment_labels) != (kube_deployment_status_replicas_available * on (deployment) group_left (container) kube_deployment_labels)
           Daemonset_not_ready:
-            enabled: true
+            enabled: false
             for: "15m"
             description: "daemonset '{{ $labels.daemonset }}' not scheduled in 15m"
             expr: kube_daemonset_status_number_misscheduled > 1
           Statefulset_not_ready:
-            enabled: true
+            enabled: false
             for: "15m"
             description: "StatefulSet {{ $labels.statefulset }} in namespace {{ $labels.namespace }} has not matched the expected number of replicas for >15 minutes"
             expr: kube_statefulset_status_replicas_ready != kube_statefulset_status_replicas
           # rmq
           RabbitMQ_High_memory(watermark)_usage:
-            enabled: true
+            enabled: false
             for: "20m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of 'Memory high watermark' limit for > 20m"
             expr: sum by (container,pod,namespace) (container_memory_working_set_bytes{container="rabbitmq"}) / on(container,pod,namespace) rabbitmq_detailed_resident_memory_limit_bytes > 0.9
           # redis
           Redis_missing_master:
-            enabled: true
+            enabled: false
             for: "5m"
             description: "Redis cluster has no node marked as master."
             expr: count by (job) (redis_instance_info{role="master"}) == 0
           Redis_too_many_masters:
-            enabled: true
+            enabled: false
             for: "5m"
             description: "Redis cluster has too many({{ $value }}) nodes marked as master. "
             expr: count by (job) (redis_instance_info{role="master"}) > 1
@@ -490,57 +490,51 @@ prometheus-rules:
             for: "0m"
             keep_firing_for: "15m"
             description: "There are {{ $value }} EVM Nodes with chainId {{ $labels.chainId }} is down"
-          # Pubsub
-          Pubsub_subscription_unacknowledged_messages:
-            enabled: false
-            for: "5m"
-            description: "There are {{ $value }} unacknowledged messages (a.k.a. backlog messages) in a subscription '{{ $labels.subscription_id }}' for > 5min"
-            expr: max by (subscription_id) (stackdriver_pubsub_subscription_pubsub_googleapis_com_subscription_num_undelivered_messages) > 100
       WarningMetric:
-        enabled: true
+        enabled: false
         interval: "31s"
         rules:
           # redis
           Redis_disconnected_slaves:
-            enabled: true
+            enabled: false
             for: "15m"
             description: "Redis not replicating for all slaves. Consider reviewing the redis replication status."
             expr: count by (job) (redis_instance_info{role="slave"}) < 2
           # postgres
           Postgres_logical_backup_error:
-            enabled: true
+            enabled: false
             for: "2h"
             description: "Cronjob {{ $labels.cronjob }} failed"
             expr: ((kube_cronjob_next_schedule_time - on(cronjob, exported_namespace) kube_cronjob_status_last_successful_time)/3600) > 25
           # Resources
           PVC_low_capacity:
-            enabled: true
+            enabled: false
             for: "1h"
             description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity < 10%"
             expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes*100) < 10
           High_postgres_container_cpu_throttling:
-            enabled: true
+            enabled: false
             for: "1h"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} throttled for >1h with throttle of {{ humanizeDuration $value }}"
             expr: rate(container_cpu_cfs_throttled_seconds_total{container="postgres"}[5m]) > 0.1
           High_cpu_throttling:
-            enabled: true
+            enabled: false
             for: "1h"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} throttled for >1h with throttle of {{ humanizeDuration $value }}"
             expr: rate(container_cpu_cfs_throttled_seconds_total{container!~"postgres"}[5m]) > 0.2
           High_memory_usage:
-            enabled: true
+            enabled: false
             for: "30m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of Memory limit for > 30m"
             expr: sum by (container, pod, namespace) (container_memory_working_set_bytes{namespace!="kube-system"}) / on (container, pod, namespace) kube_pod_container_resource_limits{unit="byte"} > 0.9
           OOM_killed_pods_(on_node):
-            enabled: true
+            enabled: false
             for: "1m"
             description: "Some container located on node {{ $labels.node }} was killed by OOM killer"
             expr: increase(node_vmstat_oom_kill[10m]) > 0
           # Deployment
           Container_too_many_restarts:
-            enabled: true
+            enabled: false
             for: "10m"
             keep_firing_for: "12m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} too many restarts (>10 for 10m)"
@@ -552,9 +546,3 @@ prometheus-rules:
             expr: chainlink_multi_node_states{state!="Alive"} > 0
             keep_firing_for: "15m"
             description: "EVM Node ({{ $labels.network }} chainId {{ $labels.chainId }}, container {{ $labels.container }}) is down"
-          To_many_gcp_logs:
-            enabled: false
-            for: "5m"
-            description: "Container {{ $labels.container_name }} in pod {{ $labels.pod_name }} located in namespace {{ $labels.namespace_name }} sends to many logs ({{ $labels.log }})"
-            # since stackdriver has a problem with obtaining Delta metrics and the metrics are not accurate, we experimentally found that dividing the result by 5 gives the most accurate results. Therefore, we divide the result by 5
-            expr: rate(stackdriver_k_8_s_container_logging_googleapis_com_log_entry_count[10m])/5 > 1000
