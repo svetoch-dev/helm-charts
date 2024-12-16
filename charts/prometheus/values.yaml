@@ -27,74 +27,73 @@ alertmanager-configs:
   enabled: false
   configs:
     main:
-      enabled: true
+      enabled: false
       selector:
         alertmanager: main
-      spec:
-        inhibitRules:
-          - sourceMatch:
-              - name: severity
-                value: "critical"
-            targetMatch:
-              - name: severity
-                value: "medium"
-            equal: ['alertname', 'persistentvolumeclaim']
-          - sourceMatch:
-              - name: alertname
-                value: "OOM_killed_pods"
-            targetMatch:
-              - name: alertname
-                value: "OOM_killed_pods_(on_node)"
-            equal: ['node']
-          - sourceMatch:
-              - name: alertname
-                value: "OOM_killed_pods"
-            targetMatch:
-              - name: alertname
-                value: "High_memory_usage"
-            equal: ['container', 'pod']
-          - sourceMatch:
-              - name: alertname
-                value: "Pod_replicas_not_ready"
-            targetMatch:
-              - name: alertname
-                value: "Pods_waiting_state"
-            equal: ['container']
-          - sourceMatch:
-              - name: alertname
-                value: "Pods_waiting_state"
-            targetMatch:
-              - name: alertname
-                value: "Container_too_many_restarts"
-            equal: ['container']
-          - sourceMatch:
-              - name: alertname
-                value: "Pod_replicas_not_ready"
-            targetMatch:
-              - name: alertname
-                value: "Container_too_many_restarts"
-            equal: ['container']
-          - sourceMatch:
-              - name: alertname
-                value: "Postgres_is_down"
-            targetMatch:
-              - name: alertname
-                value: "Postgres_replica_is_down"
-            equal: ['label_app_kubernetes_io_instance']
-          - sourceMatch:
-              - name: alertname
-                value: "Redis_too_many_masters"
-            targetMatch:
-              - name: alertname
-                value: "Redis_disconnected_slaves"
-            equal: ['job']
-          - sourceMatch:
-              - name: alertname
-                value: "Chainlink_multi_node_states"
-            targetMatch:
-              - name: alertname
-                value: "Chainlink_node_states"
-            equal: ['chainId']
+      inhibitRules:
+        - sourceMatch:
+            - name: severity
+              value: "critical"
+          targetMatch:
+            - name: severity
+              value: "medium"
+          equal: ['alertname', 'persistentvolumeclaim']
+        - sourceMatch:
+            - name: alertname
+              value: "OOM_killed_pods"
+          targetMatch:
+            - name: alertname
+              value: "OOM_killed_pods_(on_node)"
+          equal: ['node']
+        - sourceMatch:
+            - name: alertname
+              value: "OOM_killed_pods"
+          targetMatch:
+            - name: alertname
+              value: "High_memory_usage"
+          equal: ['container', 'pod']
+        - sourceMatch:
+            - name: alertname
+              value: "Pod_replicas_not_ready"
+          targetMatch:
+            - name: alertname
+              value: "Pods_waiting_state"
+          equal: ['container']
+        - sourceMatch:
+            - name: alertname
+              value: "Pods_waiting_state"
+          targetMatch:
+            - name: alertname
+              value: "Container_too_many_restarts"
+          equal: ['container']
+        - sourceMatch:
+            - name: alertname
+              value: "Pod_replicas_not_ready"
+          targetMatch:
+            - name: alertname
+              value: "Container_too_many_restarts"
+          equal: ['container']
+        - sourceMatch:
+            - name: alertname
+              value: "Postgres_is_down"
+          targetMatch:
+            - name: alertname
+              value: "Postgres_replica_is_down"
+          equal: ['label_app_kubernetes_io_instance']
+        - sourceMatch:
+            - name: alertname
+              value: "Redis_too_many_masters"
+          targetMatch:
+            - name: alertname
+              value: "Redis_disconnected_slaves"
+          equal: ['job']
+        - sourceMatch:
+            - name: alertname
+              value: "Chainlink_multi_node_states"
+          targetMatch:
+            - name: alertname
+              value: "Chainlink_node_states"
+          equal: ['chainId']
 
 prometheus-node-exporter:
   enabled: false

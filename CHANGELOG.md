@@ -2,6 +2,7 @@
 Braking changes:
   * `argocd/cert-manager/prometheus/grafana`: use global structure same as environment chart globals
   * `prometheus/stackdriver-exporter:`: service account creation in chart disabled. Instead use already created ones
+  * `chart_deps/prometheus/alertmanager-configs`: render template per attr in spec not the whole spec itself + use tpl for route,recievers,inhibitRules,muteTimeIntervals
 
 New features:
   * `grafana`:

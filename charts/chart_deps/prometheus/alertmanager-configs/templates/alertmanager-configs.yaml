@@ -12,7 +12,22 @@ items:
 {{ include "alertmanager-configs.labels" $ | indent 8 }}
         {{- toYaml $config.selector | nindent 8 }}
     spec:
-      {{- toYaml $config.spec | nindent 6 }}
+      {{- with $config.receivers }}
+      receivers:
+      {{- toYaml $config.receivers | nindent 8 }}
+      {{- end }}
+      {{- with $config.route }}
+      route:
+      {{- tpl (toYaml $config.route) $ | nindent 8 }}
+      {{- end }}
+      {{- with $config.inhibitRules }}
+      inhibitRules:
+      {{- tpl (toYaml $config.inhibitRules) $ | nindent 8 }}
+      {{- end }}
+      {{- with $config.muteTimeIntervals }}
+      muteTimeIntervals:
+      {{- tpl (toYaml $config.muteTimeIntervals) $ | nindent 8 }}
+      {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
