@@ -1,5 +1,6 @@
 gha-runner-scale-set:
   enabled: false
+  runnerScaleSetName: "infra-runner"
   kubernetesModeServiceAccount:
   controllerServiceAccount:
     name: "gha-operator"
@@ -21,6 +22,8 @@ gha-runner-scale-set:
           env:
             - name: ACTIONS_RUNNER_CONTAINER_HOOK_TEMPLATE
               value: /home/runner/templates/workflow-pod.yaml
+            - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
+              value: "false"
           volumeMounts:
             - mountPath: /home/runner/templates
               name: templates
