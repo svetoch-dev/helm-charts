@@ -19,7 +19,7 @@ items:
           {{ $configsName }}:
           {{- range $config := $configs }}
           {{/* We use ternary operator instead of if/else here because of helm vars scopes */}}
-          {{- $config := ternary (tpl (toYaml $config) . | fromYaml) $config $config.useTpl }}
+          {{- $config := ternary (tpl (toYaml $config) $ | fromYaml) $config $config.useTpl }}
           {{- if hasKey $.Values.defaults $configsName }}
           {{- $config := mustMerge $config (get $.Values.defaults $configsName) }}
           {{- end }}
