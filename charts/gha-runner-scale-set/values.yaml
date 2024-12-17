@@ -1,5 +1,6 @@
 gha-runner-scale-set:
   enabled: false
+  runnerScaleSetName: "infra-runner"
   kubernetesModeServiceAccount:
   controllerServiceAccount:
     name: "gha-operator"
