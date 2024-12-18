@@ -1,33 +1,38 @@
 nameOverride: ""
 fullnameOverride: ""
 
+defaults: {}
+#  slackConfigs:
+#    sendResolved: true
+#    color: '{{ if eq .Status "firing" }}{{ if eq .CommonLabels.severity "critical" }}danger{{ else }}warning{{ end }}{{ else }}good{{ end }}'
+#    title: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }} {{ if eq .CommonLabels.severity "critical" }}:fire:{{ else }}:warning:{{ end }}{{ else }} :ok:{{ end }}]'
+#    text: >-
+#      {{ range .Alerts }}
+#          *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+#          *Description:* {{ .Annotations.description }}
+#          *Details:*
+#          {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+#          {{ end }}
+#      {{ end }}
+
+
 configs: {}
 #  someconfigname:
 #    selector:
 #      alertmanager: coolAlertManager
-#    spec:
 #      https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#alertmanagerconfigspec
-#      receivers:
-#        - name: Reciever1
-#          slackConfigs:
-#            - sendResolved: true
-#              apiURL:
-#                name: secret
-#                key:  key
-#              channel: "#OMG_WTF"
-#              title: 'SOMETHING IS WRONG'
-#              text: >-
-#                {{ range .Alerts }}
-#                    *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
-#                    *Description:* {{ .Annotations.description }}
-#                    *Details:*
-#                    {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
-#                    {{ end }}
-#                {{ end }}
-#      route:
-#        receiver: 'Reciver1'
-#        groupWait: 30s
-#        groupInterval: 5m
-#        repeatInterval: 3h
-#        groupBy: [env, alertname]
-#        routes: []
+#    receivers:
+#      - name: Reciever1
+#        slackConfigs:
+#          - channel: "#OMG_WTF"
+#            apiURL:
+#              name: secret
+#              key:  key
+#            title: 'SOMETHING IS WRONG'
+#    route:
+#      receiver: 'Reciver1'
+#      groupWait: 30s
+#      groupInterval: 5m
+#      repeatInterval: 3h
+#      groupBy: [env, alertname]
+#      routes: []
