@@ -1,7 +1,13 @@
 # 7.0.0
 Braking changes:
   * `argocd/cert-manager/prometheus/grafana`: use global structure same as environment chart globals
-  * `prometheus/stackdriver-exporter:`: service account creation in chart disabled. Instead use already created ones
+  * `prometheus`:
+    * `stackdriver-exporter:`: service account creation in chart disabled. Instead use already created ones
+    * `chart_deps/prometheus/alertmanager-configs`:
+      * render template per attr in spec not the whole spec itself
+      * use tpl for route,inhibitRules,muteTimeIntervals
+      * ability to set default alert provider configs
+    * `PrometheusAlerts.prometheus-main`: disable all alerts by default + remove pubsub alert
 
 New features:
   * `grafana`:
@@ -10,7 +16,7 @@ New features:
     * subchart update `grafana-operator` and crds `v5.12.0` to `v5.14.0`
   * `prometheus`:
     * new alert `To_many_gcp_logs`
-    * subcharts updates: 
+    * subcharts updates:
       * `prometheus-stackdriver-exporter` `v4.6.0` to `v4.6.2`
       * `prometheus-blackbox-exporter` `v9.0.0` to `v9.0.1`
       * `prometheus-node-exporter` `v4.39.0` to `v4.41.0`
@@ -38,7 +44,7 @@ New features:
     * add probes as dependency chart
     * add argocd server probe
   * `environment`: argocd default value for blackbox exporter host name
-  
+
 Enhancements:
   * `chart_deps/prometheus/probes`: tpl for probes.spec
 
@@ -59,7 +65,7 @@ Braking changes:
 
 New features:
   * `charts/environment and charts/environments`:
-    * path rendering are now wraped in tpl function 
+    * path rendering are now wraped in tpl function
 
 # 4.4.0
 New features:
@@ -96,8 +102,8 @@ New features:
     * subcharts update
       * `argo-cd crds v2.10.4` to `v2.12.2`
       * `argo-cd v6.7.3` to `v7.4.5`
-  * `grafana`: 
-    * added new panel `Top 5 tables by insert` 
+  * `grafana`:
+    * added new panel `Top 5 tables by insert`
     * added new panel `Top 5 tables by update`
     * added new panel `Top 5 tables by delete`
     * added new panel `Top 5 tables by Heap-Only Tuples (HOT) update`
@@ -137,9 +143,9 @@ New features:
       * `grafana-operator v5.9.2` to `5.12.0`
       * `grafana crds v5.9.2` to `5.12.0`
 Fixes:
-  * fix `grafana appVersion` from `9.5` to `10.4` 
+  * fix `grafana appVersion` from `9.5` to `10.4`
 
-# 4.0.3 
+# 4.0.3
 
 New features:
   * `Prometheus`:
@@ -176,7 +182,7 @@ Fixes:
 New features:
   * add folder with `scripts`
 
-  
+
 # 4.0.0
 
 Braking changes:
@@ -214,7 +220,7 @@ New features:
   * `Grafana` update to `v10.4.3`
 
 Fixes:
-  * `grafana`: 
+  * `grafana`:
     * fix `found duplicate series for the match group`  on `PG master role` dashboard
     * fix `multiple matches for labels: many-to-one matching must be explicit` on `Mem usage per node` dashboard
     * fix not displayed memory limit on `Mem usage per node` dashboard for some pods
@@ -224,7 +230,7 @@ Fixes:
 # v3.0.2
 
 Enhancement:
-  * `prometheus`: 
+  * `prometheus`:
     * New attribute `keep_firing_for` is added for alert rules
     * Change increase period for `Container_too_many_restarts` alert
 
@@ -255,7 +261,7 @@ New features:
       * `prometheus-blackbox-exporter` to `8.17.0`
       * `prometheus-node-exporter` to `4.34.3`
       * `kube-state-metrics` to `58.7.2`
-   
+
 Enhancements:
   * `cert-manager`:
     * new `global.domain` attribute
