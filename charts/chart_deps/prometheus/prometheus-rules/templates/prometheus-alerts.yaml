@@ -1,5 +1,6 @@
 {{- $releasename := .Release.Name }}
 {{- range $name, $alert := .Values.PrometheusAlerts }}
+{{- $alert := set $alert "env" (tpl $alert.env $) }}
 {{- $namespace := $.Release.Namespace }}
 ---
 apiVersion: monitoring.coreos.com/v1

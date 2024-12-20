@@ -1,3 +1,8 @@
+# 7.0.1
+Enhancements:
+  * `environment`: move externalRedis attribute to argocd default values
+  * `chart_deps/prometheus/prometheus-rules`: use tpl function for alert.env atr
+
 # 7.0.0
 Braking changes:
   * `argocd/cert-manager/prometheus/grafana`: use global structure same as environment chart globals
