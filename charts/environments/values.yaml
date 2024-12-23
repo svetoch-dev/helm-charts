@@ -19,6 +19,27 @@ repository:
     envs_chart: argocd/charts/infra/charts/environments
     root_from_chart: "../../../.."
 
+defaultValuesTpl: |
+  company:
+    name: {{ .Values.company.name }}
+    gcp:
+      enabled: {{ .Values.company.gcp.enabled }}
+      project_id: {{ printf "%s-%s" .Values.company.name .env.long_name }}
+      registry: {{ .env.registry }}
+      bucket:
+        prefix: {{ .Values.company.name }}
+    domain:
+      root: {{ .Values.company.domain.root }}
+      env: {{ printf "%s.%s" .env.short_name .Values.company.domain.root }}
+    network:
+      int_nat_gw: {{ .Values.company.network.int_nat_gw }}
+  repository:
+    url: {{ .Values.repository.url }}
+  env:
+    name: {{ .env.name }}
+    server: {{ .env.server }}
+    short_name: {{ .env.short_name }}
+
 root:
   enabled: true
   labels: {}
