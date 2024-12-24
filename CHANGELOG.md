@@ -1,7 +1,11 @@
+# 7.1.0
+New features:
+  * `environments`: new `defaultValuesTpl` variable used to set common env attributes
+
 # 7.0.1
 Enhancements:
   * `environment`: move externalRedis attribute to argocd default values
-  * `chart_deps/prometheus/prometheus-rules`: use tpl function for alert.env atr
+  * `chart_deps/prometheus/prometheus-rules`: use tpl function for alert.env attr
 
 # 7.0.0
 Braking changes:
