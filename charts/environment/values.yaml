@@ -121,3 +121,9 @@ chart_apps:
       global:
         company: {{ .Values.company | toYaml | nindent 6 }}
         env: {{ .Values.env | toYaml | nindent 6 }}
+  thanos:
+    enabled: false
+    values: |
+      global:
+        company: {{ .Values.company | toYaml | nindent 6 }}
+        env: {{ .Values.env | toYaml | nindent 6 }}
