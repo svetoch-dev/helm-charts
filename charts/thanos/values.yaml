@@ -1,3 +1,6 @@
+kong-plugins:
+  enabled: false
+
 thanos:
   enabled: false
   existingObjstoreSecret: ""

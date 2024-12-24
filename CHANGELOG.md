@@ -1,3 +1,7 @@
+# 7.2.0
+New features:
+  * `thanos`: ability to create kong plugins
+
 # 7.1.0
 New features:
   * `environments`: new `defaultValuesTpl` variable used to set common env attributes

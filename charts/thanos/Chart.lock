@@ -1,6 +1,9 @@
 dependencies:
+- name: kong-plugins
+  repository: file://../chart_deps/konghq/plugins
+  version: 0.1.0
 - name: thanos
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 15.7.25
-digest: sha256:30a056c67d062c9ac286bc5c049007540bd89c2aba3f90c613dd5e2dc81e0794
-generated: "2024-10-17T13:27:30.824665563+03:00"
+digest: sha256:15ccd42cb61e0c554e2efad6c707ac76715eb3a95f135f60d0dc61b6e36c1ad5
+generated: "2024-12-24T13:53:08.799822281+03:00"
