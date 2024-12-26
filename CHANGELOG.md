@@ -1,6 +1,9 @@
 # 7.2.0
 New features:
-  * `thanos`: ability to create kong plugins
+  * `thanos`:
+    * ability to create kong plugins
+    * common global values
+  * `environment`: new var externalEnvDomains
 
 # 7.1.0
 New features:
