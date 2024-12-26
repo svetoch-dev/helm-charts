@@ -13,7 +13,7 @@ company:
   network:
     int_nat_gw:
 
-externalEnvs: []
+externalEnvDomains: []
 
 env:
   name: #aws-prd or aws-int or aws-stg
