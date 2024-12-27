@@ -13,6 +13,7 @@ company:
   network:
     int_nat_gw:
 
+externalEnvDomains: []
 
 env:
   name: #aws-prd or aws-int or aws-stg
@@ -116,6 +117,12 @@ chart_apps:
           ingress:
             hostname: "argocd.{{ .Values.company.domain.env }}"
   prometheus:
+    enabled: false
+    values: |
+      global:
+        company: {{ .Values.company | toYaml | nindent 6 }}
+        env: {{ .Values.env | toYaml | nindent 6 }}
+  thanos:
     enabled: false
     values: |
       global:

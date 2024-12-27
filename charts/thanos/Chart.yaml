@@ -18,6 +18,11 @@ type: application
 version: 0.1.0
 
 dependencies:
+  - name: kong-plugins
+    version: 0.1.0
+    repository: file://../chart_deps/konghq/plugins
+    alias: kong-plugins
+    condition: kong-plugins.enabled
   #https://github.com/bitnami/charts/tree/thanos/15.7.10/bitnami/thanos
   - name: thanos
     repository: oci://registry-1.docker.io/bitnamicharts
