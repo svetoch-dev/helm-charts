@@ -84,7 +84,6 @@ chart_apps:
         bucket: {{ .Values.bucket | toYaml | nindent 6 }}
         network: {{ .Values.network | toYaml | nindent 6 }}
         env: {{ .Values.env | toYaml | nindent 6 }}
-      postgres-operator:
   grafana:
     enabled: false
     values: |
