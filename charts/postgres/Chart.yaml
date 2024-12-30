@@ -9,7 +9,7 @@ dependencies:
     condition: postgres-main.enabled
   #https://github.com/zalando/postgres-operator/tree/v1.10.1/charts/postgres-operator
   - name: postgres-operator
-    version: v1.10.1
+    version: v1.14.0
     repository: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
     alias: postgres-operator
     condition: postgres-operator.enabled
