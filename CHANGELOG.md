@@ -1,3 +1,23 @@
+# 8.0.0
+
+Breaking changes:
+  * `argocd,cert-manager,thanos,grafana,prometheus,prometheus`:
+    * `global.company.gcp` attribute is removed
+    * `global.company.bucket` moved to `global.bucket`
+    * `global.company.network` is moved to `global.network`
+  * `environment`:
+    * `company.gcp` attr is removed
+    * `company.network` moved to `network`
+    * `company.bucket` moved to `bucket`
+  * `environments`:
+    * `defaultValuesTpl` adjusted in order to reflect `environment` chart changes
+
+New features:
+  * `argocd,cert-manager,thanos,grafana,prometheus,prometheus`:
+    * new global attribute - registry
+  * `environment`:
+    * new attribute - registry
+
 # 7.2.0
 New features:
   * `thanos`:
@@ -15,7 +35,7 @@ Enhancements:
   * `chart_deps/prometheus/prometheus-rules`: use tpl function for alert.env attr
 
 # 7.0.0
-Braking changes:
+Breaking changes:
   * `argocd/cert-manager/prometheus/grafana`: use global structure same as environment chart globals
   * `prometheus`:
     * `stackdriver-exporter:`: service account creation in chart disabled. Instead use already created ones
@@ -46,7 +66,7 @@ Fixes:
   * `grafana`: fix variable `service`
 
 # 6.0.0
-Braking changes:
+Breaking changes:
   * `argocd/thanos/prometheus`: service account creation in chart disabled. Instead use already created ones
   * `thanos`: remove env specific info from chart
 
@@ -73,7 +93,7 @@ Enhancements:
   * `chart_deps/common/app`: tpl all env related attributes
 
 # 5.0.0
-Braking changes:
+Breaking changes:
   * project directory structure has changed
     * all chart related code is now under charts dir
   * `charts/environment and charts/environments`:
@@ -201,7 +221,7 @@ New features:
 
 # 4.0.0
 
-Braking changes:
+Breaking changes:
   * `chart_deps/prometheus/prometheus-rules`: Chart attribute `PrometheusAlerts.prometheus-main.AbsentMetricCritical` type changed from list to dict
 
 New features:
@@ -259,7 +279,7 @@ Fixes:
 
 # v3.0.0
 
-Braking changes:
+Breaking changes:
   * `chart_deps/prometheus/prometheus-rules`: Chart attribute `PrometheusAlerts.prometheus-main.CriticalMetric` and `PrometheusAlerts.prometheus-main.WarningMetric` type changed from list to dict
 
 New features:

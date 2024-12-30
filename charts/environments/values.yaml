@@ -2,10 +2,9 @@ labels: {}
 
 company:
   name: #example
-  gcp:
-    enabled: false
-    bucket:
-      prefix:
+  bucket:
+    prefix:
+    suffix:
   domain:
     root: #example.com
   network:
@@ -22,17 +21,16 @@ repository:
 defaultValuesTpl: |
   company:
     name: {{ .Values.company.name }}
-    gcp:
-      enabled: {{ .Values.company.gcp.enabled }}
-      project_id: {{ printf "%s-%s" .Values.company.name .env.long_name }}
-      registry: {{ .env.registry }}
-      bucket:
-        prefix: {{ .Values.company.name }}
     domain:
       root: {{ .Values.company.domain.root }}
       env: {{ printf "%s.%s" .env.short_name .Values.company.domain.root }}
-    network:
-      int_nat_gw: {{ .Values.company.network.int_nat_gw }}
+  network:
+    int_nat_gw: {{ .Values.company.network.int_nat_gw }}
+  registry:
+    url: {{ .env.registry }}
+  bucket:
+    prefix: {{ .Values.company.name }}
+    suffix: {{ .env.short_name }}
   repository:
     url: {{ .Values.repository.url }}
   env:
