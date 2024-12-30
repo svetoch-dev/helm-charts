@@ -17,6 +17,9 @@ New features:
     * new global attribute - registry
   * `environment`:
     * new attribute - registry
+  * `postgres`:
+    * update postgre-operator subchart 1.10.1 -> 1.14.0
+    * move backup bucket templates to chart values
 
 # 7.2.0
 New features:
@@ -24,9 +27,6 @@ New features:
     * ability to create kong plugins
     * common global values
   * `environment`: new var externalEnvDomains
-  * `postgres`:
-    * update postgre-operator subchart 1.10.1 -> 1.14.0
-    * move backup bucket templates to chart values
 
 # 7.1.0
 New features:
