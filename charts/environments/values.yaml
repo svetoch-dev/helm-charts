@@ -2,13 +2,15 @@ labels: {}
 
 company:
   name: #example
-  bucket:
-    prefix:
-    suffix:
   domain:
     root: #example.com
-  network:
-    int_nat_gw:
+
+network:
+  int_nat_gw:
+
+bucket:
+  prefix:
+  suffix:
 
 repository:
   url: #git@github.com:ggramal/infrared.git
@@ -25,7 +27,7 @@ defaultValuesTpl: |
       root: {{ .Values.company.domain.root }}
       env: {{ printf "%s.%s" .env.short_name .Values.company.domain.root }}
   network:
-    int_nat_gw: {{ .Values.company.network.int_nat_gw }}
+    int_nat_gw: {{ .Values.network.int_nat_gw }}
   registry:
     url: {{ .env.registry }}
   bucket:

@@ -5,7 +5,7 @@ Breaking changes:
     * `global.company.gcp` attribute is removed
     * `global.company.bucket` moved to `global.bucket`
     * `global.company.network` is moved to `global.network`
-  * `environment`:
+  * `environment,environments`:
     * `company.gcp` attr is removed
     * `company.network` moved to `network`
     * `company.bucket` moved to `bucket`
