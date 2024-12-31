@@ -284,8 +284,6 @@ prometheus-main:
 
   thanosService:
     enabled: true
-    annotations:
-      konghq.com/protocol: grpc
 
   thanosServiceMonitor:
     enabled: true

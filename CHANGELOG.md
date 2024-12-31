@@ -11,6 +11,8 @@ Breaking changes:
     * `company.bucket` moved to `bucket`
   * `environments`:
     * `defaultValuesTpl` adjusted in order to reflect `environment` chart changes
+  * `prometheus`:
+    * remove ingress specific annotations
 
 New features:
   * `argocd,cert-manager,thanos,grafana,prometheus,prometheus`:
