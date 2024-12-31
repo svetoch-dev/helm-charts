@@ -8,16 +8,16 @@ global:
 
   company:
     name: #example
-    gcp:
-      enabled: false
-      bucket:
-        prefix:
-      project_id: #example-production
     domain:
       root: #example.com
       env: #int.example.com, dev.example.com, prd.example.com etc
-    network:
-      int_nat_gw:
+  network:
+    int_nat_gw:
+  registry:
+    url:
+  bucket:
+    prefix:
+    suffix:
   env:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2

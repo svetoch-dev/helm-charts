@@ -9,4 +9,4 @@ dependencies:
   repository: file://../chart_deps/app/common/
   version: 0.1.0
 digest: sha256:0929bdda52b4b524784e2cb6f2ae1f777a12939e12be50be93b8389b812a3b40
-generated: "2024-09-06T17:01:37.82208373+03:00"
+generated: "2024-12-31T16:13:45.297046645+03:00"
