@@ -23,7 +23,8 @@ postgres-operator:
   configGeneral:
     enable_crd_registration: false
     docker_image: gramal/spilo:15-f0c5f71
-
+  configMajorVersionUpgrade:
+    major_version_upgrade_mode: "off"
   podServiceAccount:
     name: "postgres"
   configKubernetes:
