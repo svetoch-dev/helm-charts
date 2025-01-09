@@ -20,10 +20,16 @@ global:
 
 postgres-operator:
   enabled: false
+  configAwsOrGcp:
+    wal_gs_bucket: "{{ .Values.global.bucket.prefix }}-postgres-{{ .Values.global.bucket.suffix }}"
+  configLogicalBackup:
+    logical_backup_s3_bucket: "{{ .Values.global.bucket.prefix }}-postgres-backup-{{ .Values.global.bucket.suffix }}"
+    logical_backup_docker_image: "ghcr.io/zalando/postgres-operator/logical-backup:v1.14.0"
   configGeneral:
     enable_crd_registration: false
     docker_image: gramal/spilo:15-f0c5f71
-
+  configMajorVersionUpgrade:
+    major_version_upgrade_mode: "off"
   podServiceAccount:
     name: "postgres"
   configKubernetes:
@@ -34,9 +40,7 @@ postgres-operator:
       - "app.kubernetes.io/instance"
       - "app.kubernetes.io/name"
       - "app.kubernetes.io/version"
-
-  configLogicalBackup:
-    logical_backup_docker_image: "registry.opensource.zalan.do/acid/logical-backup:v1.10.1"
+    enable_owner_references: true
 
 postgres-pod-envs:
   #This is needed by default for all wal-e cloned instances

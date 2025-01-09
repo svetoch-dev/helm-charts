@@ -84,11 +84,6 @@ chart_apps:
         bucket: {{ .Values.bucket | toYaml | nindent 6 }}
         network: {{ .Values.network | toYaml | nindent 6 }}
         env: {{ .Values.env | toYaml | nindent 6 }}
-      postgres-operator:
-        configAwsOrGcp:
-          wal_gs_bucket: "{{ .Values.bucket.prefix }}-postgres-{{ .Values.bucket.suffix }}"
-        configLogicalBackup:
-          logical_backup_s3_bucket: "{{ .Values.bucket.prefix }}-postgres-backup-{{ .Values.bucket.suffix }}"
   grafana:
     enabled: false
     values: |

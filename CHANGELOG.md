@@ -1,3 +1,10 @@
+# 8.1.0
+
+New features:
+  * `postgres`:
+    * update postgres-operator subchart 1.10.1 -> 1.14.0
+    * move backup bucket templates to chart values
+
 # 8.0.0
 
 Breaking changes:
