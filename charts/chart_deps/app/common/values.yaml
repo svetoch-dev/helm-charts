@@ -28,6 +28,8 @@ serviceAccount:
 
 pvcs: {}
 
+pvs: {}
+
 environment: {}
 
 initContainers: {}

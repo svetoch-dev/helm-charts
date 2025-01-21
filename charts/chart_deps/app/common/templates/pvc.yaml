@@ -16,6 +16,9 @@ spec:
   accessModes:
   - ReadWriteOnce
   {{- end }}
+  {{- if $pvc.volumeName }}
+  volumeName: {{ tpl $pvc.volumeName $ }}
+  {{- end }}
   resources:
     requests:
       storage: {{ $pvc.storage }}
