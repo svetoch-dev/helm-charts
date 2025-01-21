@@ -1,3 +1,8 @@
+# 8.2.0
+
+New features:
+  * `chart_deps/app`: support for pv static provisioning 
+
 # 8.1.0
 
 New features:

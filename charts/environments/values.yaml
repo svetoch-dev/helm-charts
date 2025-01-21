@@ -30,6 +30,8 @@ defaultValuesTpl: |
     int_nat_gw: {{ .Values.network.int_nat_gw }}
   registry:
     url: {{ .env.registry }}
+    containers:
+    pip:
   bucket:
     prefix: {{ .Values.company.name }}
     suffix: {{ .env.short_name }}
