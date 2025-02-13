@@ -1,3 +1,8 @@
+# 8.3.1
+
+fixes:
+  * `kong`: webhook certificate resource name add `webhook` suffix
+
 # 8.3.0
 
 fixes:
