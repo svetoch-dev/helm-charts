@@ -20,7 +20,7 @@ metadata:
     {{- with .Values.commonLabels }}
     {{ toYaml . | nindent 4 }}
     {{- end }}
-  name: {{ include "kong.fullname" . }}
+  name: {{ include "kong.fullname" . }}-webhook
   namespace: {{ include "common.names.namespace" . | quote }}
 spec:
   commonName: {{ template "kong.service.validationWebhook" . }}
@@ -30,5 +30,5 @@ spec:
   issuerRef:
     kind: Issuer
     name: {{ include "kong.fullname" . }}
-  secretName: {{ include "kong.fullname" . }}
+  secretName: {{ include "kong.fullname" . }}-webhook
 {{- end }}
