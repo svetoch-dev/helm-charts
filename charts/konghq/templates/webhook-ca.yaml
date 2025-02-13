@@ -1,4 +1,4 @@
-{{- if .Values.kong.ingressController.admissionWebhook.useCertManager }}
+{{- if and .Values.kong.ingressController.admissionWebhook.enabled .Values.kong.ingressController.admissionWebhook.useCertManager }}
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:

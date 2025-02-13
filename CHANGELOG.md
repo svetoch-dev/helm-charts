@@ -2,6 +2,7 @@
 
 fixes:
   * `kong`: webhook certificate resource name is now set based on release name
+  * `kong`: create webhook cert if admissionWebhook is enabled and webhook use cermanager is true
 
 # 8.2.0
 
