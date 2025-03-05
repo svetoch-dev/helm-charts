@@ -3,6 +3,11 @@ name: konghq
 version: 1.0.0
 appVersion: "3.6"
 dependencies:
+  - name: certificates
+    version: 0.1.0
+    repository: file://../chart_deps/security/certificates
+    alias: certificates
+    condition: certificates.enabled
   - name: kong-plugins
     version: 0.1.0
     repository: file://../chart_deps/konghq/plugins

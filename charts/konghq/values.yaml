@@ -1,6 +1,73 @@
+global:
+  company:
+    name: #example
+    domain:
+      root: #example.com
+      env: #int.example.com, dev.example.com, prd.example.com etc
+  network:
+    int_nat_gw:
+  registry:
+    url:
+  bucket:
+    prefix:
+    suffix:
+  ingress:
+    class: konghq
+  env:
+    name: #aws-prd or aws-int or aws-stg
+    server: #https://2.2.2.2
+    short_name: #pre/prd/int/dev/etc
+
 kong-plugins:
   enabled: false
-  plugins: []
+  plugins:
+  - name: '{{ printf "prometheus-%s" .Values.global.ingress.class }}'
+    plugin_name: prometheus
+    global: True
+    annotations:
+      kubernetes.io/ingress.class: "{{ .Values.global.ingress.class }}"
+    config:
+      status_code_metrics: true
+      latency_metrics: true
+      bandwidth_metrics: true
+      upstream_health_metrics: true
+
+certificates:
+  enabled: false
+  issuers:
+    selfsigned:
+      enabled: false
+      selfSigned: true
+  certs:
+    webhook:
+      enabled: false
+      secretName: webhook
+      commonName: "{{ .Release.Name }}-validation-webhook"
+      dnsNames:
+      - '{{ printf "%s-validation-webhook.%s.svc" .Release.Name .Release.Namespace }}'
+      - '{{ printf "%s-validation-webhook.%s.svc.cluster.local" .Release.Name .Release.Namespace }}'
+      issuerRef:
+        kind: Issuer
+        name: selfsigned
+  cluster_issuers:
+    letsencrypt:
+      enabled: false
+      acme:
+        server: https://acme-v02.api.letsencrypt.org/directory
+        email: "sre@{{ .Values.global.company.domain.root }}"
+        privateKeySecretRef:
+          name: letsencrypt
+        solvers:
+        - selector:
+            dnsZones:
+            #Full host name is set
+            #using .Values.company.domain.env
+            #variable of environment
+            #argocd/environments/<env>/env.yaml
+            - "{{ .Values.global.company.domain.env }}"
+          http01:
+            ingress:
+              ingressClassName: "{{ .Values.global.ingress.class }}"
 
 kong:
   enabled: true
@@ -46,24 +113,24 @@ kong:
       #set in environment/values.yaml
       external-dns.alpha.kubernetes.io/ttl: "60"
   ingressController:
+    ingressClass: konghq
     admissionWebhook:
       enabled: false
       failurePolicy: Fail
       port: 8080
       certificate:
         provided: true
-        secretName: konghq-webhook
+        secretName: webhook
       namespaceSelector: {}
       annotations:
-        cert-manager.io/inject-ca-from: konghq/konghq-webhook
-      useCertManager: true
+        cert-manager.io/inject-ca-from: konghq/webhook
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-        - topologyKey: "kubernetes.io/hostname"
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/name: kong
+      - topologyKey: "kubernetes.io/hostname"
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: kong
 
   podDisruptionBudget:
     enabled: true
