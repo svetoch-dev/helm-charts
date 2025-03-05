@@ -16,8 +16,6 @@ global:
     server: #https://2.2.2.2
     short_name: #pre/prd/int/dev/etc
 
-cluster_issuers: {}
-
 certificates:
   enabled: false
 
