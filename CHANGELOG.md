@@ -1,3 +1,19 @@
+# 9.0.0
+
+Braking changes:
+  * `cert-manager`: interface for creating `ClusterIssuer` obj have changed to using `certificates` chart in `chart_deps`
+  * `konghq`: interface for creating `Issuer` and `Certificate` objs for webhooks have changed to using `certificates` chart in `chart_deps`
+
+Features:
+  * `all charts`: new global attr `ingress.class`
+  * `chart_deps/security/certificates`:
+    * ability to create `ClusterIssuers`
+    * ability to create `Issuers`
+    * `certs` are now dict
+
+Enchancements:
+  * `chart_deps/konghq/plugins`: use templates in plugin names
+
 # 8.3.1
 
 fixes:

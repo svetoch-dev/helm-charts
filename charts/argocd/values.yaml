@@ -11,6 +11,8 @@ global:
   bucket:
     prefix:
     suffix:
+  ingress:
+    class: konghq
   #Cant use env: here because
   #env is already set as global
   #attr in original argocd chart
