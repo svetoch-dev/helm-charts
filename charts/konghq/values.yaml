@@ -57,7 +57,7 @@ certificates:
         server: https://acme-v02.api.letsencrypt.org/directory
         email: "sre@{{ .Values.global.company.domain.root }}"
         privateKeySecretRef:
-          name: letsencrypt
+          name: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
         solvers:
         - selector:
             dnsZones:
