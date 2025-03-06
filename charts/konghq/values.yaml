@@ -42,10 +42,10 @@ certificates:
     webhook:
       enabled: false
       secretName: webhook
-      commonName: "{{ .Release.Name }}-validation-webhook"
+      commonName: "{{ .Release.Name }}-kong-validation-webhook"
       dnsNames:
-      - '{{ printf "%s-validation-webhook.%s.svc" .Release.Name .Release.Namespace }}'
-      - '{{ printf "%s-validation-webhook.%s.svc.cluster.local" .Release.Name .Release.Namespace }}'
+      - '{{ printf "%s-kong-validation-webhook.%s.svc" .Release.Name .Release.Namespace }}'
+      - '{{ printf "%s-kong-validation-webhook.%s.svc.cluster.local" .Release.Name .Release.Namespace }}'
       issuerRef:
         kind: Issuer
         name: selfsigned
