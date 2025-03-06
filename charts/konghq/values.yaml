@@ -52,6 +52,7 @@ certificates:
   cluster_issuers:
     letsencrypt:
       enabled: false
+      name: '{{ "letsencrypt-%s" .Values.global.ingress.class }}'
       acme:
         server: https://acme-v02.api.letsencrypt.org/directory
         email: "sre@{{ .Values.global.company.domain.root }}"
