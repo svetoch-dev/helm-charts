@@ -4,7 +4,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{ or ($cert_obj.name) ($cert_name) }}
+  name: {{ tpl ( or ($cert_obj.name) ($cert_name)) $ }}
 spec:
   secretName: {{ $cert_obj.secretName }}
   {{- if $cert_obj.commonName }}

@@ -4,7 +4,7 @@
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
-  name: {{ or ($issuer_obj.name) ($issuer_name) }}
+  name: {{ tpl ( or ($issuer_obj.name) ($issuer_name)) $ }}
 spec:
   {{- if $issuer_obj.selfSigned }}
   selfSigned: {}
