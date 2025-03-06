@@ -6,6 +6,7 @@ Braking changes:
 
 Features:
   * `all charts`: new global attr `ingress.class`
+  * `chart_deps/app/common`:  annotations can now use templates
   * `chart_deps/security/certificates`:
     * ability to create `ClusterIssuers`
     * ability to create `Issuers`
