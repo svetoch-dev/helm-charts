@@ -1,10 +1,32 @@
 renewBefore: 1440h0m0s #60 days
-certs: []
-#- name: somecert
-#  namespace: argocd
-#  secretName: somecert
-#  dnsNames:
-#  - "service.example.com"
-#  issuerRef:
-#    name: letsencrypt
-#    kind: ClusterIssuer
+certs: {}
+#  somecert:
+#    enabled: true
+#    namespace: argocd
+#    secretName: somecert
+#    dnsNames:
+#    - "service.example.com"
+#    issuerRef:
+#      name: letsencrypt
+#      kind: ClusterIssuer
+
+cluster_issuers: {}
+#  letsencrypt:
+#    enabled: true
+#    acme:
+#      server: https://acme-v02.api.letsencrypt.org/directory
+#      email: "sre@example.com"
+#      privateKeySecretRef:
+#        name: letsencrypt
+#      solvers:
+#      - selector:
+#          dnsZones:
+#          - "somecompany.name"
+#        http01:
+#          ingress:
+#            ingressClassName: kong
+
+issuers: {}
+#  selfsigned:
+#    enabled: true
+#    selfSigned: true

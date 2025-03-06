@@ -1,12 +1,17 @@
 {{- range $cluster_issuer_name, $cluster_issuer_obj := .Values.cluster_issuers -}}
+{{- if $cluster_issuer_obj.enabled }}
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: {{ $cluster_issuer_name }}
+  name: {{ tpl ( or ( $cluster_issuer_obj.name ) ($cluster_issuer_name)) $ }}
 spec:
+  {{- if $cluster_issuer_obj.selfSigned }}
+  selfSigned: {}
+  {{- end }}
   {{- with $cluster_issuer_obj.acme }}
   acme:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
 {{ end -}}
+{{- end }}

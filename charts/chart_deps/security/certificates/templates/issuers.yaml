@@ -1,0 +1,17 @@
+{{- range $issuer_name, $issuer_obj := .Values.issuers -}}
+{{- if $issuer_obj.enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ tpl ( or ($issuer_obj.name) ($issuer_name)) $ }}
+spec:
+  {{- if $issuer_obj.selfSigned }}
+  selfSigned: {}
+  {{- end }}
+  {{- with $issuer_obj.acme }}
+  acme:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+{{ end -}}
+{{- end }}

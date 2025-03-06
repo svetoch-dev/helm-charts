@@ -1,19 +1,23 @@
-{{- range $cert_obj := .Values.certs -}}
+{{- range $cert_name, $cert_obj := .Values.certs -}}
+{{- if $cert_obj.enabled }}
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: {{ $cert_obj.name }}
-  namespace: {{ $cert_obj.namespace }}
+  name: {{ tpl ( or ($cert_obj.name) ($cert_name)) $ }}
 spec:
   secretName: {{ $cert_obj.secretName }}
+  {{- if $cert_obj.commonName }}
+  commonName: {{ tpl ($cert_obj.commonName) $ }}
+  {{- end }}
   renewBefore: {{ or ($cert_obj.renewBefore) ($.Values.renewBefore)}}
   {{- with $cert_obj.dnsNames }}
   dnsNames:
-  {{- toYaml . | nindent 4 }}
+  {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   issuerRef:
   {{- range $key, $value := $cert_obj.issuerRef }}
     {{ $key }}: {{ tpl $value $ | quote }}
   {{- end }}
 {{ end -}}
+{{- end }}

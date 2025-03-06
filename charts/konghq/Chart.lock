@@ -1,9 +1,12 @@
 dependencies:
+- name: certificates
+  repository: file://../chart_deps/security/certificates
+  version: 0.1.0
 - name: kong-plugins
   repository: file://../chart_deps/konghq/plugins
   version: 0.1.0
 - name: kong
   repository: https://charts.konghq.com
   version: 2.37.1
-digest: sha256:18d9aaa131362f0cb520e096308a08d05004fde096c1b2829ae614e7cd0b1216
-generated: "2024-02-25T16:52:59.690925749Z"
+digest: sha256:37cab36c169acd8b19dd25277de45ee9772774edbf2b32ffd768dea0219bde01
+generated: "2025-03-05T18:14:17.958828995+03:00"

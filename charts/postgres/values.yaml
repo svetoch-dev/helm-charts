@@ -13,6 +13,8 @@ global:
   bucket:
     prefix:
     suffix:
+  ingress:
+    class: konghq
   env:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2

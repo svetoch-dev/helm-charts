@@ -8,7 +8,7 @@ kind: KongClusterPlugin
 kind: KongPlugin
 {{- end}}
 metadata:
-  name: {{ $plugin.name }}
+  name: {{ tpl ($plugin.name) $ }}
   labels:
 {{- if $plugin.global }}
     global: "true"
@@ -16,7 +16,7 @@ metadata:
 {{ include "kong-plugins.labels" $ | indent 4 }}
 {{- with $plugin.annotations }}
   annotations:
-{{- toYaml . | nindent 4 }}
+  {{- tpl (toYaml .) $ | nindent 4 }}
 {{- end }}
 disabled: {{ $plugin.disabled | default "false" }}
 plugin: {{ $plugin.plugin_name }}
