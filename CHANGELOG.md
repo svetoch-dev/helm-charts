@@ -6,6 +6,7 @@ Braking changes:
   * `gha-runner-scale-set`:
     * `gha-runner-scale-set-controller` moved to `gha-operator`
     * `gha-runner-scale-set` moved to `gha-runner`
+    * delete securityContext from `gha-runner`
 
 Features:
   * `all charts`: new global attr `ingress.class`
