@@ -1,4 +1,4 @@
-gha-runner-scale-set-controller:
+gha-operator:
   enabled: false
   serviceAccount:
     name: "gha-operator"

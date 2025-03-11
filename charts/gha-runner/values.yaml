@@ -1,4 +1,4 @@
-gha-runner-scale-set:
+gha-runner:
   enabled: false
   runnerScaleSetName: "infra-runner"
   kubernetesModeServiceAccount:
