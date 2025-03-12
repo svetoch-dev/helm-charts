@@ -1,4 +1,4 @@
-gha-runner-scale-set:
+gha-runner:
   enabled: false
   runnerScaleSetName: "infra-runner"
   kubernetesModeServiceAccount:
@@ -13,8 +13,6 @@ gha-runner-scale-set:
           storage: 2Gi
   template:
     spec:
-      securityContext:
-        fsGroup: 1001
       containers:
         - name: runner
           image: ghcr.io/actions/actions-runner:latest
@@ -34,6 +32,3 @@ gha-runner-scale-set:
 workflowConfigMap:
   enabled: false
   name: workflow-pod
-  spec:
-    securityContext:
-      fsGroup: 1001

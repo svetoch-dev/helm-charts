@@ -3,6 +3,10 @@
 Braking changes:
   * `cert-manager`: interface for creating `ClusterIssuer` obj have changed to using `certificates` chart in `chart_deps`
   * `konghq`: interface for creating `Issuer` and `Certificate` objs for webhooks have changed to using `certificates` chart in `chart_deps`
+  * `gha-runner-scale-set`:
+    * `gha-runner-scale-set-controller` moved to `gha-operator`
+    * `gha-runner-scale-set` moved to `gha-runner`
+    * delete securityContext from `gha-runner`
 
 Features:
   * `all charts`: new global attr `ingress.class`
@@ -11,6 +15,8 @@ Features:
     * ability to create `ClusterIssuers`
     * ability to create `Issuers`
     * `certs` are now dict
+  * update `gha-operator` subchart and crds 0.9.3 -> 0.10.1
+  * update `gha-runner` subchart 0.9.3 -> 0.10.1
 
 Enchancements:
   * `chart_deps/konghq/plugins`: use templates in plugin names
