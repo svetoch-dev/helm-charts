@@ -72,8 +72,10 @@ env:
 {{- with .Values.environment }}
 {{- tpl (toYaml .) $ | nindent 2 }}
 {{- end }}
-{{- and (with .Values.global.environment) (if not .Values.disableGlobalEnvironment) }}
+{{- if not .Values.disableGlobalEnvironment }}
+{{- with .Values.global.environment }}
 {{- tpl (toYaml .) $ | nindent 2 }}
+{{- end }}
 {{- end }}
 {{- end }}
 
