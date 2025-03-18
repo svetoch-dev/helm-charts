@@ -63,8 +63,10 @@ Create the name of the service account to use
 
 {{- define "common.env" }}
 env:
+{{- if not .Values.disableGlobalEnvironmentFromSecrets }}
 {{- with .Values.global.environmentFromSecrets }}
 {{- tpl (toYaml .) $ | nindent 2 }}
+{{- end }}
 {{- end }}
 {{- with .Values.environmentFromSecrets }}
 {{- tpl (toYaml .) $ | nindent 2 }}
