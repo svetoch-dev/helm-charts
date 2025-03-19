@@ -8,6 +8,9 @@ Braking changes:
     * `gha-runner-scale-set` moved to `gha-runner`
     * delete securityContext from `gha-runner`
 
+New features:
+  * `chart_deps/app`: supports ability to turn off global variables (and global secret vars.).
+
 Features:
   * `all charts`: new global attr `ingress.class`
   * `chart_deps/app/common`:  annotations can now use templates
