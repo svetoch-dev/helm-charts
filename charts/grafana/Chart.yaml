@@ -1,7 +1,7 @@
 apiVersion: v2
 name: grafana
 version: 0.1.0
-appVersion: "v11.3.0"
+appVersion: "v11.5.2"
 dependencies:
   - name: grafana-dashboards
     version: 0.1.0

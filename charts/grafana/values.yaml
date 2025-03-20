@@ -20,6 +20,9 @@ global:
 
 grafana-operator:
   enabled: false
+  env:
+    - name: RELATED_IMAGE_GRAFANA
+      value: "docker.io/grafana/grafana:11.5.2"
 
 grafana-main:
   enabled: false
