@@ -18,9 +18,11 @@ Features:
     * ability to create `ClusterIssuers`
     * ability to create `Issuers`
     * `certs` are now dict
-  * update `gha-operator` subchart and crds 0.9.3 -> 0.10.1
-  * update `gha-runner` subchart 0.9.3 -> 0.10.1
-  * update `kong` subchart and crds 2.37.1 -> 2.47.0
+  * subchart and crd updates: 
+    * `cert-manager` 1.14.3 -> 1.17.1
+    * `gha-operator` 0.9.3 -> 0.10.1
+    * `gha-runner` 0.9.3 -> 0.10.1
+    * `kong` 2.37.1 -> 2.47.0
 
 Enchancements:
   * `chart_deps/konghq/plugins`: use templates in plugin names
