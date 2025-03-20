@@ -24,6 +24,7 @@ Features:
     * `gha-runner` 0.9.3 -> 0.10.1
     * `kong` 2.37.1 -> 2.47.0
     * `external-dns` 6.34.2 -> 8.7.7
+    * `argo-cd` 7.4.5 -> 7.8.13
 
 Enchancements:
   * `chart_deps/konghq/plugins`: use templates in plugin names
