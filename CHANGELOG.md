@@ -20,6 +20,7 @@ Features:
     * `certs` are now dict
   * update `gha-operator` subchart and crds 0.9.3 -> 0.10.1
   * update `gha-runner` subchart 0.9.3 -> 0.10.1
+  * update `kong` subchart and crds 2.37.1 -> 2.47.0
 
 Enchancements:
   * `chart_deps/konghq/plugins`: use templates in plugin names
