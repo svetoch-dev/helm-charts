@@ -171,7 +171,6 @@ kube-state-metrics:
     services: false
     statefulsets: true
     storageclasses: false
-    verticalpodautoscalers: false
     validatingwebhookconfigurations: false
     volumeattachments: false
 
