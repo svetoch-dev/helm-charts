@@ -27,6 +27,16 @@ Features:
     * `argo-cd` 7.4.5 -> 7.8.13
     * `grafana-operator` 5.14.0 -> 5.17.0
     * `thanos` 15.7.25 -> 15.13.2
+    * `prometheus`
+      * `blackbox-exporter` 9.0.1 -> 9.4.0
+      * `node-exporter` 4.41.0 -> 4.45.0
+      * `stackdriver-exporter` 4.6.2 -> 4.8.2
+      * `kube-state-metrics` 4.2.14 -> 5.0.4
+      * `kube-prometheus-stack` 65.5.1 -> 70.2.1
+      * `thanos app` 0.36.1 -> 0.37.2
+      * `alertmanager app` 0.27.0 -> 0.28.1
+      * `prometheus app` ->
+      * `operator crds` 0.77.2 -> 0.81.0
 
 Enchancements:
   * `chart_deps/konghq/plugins`: use templates in plugin names
