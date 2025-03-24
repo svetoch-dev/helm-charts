@@ -18,4 +18,4 @@ dependencies:
   repository: oci://ghcr.io/grafana/helm-charts
   version: v5.17.0
 digest: sha256:49c4fe3ea2ac677a767dff75c4ccf716a859a7f62197a7bfbc570fd635dcd7a7
-generated: "2025-03-20T18:20:06.741992419Z"
+generated: "2025-03-24T20:44:12.165870309Z"
