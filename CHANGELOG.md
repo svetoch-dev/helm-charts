@@ -26,6 +26,7 @@ Features:
     * `external-dns` 6.34.2 -> 8.7.7
     * `argo-cd` 7.4.5 -> 7.8.13
     * `grafana-operator` 5.14.0 -> 5.17.0
+    * `thanos` 15.7.25 -> 15.13.2
 
 Enchancements:
   * `chart_deps/konghq/plugins`: use templates in plugin names
