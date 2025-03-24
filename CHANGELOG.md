@@ -26,6 +26,7 @@ Features:
     * `external-dns` 6.34.2 -> 8.7.7
     * `argo-cd` 7.4.5 -> 7.8.13
     * `grafana-operator` 5.14.0 -> 5.17.0
+    * `grafana app` 10.4.3 -> 11.5.2
     * `thanos` 15.7.25 -> 15.13.2
     * `prometheus`
       * `blackbox-exporter` 9.0.1 -> 9.4.0
