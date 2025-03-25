@@ -36,11 +36,14 @@ Features:
       * `kube-prometheus-stack` 65.5.1 -> 70.3.0
       * `thanos app` 0.36.1 -> 0.37.2
       * `alertmanager app` 0.27.0 -> 0.28.1
-      * `prometheus app` ->
+      * `prometheus app` 2.54.1 -> 2.55.1 #later3.2.1
       * `operator crds` 0.77.2 -> 0.81.0
 
 Enchancements:
   * `chart_deps/konghq/plugins`: use templates in plugin names
+
+fixes:
+  * delete kubeResources.verticalpodautoscalers unsupported variable from `prometheus chart` values
 
 # 8.3.1
 
