@@ -27,6 +27,7 @@ Features:
     * `argo-cd` 7.4.5 -> 7.8.13
     * `grafana-operator` 5.14.0 -> 5.17.0
     * `grafana app` 10.4.3 -> 11.5.2
+    * `rabbitmq-cluster-operator` 3.19.0 -> 4.4.6
     * `thanos` 15.7.25 -> 15.13.2
     * `prometheus`
       * `blackbox-exporter` 9.0.1 -> 9.4.0
@@ -44,6 +45,7 @@ Enchancements:
 
 fixes:
   * delete kubeResources.verticalpodautoscalers unsupported variable from `prometheus chart` values
+  * fix script for updating rabbitmq-cluster-operator crds
 
 # 8.3.1
 
