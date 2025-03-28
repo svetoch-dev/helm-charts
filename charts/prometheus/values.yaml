@@ -467,7 +467,7 @@ prometheus-rules:
             enabled: false
             for: "15m"
             description: "Pods replicas less than specified for '{{ $labels.deployment }}' for > 15m"
-            expr: (kube_deployment_spec_replicas * on (deployment) group_left (container) kube_deployment_labels) != (kube_deployment_status_replicas_available * on (deployment) group_left (container) kube_deployment_labels)
+            expr: (kube_deployment_spec_replicas * on (deployment, instance) group_left (container) kube_deployment_labels) != (kube_deployment_status_replicas_available * on (deployment, instance) group_left (container) kube_deployment_labels)
           Daemonset_not_ready:
             enabled: false
             for: "15m"
