@@ -48,6 +48,7 @@ fixes:
   * fix script for updating rabbitmq-cluster-operator crds
   * fix alert `High_memory_usage` (found duplicate series for the match group on the right hand-side of the operation)
   * fix alert `Pod_replicas_not_ready` (found duplicate series for the match group on the right hand-side of the operation)
+  * fix alert `RabbitMQ_High_memory(watermark)_usage` (found duplicate series for the match group on the right hand-side of the operation)
 
 # 8.3.1
 
