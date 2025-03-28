@@ -1,4 +1,40 @@
-# Copied from https://github.com/prometheus-community/helm-charts/tree/prometheus-postgres-exporter-5.0.0/charts/prometheus-postgres-exporter
+# What has changed from the original
+
+This is a copy of https://github.com/prometheus-community/helm-charts/tree/prometheus-postgres-exporter-5.0.0/charts/prometheus-postgres-exporter chart
+
+Changes made:
+* `config.serviceMonitor` attribute instead of individual attributes (like timeout, interval etc) excepts a list of endpoints in which you can configure all those attributes
+
+Example:
+
+```
+  serviceMonitor:
+    enabled: true
+    labels:
+      #prometheus selector
+      prometheus: main
+    endpoints:
+      - path: /probe
+        params:
+          target:
+            - some-cluster.postgres.svc.cluster.local/postgres
+          auth_module:
+            - monitoring_some_cluster
+        relabelings:
+          - targetLabel: label_app_kubernetes_io_instance
+            replacement: some-cluster-gcp-prd
+      - path: /probe
+        params:
+          target:
+            - another-cluster.postgres.svc.cluster.local/postgres
+          auth_module:
+            - monitoring_another_cluster
+        relabelings:
+          - targetLabel: label_app_kubernetes_io_instance
+            replacement: another-cluster-gcp-prd
+```
+
+
 # Prometheus Postgres Exporter
 
 Prometheus exporter for [PostgreSQL](https://www.postgresql.org/about/servers/) server metrics.
