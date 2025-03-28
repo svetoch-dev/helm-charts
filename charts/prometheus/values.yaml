@@ -538,7 +538,7 @@ prometheus-rules:
             enabled: false
             for: "30m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of Memory limit for > 30m"
-            expr: sum by (container, pod, namespace) (container_memory_working_set_bytes{namespace!="kube-system"}) / on (container, pod, namespace) kube_pod_container_resource_limits{unit="byte"} > 0.9
+            expr: sum by (container, pod, namespace) (container_memory_working_set_bytes{namespace!="kube-system"}) / on (container, pod, namespace) max by (container, pod, namespace) (kube_pod_container_resource_limits{unit="byte"}) > 0.9
           OOM_killed_pods_(on_node):
             enabled: false
             for: "1m"
