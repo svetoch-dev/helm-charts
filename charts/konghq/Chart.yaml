@@ -13,7 +13,7 @@ dependencies:
     repository: file://../chart_deps/konghq/plugins
     alias: kong-plugins
     condition: kong-plugins.enabled
-  #https://github.com/Kong/charts/tree/kong-2.47.0/charts/kong
+  #https://github.com/Kong/charts/tree/kong-2.48.0/charts/kong
   - name: kong
-    version: 2.47.0
+    version: 2.48.0
     repository: https://charts.konghq.com

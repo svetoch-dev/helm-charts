@@ -64,7 +64,7 @@ dependencies:
     version: 4.45.0
     alias: prometheus-node-exporter
     condition: prometheus-node-exporter.enabled
-  #https://github.com/bitnami/charts/tree/kube-state-metrics/5.0.4/bitnami/kube-state-metrics
+  #https://github.com/bitnami/charts/tree/main/bitnami/kube-state-metrics
   - name: kube-state-metrics
     version: 5.0.4
     repository: oci://registry-1.docker.io/bitnamicharts

@@ -1,7 +1,7 @@
 dependencies:
 - name: argo-cd
   repository: https://argoproj.github.io/argo-helm
-  version: 7.8.13
+  version: 7.8.15
 - name: certificates
   repository: file://../chart_deps/security/certificates
   version: 0.1.0
@@ -11,5 +11,5 @@ dependencies:
 - name: probes
   repository: file://../chart_deps/prometheus/probes
   version: 0.1.0
-digest: sha256:62936ce8dd681d63343e0b2a7fae53750d439597518ce40068cb5366a2283437
-generated: "2025-03-20T17:20:49.660882703Z"
+digest: sha256:4cadf6d723c06206987279610d3b0f803d1015b45266ea0d11e08e3681509570
+generated: "2025-03-31T19:34:54.573311389Z"
