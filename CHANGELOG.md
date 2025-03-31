@@ -20,8 +20,8 @@ Features:
     * `certs` are now dict
   * subchart and crd updates: 
     * `cert-manager` 1.14.3 -> 1.17.1
-    * `gha-operator` 0.9.3 -> 0.10.1
-    * `gha-runner` 0.9.3 -> 0.10.1
+    * `gha-operator` 0.9.3 -> 0.11.0
+    * `gha-runner` 0.9.3 -> 0.11.0
     * `kong` 2.37.1 -> 2.48.0
     * `external-dns` 6.34.2 -> 8.7.8
     * `argo-cd` 7.4.5 -> 7.8.15
