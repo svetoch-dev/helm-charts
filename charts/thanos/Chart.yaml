@@ -23,9 +23,9 @@ dependencies:
     repository: file://../chart_deps/konghq/plugins
     alias: kong-plugins
     condition: kong-plugins.enabled
-  #https://github.com/bitnami/charts/tree/thanos/15.13.2/bitnami/thanos
+  #https://github.com/bitnami/charts/tree/main/bitnami/thanos
   - name: thanos
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 15.13.2
+    version: 15.14.0
     alias: thanos
     condition: thanos.enabled

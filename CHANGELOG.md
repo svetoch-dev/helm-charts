@@ -28,7 +28,7 @@ Features:
     * `grafana-operator` 5.14.0 -> 5.17.0
     * `grafana app` 10.4.3 -> 11.6.0
     * `rabbitmq-cluster-operator` 3.19.0 -> 4.4.6
-    * `thanos` 15.7.25 -> 15.13.2
+    * `thanos` 15.7.25 -> 15.14.0
     * `prometheus`
       * `blackbox-exporter` 9.0.1 -> 9.4.0
       * `node-exporter` 4.41.0 -> 4.45.0
