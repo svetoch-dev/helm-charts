@@ -31,9 +31,9 @@ dependencies:
   version: 5.0.4
 - name: kube-prometheus-stack
   repository: https://prometheus-community.github.io/helm-charts
-  version: 70.3.0
+  version: 70.4.1
 - name: prometheus-stackdriver-exporter
   repository: https://prometheus-community.github.io/helm-charts
   version: 4.8.2
-digest: sha256:2e80ff690491a02024411c2145f64c0f9f04de37571775d3b027d58746955117
-generated: "2025-03-31T19:53:55.948777836Z"
+digest: sha256:d03ec173693b98ed396d0c70b38b4e722203f3114a3bc969f5e79e4e5397af9a
+generated: "2025-04-01T20:34:28.577935832Z"

@@ -34,7 +34,7 @@ Features:
       * `node-exporter` 4.41.0 -> 4.45.0
       * `stackdriver-exporter` 4.6.2 -> 4.8.2
       * `kube-state-metrics` 4.2.14 -> 5.0.4
-      * `kube-prometheus-stack` 65.5.1 -> 70.3.0
+      * `kube-prometheus-stack` 65.5.1 -> 70.4.1
       * `thanos app` 0.36.1 -> 0.37.2
       * `alertmanager app` 0.27.0 -> 0.28.1
       * `prometheus app` 2.54.1 -> 3.2.1
