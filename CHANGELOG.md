@@ -24,7 +24,7 @@ Features:
     * `gha-runner` 0.9.3 -> 0.11.0
     * `kong` 2.37.1 -> 2.48.0
     * `external-dns` 6.34.2 -> 8.7.8
-    * `argo-cd` 7.4.5 -> 7.8.15
+    * `argo-cd` 7.4.5 -> 7.8.18
     * `grafana-operator` 5.14.0 -> 5.17.0
     * `grafana app` 10.4.3 -> 11.6.0
     * `rabbitmq-cluster-operator` 3.19.0 -> 4.4.6
