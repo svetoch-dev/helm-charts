@@ -39,9 +39,11 @@ Features:
       * `alertmanager app` 0.27.0 -> 0.28.1
       * `prometheus app` 2.54.1 -> 3.2.1
       * `operator crds` 0.77.2 -> 0.81.0
+      * `postgres-exporter` 5.3.0 -> 6.10.0
 
 Enchancements:
   * `chart_deps/konghq/plugins`: use templates in plugin names
+  * `postgres-exporter` uses prometheus-community helm-charts
 
 fixes:
   * delete kubeResources.verticalpodautoscalers unsupported variable from `prometheus chart` values
@@ -49,6 +51,7 @@ fixes:
   * fix alert `High_memory_usage` (found duplicate series for the match group on the right hand-side of the operation)
   * fix alert `Pod_replicas_not_ready` (found duplicate series for the match group on the right hand-side of the operation)
   * fix alert `RabbitMQ_High_memory(watermark)_usage` (found duplicate series for the match group on the right hand-side of the operation)
+  * fix scripts for updating RabbitMQ and external-dns crds
 
 # 8.3.1
 
