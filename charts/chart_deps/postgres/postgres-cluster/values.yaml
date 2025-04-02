@@ -41,8 +41,7 @@ nodeAffinity: {}
 podMonitor:
   enabled: false
   labels: {}
-  prometheusSelector:
-    prometheus: main
+  prometheusSelector: {}
   podTargetLabels: []
   podMetricsEndpoints:
     - port: metrics

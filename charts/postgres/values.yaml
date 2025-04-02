@@ -165,10 +165,10 @@ postgres-main:
 #        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_TABLES
 #          value: "true"
 #
-#  podMonitor:
-#    enabled: true
-#    prometheusSelector:
-#      prometheus: main
+  podMonitor:
+    enabled: false
+    prometheusSelector:
+      prometheus: main
 #    podMetricsEndpoints:
 #      - port: metrics
 #        relabelings:
