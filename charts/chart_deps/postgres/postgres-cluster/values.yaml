@@ -41,10 +41,11 @@ nodeAffinity: {}
 podMonitor:
   enabled: false
   labels: {}
-  prometheusSelector: {}
+  prometheusSelector:
+    prometheus: main
   podTargetLabels: []
   podMetricsEndpoints:
-    - targetPort: 9187
+    - port: metrics
       relabelings:
         - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
           action: Replace

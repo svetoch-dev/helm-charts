@@ -44,6 +44,7 @@ Features:
 Enchancements:
   * `chart_deps/konghq/plugins`: use templates in plugin names
   * `postgres-exporter` uses prometheus-community helm-charts
+  * set default `prometheusSelector "prometheus: main"`
 
 fixes:
   * delete kubeResources.verticalpodautoscalers unsupported variable from `prometheus chart` values
@@ -51,6 +52,7 @@ fixes:
   * fix alert `Pod_replicas_not_ready` (found duplicate series for the match group on the right hand-side of the operation)
   * fix alert `RabbitMQ_High_memory(watermark)_usage` (found duplicate series for the match group on the right hand-side of the operation)
   * fix scripts for updating rabbitmq-cluster-operator and external-dns crds
+  * use 'port' instead of `deprecated 'targetPort'` in `postgres podmonitor`
 
 # 8.3.1
 
