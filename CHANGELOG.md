@@ -44,7 +44,7 @@ Features:
 Enchancements:
   * `chart_deps/konghq/plugins`: use templates in plugin names
   * `postgres-exporter` uses prometheus-community helm-charts
-  * set default `prometheusSelector "prometheus: main"`
+  * set default `prometheusSelector "prometheus: main"` in `postgres podMonitor` values
 
 fixes:
   * delete kubeResources.verticalpodautoscalers unsupported variable from `prometheus chart` values
