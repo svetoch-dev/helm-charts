@@ -165,18 +165,18 @@ postgres-main:
 #        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_TABLES
 #          value: "true"
 #
-#  podMonitor:
-#    enabled: true
-#    prometheusSelector:
-#      prometheus: main
+  podMonitor:
+    enabled: false
+    prometheusSelector:
+      prometheus: main
 #    podMetricsEndpoints:
-#      - targetPort: 9187
+#      - port: metrics
 #        relabelings:
 #          - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
 #            action: Replace
 #            regex: (.*)
 #            targetLabel: label_app_kubernetes_io_instance
-#      - targetPort: 9188
+#      - port: metrics-2
 #        relabelings:
 #          - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
 #            action: Replace

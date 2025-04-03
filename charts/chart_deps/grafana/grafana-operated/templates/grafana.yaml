@@ -6,6 +6,9 @@ metadata:
 {{- toYaml .Values.selector | nindent 4 }}
   name: {{ include "grafana-operated.fullname" . }}
 spec:
+  {{- if .Values.version }}
+  version: {{ .Values.version }}
+  {{- end }}
   {{- with .Values.client }}
   client:
   {{- tpl (toYaml .) $ | nindent 4 }}

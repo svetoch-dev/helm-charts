@@ -18,11 +18,41 @@ Features:
     * ability to create `ClusterIssuers`
     * ability to create `Issuers`
     * `certs` are now dict
-  * update `gha-operator` subchart and crds 0.9.3 -> 0.10.1
-  * update `gha-runner` subchart 0.9.3 -> 0.10.1
+  * subchart and crd updates: 
+    * `cert-manager` 1.14.3 -> 1.17.1
+    * `gha-operator` 0.9.3 -> 0.11.0
+    * `gha-runner` 0.9.3 -> 0.11.0
+    * `kong` 2.37.1 -> 2.48.0
+    * `external-dns` 6.34.2 -> 8.7.8
+    * `argo-cd` 7.4.5 -> 7.8.18
+    * `grafana-operator` 5.14.0 -> 5.17.0
+    * `grafana app` 10.4.3 -> 11.6.0
+    * `rabbitmq-cluster-operator` 3.19.0 -> 4.4.6
+    * `thanos` 15.7.25 -> 15.14.0
+    * `prometheus`
+      * `blackbox-exporter` 9.0.1 -> 9.4.0
+      * `node-exporter` 4.41.0 -> 4.45.0
+      * `stackdriver-exporter` 4.6.2 -> 4.8.2
+      * `kube-state-metrics` 4.2.14 -> 5.0.4
+      * `kube-prometheus-stack` 65.5.1 -> 70.4.1
+      * `thanos app` 0.36.1 -> 0.37.2
+      * `alertmanager app` 0.27.0 -> 0.28.1
+      * `prometheus app` 2.54.1 -> 3.2.1
+      * `operator crds` 0.77.2 -> 0.81.0
+      * `postgres-exporter` 5.3.0 -> 6.10.0
 
 Enchancements:
   * `chart_deps/konghq/plugins`: use templates in plugin names
+  * `postgres-exporter` uses prometheus-community helm-charts
+  * set default `prometheusSelector "prometheus: main"` in `postgres podMonitor` values
+
+fixes:
+  * delete kubeResources.verticalpodautoscalers unsupported variable from `prometheus chart` values
+  * fix alert `High_memory_usage` (found duplicate series for the match group on the right hand-side of the operation)
+  * fix alert `Pod_replicas_not_ready` (found duplicate series for the match group on the right hand-side of the operation)
+  * fix alert `RabbitMQ_High_memory(watermark)_usage` (found duplicate series for the match group on the right hand-side of the operation)
+  * fix scripts for updating rabbitmq-cluster-operator and external-dns crds
+  * use 'port' instead of `deprecated 'targetPort'` in `postgres podmonitor`
 
 # 8.3.1
 

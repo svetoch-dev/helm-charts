@@ -171,7 +171,6 @@ kube-state-metrics:
     services: false
     statefulsets: true
     storageclasses: false
-    verticalpodautoscalers: false
     validatingwebhookconfigurations: false
     volumeattachments: false
 
@@ -299,8 +298,8 @@ prometheus-main:
     spec:
       enableAdminAPI: true
       thanos:
-        image: quay.io/thanos/thanos:v0.36.1
-        version: v0.36.1
+        image: quay.io/thanos/thanos:v0.37.2
+        version: v0.37.2
         objectStorageConfig:
           key: objstore.yml
           name: thanos
@@ -468,7 +467,7 @@ prometheus-rules:
             enabled: false
             for: "15m"
             description: "Pods replicas less than specified for '{{ $labels.deployment }}' for > 15m"
-            expr: (kube_deployment_spec_replicas * on (deployment) group_left (container) kube_deployment_labels) != (kube_deployment_status_replicas_available * on (deployment) group_left (container) kube_deployment_labels)
+            expr: (kube_deployment_spec_replicas * on (deployment, instance) group_left (container) kube_deployment_labels) != (kube_deployment_status_replicas_available * on (deployment, instance) group_left (container) kube_deployment_labels)
           Daemonset_not_ready:
             enabled: false
             for: "15m"
@@ -484,7 +483,7 @@ prometheus-rules:
             enabled: false
             for: "20m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of 'Memory high watermark' limit for > 20m"
-            expr: sum by (container,pod,namespace) (container_memory_working_set_bytes{container="rabbitmq"}) / on(container,pod,namespace) rabbitmq_detailed_resident_memory_limit_bytes > 0.9
+            expr: sum by (container,pod,namespace) (container_memory_working_set_bytes{container="rabbitmq"}) / on(container,pod,namespace) max by (container,pod,namespace) (rabbitmq_detailed_resident_memory_limit_bytes) > 0.9
           # redis
           Redis_missing_master:
             enabled: false
@@ -539,7 +538,7 @@ prometheus-rules:
             enabled: false
             for: "30m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of Memory limit for > 30m"
-            expr: sum by (container, pod, namespace) (container_memory_working_set_bytes{namespace!="kube-system"}) / on (container, pod, namespace) kube_pod_container_resource_limits{unit="byte"} > 0.9
+            expr: sum by (container, pod, namespace) (container_memory_working_set_bytes{namespace!="kube-system"}) / on (container, pod, namespace) max by (container, pod, namespace) (kube_pod_container_resource_limits{unit="byte"}) > 0.9
           OOM_killed_pods_(on_node):
             enabled: false
             for: "1m"
