@@ -23,6 +23,7 @@ grafana-operator:
 
 grafana-main:
   enabled: false
+  version: "11.6.0"
   selector:
     grafana: main
   config:
