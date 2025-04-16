@@ -33,7 +33,7 @@ certificates:
       dnsNames:
       - 'authn.{{ .Values.global.company.domain.env }}'
       issuerRef:
-        kind: Issuer
+        kind: ClusterIssuer
         name: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
   cluster_issuers:
     letsencrypt:
