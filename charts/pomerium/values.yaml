@@ -34,7 +34,7 @@ certificates:
       - 'authn.{{ .Values.global.company.domain.env }}'
       issuerRef:
         kind: Issuer
-        name: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+        name: '{{ printf "letsencrypt-%s" "konghq" }}'
   cluster_issuers:
     letsencrypt:
       enabled: false
