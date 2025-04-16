@@ -10,6 +10,8 @@ metadata:
   name: {{ tpl $service.name $ }}
   labels:
 {{- $labels | nindent 4 }}
+  annotations:
+  {{- tpl (toYaml $service.annotations) $ | nindent 4 }}
 spec:
   type: {{ $service.type }}
   {{- with $service.ports }}
