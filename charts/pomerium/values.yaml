@@ -139,10 +139,6 @@ controller:
       port: 443
       protocol: TCP
       targetPort: https
-    - name: quic
-      port: 443
-      protocol: UDP
-      targetPort: quic
     - name: http
       port: 80
       protocol: TCP
@@ -161,11 +157,6 @@ controller:
     name: metrics
     protocol: TCP
   podSecurityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-      - ALL
-    readOnlyRootFilesystem: true
     runAsGroup: 65532
     runAsNonRoot: true
     runAsUser: 65532
