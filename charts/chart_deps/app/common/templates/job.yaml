@@ -1,0 +1,7 @@
+{{- $job := mustDeepCopy .Values.job }}
+{{- if not $job.selectorLabels }}
+{{- $selectorLabels := include "common.selectorLabels" . | fromYaml }}
+{{- $selectorLabels := set $selectorLabels "app.kubernetes.io/workload" "job" }}
+{{- $job := set $job "selectorLabels" $selectorLabels }}
+{{- end }}
+{{- include "workloads.job" (list . (include "common.labels" .) $job )}}
