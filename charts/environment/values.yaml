@@ -75,6 +75,15 @@ crds:
   syncPolicy: {}
 
 chart_apps:
+  pomerium:
+    enabled: false
+    values: |
+      global:
+        company: {{ .Values.company | toYaml | nindent 6 }}
+        registry: {{ .Values.registry | toYaml | nindent 6 }}
+        bucket: {{ .Values.bucket | toYaml | nindent 6 }}
+        network: {{ .Values.network | toYaml | nindent 6 }}
+        env: {{ .Values.env | toYaml | nindent 6 }}
   postgres:
     enabled: false
     values: |

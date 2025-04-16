@@ -1,0 +1,7 @@
+apiVersion: ingress.pomerium.io/v1
+kind: Pomerium
+metadata:
+  name: {{ tpl .Values.pomerium.name . }}
+spec:
+  {{ tpl (toYaml .Values.pomerium.spec) . | nindent 2 }}
+

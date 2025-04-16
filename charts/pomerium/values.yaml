@@ -2,10 +2,75 @@ global:
   image:
     repository: pomerium/ingress-controller
     tag: v0.29.0
+  company:
+    name: #example
+    domain:
+      root: #example.com
+      env: #int.example.com, dev.example.com, prd.example.com etc
+  network:
+    int_nat_gw:
+  registry:
+    url:
+  bucket:
+    prefix:
+    suffix:
+  ingress:
+    class: pomerium
+  env:
+    name: #aws-prd or aws-int or aws-stg
+    server: #https://2.2.2.2
+    short_name: #pre/prd/int/dev/etc
 
+
+ingressClassName: '{{ .Values.global.ingress.class }}'
+
+certificates:
+  enabled: false
+  certs:
+    authn:
+      enabled: false
+      secretName: authn-tls
+      dnsNames:
+      - 'authn.{{ .Values.global.company.domain.env }}'
+      issuerRef:
+        kind: Issuer
+        name: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+  cluster_issuers:
+    letsencrypt:
+      enabled: false
+      name: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+      acme:
+        server: https://acme-v02.api.letsencrypt.org/directory
+        email: "sre@{{ .Values.global.company.domain.root }}"
+        privateKeySecretRef:
+          name: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+        solvers:
+        - selector:
+            dnsZones:
+            #Full host name is set
+            #using .Values.company.domain.env
+            #variable of environment
+            #argocd/environments/<env>/env.yaml
+            - "{{ .Values.global.company.domain.env }}"
+          http01:
+            ingress:
+              ingressClassName: "{{ .Values.global.ingress.class }}"
+
+
+pomerium:
+  name: global
+  spec:
+    authenticate:
+      url: "https://authn.{{ .Values.global.company.domain.env }}"
+    certificates:
+    - '{{ .Release.Namespace }}/authn-tls'
+    identityProvider:
+      provider: google
+      secret: '{{ .Release.Namespace }}/sso'
+    secrets: '{{ .Release.Namespace }}/bootstrap'
 
 gen-secrets:
-  enabled: true
+  enabled: false
   deploymentEnabled: false
   service:
     enabled: false
@@ -35,7 +100,7 @@ gen-secrets:
       - get
 
 controller:
-  enabled: true
+  enabled: false
   additionalServices:
   - name: '{{ include "common.fullname" . }}-metrics'
     enabled: true

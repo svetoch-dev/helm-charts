@@ -34,3 +34,8 @@ dependencies:
     repository: file://../chart_deps/app/common/
     alias: gen-secrets
     condition: gen-secrets.enabled
+  - name: certificates
+    version: 0.1.0
+    repository: file://../chart_deps/security/certificates
+    alias: certificates
+    condition: certificates.enabled
