@@ -1,0 +1,165 @@
+global:
+  image:
+    repository: pomerium/ingress-controller
+    tag: v0.29.0
+
+
+gen-secrets:
+  enabled: true
+  deploymentEnabled: false
+  service:
+    enabled: false
+  job:
+    enabled: true
+    args:
+    - gen-secrets
+    - --secrets=$(POD_NAMESPACE)/bootstrap
+    environment:
+    - name: POD_NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    podSecurityContext:
+      fsGroup: 1000
+      runAsNonRoot: true
+      runAsUser: 1000
+  role:
+    enabled: true
+    rules:
+    - apiGroups:
+      - ""
+      resources:
+      - secrets
+      verbs:
+      - create
+      - get
+
+controller:
+  enabled: true
+  additionalServices:
+  - name: '{{ include "common.fullname" . }}-metrics'
+    enabled: true
+    type: ClusterIP
+    ports:
+    - name: metrics
+      port: 9090
+      protocol: TCP
+      targetPort: metrics
+  args:
+  - all-in-one
+  - --pomerium-config=global
+  - --update-status-from-service=$(POMERIUM_NAMESPACE)/pomerium-proxy
+  - --metrics-bind-address=$(POD_IP):9090
+  environment:
+  - name: TMPDIR
+    value: /tmp
+  - name: XDG_CACHE_HOME
+    value: /tmp
+  - name: POMERIUM_NAMESPACE
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: metadata.namespace
+  - name: POD_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
+  service:
+    type: LoadBalancer
+    externalTrafficPolicy: Local
+    ports:
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: https
+    - name: quic
+      port: 443
+      protocol: UDP
+      targetPort: quic
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: http
+  ports:
+  - containerPort: 8443
+    name: https
+    protocol: TCP
+  - containerPort: 443
+    name: quic
+    protocol: UDP
+  - containerPort: 8080
+    name: http
+    protocol: TCP
+  - containerPort: 9090
+    name: metrics
+    protocol: TCP
+  podSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsGroup: 65532
+    runAsNonRoot: true
+    runAsUser: 65532
+  clusterRole:
+    enabled: true
+    rules:
+    - apiGroups:
+      - ""
+      resources:
+      - services
+      - endpoints
+      - secrets
+      verbs:
+      - get
+      - list
+      - watch
+    - apiGroups:
+      - ""
+      resources:
+      - services/status
+      - secrets/status
+      - endpoints/status
+      verbs:
+      - get
+    - apiGroups:
+      - networking.k8s.io
+      resources:
+      - ingresses
+      - ingressclasses
+      verbs:
+      - get
+      - list
+      - watch
+    - apiGroups:
+      - networking.k8s.io
+      resources:
+      - ingresses/status
+      verbs:
+      - get
+      - patch
+      - update
+    - apiGroups:
+      - ingress.pomerium.io
+      resources:
+      - pomerium
+      verbs:
+      - get
+      - list
+      - watch
+    - apiGroups:
+      - ingress.pomerium.io
+      resources:
+      - pomerium/status
+      verbs:
+      - get
+      - update
+      - patch
+    - apiGroups:
+      - ""
+      resources:
+      - events
+      verbs:
+      - create
+      - patch
