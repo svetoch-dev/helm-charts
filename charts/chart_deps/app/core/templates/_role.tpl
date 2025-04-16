@@ -1,4 +1,4 @@
-{{- define "roles.role" -}}
+{{- define "core.role" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 }}
 {{- $role   := index . 2 }}

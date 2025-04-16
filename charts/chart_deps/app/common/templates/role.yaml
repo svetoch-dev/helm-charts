@@ -1,1 +1,1 @@
-{{- include "roles.role" (list . (include "common.labels" .) .Values.role )}}
+{{- include "core.role" (list . (include "common.labels" .) .Values.role )}}

@@ -24,12 +24,6 @@ version: 0.1.0
 appVersion: "0.1.0"
 
 dependencies:
-  - name: roles
+  - name: core
     version: 0.1.0
-    repository: file://../roles/
-  - name: workloads
-    version: 0.1.0
-    repository: file://../workloads/
-  - name: networking
-    version: 0.1.0
-    repository: file://../networking/
+    repository: file://../core/

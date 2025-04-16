@@ -1,4 +1,4 @@
-{{- define "workloads.job" -}}
+{{- define "core.job" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 }}
 {{- $job := index . 2 }}

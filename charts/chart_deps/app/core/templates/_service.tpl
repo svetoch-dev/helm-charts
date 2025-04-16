@@ -1,4 +1,4 @@
-{{- define "networking.service" -}}
+{{- define "core.service" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 }}
 {{- $service := index . 2 }}

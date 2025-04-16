@@ -1,4 +1,4 @@
-{{- define "roles.clusterrole" -}}
+{{- define "core.clusterrole" -}}
 {{- $ := index . 0 }}
 {{- $labels      := index . 1 }}
 {{- $clusterRole := index . 2 }}

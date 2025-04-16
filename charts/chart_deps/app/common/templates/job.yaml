@@ -4,4 +4,4 @@
 {{- $selectorLabels := set $selectorLabels "app.kubernetes.io/workload" "job" }}
 {{- $job := set $job "selectorLabels" $selectorLabels }}
 {{- end }}
-{{- include "workloads.job" (list . (include "common.labels" .) $job )}}
+{{- include "core.job" (list . (include "common.labels" .) $job )}}

@@ -1,12 +1,6 @@
 dependencies:
-- name: roles
-  repository: file://../roles/
+- name: core
+  repository: file://../core/
   version: 0.1.0
-- name: workloads
-  repository: file://../workloads/
-  version: 0.1.0
-- name: networking
-  repository: file://../networking/
-  version: 0.1.0
-digest: sha256:923a3f7064b0dcd73451e3cace9f4070cd7d066673121d88e081e76d431af47b
-generated: "2025-04-16T15:51:58.223393652+03:00"
+digest: sha256:b4dd9b62baeea97d58a6e8f33078a8d690ef401dc3f710095d7df56c3ca22a99
+generated: "2025-04-16T18:03:13.424920609+03:00"

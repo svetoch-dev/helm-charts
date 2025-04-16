@@ -1,4 +1,4 @@
-{{- define "roles.serviceAccount" -}}
+{{- define "core.serviceAccount" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 }}
 {{- $serviceAccount := index . 2 }}

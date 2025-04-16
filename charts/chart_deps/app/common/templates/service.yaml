@@ -3,4 +3,4 @@
 {{- $selectorLabels := include "common.selectorLabels" . | fromYaml }}
 {{- $service := set $service "selectorLabels" $selectorLabels }}
 {{- end }}
-{{- include "networking.service" (list . (include "common.labels" .) $service )}}
+{{- include "core.service" (list . (include "common.labels" .) $service )}}
