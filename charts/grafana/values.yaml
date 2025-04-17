@@ -24,9 +24,9 @@ global:
 ingresses:
   main:
     enabled: false
-    name: '{{ include "grafana-operated.fullname" . }}-main'
+    name: '{{ include "grafana.fullname" . }}-main'
     service:
-      name: '{{ include "grafana-operated.fullname" . }}-service'
+      name: '{{ include "grafana.fullname" . }}-grafana-main-service'
       port: 3000
     className: "{{ .Values.global.ingress.class }}"
     annotations:
