@@ -138,9 +138,6 @@ chart_apps:
           host: rfrm-argocd-{{ .Values.env.name }}-redis
           port: 6379
           existingSecret: "argocd-redis"
-        server:
-          ingress:
-            hostname: "argocd.{{ .Values.company.domain.env }}"
   prometheus:
     enabled: false
     values: |

@@ -22,3 +22,6 @@ dependencies:
     repository: file://../chart_deps/prometheus/probes
     alias: probes
     condition: probes.enabled
+  - name: core
+    version: 0.1.0
+    repository: file://../chart_deps/app/core
