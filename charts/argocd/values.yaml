@@ -52,7 +52,7 @@ ingresses:
       hosts:
       - "argocd.{{ .Values.global.company.domain.env }}"
 
-argocd:
+argo-cd:
   enabled: false
   crds:
     install: false
