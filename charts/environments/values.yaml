@@ -26,6 +26,7 @@ repository:
 defaultValuesTpl: |
   company:
     name: {{ .Values.company.name }}
+    admins: {{ .Values.company.admins | toYaml | nindent 4 }}
     domain:
       root: {{ .Values.company.domain.root }}
       env: {{ printf "%s.%s" .env.short_name .Values.company.domain.root }}
