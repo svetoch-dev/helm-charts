@@ -4,6 +4,9 @@ global:
     tag: v0.29.0
   company:
     name: #example
+    admins:
+      domain: ""
+      emails: []
     domain:
       root: #example.com
       env: #int.example.com, dev.example.com, prd.example.com etc
