@@ -134,6 +134,7 @@ controller:
       fieldRef:
         fieldPath: status.podIP
   service:
+    name: pomerium-proxy
     type: LoadBalancer
     annotations:
       external-dns.alpha.kubernetes.io/hostname: "authn.{{ .Values.global.company.domain.env }}."
