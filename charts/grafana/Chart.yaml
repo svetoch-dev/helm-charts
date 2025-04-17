@@ -34,3 +34,6 @@ dependencies:
     alias: grafana-operator
     condition: grafana-operator.enabled
     repository: oci://ghcr.io/grafana/helm-charts
+  - name: core
+    version: 0.1.0
+    repository: file://../chart_deps/app/core

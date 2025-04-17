@@ -15,11 +15,39 @@ global:
     prefix:
     suffix:
   ingress:
-    class: konghq
+    class: pomerium
   env:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2
     short_name: #pre/prd/int/dev/etc
+
+ingresses:
+  main:
+    enabled: false
+    name: '{{ include "grafana-operated.fullname" . }}-main'
+    service:
+      name: '{{ include "grafana-operated.fullname" . }}-service'
+      port: 3000
+    className: "{{ .Values.global.ingress.class }}"
+    annotations:
+      cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+      ingress.pomerium.io/pass_identity_headers: 'true'
+      ingress.pomerium.io/policy: |
+        allow:
+          or:
+            {{- range $email := .Values.global.company.admins.emails }}
+            - email:
+                is: {{ $email }}
+            {{- end }}
+    hosts:
+      - host: "grafana.{{ .Values.global.company.domain.env }}"
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - "grafana.{{ .Values.global.company.domain.env }}"
 
 grafana-operator:
   enabled: false
@@ -46,12 +74,42 @@ grafana-main:
       default_theme: dark
     alerting:
       enabled: "false"
+    server:
+      root_url: https://grafana.{{ .Values.global.company.domain.env }}
   deployment:
     spec:
       template:
         metadata:
           labels:
             app.kubernetes.io/instance: grafana-{{ .Values.global.env.name }}
+        spec:
+          containers:
+            - name: grafana
+              resources:
+                limits:
+                  cpu: 500m
+                  memory: 250Mi
+                requests:
+                  cpu: 10m
+                  memory: 65Mi
+              env:
+                - name: GF_AUTH_SIGNOUT_REDIRECT_URL
+                  value: 'https://grafana.{{ .Values.global.company.domain.env }}/.pomerium/sign_out'
+                - name: GF_AUTH_JWT_ENABLED
+                  value: 'true'
+                - name: GF_AUTH_JWT_HEADER_NAME
+                  value: 'X-Pomerium-Jwt-Assertion'
+                - name: GF_AUTH_JWT_EMAIL_CLAIM
+                  value: email
+                - name: GF_AUTH_JWT_USERNAME_CLAIM
+                  value: email
+                - name: GF_AUTH_JWT_JWK_SET_URL
+                  value: 'https://authn.{{ .Values.global.company.domain.env }}/.well-known/pomerium/jwks.json'
+                - name: GF_AUTH_JWT_CACHE_TTL
+                  value: 60m
+                - name: GF_AUTH_JWT_AUTO_SIGN_UP
+                  value: 'true'
+
 
 datasource:
   enabled: false
