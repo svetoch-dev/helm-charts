@@ -24,6 +24,8 @@ global:
     server: #https://2.2.2.2
     short_name: #pre/prd/int/dev/etc
 
+#Cant use pomerium jwt to create users in argocd
+#until this is merged https://github.com/argoproj/argo-cd/pull/20928
 ingresses:
   server:
     enabled: false
