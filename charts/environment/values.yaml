@@ -114,10 +114,6 @@ chart_apps:
         bucket: {{ .Values.bucket | toYaml | nindent 6 }}
         network: {{ .Values.network | toYaml | nindent 6 }}
         env: {{ .Values.env | toYaml | nindent 6 }}
-      kong:
-        proxy:
-          annotations:
-            external-dns.alpha.kubernetes.io/hostname: "*.{{ .Values.company.domain.env }}."
   cert-manager:
     enabled: false
     values: |
