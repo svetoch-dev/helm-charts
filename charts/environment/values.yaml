@@ -136,7 +136,7 @@ chart_apps:
         bucket: {{ .Values.bucket | toYaml | nindent 6 }}
         network: {{ .Values.network | toYaml | nindent 6 }}
         environment: {{ .Values.env | toYaml | nindent 6 }}
-      argo-cd:
+      argocd:
         externalRedis:
           host: rfrm-argocd-{{ .Values.env.name }}-redis
           port: 6379
