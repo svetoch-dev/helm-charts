@@ -26,6 +26,10 @@ ingressClassName: '{{ .Values.global.ingress.class }}'
 
 certificates:
   enabled: false
+  issuers:
+    selfsigned:
+      enabled: false
+      selfSigned: true
   certs:
     authn:
       enabled: false
@@ -33,8 +37,8 @@ certificates:
       dnsNames:
       - 'authn.{{ .Values.global.company.domain.env }}'
       issuerRef:
-        kind: ClusterIssuer
-        name: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+        kind: Issuer
+        name: selfsigned
   cluster_issuers:
     letsencrypt:
       enabled: false
