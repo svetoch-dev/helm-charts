@@ -27,7 +27,7 @@ global:
 ingresses:
   server:
     enabled: false
-    name: '{{ include "argocd.fullname" . }}-server'
+    name: '{{ include "argocd.fullname" . }}-srv'
     service:
       name: '{{ include "argocd.fullname" . }}-server'
       port: 80
@@ -39,7 +39,7 @@ ingresses:
         allow:
           or:
             {{- range $email := .Values.global.company.admins.emails }}
-            - user:
+            - email:
                 is: {{ $email }}
             {{- end }}
     hosts:
