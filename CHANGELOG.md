@@ -4,7 +4,7 @@ Braking changes:
   * `cert-manager`: interface for creating `ClusterIssuer` obj have changed to using `certificates` chart in `chart_deps`
   * `konghq`: 
     * interface for creating `Issuer` and `Certificate` objs for webhooks have changed to using `certificates` chart in `chart_deps`
-    * remove `*` dns record annotations of external dns this is needed in order to properly handle different ingress controllers
+    * remove `*` dns record annotations of external dns, this is needed in order to handle properly different ingress controllers
   * `gha-runner-scale-set`:
     * `gha-runner-scale-set-controller` moved to `gha-operator`
     * `gha-runner-scale-set` moved to `gha-runner`
