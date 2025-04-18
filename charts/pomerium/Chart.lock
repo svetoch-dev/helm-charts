@@ -1,0 +1,12 @@
+dependencies:
+- name: common
+  repository: file://../chart_deps/app/common/
+  version: 0.1.0
+- name: common
+  repository: file://../chart_deps/app/common/
+  version: 0.1.0
+- name: certificates
+  repository: file://../chart_deps/security/certificates
+  version: 0.1.0
+digest: sha256:52fb3f89298bfc18b4d73f5cdc59082b813fe25ed66c0465f389ac6aa943d78a
+generated: "2025-04-16T19:05:53.094197307+03:00"

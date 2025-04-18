@@ -2,6 +2,9 @@ labels: {}
 
 company:
   name: #example
+  admins:
+    domain: ""
+    emails: []
   domain:
     root: #example.com
     env: #int.example.com, dev.example.com, prd.example.com etc
@@ -75,6 +78,15 @@ crds:
   syncPolicy: {}
 
 chart_apps:
+  pomerium:
+    enabled: false
+    values: |
+      global:
+        company: {{ .Values.company | toYaml | nindent 6 }}
+        registry: {{ .Values.registry | toYaml | nindent 6 }}
+        bucket: {{ .Values.bucket | toYaml | nindent 6 }}
+        network: {{ .Values.network | toYaml | nindent 6 }}
+        env: {{ .Values.env | toYaml | nindent 6 }}
   postgres:
     enabled: false
     values: |
@@ -102,10 +114,6 @@ chart_apps:
         bucket: {{ .Values.bucket | toYaml | nindent 6 }}
         network: {{ .Values.network | toYaml | nindent 6 }}
         env: {{ .Values.env | toYaml | nindent 6 }}
-      kong:
-        proxy:
-          annotations:
-            external-dns.alpha.kubernetes.io/hostname: "*.{{ .Values.company.domain.env }}."
   cert-manager:
     enabled: false
     values: |
@@ -124,14 +132,11 @@ chart_apps:
         bucket: {{ .Values.bucket | toYaml | nindent 6 }}
         network: {{ .Values.network | toYaml | nindent 6 }}
         environment: {{ .Values.env | toYaml | nindent 6 }}
-      argo-cd:
+      argocd:
         externalRedis:
           host: rfrm-argocd-{{ .Values.env.name }}-redis
           port: 6379
           existingSecret: "argocd-redis"
-        server:
-          ingress:
-            hostname: "argocd.{{ .Values.company.domain.env }}"
   prometheus:
     enabled: false
     values: |

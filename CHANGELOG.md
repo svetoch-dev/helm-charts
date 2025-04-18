@@ -2,7 +2,9 @@
 
 Braking changes:
   * `cert-manager`: interface for creating `ClusterIssuer` obj have changed to using `certificates` chart in `chart_deps`
-  * `konghq`: interface for creating `Issuer` and `Certificate` objs for webhooks have changed to using `certificates` chart in `chart_deps`
+  * `konghq`: 
+    * interface for creating `Issuer` and `Certificate` objs for webhooks have changed to using `certificates` chart in `chart_deps`
+    * remove `*` dns record annotations of external dns, this is needed in order to handle properly different ingress controllers
   * `gha-runner-scale-set`:
     * `gha-runner-scale-set-controller` moved to `gha-operator`
     * `gha-runner-scale-set` moved to `gha-runner`
@@ -12,8 +14,25 @@ New features:
   * `chart_deps/app`: supports ability to turn off global variables (and global secret vars.).
 
 Features:
-  * `all charts`: new global attr `ingress.class`
-  * `chart_deps/app/common`:  annotations can now use templates
+  * `pomerium`: chart for spinning up pomerium proxy in k8s
+  * `chart_deps/app/core`: chart library with templates for rendering core k8s objects (Roles, Services, Ingresses, Jobs etc). Basically it defines a set of `functions` that receive `context` (where .Values, .Release etc obj are) `labels` related obj (service, ingress etc). Based on attributes passed k8s objects are rendered. To use this chart you need to depend on it  in Chart.yaml and use `include` to use its functions
+  * `all charts`:
+    * new global attr `ingress.class`
+    * new admins attribute for`global.company`
+  * `argocd`: 
+    * added additional ingresses support (using core chart lib) . This is needed because upstream chart doesn't support templates for ingress
+    * moved all common configuration to chart `values.yaml`
+    * disabled `dex`, `notifications`
+    * renamed main chart from `argo-cd` -> `argocd`
+  * `grafana`: 
+    * added additional ingresses support (using core chart lib) 
+    * moved all common configuration to chart `values.yaml`
+  * `external-dns`: now handles ingress also
+  * `chart_deps/app/common`:
+    * adjusted for use of new core library chart. Apps are not affected by this change. Because helm does not yet support recursive dependency updates i have removed `chart_desp/app/common/charts/core-*tgz` out of `.gitignore` and commited it. Without this change helm doesn't see new `defines`.  This PR seems to fix this issue https://github.com/helm/helm/pull/11766. 
+    * `deploymentEnabled` parameter that disables/enables deployment
+    * `args` attribute to set args
+    * annotations can now use templates
   * `chart_deps/security/certificates`:
     * ability to create `ClusterIssuers`
     * ability to create `Issuers`
@@ -24,8 +43,8 @@ Features:
     * `gha-runner` 0.9.3 -> 0.11.0
     * `kong` 2.37.1 -> 2.48.0
     * `external-dns` 6.34.2 -> 8.7.8
-    * `argo-cd` 7.4.5 -> 7.8.18
-    * `grafana-operator` 5.14.0 -> 5.17.0
+    * `argo-cd` 7.4.5 -> 7.8.26
+    * `grafana-operator` 5.14.0 -> 5.17.1
     * `grafana app` 10.4.3 -> 11.6.0
     * `rabbitmq-cluster-operator` 3.19.0 -> 4.4.6
     * `thanos` 15.7.25 -> 15.14.0
