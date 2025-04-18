@@ -18,7 +18,7 @@ Features:
   * `chart_deps/app/core`: chart library with templates for rendering core k8s objects (Roles, Services, Ingresses, Jobs etc). Basically it defines a set of `functions` that receive `context` (where .Values, .Release etc obj are) `labels` related obj (service, ingress etc). Based on attributes passed k8s objects are rendered. To use this chart you need to depend on it  in Chart.yaml and use `include` to use its functions
   * `all charts`:
     * new global attr `ingress.class`
-    * new admins attribute for`global.company` values
+    * new admins attribute for`global.company`
   * `argocd`: 
     * added additional ingresses support (using core chart lib) . This is needed because upstream chart doesnt support templates for ingress
     * moved all common configuration to chart `values.yaml`
