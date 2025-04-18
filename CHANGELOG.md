@@ -20,7 +20,7 @@ Features:
     * new global attr `ingress.class`
     * new admins attribute for`global.company`
   * `argocd`: 
-    * added additional ingresses support (using core chart lib) . This is needed because upstream chart doesnt support templates for ingress
+    * added additional ingresses support (using core chart lib) . This is needed because upstream chart doesn't support templates for ingress
     * moved all common configuration to chart `values.yaml`
     * disabled `dex`, `notifications`
     * renamed main chart from `argo-cd` -> `argocd`
@@ -29,7 +29,7 @@ Features:
     * moved all common configuration to chart `values.yaml`
   * `external-dns`: now handles ingress also
   * `chart_deps/app/common`:
-    * adjusted for use of new core library chart. Apps are not affected by this change. Because helm does not yet support recursive dependency updates i have removed `chart_desp/app/common/charts/core-*tgz` out of `.gitignore` and commited it. Without this change helm doesnt see new `defines`.  This PR seems to fix this issue https://github.com/helm/helm/pull/11766. 
+    * adjusted for use of new core library chart. Apps are not affected by this change. Because helm does not yet support recursive dependency updates i have removed `chart_desp/app/common/charts/core-*tgz` out of `.gitignore` and commited it. Without this change helm doesn't see new `defines`.  This PR seems to fix this issue https://github.com/helm/helm/pull/11766. 
     * `deploymentEnabled` parameter that disables/enables deployment
     * `args` attribute to set args
     * annotations can now use templates
