@@ -1,7 +1,7 @@
 global:
   image:
     repository: pomerium/ingress-controller
-    tag: v0.29.0
+    tag: v0.29.2
   company:
     name: #example
     admins:
