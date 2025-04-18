@@ -1,0 +1,1 @@
+{{- include "core.clusterrole" (list . (include "common.labels" .) .Values.clusterRole )}}

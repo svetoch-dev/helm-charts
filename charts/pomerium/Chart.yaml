@@ -1,6 +1,6 @@
 apiVersion: v2
-name: common
-description: Chart with common resources (ingress,deployment etc) for applications
+name: pomerium
+description: Chart for creating pomerium resources
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -24,6 +24,18 @@ version: 0.1.0
 appVersion: "0.1.0"
 
 dependencies:
-  - name: core
+  - name: common
     version: 0.1.0
-    repository: file://../core/
+    repository: file://../chart_deps/app/common/
+    alias: controller
+    condition: controller.enabled
+  - name: common
+    version: 0.1.0
+    repository: file://../chart_deps/app/common/
+    alias: gen-secrets
+    condition: gen-secrets.enabled
+  - name: certificates
+    version: 0.1.0
+    repository: file://../chart_deps/security/certificates
+    alias: certificates
+    condition: certificates.enabled

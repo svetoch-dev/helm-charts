@@ -3,6 +3,7 @@
 {{- $app_nodeSelector := ternary .Values.nodeSelector .Values.global.nodeSelector ( hasKey .Values "nodeSelector") }}
 {{- $app_tolerations := ternary .Values.tolerations .Values.global.tolerations ( hasKey .Values "tolerations") }}
 {{- $app_affinity := ternary .Values.affinity .Values.global.affinity ( hasKey .Values "affinity") }}
+{{- if .Values.deploymentEnabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -57,6 +58,10 @@ spec:
           command:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- with .Values.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- include "common.env" . | nindent 10}}
           {{- with .Values.ports }}
           ports:
@@ -95,3 +100,4 @@ spec:
             claimName: {{ include "common.fullname" $ }}-{{ $name }}
         {{- end }}
       {{- end }}
+{{- end }}

@@ -1,0 +1,3 @@
+{{- range $ingress_name, $ingress_obj := .Values.ingresses }}
+{{- include "core.ingress" (list $ (include "grafana.labels" $) $ingress_obj )}}
+{{- end }}

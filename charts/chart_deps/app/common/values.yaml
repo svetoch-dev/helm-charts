@@ -17,6 +17,43 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+deploymentEnabled: true
+
+clusterRole:
+  enabled: false
+  name: '{{ include "common.fullname" . }}'
+  rules: []
+  serviceAccount:
+    name: '{{ include "common.serviceAccountName" . }}'
+    namespace: '{{ .Release.Namespace }}'
+
+role:
+  enabled: false
+  name: '{{ include "common.fullname" . }}'
+  rules: []
+  serviceAccount:
+    name: '{{ include "common.serviceAccountName" . }}'
+    namespace: '{{ .Release.Namespace }}'
+
+job:
+  enabled: false
+  name: '{{ include "common.fullname" . }}'
+  command: []
+  args: []
+  resources: {}
+  environment: {}
+  environmentFromSecrets: {}
+  nodeSelector: {}
+  podSecurityContext: {}
+  affinity: {}
+  tolerations: {}
+  serviceAccount:
+    name: '{{ include "common.serviceAccountName" . }}'
+  image:
+    repository: '{{ .Values.image.repository | default .Values.global.image.repository }}'
+    pullPolicy: '{{ .Values.image.pullPolicy }}'
+    tag: '{{ .Values.image.tag | default .Values.global.image.tag }}'
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -51,6 +88,7 @@ securityContext: {}
 
 service:
   enabled: true
+  name: '{{ include "common.fullname" . }}'
   type: ClusterIP
   ports:
     - port: 80
@@ -58,11 +96,15 @@ service:
       protocol: TCP
       name: http
 
+additionalServices: []
+
 ingress:
   enabled: false
+  name: '{{ include "common.fullname" . }}'
   className: ""
   service:
     port: 80
+    name: '{{ .Values.service.name }}'
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -111,6 +153,8 @@ readinessProbe: {}
 #    port: http
 
 command: []
+
+args: []
 
 servicemonitor:
   enabled: false

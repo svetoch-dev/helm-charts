@@ -1,0 +1,9 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  labels:
+    {{- include "pomerium.labels" . | nindent 4 }} 
+  name: {{ tpl .Values.ingressClassName . }}
+spec:
+  controller: pomerium.io/ingress-controller

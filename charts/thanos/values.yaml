@@ -1,6 +1,9 @@
 global:
   company:
     name: #example
+    admins:
+      domain: ""
+      emails: []
     domain:
       root: #example.com
       env: #int.example.com, dev.example.com, prd.example.com etc
