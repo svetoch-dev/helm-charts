@@ -143,7 +143,7 @@ probes:
         prober:
           url: 'prometheus-{{ .Values.global.environment.name }}-prometheus-blackbox-exporter.prometheus.svc.cluster.local:9115'
         jobName: argocd
-        module: http_2xx
+        module: http_3xx
         targets:
           ingress:
             selector:
