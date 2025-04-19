@@ -1,3 +1,7 @@
+# 9.0.1
+Fixes:
+ * `argocd`: add ingress names to `app.kubernetes.io/name` label
+
 # 9.0.0
 
 Braking changes:
