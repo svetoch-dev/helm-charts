@@ -189,6 +189,8 @@ kube-state-metrics:
         targetLabel: "container"
       - sourceLabels: ["exported_namespace"]
         targetLabel: "namespace"
+      # Abstract away from cloud related node
+      # labels
       - sourceLabels:
           - "label_cloud_google_com_gke_nodepool"
         targetLabel: "nodepool"
