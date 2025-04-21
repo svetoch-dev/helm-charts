@@ -189,6 +189,9 @@ kube-state-metrics:
         targetLabel: "container"
       - sourceLabels: ["exported_namespace"]
         targetLabel: "namespace"
+      - sourceLabels:
+          - "label_cloud_google_com_gke_nodepool"
+        targetLabel: "nodepool"
 
     namespace: prometheus
 
