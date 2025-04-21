@@ -146,7 +146,7 @@ kube-state-metrics:
     repository: bitnami/kube-state-metrics
 
   extraArgs:
-    metric-labels-allowlist: "pods=[*],deployments=[*]"
+    metric-labels-allowlist: "pods=[*],deployments=[*],nodes=[*]"
 
   kubeResources:
     certificatesigningrequests: false
