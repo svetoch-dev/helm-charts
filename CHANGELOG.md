@@ -1,3 +1,10 @@
+# 9.1.0
+New features:
+ * `prometheus`: blackbox `http_3xx` module
+
+Fixes:
+ * `argocd`: add ingress names to `app.kubernetes.io/name` label
+
 # 9.0.0
 
 Braking changes:
