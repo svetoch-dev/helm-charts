@@ -1,3 +1,12 @@
+# 9.2.0
+New features:
+ * `grafana/services dashboard`: new Node count pannel
+ * `prometheus`: node metrics + node labels metrics
+
+Fixes:
+ * `grafana/services dashboard`: fix Redis master/slave pannels when multiple clusters are installed
+
+
 # 9.1.0
 New features:
  * `prometheus`: blackbox `http_3xx` module
