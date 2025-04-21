@@ -162,7 +162,7 @@ kube-state-metrics:
     mutatingwebhookconfigurations: false
     namespaces: false
     networkpolicies: false
-    nodes: false
+    nodes: true
     persistentvolumeclaims: true
     persistentvolumes: true
     poddisruptionbudgets: false
