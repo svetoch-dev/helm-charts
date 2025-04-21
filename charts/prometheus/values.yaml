@@ -146,7 +146,7 @@ kube-state-metrics:
     repository: bitnami/kube-state-metrics
 
   extraArgs:
-    metric-labels-allowlist: "pods=[*],deployments=[*]"
+    metric-labels-allowlist: "pods=[*],deployments=[*],nodes=[*]"
 
   kubeResources:
     certificatesigningrequests: false
@@ -162,7 +162,7 @@ kube-state-metrics:
     mutatingwebhookconfigurations: false
     namespaces: false
     networkpolicies: false
-    nodes: false
+    nodes: true
     persistentvolumeclaims: true
     persistentvolumes: true
     poddisruptionbudgets: false
@@ -183,12 +183,19 @@ kube-state-metrics:
       # ADD COMMON pod and LABEL TO ALL METRICS
       # values based on orgiginal exported_pod label (container also)
       - sourceLabels: ["exported_pod"]
+        action: "replace"
         targetLabel: "pod"
       - sourceLabels: ["exported_container", "label_app_kubernetes_io_name"]
         separator: ""
+        action: "replace"
         targetLabel: "container"
       - sourceLabels: ["exported_namespace"]
         targetLabel: "namespace"
+      # Abstract away from cloud related node
+      # labels
+      - sourceLabels: ["label_cloud_google_com_gke_nodepool"]
+        targetLabel: "nodepool"
+        action: "replace"
 
     namespace: prometheus
 

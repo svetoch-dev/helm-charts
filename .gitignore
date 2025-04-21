@@ -1,3 +1,4 @@
 .*.swp
+123
 charts/**/charts
 !charts/chart_deps/app/common/charts
