@@ -12,6 +12,7 @@ network:
   int_nat_gw:
 
 bucket:
+  type:
   prefix:
   suffix:
 
@@ -28,8 +29,8 @@ defaultValuesTpl: |
     name: {{ .Values.company.name }}
     admins: {{ .Values.company.admins | toYaml | nindent 4 }}
     domain:
-      root: {{ .Values.company.domain.root }}
-      env: {{ printf "%s.%s" .env.short_name .Values.company.domain.root }}
+      root: {{ .domain.root }}
+      env: {{ .domain.env }}
   network:
     int_nat_gw: {{ .Values.network.int_nat_gw }}
   registry:
@@ -37,6 +38,7 @@ defaultValuesTpl: |
     containers:
     pip:
   bucket:
+    type: {{ .Values.bucket.type }}
     prefix: {{ .Values.company.name }}
     suffix: {{ .env.short_name }}
   repository:
