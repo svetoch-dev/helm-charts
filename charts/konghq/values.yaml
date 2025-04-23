@@ -12,6 +12,7 @@ global:
   registry:
     url:
   bucket:
+    type:
     prefix:
     suffix:
   ingress:
