@@ -1,3 +1,12 @@
+# 9.3.0
+New features:
+* `postgres`:
+  * move operator resources to chart values
+  * move logical backup attributes to chart values
+  * by default use 17 postgres image
+* `environments`: get company domain attrs from `.domain` context var
+* `all charts`: new `.Values.global.bucket.type` attribute
+
 # 9.2.0
 New features:
  * `grafana/services dashboard`: new Node count pannel
