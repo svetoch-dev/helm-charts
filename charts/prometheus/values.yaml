@@ -21,6 +21,7 @@ global:
   ingress:
     class: konghq
   bucket:
+    type:
     prefix:
     suffix:
   env:
