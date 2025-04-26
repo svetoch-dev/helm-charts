@@ -29,6 +29,80 @@ global:
     server: #https://2.2.2.2
     short_name: #pre/prd/int/dev/etc
 
+ingresses:
+  alertmanager-main:
+    enabled: false
+    name: '{{ include "prometheus.fullname" . }}-alertmanager-main'
+    service:
+      name: '{{ include "prometheus.fullname" . }}-alertmanager-main'
+      port: 80
+    className: pomerium
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-pomerium
+      ingress.pomerium.io/policy: |
+        allow:
+          or:
+            {{- range $email := .Values.global.company.admins.emails }}
+            - email:
+                is: {{ $email }}
+            {{- end }}
+
+    hosts:
+      - host: "al.{{ .Values.global.company.domain.env }}"
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: al-tls
+        hosts:
+          - "al.{{ .Values.global.company.domain.env }}"
+  prometheus-main:
+    enabled: false
+    name: '{{ include "prometheus.fullname" . }}-prometheus-main'
+    service:
+      name: '{{ include "prometheus.fullname" . }}-prometheus-main'
+      port: 80
+    className: pomerium
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-pomeriuma
+      ingress.pomerium.io/policy: |
+        allow:
+          or:
+            {{- range $email := .Values.global.company.admins.emails }}
+            - email:
+                is: {{ $email }}
+            {{- end }}
+    hosts:
+      - host: "pm.{{ .Values.global.company.domain.env }}"
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: pm-tls
+        hosts:
+          - "pm.{{ .Values.global.company.domain.env }}"
+  prometheus-main-thanos:
+    enabled: false
+    name: '{{ include "prometheus.fullname" . }}-prometheus-main-thanos'
+    service:
+      name: '{{ include "prometheus.fullname" . }}-prometheus-main-thanos'
+      port: 8080
+    className: "{{ .Values.global.ingress.class }}"
+    annotations:
+      cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+      konghq.com/protocols: grpc,grpcs
+      konghq.com/plugins: thanos-main-ip-restriction
+    hosts:
+      - host: "thanos.{{ .Values.global.company.domain.env }}"
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: thanos-tls
+        hosts:
+          - "thanos.{{ .Values.global.company.domain.env }}"
+
+
 alertmanager-configs:
   enabled: false
   defaults:
@@ -118,6 +192,13 @@ prometheus-node-exporter:
   enabled: false
   kubeRBACProxy:
     enabled: false
+  resources:
+    limits:
+      cpu: 250m
+      memory: 50Mi
+    requests:
+      cpu: 10m
+      memory: 20Mi
   service:
     enabled: true
     annotations: {}
@@ -142,6 +223,13 @@ prometheus-node-exporter:
 
 kube-state-metrics:
   enabled: false
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 10m
+      memory: 20Mi
   image:
     registry: docker.io
     repository: bitnami/kube-state-metrics
@@ -204,10 +292,10 @@ kube-state-metrics:
       prometheus: main
 
 operator:
+  enabled: false
+
   commonLabels:
     prometheus: main
-
-  enabled: true
 
   defaultRules:
     create: false
@@ -252,9 +340,31 @@ operator:
     kubeletService:
       enabled: true
       namespace: prometheus
+    resources:
+      limits:
+        memory: 150Mi
+        cpu: 200m
+      requests:
+        cpu: 10m
+        memory: 30Mi
+    prometheusConfigReloader:
+      resources:
+        limits:
+          cpu: 200m
+          memory: 100Mi
+        requests:
+          cpu: 10m
+          memory: 20Mi
 
 prometheus-blackbox-exporter:
   enabled: false
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 10m
+      memory: 15Mi
   config:
     modules:
       http_2xx:
@@ -286,7 +396,14 @@ probes:
 
 kong-plugins:
   enabled: false
-  plugins: []
+  plugins:
+    - name: thanos-main-ip-restriction
+      plugin_name: ip-restriction
+      annotations:
+        kubernetes.io/ingress.class: '{{ .Values.global.ingress.class }}'
+      config:
+        allow:
+          - "{{ .Values.global.network.int_nat_gw }}"
 
 prometheus-main:
   enabled: true
@@ -307,6 +424,8 @@ prometheus-main:
 
   thanosService:
     enabled: true
+    annotations:
+      konghq.com/protocol: grpc
 
   thanosServiceMonitor:
     enabled: true
@@ -325,6 +444,16 @@ prometheus-main:
         objectStorageConfig:
           key: objstore.yml
           name: thanos
+        resources:
+          limits:
+            cpu: 350m
+            memory: 150Mi
+          requests:
+            cpu: 10m
+            memory: 35Mi
+
+      externalLabels:
+        env: "{{ .Values.global.env.name }}"
 
       ruleSelector:
         matchLabels:
@@ -349,6 +478,23 @@ prometheus-main:
           - name: "{{ .Release.Name }}-alertmanager-main"
             namespace: prometheus
             port: http
+
+      resources:
+        limits:
+          cpu: 500m
+          memory: 1Gi
+        requests:
+          cpu: 50m
+          memory: 300Mi
+
+      storage:
+        volumeClaimTemplate:
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: "2Gi"
 
 alertmanager-main:
   enabled: false
@@ -379,6 +525,13 @@ alertmanager-main:
         path: /metrics
   alertmanager:
     spec:
+      resources:
+        limits:
+          cpu: 100m
+          memory: 100Mi
+        requests:
+          cpu: 10m
+          memory: 25Mi
       alertmanagerConfigSelector:
         matchLabels:
           alertmanager: main
@@ -388,6 +541,13 @@ prometheus-postgres-exporter:
 
 prometheus-stackdriver-exporter:
   enabled: false
+  resources:
+    limits:
+      cpu: 300m
+      memory: 100Mi
+    requests:
+      cpu: 10m
+      memory: 20Mi
   serviceAccount:
     create: false
     name: 'stackdriver-exporter'
@@ -402,6 +562,7 @@ prometheus-rules:
   PrometheusRules: {}
   PrometheusAlerts:
     prometheus-main:
+      env: "{{ .Values.global.env.short_name }}"
       team: sre
       selector:
         prometheus: main
