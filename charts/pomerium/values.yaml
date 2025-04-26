@@ -109,6 +109,13 @@ gen-secrets:
 
 controller:
   enabled: false
+  resources:
+    limits:
+      cpu: 2
+      memory: 1Gi
+    requests:
+      cpu: 300m
+      memory: 200Mi
   additionalServices:
   - name: '{{ include "common.fullname" . }}-metrics'
     enabled: true
