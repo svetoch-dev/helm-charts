@@ -1,4 +1,4 @@
-# 9.3.0
+# 9.4.0
 
 New features:
 * `pomerium`: move resources to chart values
