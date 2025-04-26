@@ -64,7 +64,7 @@ ingresses:
       port: 80
     className: pomerium
     annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-pomeriuma
+      cert-manager.io/cluster-issuer: letsencrypt-pomerium
       ingress.pomerium.io/policy: |
         allow:
           or:
