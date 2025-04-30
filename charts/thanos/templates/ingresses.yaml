@@ -1,0 +1,5 @@
+{{- range $ingress_name, $ingress_obj := .Values.ingresses }}
+{{- $labels := include "thanos.labels" $ | fromYaml }}
+{{- $labels := set $labels "app.kubernetes.io/component"  $ingress_name }}
+{{- include "core.ingress" (list $ (toYaml $labels) $ingress_obj )}}
+{{- end }}
