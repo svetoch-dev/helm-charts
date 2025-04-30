@@ -73,6 +73,19 @@ pgadmin:
   image:
     repository: dpage/pgadmin4
     tag: 8.11.0
+  environment:
+    - name: PGADMIN_DEFAULT_EMAIL
+      value: 'dev@{{ .Values.global.company.domain.root }}'
+    - name: PGADMIN_CONFIG_SERVER_MODE
+      value: 'False'
+    - name: PGADMIN_CONFIG_WTF_CSRF_ENABLED
+      value: 'False'
+    - name: PGADMIN_CONFIG_ALLOW_SAVE_PASSWORD
+      value: 'False'
+    - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
+      value: 'False'
+    - name: PGADMIN_DEFAULT_PASSWORD
+      value: 'this_is_a_stub_will_never_be_used'
   ports:
     - name: http
       containerPort: 80
