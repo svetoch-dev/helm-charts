@@ -1,4 +1,16 @@
+# 9.4.0
+
+New features:
+* `pomerium`: move resources to chart values
+* `prometheus`:
+  * ability to create multiple generic ingress objects
+  * all common attributes are moved to chart values
+
+Fixes:
+* `chart_deps/app/core`: fix ingress template when multiple ingresses are created
+
 # 9.3.0
+
 New features:
 * `postgres`:
   * move operator resources to chart values
@@ -8,6 +20,7 @@ New features:
 * `all charts`: new `.Values.global.bucket.type` attribute
 
 # 9.2.0
+
 New features:
  * `grafana/services dashboard`: new Node count pannel
  * `prometheus`: node metrics + node labels metrics

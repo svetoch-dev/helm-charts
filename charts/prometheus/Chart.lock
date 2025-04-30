@@ -35,5 +35,8 @@ dependencies:
 - name: prometheus-stackdriver-exporter
   repository: https://prometheus-community.github.io/helm-charts
   version: 4.8.2
-digest: sha256:d03ec173693b98ed396d0c70b38b4e722203f3114a3bc969f5e79e4e5397af9a
-generated: "2025-04-01T20:34:28.577935832Z"
+- name: core
+  repository: file://../chart_deps/app/core
+  version: 0.1.0
+digest: sha256:30a61934a7073e577db9befe881cd60e39c47baec3d429f58673ccbaadbbcfdb
+generated: "2025-04-26T12:39:21.177630891+03:00"

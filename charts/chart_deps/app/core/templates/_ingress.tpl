@@ -11,6 +11,7 @@
   {{- $_ := set $ingress.annotations "kubernetes.io/ingress.class" $ingress.className}}
   {{- end }}
 {{- end }}
+---
 {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
 {{- else if semverCompare ">=1.14-0" $.Capabilities.KubeVersion.GitVersion -}}
