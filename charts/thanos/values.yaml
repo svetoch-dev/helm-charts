@@ -28,7 +28,7 @@ ingresses:
     name: '{{ include "thanos.fullname" . }}-query'
     service:
       name: '{{ include "thanos.fullname" . }}-query'
-      port: 80
+      port: 9090
     className: pomerium
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-pomerium
