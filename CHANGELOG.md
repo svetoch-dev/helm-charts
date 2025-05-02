@@ -15,7 +15,8 @@ New features:
     * create ingress resources from `chart_deps/app/core` helm lib chart
     * `storegateway,query` ingress resources
     * move common attrs to chart values
-    * update thanos version to v0.38.0
+    * thanos app 0.37.2 -> 0.38.0
+    * thanos chart 15.14.0 -> 16.0.4
 
 # 9.4.0
 
