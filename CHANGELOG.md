@@ -1,3 +1,21 @@
+# 9.5.0
+
+New features:
+  * `konghq`:
+    * move resources to chart values
+    * remove affinity rules
+    * `kong.enabled` alias
+    * move autoscaling to chart values
+  * `pomerium`: jwtClaim header for authenticated user email
+  * `postgres.pgadmin`:
+    * update pgadmin to 9.3
+    * move all common attrs to chart values
+    * enable pomerium auth for it
+  * `thanos`:
+    * create ingress resources from `chart_deps/app/core` helm lib chart
+    * `storegateway,query` ingress resources
+    * move common attrs to chart values
+
 # 9.4.0
 
 New features:
