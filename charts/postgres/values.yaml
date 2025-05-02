@@ -46,7 +46,7 @@ postgres-operator:
     logical_backup_memory_request: 300Mi
   configGeneral:
     enable_crd_registration: false
-    docker_image: "{{ .Values.global.registry.url}}/spilo:v17-1"
+    docker_image: "{{ .Values.global.registry.url}}/spilo:v17.4-1"
   configMajorVersionUpgrade:
     major_version_upgrade_mode: "off"
     target_major_version: '17'
