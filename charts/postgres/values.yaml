@@ -18,7 +18,7 @@ global:
     prefix:
     suffix:
   ingress:
-    class: konghq
+    class: pomerium
   env:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2
@@ -72,11 +72,56 @@ pgadmin:
   enabled: false
   image:
     repository: dpage/pgadmin4
-    tag: 8.11.0
+    tag: 9.3.0
+  environment:
+    - name: PGADMIN_DEFAULT_EMAIL
+      value: 'dev@{{ .Values.global.company.domain.root }}'
+    - name: PGADMIN_CONFIG_WTF_CSRF_ENABLED
+      value: 'False'
+    - name: PGADMIN_CONFIG_ALLOW_SAVE_PASSWORD
+      value: 'False'
+    - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
+      value: 'False'
+    - name: PGADMIN_DEFAULT_PASSWORD
+      value: 'this_is_a_stub_will_never_be_used'
+    - name: PGADMIN_CONFIG_AUTHENTICATION_SOURCES
+      value: '["webserver"]'
+    - name: PGADMIN_CONFIG_WEBSERVER_REMOTE_USER
+      value: '"X-Pomerium-Claim-Email"'
   ports:
     - name: http
       containerPort: 80
       protocol: TCP
+  initContainers:
+    volumeperm:
+      image: busybox
+      command: ["sh", "-c", "chown -R 5050:5050 /var/lib/pgadmin"]
+  pvcs:
+    configs:
+      storage: 1Gi
+      mountPath: /var/lib/pgadmin
+  ingress:
+    enabled: false
+    className: "{{ .Values.global.ingress.class }}"
+    annotations:
+      cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+      ingress.pomerium.io/pass_identity_headers: 'true'
+      ingress.pomerium.io/policy: |
+        allow:
+          or:
+            {{- range $email := .Values.global.company.admins.emails }}
+            - email:
+                is: {{ $email }}
+            {{- end }}
+    hosts:
+      - host: 'pg.{{ .Values.global.company.domain.env }}'
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: pgadmin-tls
+        hosts:
+          - 'pg.{{ .Values.global.company.domain.env }}'
 
 postgres-main:
   enabled: false

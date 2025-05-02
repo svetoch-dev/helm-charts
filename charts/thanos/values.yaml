@@ -22,25 +22,108 @@ global:
     server: #https://2.2.2.2
     short_name: #pre/prd/int/dev/etc
 
+ingresses:
+  query:
+    enabled: false
+    name: '{{ include "thanos.fullname" . }}-query'
+    service:
+      name: '{{ include "thanos.fullname" . }}-query'
+      port: 9090
+    className: pomerium
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-pomerium
+      ingress.pomerium.io/policy: |
+        allow:
+          or:
+            {{- range $email := .Values.global.company.admins.emails }}
+            - email:
+                is: {{ $email }}
+            {{- end }}
+
+    hosts:
+      - host: "tq.{{ .Values.global.company.domain.env }}"
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: tq-tls
+        hosts:
+          - "tq.{{ .Values.global.company.domain.env }}"
+  storegateway:
+    enabled: false
+    name: '{{ include "thanos.fullname" . }}-storegateway-grpc'
+    service:
+      name: '{{ include "thanos.fullname" . }}-storegateway'
+      port: 10901
+    className: "{{ .Values.global.ingress.class }}"
+    annotations:
+      cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+      konghq.com/protocols: grpc,grpcs
+      konghq.com/plugins: thanos-store-main-ip-restriction
+    hosts:
+      - host: "thanos-store.{{ .Values.global.company.domain.env }}"
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: thanos-store-tls
+        hosts:
+          - "thanos-store.{{ .Values.global.company.domain.env }}"
+
+
 kong-plugins:
   enabled: false
+  plugins:
+    - name: thanos-store-main-ip-restriction
+      plugin_name: ip-restriction
+      annotations:
+        kubernetes.io/ingress.class: '{{ .Values.global.ingress.class }}'
+      config:
+        allow:
+          - "{{ .Values.global.network.int_nat_gw }}"
 
 thanos:
   enabled: false
-  existingObjstoreSecret: ""
+  existingObjstoreSecret: "thanos"
   query:
     enabled: false
+    dnsDiscovery:
+      enabled: false
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+      limits:
+        cpu: 2000m
+        memory: 2Gi
   queryFrontend:
     enabled: false
   bucketweb:
     enabled: false
   compactor:
     enabled: false
+    resources:
+      requests:
+        cpu: 20m
+        memory: 45Mi
+      limits:
+        cpu: 1500m
+        memory: 1Gi
     serviceAccount:
       create: false
       name: thanos
   storegateway:
     enabled: false
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+    service:
+      annotations:
+        konghq.com/protocol: grpc
     serviceAccount:
       create: false
       name: thanos
