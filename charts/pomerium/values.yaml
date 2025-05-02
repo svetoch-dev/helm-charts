@@ -76,6 +76,9 @@ pomerium:
       provider: google
       secret: '{{ .Release.Namespace }}/sso'
     secrets: '{{ .Release.Namespace }}/bootstrap'
+    jwtClaimHeaders:
+      X-Pomerium-Claim-Email: email
+
 
 gen-secrets:
   enabled: false
