@@ -105,6 +105,7 @@ pgadmin:
     className: "{{ .Values.global.ingress.class }}"
     annotations:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+      ingress.pomerium.io/pass_identity_headers: 'true'
       ingress.pomerium.io/policy: |
         allow:
           or:
