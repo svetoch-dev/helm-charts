@@ -75,7 +75,7 @@ certificates:
               ingressClassName: "{{ .Values.global.ingress.class }}"
 
 kong:
-  enabled: true
+  enabled: false
   env:
     admin_listen: "127.0.0.1:8444 http2 ssl"
     database: "off"
@@ -119,6 +119,13 @@ kong:
       external-dns.alpha.kubernetes.io/ttl: "60"
   ingressController:
     ingressClass: konghq
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
+      requests:
+        cpu: 20m
+        memory: 90Mi
     admissionWebhook:
       enabled: false
       failurePolicy: Fail
@@ -129,13 +136,29 @@ kong:
       namespaceSelector: {}
       annotations:
         cert-manager.io/inject-ca-from: konghq/webhook
-  affinity:
-    podAntiAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - topologyKey: "kubernetes.io/hostname"
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: kong
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 20m
+      memory: 230Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 8
+    ## targetCPUUtilizationPercentage only used if the cluster doesn't support autoscaling/v2beta
+    targetCPUUtilizationPercentage:
+    ## Otherwise for clusters that do support autoscaling/v2beta, use metrics
+    metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 2000 # 0.4 cores
 
   podDisruptionBudget:
     enabled: true
