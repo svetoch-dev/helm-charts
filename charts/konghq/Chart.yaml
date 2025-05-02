@@ -17,3 +17,5 @@ dependencies:
   - name: kong
     version: 2.48.0
     repository: https://charts.konghq.com
+    alias: kong
+    condition: kong.enabled
