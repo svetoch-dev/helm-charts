@@ -76,8 +76,6 @@ pgadmin:
   environment:
     - name: PGADMIN_DEFAULT_EMAIL
       value: 'dev@{{ .Values.global.company.domain.root }}'
-    - name: PGADMIN_CONFIG_SERVER_MODE
-      value: 'False'
     - name: PGADMIN_CONFIG_WTF_CSRF_ENABLED
       value: 'False'
     - name: PGADMIN_CONFIG_ALLOW_SAVE_PASSWORD
@@ -86,6 +84,10 @@ pgadmin:
       value: 'False'
     - name: PGADMIN_DEFAULT_PASSWORD
       value: 'this_is_a_stub_will_never_be_used'
+    - name: PGADMIN_CONFIG_AUTHENTICATION_SOURCES
+      value: '["webserver"]'
+    - name: PGADMIN_CONFIG_WEBSERVER_REMOTE_USER
+      value: '"X-Pomerium-Claim-Email"'
   ports:
     - name: http
       containerPort: 80
