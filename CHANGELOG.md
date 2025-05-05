@@ -1,3 +1,12 @@
+# 9.5.1
+
+Enhancements:
+* Update spilo image with
+  * postgresql version 17.2 -> 17.4
+  * walg version 3.0.3 -> 3.0.7
+  * patroni version 4.0.4 -> 4.0.5
+  * `pg_profile` version 4.7 -> 4.8
+
 # 9.5.0
 
 New features:
