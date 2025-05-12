@@ -52,6 +52,13 @@ ingresses:
 
 grafana-operator:
   enabled: false
+  resources:
+    requests:
+      cpu: 10m
+      memory: 20Mi
+    limits:
+      cpu: 150m
+      memory: 150Mi
 
 grafana-main:
   enabled: false

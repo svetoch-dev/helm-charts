@@ -2,6 +2,13 @@ redis-operator:
   enabled: false
   image:
     tag: v1.3.0-rc1
+  resources:
+    requests:
+      cpu: 10m
+      memory: 20Mi
+    limits:
+      cpu: 350m
+      memory: 100Mi
   monitoring:
     enabled: true
     serviceMonitor: true

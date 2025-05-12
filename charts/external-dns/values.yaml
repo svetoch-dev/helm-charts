@@ -1,7 +1,15 @@
 external-dns:
   enabled: false
+  resources:
+    limits:
+      cpu: 300m
+      memory: 300Mi
+    requests:
+      cpu: 10m
+      memory: 35Mi
   serviceAccount:
     create: false
+    name: external-dns
   sources:
     - service
     - ingress
