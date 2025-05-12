@@ -1,3 +1,12 @@
+# 9.6.0
+
+New features:
+* `rabbitmq`: ingress to access admin panel
+* `argocd,cert-manager,external-dns,gha-operator,grafana,rabbitmq,redis`: resources to chart values
+* `gha-runner`:
+  * use template to set labels in PodTemplate configmap
+  * common attrs to chart values
+
 # 9.5.1
 
 Enhancements:
