@@ -1,3 +1,55 @@
+global:
+  company:
+    name: #example
+    admins:
+      domain: ""
+      emails: []
+    domain:
+      root: #example.com
+      env: #int.example.com, dev.example.com, prd.example.com etc
+  network:
+    int_nat_gw:
+  registry:
+    url:
+  bucket:
+    type:
+    prefix:
+    suffix:
+  ingress:
+    class: pomerium
+  env:
+    name: #aws-prd or aws-int or aws-stg
+    server: #https://2.2.2.2
+    short_name: #pre/prd/int/dev/etc
+
+ingresses:
+  main:
+    enabled: false
+    name: '{{ include "rabbitmq.fullname" . }}-main'
+    service:
+      name: '{{ include "rabbitmq.fullname" . }}-rabbitmq-main'
+      port: 15672
+    className: "{{ .Values.global.ingress.class }}"
+    annotations:
+      cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+      ingress.pomerium.io/policy: |
+        allow:
+          or:
+            {{- range $email := .Values.global.company.admins.emails }}
+            - email:
+                is: {{ $email }}
+            {{- end }}
+
+    hosts:
+    - host: "rm.{{ .Values.global.company.domain.env }}"
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+    tls:
+    - secretName: rm-tls
+      hosts:
+      - "rm.{{ .Values.global.company.domain.env }}"
+
 rabbitmq-cluster-operator:
   enabled: false
   useCertManager: true
