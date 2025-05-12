@@ -3,6 +3,7 @@ gha-runner:
   runnerScaleSetName: "infra-runner"
   kubernetesModeServiceAccount:
   controllerServiceAccount:
+    namespace: gha-operator
     name: "gha-operator"
   containerMode:
     type: "kubernetes"
@@ -11,8 +12,21 @@ gha-runner:
       resources:
         requests:
           storage: 2Gi
+  listenerTemplate:
+    spec:
+      containers:
+        - name: listener
+          resources:
+            limits:
+              cpu: 300m
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 20Mi
   template:
     spec:
+      securityContext:
+        fsGroup: 1001
       containers:
         - name: runner
           image: ghcr.io/actions/actions-runner:latest
@@ -32,3 +46,8 @@ gha-runner:
 workflowConfigMap:
   enabled: false
   name: workflow-pod
+  metaLabels:
+    argocd.argoproj.io/instance: "{{ .Release.Name }}"
+  spec:
+    securityContext:
+      fsGroup: 1001

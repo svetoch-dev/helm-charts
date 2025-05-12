@@ -12,7 +12,7 @@ data:
       name: {{ .Values.workflowConfigMap.name }}
       {{- with .Values.workflowConfigMap.metaLabels }}
       labels:
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
       {{- end }}
     {{- with .Values.workflowConfigMap.spec }}
     spec:
