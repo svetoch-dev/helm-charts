@@ -56,6 +56,5 @@ workflowConfigMap:
   metaLabels:
     argocd.argoproj.io/instance: "{{ .Release.Name }}"
   spec:
-    serviceAccountName: runner
     securityContext:
       fsGroup: 1001
