@@ -5,5 +5,8 @@ dependencies:
 - name: rabbitmq-cluster-operator
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 4.4.6
-digest: sha256:4334141f90208adfba9f40e5c375c5f1dd951e6ffbc5cfa213a8cb1908b1e813
-generated: "2025-03-26T12:38:40.799291303Z"
+- name: core
+  repository: file://../chart_deps/app/core
+  version: 0.1.0
+digest: sha256:81b64ba70a0a89e8dd4153e347cc1d574bbe4f3f86be11d35b5a988438616054
+generated: "2025-05-12T17:11:32.904150103+03:00"
