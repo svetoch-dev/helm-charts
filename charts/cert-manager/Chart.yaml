@@ -4,7 +4,7 @@ version: 1.0.0
 dependencies:
   #https://github.com/cert-manager/cert-manager/tree/v1.17.1/deploy/charts/cert-manager
   - name: cert-manager
-    version: v1.17.1
+    version: v1.17.2
     repository: https://charts.jetstack.io
     alias: cert-manager
     condition: cert-manager.enabled
