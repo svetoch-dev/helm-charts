@@ -1,3 +1,12 @@
+# 9.6.1
+
+Enhancements:
+* `gha-runner`: default nodeSelector, tolerations
+* `rabbitmq`: update chart 4.4.6 -> 4.4.11
+* `external-dns`: update chart 8.7.8 -> 8.8.2
+* `cert-manager`: update chart v1.17.1 -> v1.17.2
+* `grafana`: update v5.17.1 -> v5.18.0
+
 # 9.6.0
 
 New features:
