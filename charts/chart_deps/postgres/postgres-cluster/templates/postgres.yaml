@@ -16,6 +16,9 @@ metadata:
 {{- end }}
 spec:
   teamId: {{ .Values.teamId }}
+  {{- if .Values.dockerImage }}
+  dockerImage: {{ .Values.dockerImage }}
+  {{- end }}
   numberOfInstances: {{ .Values.replicas | default "2" }}
   {{- with .Values.users }}
   users:
