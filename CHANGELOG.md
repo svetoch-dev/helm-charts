@@ -1,3 +1,8 @@
+# 9.6.2
+
+Enhancements:
+* `chart_deps/postgres/postgres-cluster`: support for dockerImage attr 
+
 # 9.6.1
 
 Enhancements:
