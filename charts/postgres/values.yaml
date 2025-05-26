@@ -231,6 +231,8 @@ postgres-main:
 #      env:
 #        - name: PG_EXPORTER_WEB_LISTEN_ADDRESS
 #          value: "9188"
+#        - name: DATA_SOURCE_NAME
+#          value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/db2?sslmode=disable"
 #        - name: PG_EXPORTER_COLLECTOR_STAT_USER_TABLES
 #          value: "true"
 #        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_INDEXES
