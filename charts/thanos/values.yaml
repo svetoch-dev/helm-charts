@@ -102,6 +102,8 @@ thanos:
     enabled: false
   compactor:
     enabled: false
+    persistence:
+      size: 15Gi
     resources:
       requests:
         cpu: 20m
