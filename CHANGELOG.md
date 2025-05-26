@@ -1,7 +1,7 @@
 # 9.6.3
 
 Fixes:
-* `thanos`: compactor increase persitant storage size
+* `thanos`: compactor increase persistent storage size
 
 
 # 9.6.2
