@@ -29,7 +29,7 @@ redis-main:
 # Redis example config
 ########################
 #  auth:
-#    secretPath: redis-main
+#    secretPath: redis
 #  sentinel:
 #    replicas: 3
 #    resources:
@@ -77,6 +77,6 @@ redis-main:
 #        valueFrom:
 #          secretKeyRef:
 #            key: password
-#            name: redis-main
+#            name: redis
 #  redisServiceMonitor:
 #    enabled: true

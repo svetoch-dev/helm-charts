@@ -161,16 +161,24 @@ postgres-main:
 #    enabled: true
 #    schedule: "40 00 * * *"
 #  postgresql:
-#    version: "15"
+#    version: "17"
 #    parameters:
 #      password_encryption: "scram-sha-256"
-#      max_connections: "200"
+#      max_connections: "100"
 #      work_mem: "65536"
+#      max_wal_size: "2048"
+#      maintenance_work_mem: "262144"
+#      max_worker_processes: "4"
+#      max_parallel_workers: "4"
+#      max_parallel_workers_per_gather: "0"
+#      max_parallel_maintenance_workers: "4"
 #      max_standby_archive_delay: "400000"
 #      max_standby_streaming_delay: "400000"
+#      log_destination: "jsonlog"
+#      logging_collector: "true"
 #  sidecars:
 #    - name: "postgres-exporter"
-#      image: "gramal/postgres-exporter:v0.15.0-aac0dc6"
+#      image: "{{ .Values.global.registry.url }}/postgres-exporter:v0.17.1-1"
 #      ports:
 #        - containerPort: 9187
 #          name: metrics
@@ -183,7 +191,7 @@ postgres-main:
 #          memory: 15Mi
 #      env:
 #        - name: DATA_SOURCE_NAME
-#          value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/chents?sslmode=disable"
+#          value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/db1?sslmode=disable"
 #        - name: PG_EXPORTER_COLLECTOR_DATABASE
 #          value: "true"
 #        - name: PG_EXPORTER_COLLECTOR_LOCKS
@@ -198,6 +206,8 @@ postgres-main:
 #          value: "true"
 #        - name: PG_EXPORTER_COLLECTOR_STAT_USER_TABLES
 #          value: "true"
+#        - name: PG_EXPORTER_COLLECTOR_STAT_STATEMENTS
+#          value: "true"
 #        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_INDEXES
 #          value: "true"
 #        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_TABLES
@@ -207,7 +217,7 @@ postgres-main:
 #        - name: PG_EXPORTER_DISABLE_SETTINGS_METRICS
 #          value: "false"
 #    - name: "postgres-exporter-2"
-#      image: "gramal/postgres-exporter:v0.15.0-aac0dc6"
+#      image: "{{ .Values.global.registry.url}}/postgres-exporter:v0.17.1-1"
 #      ports:
 #        - containerPort: 9188
 #          name: metrics-2
@@ -221,8 +231,8 @@ postgres-main:
 #      env:
 #        - name: PG_EXPORTER_WEB_LISTEN_ADDRESS
 #          value: "9188"
-#        - name: DATA_SOURCE_NAME
-#          value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/db1?sslmode=disable"
+#        - name: PG_EXPORTER_COLLECTOR_STAT_USER_TABLES
+#          value: "true"
 #        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_INDEXES
 #          value: "true"
 #        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_TABLES
