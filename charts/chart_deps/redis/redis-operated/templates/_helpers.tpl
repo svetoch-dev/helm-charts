@@ -54,7 +54,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- define "redis-operated.redisExporterDefaults" -}}
 {{- if .Values.redis.exporter.enabled }}
-image: oliver006/redis_exporter:v1.73.0
+image: oliver006/redis_exporter:v1.73.0@sha256:1a8f5e48b2af0fb02d182be3ddd623e7e39881b6464bdb5bf843b1f6d45ed050
 resources:
   requests:
     cpu: 10m
@@ -77,7 +77,7 @@ env:
 
 {{- define "sentinel-operated.sentinelExporterDefaults" -}}
 {{- if .Values.sentinel.exporter.enabled }}
-image: leominov/redis_sentinel_exporter:1.7.1
+image: leominov/redis_sentinel_exporter:1.7.1@sha256:812e617d2201d0ee8ba51d60b9fe9590a46bed84abc95746f554e1ca04e5478a
 resources:
   requests:
     cpu: 10m
