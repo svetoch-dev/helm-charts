@@ -51,3 +51,39 @@ Service Selector labels
 app.kubernetes.io/name: {{ .Release.Name }}-{{ include "redis-operated.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{- define "redis-operated.redisExporterDefaults" -}}
+{{- if .Values.redis.exporter.enabled }}
+image: oliver006/redis_exporter:v1.73.0
+resources:
+  requests:
+    cpu: 10m
+    memory: 15Mi
+  limits:
+    cpu: 100m
+    memory: 50Mi
+{{- if .Values.auth.secretPath }}
+env:
+- name: REDIS_USER
+  value: default
+- name: REDIS_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      key: password
+      name: {{ .Values.auth.secretPath }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "sentinel-operated.sentinelExporterDefaults" -}}
+{{- if .Values.sentinel.exporter.enabled }}
+image: leominov/redis_sentinel_exporter:1.7.1
+resources:
+  requests:
+    cpu: 10m
+    memory: 15Mi
+  limits:
+    cpu: 100m
+    memory: 50Mi
+{{- end }}
+{{- end }}

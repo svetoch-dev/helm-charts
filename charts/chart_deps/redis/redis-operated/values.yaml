@@ -1,5 +1,9 @@
-sentinel: {}
-redis: {}
+sentinel:
+  exporter:
+    enabled: false
+redis:
+  exporter:
+    enabled: false
 auth: {}
 bootstrapNode: {}
 labelWhitelist: {}
