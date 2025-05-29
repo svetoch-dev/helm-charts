@@ -232,7 +232,8 @@ kube-state-metrics:
       memory: 20Mi
   image:
     registry: docker.io
-    repository: bitnami/kube-state-metrics:2.15.0@sha256:5bd00870f1a7c9d57556d3b11e99d4ff3baf3f5a7adc1f9c20d63bf0e50c9682
+    repository: bitnami/kube-state-metrics
+    tag: 2.15.0@sha256:5bd00870f1a7c9d57556d3b11e99d4ff3baf3f5a7adc1f9c20d63bf0e50c9682
 
   extraArgs:
     metric-labels-allowlist: "pods=[*],deployments=[*],nodes=[*]"
