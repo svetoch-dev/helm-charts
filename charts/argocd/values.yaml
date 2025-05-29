@@ -153,14 +153,6 @@ redis:
         cpu: 1000m
     exporter:
       enabled: true
-      resources:
-        requests:
-          cpu: 10m
-          memory: 10Mi
-        limits:
-          cpu: 100m
-          memory: 50Mi
-      image: leominov/redis_sentinel_exporter:1.7.1
   redis:
     replicas: 3
     resources:
@@ -172,22 +164,6 @@ redis:
         memory: 250Mi
     exporter:
       enabled: true
-      resources:
-        requests:
-          cpu: 10m
-          memory: 15Mi
-        limits:
-          cpu: 100m
-          memory: 50Mi
-      image: oliver006/redis_exporter:v1.70.0
-      env:
-      - name: REDIS_USER
-        value: default
-      - name: REDIS_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            key: redis-password
-            name: argocd-redis
 
 probes:
   enabled: false
