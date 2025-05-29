@@ -72,7 +72,7 @@ pgadmin:
   enabled: false
   image:
     repository: dpage/pgadmin4
-    tag: 9.3.0
+    tag: 9.4.0@sha256:6b1c0db09695758c72abcd5160b7c4cc6d0847ab0c90a2403bdbf951f0defb5a
   environment:
     - name: PGADMIN_DEFAULT_EMAIL
       value: 'dev@{{ .Values.global.company.domain.root }}'

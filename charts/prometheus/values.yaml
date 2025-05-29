@@ -232,7 +232,7 @@ kube-state-metrics:
       memory: 20Mi
   image:
     registry: docker.io
-    repository: bitnami/kube-state-metrics
+    repository: bitnami/kube-state-metrics:2.15.0@sha256:5bd00870f1a7c9d57556d3b11e99d4ff3baf3f5a7adc1f9c20d63bf0e50c9682
 
   extraArgs:
     metric-labels-allowlist: "pods=[*],deployments=[*],nodes=[*]"
@@ -439,7 +439,7 @@ prometheus-main:
     spec:
       enableAdminAPI: true
       thanos:
-        image: quay.io/thanos/thanos:v0.38.0
+        image: quay.io/thanos/thanos:v0.38.0@sha256:ac51a3944e762cd90ed85bf10c4376e70e5f9141f6b7eec431b6580890e97f41
         version: v0.38.0
         objectStorageConfig:
           key: objstore.yml

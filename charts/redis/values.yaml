@@ -1,7 +1,7 @@
 redis-operator:
   enabled: false
   image:
-    tag: v1.3.0-rc1
+    tag: v1.3.0-rc1@sha256:bc30bff00e8ed1394f4bf8c6745ef04cdd520c44fbfc349faad40d1c5f7b9725
   resources:
     requests:
       cpu: 10m
