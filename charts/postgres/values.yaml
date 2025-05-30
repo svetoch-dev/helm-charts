@@ -125,6 +125,8 @@ pgadmin:
 
 postgres-main:
   enabled: false
+  defaultSidecars:
+    enabled: true
 #######################
 # Configuration example
 # for 2 dbs
@@ -176,70 +178,6 @@ postgres-main:
 #      max_standby_streaming_delay: "400000"
 #      log_destination: "jsonlog"
 #      logging_collector: "true"
-#  sidecars:
-#    - name: "postgres-exporter"
-#      image: "{{ .Values.global.registry.url }}/postgres-exporter:v0.17.1-1"
-#      ports:
-#        - containerPort: 9187
-#          name: metrics
-#      resources:
-#        limits:
-#          cpu: 200m
-#          memory: 50Mi
-#        requests:
-#          cpu: 10m
-#          memory: 15Mi
-#      env:
-#        - name: DATA_SOURCE_NAME
-#          value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/db1?sslmode=disable"
-#        - name: PG_EXPORTER_COLLECTOR_DATABASE
-#          value: "true"
-#        - name: PG_EXPORTER_COLLECTOR_LOCKS
-#          value: "true"
-#        - name: PG_EXPORTER_COLLECTOR_REPLICATION
-#          value: "true"
-#        - name: PG_EXPORTER_COLLECTOR_REPLICATION_SLOT
-#          value: "true"
-#        - name: PG_EXPORTER_COLLECTOR_STAT_BGWRITER
-#          value: "true"
-#        - name: PG_EXPORTER_COLLECTOR_STAT_DATABASE
-#          value: "true"
-#        - name: PG_EXPORTER_COLLECTOR_STAT_USER_TABLES
-#          value: "true"
-#        - name: PG_EXPORTER_COLLECTOR_STAT_STATEMENTS
-#          value: "true"
-#        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_INDEXES
-#          value: "true"
-#        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_TABLES
-#          value: "true"
-#        - name: PG_EXPORTER_COLLECTOR_WAL
-#          value: "true"
-#        - name: PG_EXPORTER_DISABLE_SETTINGS_METRICS
-#          value: "false"
-#    - name: "postgres-exporter-2"
-#      image: "{{ .Values.global.registry.url}}/postgres-exporter:v0.17.1-1"
-#      ports:
-#        - containerPort: 9188
-#          name: metrics-2
-#      resources:
-#        limits:
-#          cpu: 200m
-#          memory: 50Mi
-#        requests:
-#          cpu: 10m
-#          memory: 15Mi
-#      env:
-#        - name: PG_EXPORTER_WEB_LISTEN_ADDRESS
-#          value: "9188"
-#        - name: DATA_SOURCE_NAME
-#          value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/db2?sslmode=disable"
-#        - name: PG_EXPORTER_COLLECTOR_STAT_USER_TABLES
-#          value: "true"
-#        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_INDEXES
-#          value: "true"
-#        - name: PG_EXPORTER_COLLECTOR_STATIO_USER_TABLES
-#          value: "true"
-#
   podMonitor:
     enabled: false
     prometheusSelector:

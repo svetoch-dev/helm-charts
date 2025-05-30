@@ -22,21 +22,9 @@ logicalBackup:
   schedule: "30 00 * * *"
 connectionPooler: {}
 sidecars: {}
-#  - name: "postgres-exporter"
-#    image: "quay.io/prometheuscommunity/postgres-exporter:v0.15.0"
-#    ports:
-#      - containerPort: 9187
-#        name: metrics
-#    resources:
-#      limits:
-#        cpu: 100m
-#        memory: 128Mi
-#      requests:
-#        cpu: 100m
-#        memory: 128Mi
-#    env:
-#      - name: DATA_SOURCE_NAME
-#        value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/postgres?sslmode=disable"
+defaultSidecars:
+  enabled: false
+  pgExporterImage: "{{ $.Values.global.registry.url}}/postgres-exporter:v0.17.1-1"
 teamId: "main"
 nodeAffinity: {}
 podMonitor:

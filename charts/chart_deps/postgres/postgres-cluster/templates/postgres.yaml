@@ -1,3 +1,30 @@
+{{- $defaultSidecars := include "postgres-cluster.defaultSidecars" . | fromYaml }}
+{{- $defaultSidecars = $defaultSidecars.sidecars }}
+{{- $indexesToSkip := list }}
+{{/*
+If the sidecar has the same name as default sidecars
+its attrs override the attrs of default sidecars
+*/}}
+{{- $sidecars := list }}
+{{- $isDefaultSidecar := false }}
+{{- range $sidecar := .Values.sidecars }}
+  {{- range $index, $defaultSidecar := $defaultSidecars }}
+    {{- if eq $sidecar.name $defaultSidecar.name }}
+      {{- $sidecars = append $sidecars (mustMerge $sidecar $defaultSidecar) }}
+      {{- $isDefaultSidecar = true }}
+      {{- $indexesToSkip = append $indexesToSkip $index }}
+    {{- end }}
+  {{- end }}
+  {{- if not $isDefaultSidecar }}
+    {{- $sidecars = append $sidecars $sidecar }}
+  {{- end }}
+  {{- $isDefaultSidecar = false }}
+{{- end }}
+{{- range $index, $defaultSidecar := $defaultSidecars }}
+  {{- if not (has $index $indexesToSkip )}}
+    {{- $sidecars = append $sidecars $defaultSidecar }}
+  {{- end }}
+{{- end }}
 ---
 apiVersion: "acid.zalan.do/v1"
 kind: postgresql
@@ -71,7 +98,7 @@ spec:
   connectionPooler:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with .Values.sidecars }}
+  {{- with $sidecars }}
   sidecars:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}

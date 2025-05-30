@@ -51,3 +51,64 @@ Pod Selector labels
 app.kubernetes.io/name: {{ include "postgres-cluster.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{- define "postgres-cluster.defaultSidecars" -}}
+{{- if .Values.defaultSidecars.enabled }}
+sidecars:
+{{- range $index, $db := (keys .Values.preparedDatabases | sortAlpha )}}
+{{- $dbName := $db | replace "_" "-" }}
+  - name: "pg-exporter-{{ $dbName }}"
+    image: "{{ tpl $.Values.defaultSidecars.pgExporterImage $ }}"
+    ports:
+      - containerPort: {{ add "9187" $index }}
+        name: metrics-{{ $dbName }}
+    resources:
+      limits:
+        cpu: 200m
+        memory: 50Mi
+      requests:
+        cpu: 10m
+        memory: 15Mi
+    env:
+{{- if eq $index 0 }}
+      - name: DATA_SOURCE_NAME
+        value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/{{ $db }}?sslmode=disable"
+      - name: PG_EXPORTER_COLLECTOR_DATABASE
+        value: "true"
+      - name: PG_EXPORTER_COLLECTOR_LOCKS
+        value: "true"
+      - name: PG_EXPORTER_COLLECTOR_REPLICATION
+        value: "true"
+      - name: PG_EXPORTER_COLLECTOR_REPLICATION_SLOT
+        value: "true"
+      - name: PG_EXPORTER_COLLECTOR_STAT_BGWRITER
+        value: "true"
+      - name: PG_EXPORTER_COLLECTOR_STAT_DATABASE
+        value: "true"
+      - name: PG_EXPORTER_COLLECTOR_STAT_USER_TABLES
+        value: "true"
+      - name: PG_EXPORTER_COLLECTOR_STAT_STATEMENTS
+        value: "true"
+      - name: PG_EXPORTER_COLLECTOR_STATIO_USER_INDEXES
+        value: "true"
+      - name: PG_EXPORTER_COLLECTOR_STATIO_USER_TABLES
+        value: "true"
+      - name: PG_EXPORTER_COLLECTOR_WAL
+        value: "true"
+      - name: PG_EXPORTER_DISABLE_SETTINGS_METRICS
+        value: "false"
+{{- else }}
+      - name: PG_EXPORTER_WEB_LISTEN_ADDRESS
+        value: "{{ add "9187" $index }}"
+      - name: DATA_SOURCE_NAME
+        value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:5432/{{ $db }}?sslmode=disable
+      - name: PG_EXPORTER_COLLECTOR_STAT_USER_TABLES
+        value: "true"
+      - name: PG_EXPORTER_COLLECTOR_STATIO_USER_INDEXES
+        value: "true"
+      - name: PG_EXPORTER_COLLECTOR_STATIO_USER_TABLES
+        value: "true"
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
