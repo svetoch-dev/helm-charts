@@ -127,6 +127,10 @@ postgres-main:
   enabled: false
   defaultSidecars:
     enabled: true
+  podMonitor:
+    enabled: true
+    prometheusSelector:
+      prometheus: main
 #######################
 # Configuration example
 # for 2 dbs
@@ -178,7 +182,3 @@ postgres-main:
 #      max_standby_streaming_delay: "400000"
 #      log_destination: "jsonlog"
 #      logging_collector: "true"
-  podMonitor:
-    enabled: false
-    prometheusSelector:
-      prometheus: main
