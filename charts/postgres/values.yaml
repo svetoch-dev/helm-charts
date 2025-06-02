@@ -182,16 +182,3 @@ postgres-main:
     enabled: false
     prometheusSelector:
       prometheus: main
-#    podMetricsEndpoints:
-#      - port: metrics
-#        relabelings:
-#          - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
-#            action: Replace
-#            regex: (.*)
-#            targetLabel: label_app_kubernetes_io_instance
-#      - port: metrics-2
-#        relabelings:
-#          - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
-#            action: Replace
-#            regex: (.*)
-#            targetLabel: label_app_kubernetes_io_instance
