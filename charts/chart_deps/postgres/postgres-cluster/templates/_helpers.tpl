@@ -61,7 +61,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   image: "{{ tpl $.Values.defaultSidecars.pgExporterImage $ }}"
   ports:
     - containerPort: {{ add "9187" $index }}
-      name: {{ $dbName }}-metrics
+      name: {{ printf "metrics-%s" $dbName | trunc 15 }}
   resources:
     limits:
       cpu: 200m
@@ -116,9 +116,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "postgres-cluster.defaultPodMetricsEndpoints" }}
 {{- if .Values.defaultSidecars.enabled }}
 {{- range $db := (keys .Values.preparedDatabases | sortAlpha )}}
-{{- $dbName := $db | replace "_" "-" }}
+{{- $dbName := $db | replace "_" "-" | trunc 15 }}
 {{ $db }}:
-  port: {{ $dbName }}-metrics
+  port: {{ printf "metrics-%s" $dbName | trunc 15 }}
   relabelings:
     - sourceLabels: [__meta_kubernetes_pod_label_app_kubernetes_io_instance]
       action: Replace
