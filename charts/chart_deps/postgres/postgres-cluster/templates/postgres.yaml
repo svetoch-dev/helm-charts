@@ -1,4 +1,8 @@
 {{- $defaultSidecars := include "postgres-cluster.defaultSidecars" . | fromYaml }}
+{{/*
+If sidecar has the same key as the default sidecar
+its attrs override the attrs of the default one
+*/}}
 {{- $sidecars := merge .Values.sidecars $defaultSidecars }}
 {{- $sidecars = values $sidecars }}
 ---
