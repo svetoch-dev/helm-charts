@@ -1,7 +1,7 @@
 redis-operator:
   enabled: false
   image:
-    tag: v1.3.0-rc1
+    tag: v1.3.0-rc1@sha256:bc30bff00e8ed1394f4bf8c6745ef04cdd520c44fbfc349faad40d1c5f7b9725
   resources:
     requests:
       cpu: 10m
@@ -18,65 +18,50 @@ redis-operator:
 redis-main:
   enabled: false
   sentinelServiceMonitor:
-    enabled: false
+    enabled: true
     prometheusSelector:
       prometheus: main
+  sentinel:
+    exporter:
+      enabled: true
   redisServiceMonitor:
-    enabled: false
+    enabled: true
     prometheusSelector:
       prometheus: main
+  redis:
+    exporter:
+      enabled: true
 ########################
 # Redis example config
 ########################
-#  auth:
-#    secretPath: redis
-#  sentinel:
-#    replicas: 3
-#    resources:
-#      requests:
-#        cpu: 10m
-#        memory: 10Mi
-#      limits:
-#        memory: 200Mi
-#        cpu: 1000m
-#    exporter:
-#      enabled: true
-#      image: leominov/redis_sentinel_exporter:1.7.1
+#  redis-main:
+#    auth:
+#      secretPath: redis
+#    sentinel:
+#      replicas: 3
 #      resources:
 #        requests:
 #          cpu: 10m
 #          memory: 10Mi
 #        limits:
-#          cpu: 100m
-#          memory: 50Mi
-#  sentinelServiceMonitor:
-#    enabled: true
-#  redis:
-#    replicas: 3
-#    resources:
-#      requests:
-#        cpu: 50m
-#        memory: 10Mi
-#      limits:
-#        cpu: 1100m
-#        memory: 250Mi
-#    exporter:
-#      enabled: true
-#      image: oliver006/redis_exporter:v1.57.0
+#          memory: 200Mi
+#          cpu: 1000m
+#      exporter:
+#        enabled: true
+#        image: leominov/redis_sentinel_exporter:1.7.1
+#        resources:
+#          requests:
+#            cpu: 10m
+#            memory: 10Mi
+#          limits:
+#            cpu: 100m
+#            memory: 50Mi
+#    redis:
+#      replicas: 3
 #      resources:
 #        requests:
-#          cpu: 10m
-#          memory: 15Mi
+#          cpu: 50m
+#          memory: 10Mi
 #        limits:
-#          cpu: 100m
-#          memory: 50Mi
-#      env:
-#      - name: REDIS_USER
-#        value: default
-#      - name: REDIS_PASSWORD
-#        valueFrom:
-#          secretKeyRef:
-#            key: password
-#            name: redis
-#  redisServiceMonitor:
-#    enabled: true
+#          cpu: 1100m
+#          memory: 250Mi

@@ -1,4 +1,12 @@
+{{- $defaultPodMetricsEndpoints := include "postgres-cluster.defaultPodMetricsEndpoints" . | fromYaml }}
+{{/*
+If podMetricsEndpoint has the same key as default podMetricsEndpoint
+its attrs override the attrs of default one
+*/}}
+{{- $podMetricsEndpoints := merge .Values.podMonitor.podMetricsEndpoints $defaultPodMetricsEndpoints }}
+{{- $podMetricsEndpoints = values $podMetricsEndpoints }}
 {{- if .Values.podMonitor.enabled }}
+---
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -17,7 +25,7 @@ metadata:
     {{- include "postgres-cluster.labels" . | nindent 4 }}
 {{- end }}
 spec:
-  {{- with .Values.podMonitor.podMetricsEndpoints }}
+  {{- with $podMetricsEndpoints }}
   podMetricsEndpoints:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}

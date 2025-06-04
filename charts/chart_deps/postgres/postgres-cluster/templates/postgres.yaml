@@ -1,3 +1,10 @@
+{{- $defaultSidecars := include "postgres-cluster.defaultSidecars" . | fromYaml }}
+{{/*
+If sidecar has the same key as the default sidecar
+its attrs override the attrs of the default one
+*/}}
+{{- $sidecars := merge .Values.sidecars $defaultSidecars }}
+{{- $sidecars = values $sidecars }}
 ---
 apiVersion: "acid.zalan.do/v1"
 kind: postgresql
@@ -71,9 +78,23 @@ spec:
   connectionPooler:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with .Values.sidecars }}
   sidecars:
-  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- range $sObj := $sidecars }}
+  - name: {{ $sObj.name }}
+    image: {{ $sObj.image }}
+    {{- with $sObj.ports }}
+    ports:
+    {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
+    {{- with $sObj.resources }}
+    resources:
+    {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
+    env:
+    {{- range $eName, $eObj := $sObj.env }}
+    - name: {{ $eName }}
+    {{- tpl (toYaml . ) $ | nindent 6 }}
+    {{- end }}
   {{- end }}
   {{- with .Values.nodeAffinity }}
   nodeAffinity:

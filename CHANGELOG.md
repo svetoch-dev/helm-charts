@@ -1,3 +1,19 @@
+# 10.0.0-alpha
+
+BrakingChanges:
+* `chart_deps/postgres/postgres-cluster`:
+  * `sidecars` attr now has dict type instead of list
+  * `podMonitor.podMetricsEndpoints` attr now has dict type instead of list
+
+New features:
+* `chart_deps/postgres/postgres-cluster`:
+  * `defaultSidecars` attr that controls sets up pg exporter sidecars for each created db
+  * ability to override `defaultSidecar` attrs by setting the keyNames same to db names
+* `chart_deps/redis/redis-operator`:
+  * `redis`: default exporter configs
+  * `sentinel`: default exporter configs
+* `all charts`: use digest for images instead of plain tags
+
 # 9.6.3
 
 Fixes:
