@@ -1,5 +1,5 @@
 {{- range $chart_app_name, $chart_app_obj := .Values.chart_apps -}}
-{{- $app_name := (printf "%s-%s" $chart_app_name $.Values.env.name) }}
+{{- $app_name := (printf "%s-%s" $chart_app_name $.Values.global.env.name) }}
 {{- $app_name := ternary $app_name $chart_app_obj.name (not $chart_app_obj.name) }}
 {{- $chart_path := ternary $.Values.repository.paths.app_charts $.Values.repository.paths.charts (eq $chart_app_obj.app true) }}
 {{- $env_path := ternary $.Values.repository.paths.env_from_app_charts $.Values.repository.paths.env_from_charts (eq $chart_app_obj.app true) }}
@@ -23,7 +23,7 @@ metadata:
   {{- end }}
 spec:
   destination:
-    server: {{ $.Values.env.server }}
+    server: {{ $.Values.global.env.server }}
     {{- if $chart_app_obj.namespace }}
     namespace: {{ $chart_app_obj.namespace }}
     {{- end }}
