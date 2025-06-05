@@ -19,7 +19,7 @@ global:
   registry:
     url:
   ingress:
-    class: konghq
+    class: pomerium
   bucket:
     type:
     prefix:
@@ -36,7 +36,7 @@ ingresses:
     service:
       name: '{{ include "prometheus.fullname" . }}-alertmanager-main'
       port: 80
-    className: pomerium
+    className: "{{ .Values.global.ingress.class }}"
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-pomerium
       ingress.pomerium.io/policy: |
@@ -62,7 +62,7 @@ ingresses:
     service:
       name: '{{ include "prometheus.fullname" . }}-prometheus-main'
       port: 80
-    className: pomerium
+    className: "{{ .Values.global.ingress.class }}"
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-pomerium
       ingress.pomerium.io/policy: |
@@ -87,7 +87,7 @@ ingresses:
     service:
       name: '{{ include "prometheus.fullname" . }}-prometheus-main-thanos'
       port: 8080
-    className: "{{ .Values.global.ingress.class }}"
+    className: konghq
     annotations:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
       konghq.com/protocols: grpc,grpcs

@@ -16,7 +16,7 @@ global:
     prefix:
     suffix:
   ingress:
-    class: konghq
+    class: pomerium
   env:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2
@@ -29,7 +29,7 @@ ingresses:
     service:
       name: '{{ include "thanos.fullname" . }}-query'
       port: 9090
-    className: pomerium
+    className: "{{ .Values.global.ingress.class }}"
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-pomerium
       ingress.pomerium.io/policy: |
@@ -55,7 +55,7 @@ ingresses:
     service:
       name: '{{ include "thanos.fullname" . }}-storegateway'
       port: 10901
-    className: "{{ .Values.global.ingress.class }}"
+    className: konghq
     annotations:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
       konghq.com/protocols: grpc,grpcs
