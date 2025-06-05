@@ -1,20 +1,26 @@
 labels: {}
 
-company:
-  name: #example
-  admins:
-    domain: ""
-    emails: []
-  domain:
-    root: #example.com
-
-network:
-  int_nat_gw:
-
-bucket:
-  type:
-  prefix:
-  suffix:
+global:
+  company:
+    name: #example
+    admins:
+      domain: ""
+      emails: []
+    domain:
+      root: #example.com
+      env: #int.example.com, dev.example.com, prd.example.com etc
+  network:
+    int_nat_gw:
+  registry:
+    url:
+  bucket:
+    type:
+    prefix:
+    suffix:
+  env:
+    name: #aws-prd or aws-int or aws-stg
+    server: #https://2.2.2.2
+    short_name: #pre/prd/int/dev/etc
 
 repository:
   url: #git@github.com:ggramal/infrared.git
@@ -25,28 +31,30 @@ repository:
     root_from_chart: "../../../.."
 
 defaultValuesTpl: |
-  company:
-    name: {{ .Values.company.name }}
-    admins: {{ .Values.company.admins | toYaml | nindent 4 }}
-    domain:
-      root: {{ .domain.root }}
-      env: {{ .domain.env }}
-  network:
-    int_nat_gw: {{ .Values.network.int_nat_gw }}
-  registry:
-    url: {{ .env.registry }}
-    containers:
-    pip:
-  bucket:
-    type: {{ .Values.bucket.type }}
-    prefix: {{ .Values.company.name }}
-    suffix: {{ .env.short_name }}
+  global:
+    company:
+      name: {{ .Values.global.company.name }}
+      admins: {{ .Values.global.company.admins | toYaml | nindent 6 }}
+      domain:
+        root: {{ .domain.root }}
+        env: {{ .domain.env }}
+    network:
+      int_nat_gw: {{ .Values.global.network.int_nat_gw }}
+    registry:
+      url: {{ .env.registry }}
+      containers:
+      pip:
+    bucket:
+      type:   {{ .Values.global.bucket.type }}
+      prefix: {{ .Values.global.company.name }}
+      suffix: {{ .env.short_name }}
+    env:
+      name: {{ .env.name }}
+      server: {{ .env.server }}
+      short_name: {{ .env.short_name }}
+
   repository:
     url: {{ .Values.repository.url }}
-  env:
-    name: {{ .env.name }}
-    server: {{ .env.server }}
-    short_name: {{ .env.short_name }}
 
 root:
   enabled: true
