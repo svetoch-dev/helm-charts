@@ -4,6 +4,8 @@ BrakingChanges:
 * `chart_deps/postgres/postgres-cluster`:
   * `sidecars` attr now has dict type instead of list
   * `podMonitor.podMetricsEndpoints` attr now has dict type instead of list
+  * `environments`: common env attributes are now under global section
+  * `environment`: common env attributes are now under global section
 
 New features:
 * `chart_deps/postgres/postgres-cluster`:
@@ -13,6 +15,16 @@ New features:
   * `redis`: default exporter configs
   * `sentinel`: default exporter configs
 * `all charts`: use digest for images instead of plain tags
+* `chainlink-nodes`: global common env attrs
+* `external-dns`: global common env attrs
+* `gha-operator`: global common env attrs
+* `gha-runner`: global common env attrs
+* `redis`: global common env attrs
+
+Enhancements:
+* `cert-manager`: default ingress class is now pomerium
+* `prometheus`: default ingress class is now pomerium
+* `thanos`: default ingress class is now pomerium
 
 # 9.6.3
 
