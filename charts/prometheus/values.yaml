@@ -89,7 +89,7 @@ ingresses:
       port: 8080
     className: konghq
     annotations:
-      cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+      cert-manager.io/cluster-issuer: letsencrypt-konghq
       konghq.com/protocols: grpc,grpcs
       konghq.com/plugins: thanos-main-ip-restriction
     hosts:
@@ -401,7 +401,7 @@ kong-plugins:
     - name: thanos-main-ip-restriction
       plugin_name: ip-restriction
       annotations:
-        kubernetes.io/ingress.class: '{{ .Values.global.ingress.class }}'
+        kubernetes.io/ingress.class: konghq
       config:
         allow:
           - "{{ .Values.global.network.int_nat_gw }}"
