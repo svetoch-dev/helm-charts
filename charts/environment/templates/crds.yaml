@@ -1,5 +1,5 @@
 {{- with .Values.crds -}}
-{{- $app_name := (printf "%s-%s" "crds" $.Values.env.name) }}
+{{- $app_name := (printf "%s-%s" "crds" $.Values.global.env.name) }}
 {{- if .enabled -}}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -20,7 +20,7 @@ metadata:
   {{- end }}
 spec:
   destination:
-    server: {{ $.Values.env.server }}
+    server: {{ $.Values.global.env.server }}
     {{- if .namespace }}
     namespace: {{ .namespace }}
     {{- end }}

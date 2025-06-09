@@ -1,41 +1,38 @@
 labels: {}
 
-company:
-  name: #example
-  admins:
-    domain: ""
-    emails: []
-  domain:
-    root: #example.com
-    env: #int.example.com, dev.example.com, prd.example.com etc
-
-network:
-  int_nat_gw:
-
-registry:
-  url:
-
-bucket:
-  type:
-  prefix:
-  suffix:
+global:
+  company:
+    name: #example
+    admins:
+      domain: ""
+      emails: []
+    domain:
+      root: #example.com
+      env: #int.example.com, dev.example.com, prd.example.com etc
+  network:
+    int_nat_gw:
+  registry:
+    url:
+  bucket:
+    type:
+    prefix:
+    suffix:
+  env:
+    name: #aws-prd or aws-int or aws-stg
+    server: #https://2.2.2.2
+    short_name: #pre/prd/int/dev/etc
 
 externalEnvDomains: []
-
-env:
-  name: #aws-prd or aws-int or aws-stg
-  server: #https://2.2.2.2
-  short_name: #pre/prd/int/dev/etc
 
 repository:
   url: #git@github.com:ggramal/infrared.git
   paths:
     charts: argocd/charts/infra/charts
     crds: argocd/charts/infra/crds
-    manifests: "argocd/environments/{{ .Values.env.name }}/manifests"
+    manifests: "argocd/environments/{{ .Values.global.env.name }}/manifests"
     app_charts: argocd/charts/app
-    env_from_charts: ../../../../environments/{{ .Values.env.name }}
-    env_from_app_charts: ../../../environments/{{ .Values.env.name }}
+    env_from_charts: ../../../../environments/{{ .Values.global.env.name }}
+    env_from_app_charts: ../../../environments/{{ .Values.global.env.name }}
   revision: master
 
 
@@ -82,86 +79,58 @@ chart_apps:
   rabbitmq:
     enabled: false
     values: |
-      global:
-        company: {{ .Values.company | toYaml | nindent 6 }}
-        registry: {{ .Values.registry | toYaml | nindent 6 }}
-        bucket: {{ .Values.bucket | toYaml | nindent 6 }}
-        network: {{ .Values.network | toYaml | nindent 6 }}
-        env: {{ .Values.env | toYaml | nindent 6 }}
+      global: {{ .Values.global | toYaml | nindent 4 }}
+  redis:
+    enabled: false
+    values: |
+      global: {{ .Values.global | toYaml | nindent 4 }}
+  external-dns:
+    enabled: false
+    values: |
+      global: {{ .Values.global | toYaml | nindent 4 }}
+  gha-runner:
+    enabled: false
+    values: |
+      global: {{ .Values.global | toYaml | nindent 4 }}
+  gha-operator:
+    enabled: false
+    values: |
+      global: {{ .Values.global | toYaml | nindent 4 }}
   pomerium:
     enabled: false
     values: |
-      global:
-        company: {{ .Values.company | toYaml | nindent 6 }}
-        registry: {{ .Values.registry | toYaml | nindent 6 }}
-        bucket: {{ .Values.bucket | toYaml | nindent 6 }}
-        network: {{ .Values.network | toYaml | nindent 6 }}
-        env: {{ .Values.env | toYaml | nindent 6 }}
+      global: {{ .Values.global | toYaml | nindent 4 }}
   postgres:
     enabled: false
     values: |
-      global:
-        company: {{ .Values.company | toYaml | nindent 6 }}
-        registry: {{ .Values.registry | toYaml | nindent 6 }}
-        bucket: {{ .Values.bucket | toYaml | nindent 6 }}
-        network: {{ .Values.network | toYaml | nindent 6 }}
-        env: {{ .Values.env | toYaml | nindent 6 }}
+      global: {{ .Values.global | toYaml | nindent 4 }}
   grafana:
     enabled: false
     values: |
-      global:
-        company: {{ .Values.company | toYaml | nindent 6 }}
-        registry: {{ .Values.registry | toYaml | nindent 6 }}
-        bucket: {{ .Values.bucket | toYaml | nindent 6 }}
-        network: {{ .Values.network | toYaml | nindent 6 }}
-        env: {{ .Values.env | toYaml | nindent 6 }}
+      global: {{ .Values.global | toYaml | nindent 4 }}
   konghq:
     enabled: false
     values: |
-      global:
-        company: {{ .Values.company | toYaml | nindent 6 }}
-        registry: {{ .Values.registry | toYaml | nindent 6 }}
-        bucket: {{ .Values.bucket | toYaml | nindent 6 }}
-        network: {{ .Values.network | toYaml | nindent 6 }}
-        env: {{ .Values.env | toYaml | nindent 6 }}
+      global: {{ .Values.global | toYaml | nindent 4 }}
   cert-manager:
     enabled: false
     values: |
-      global:
-        company: {{ .Values.company | toYaml | nindent 6 }}
-        registry: {{ .Values.registry | toYaml | nindent 6 }}
-        bucket: {{ .Values.bucket | toYaml | nindent 6 }}
-        network: {{ .Values.network | toYaml | nindent 6 }}
-        env: {{ .Values.env | toYaml | nindent 6 }}
+      global: {{ .Values.global | toYaml | nindent 4 }}
   argocd:
     enabled: false
     values: |
-      global:
-        company: {{ .Values.company | toYaml | nindent 6 }}
-        registry: {{ .Values.registry | toYaml | nindent 6 }}
-        bucket: {{ .Values.bucket | toYaml | nindent 6 }}
-        network: {{ .Values.network | toYaml | nindent 6 }}
-        environment: {{ .Values.env | toYaml | nindent 6 }}
+      global: {{ .Values.global | toYaml | nindent 4 }}
+        environment: {{ .Values.global.env | toYaml | nindent 6 }}
       argocd:
         externalRedis:
-          host: rfrm-argocd-{{ .Values.env.name }}-redis
+          host: rfrm-argocd-{{ .Values.global.env.name }}-redis
           port: 6379
           existingSecret: "argocd-redis"
   prometheus:
     enabled: false
     values: |
-      global:
-        company: {{ .Values.company | toYaml | nindent 6 }}
-        registry: {{ .Values.registry | toYaml | nindent 6 }}
-        bucket: {{ .Values.bucket | toYaml | nindent 6 }}
-        network: {{ .Values.network | toYaml | nindent 6 }}
-        env: {{ .Values.env | toYaml | nindent 6 }}
+      global: {{ .Values.global | toYaml | nindent 4 }}
   thanos:
     enabled: false
     values: |
-      global:
-        company: {{ .Values.company | toYaml | nindent 6 }}
-        registry: {{ .Values.registry | toYaml | nindent 6 }}
-        bucket: {{ .Values.bucket | toYaml | nindent 6 }}
-        network: {{ .Values.network | toYaml | nindent 6 }}
-        env: {{ .Values.env | toYaml | nindent 6 }}
+      global: {{ .Values.global | toYaml | nindent 4 }}

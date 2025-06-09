@@ -16,7 +16,7 @@ global:
     prefix:
     suffix:
   ingress:
-    class: konghq
+    class: pomerium
   env:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2
