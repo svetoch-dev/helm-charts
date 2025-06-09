@@ -3,9 +3,16 @@ labels: {}
 global:
   company:
     name: #example
-    admins:
+    teams:
       domain: ""
-      emails: []
+      admin:
+        emails: []
+      qa:
+        emails: []
+      dev:
+        emails: []
+      pm:
+        emails: []
     domain:
       root: #example.com
       env: #int.example.com, dev.example.com, prd.example.com etc
@@ -34,7 +41,7 @@ defaultValuesTpl: |
   global:
     company:
       name: {{ .Values.global.company.name }}
-      admins: {{ .Values.global.company.admins | toYaml | nindent 6 }}
+      teams: {{ .Values.global.company.teams | toYaml | nindent 6 }}
       domain:
         root: {{ .domain.root }}
         env: {{ .domain.env }}

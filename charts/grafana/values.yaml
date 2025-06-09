@@ -1,9 +1,16 @@
 global:
   company:
     name: #example
-    admins:
+    teams:
       domain: ""
-      emails: []
+      admin:
+        emails: []
+      qa:
+        emails: []
+      dev:
+        emails: []
+      pm:
+        emails: []
     domain:
       root: #example.com
       env: #int.example.com, dev.example.com, prd.example.com etc
@@ -34,9 +41,11 @@ ingresses:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
       ingress.pomerium.io/pass_identity_headers: 'true'
       ingress.pomerium.io/policy: |
+        {{- $teams  := .Values.global.company.teams }}
+        {{- $emails := concat $teams.admin.emails $teams.dev.emails $teams.qa.emails $teams.pm.emails }}
         allow:
           or:
-            {{- range $email := .Values.global.company.admins.emails }}
+            {{- range $email := $emails }}
             - email:
                 is: {{ $email }}
             {{- end }}
