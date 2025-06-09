@@ -50,14 +50,14 @@ ingresses:
                 is: {{ $email }}
             {{- end }}
     hosts:
-      - host: "grafana.{{ .Values.global.company.domain.env }}"
+      - host: "gf.{{ .Values.global.company.domain.env }}"
         paths:
           - path: /
             pathType: Prefix
     tls:
-      - secretName: grafana-tls
+      - secretName: gf-tls
         hosts:
-          - "grafana.{{ .Values.global.company.domain.env }}"
+          - "gf.{{ .Values.global.company.domain.env }}"
 
 grafana-operator:
   enabled: false
@@ -92,7 +92,7 @@ grafana-main:
     alerting:
       enabled: "false"
     server:
-      root_url: https://grafana.{{ .Values.global.company.domain.env }}
+      root_url: https://gf.{{ .Values.global.company.domain.env }}
   deployment:
     spec:
       template:
@@ -111,7 +111,7 @@ grafana-main:
                   memory: 65Mi
               env:
                 - name: GF_AUTH_SIGNOUT_REDIRECT_URL
-                  value: 'https://grafana.{{ .Values.global.company.domain.env }}/.pomerium/sign_out'
+                  value: 'https://gf.{{ .Values.global.company.domain.env }}/.pomerium/sign_out'
                 - name: GF_AUTH_JWT_ENABLED
                   value: 'true'
                 - name: GF_AUTH_JWT_HEADER_NAME
