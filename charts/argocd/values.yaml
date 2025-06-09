@@ -55,14 +55,14 @@ ingresses:
                 is: {{ $email }}
             {{- end }}
     hosts:
-    - host: "argocd.{{ .Values.global.company.domain.env }}"
+    - host: "ag.{{ .Values.global.company.domain.env }}"
       paths:
       - path: /
         pathType: ImplementationSpecific
     tls:
-    - secretName: argocd-tls
+    - secretName: ag-tls
       hosts:
-      - "argocd.{{ .Values.global.company.domain.env }}"
+      - "ag.{{ .Values.global.company.domain.env }}"
 
 argocd:
   enabled: false
