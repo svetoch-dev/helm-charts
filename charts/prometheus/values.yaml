@@ -8,9 +8,16 @@ global:
 
   company:
     name: #example
-    admins:
+    teams:
       domain: ""
-      emails: []
+      admin:
+        emails: []
+      qa:
+        emails: []
+      dev:
+        emails: []
+      pm:
+        emails: []
     domain:
       root: #example.com
       env: #int.example.com, dev.example.com, prd.example.com etc
@@ -28,6 +35,12 @@ global:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2
     short_name: #pre/prd/int/dev/etc
+  access:
+    teams: ["admin"]
+    emails: []
+  pomerium:
+    policy:
+      default: ""
 
 ingresses:
   alertmanager-main:
@@ -40,13 +53,7 @@ ingresses:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-pomerium
       ingress.pomerium.io/policy: |
-        allow:
-          or:
-            {{- range $email := .Values.global.company.admins.emails }}
-            - email:
-                is: {{ $email }}
-            {{- end }}
-
+        {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
       - host: "al.{{ .Values.global.company.domain.env }}"
         paths:
@@ -66,12 +73,7 @@ ingresses:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-pomerium
       ingress.pomerium.io/policy: |
-        allow:
-          or:
-            {{- range $email := .Values.global.company.admins.emails }}
-            - email:
-                is: {{ $email }}
-            {{- end }}
+        {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
       - host: "pm.{{ .Values.global.company.domain.env }}"
         paths:

@@ -4,8 +4,11 @@ BrakingChanges:
 * `chart_deps/postgres/postgres-cluster`:
   * `sidecars` attr now has dict type instead of list
   * `podMonitor.podMetricsEndpoints` attr now has dict type instead of list
-  * `environments`: common env attributes are now under global section
-  * `environment`: common env attributes are now under global section
+* `environments`: common env attributes are now under global section
+* `environment`: common env attributes are now under global section
+* `all charts`: global.admins -> global.teams.admin + qa,pm,dev groups to teams
+* `grafana`: grafana domain name -> gf domain name
+* `argocd`: argocd domain name -> ag domain name
 
 New features:
 * `chart_deps/postgres/postgres-cluster`:
@@ -14,12 +17,12 @@ New features:
 * `chart_deps/redis/redis-operator`:
   * `redis`: default exporter configs
   * `sentinel`: default exporter configs
-* `all charts`: use digest for images instead of plain tags
 * `chainlink-nodes`: global common env attrs
 * `external-dns`: global common env attrs
 * `gha-operator`: global common env attrs
 * `gha-runner`: global common env attrs
 * `redis`: global common env attrs
+* `all charts`: use digest for images instead of plain tags
 
 Enhancements:
 * `cert-manager`: default ingress class is now pomerium
