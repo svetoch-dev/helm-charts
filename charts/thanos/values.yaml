@@ -28,6 +28,12 @@ global:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2
     short_name: #pre/prd/int/dev/etc
+  access:
+    teams: ["admin"]
+    emails: []
+  pomerium:
+    policy:
+      default: ""
 
 ingresses:
   query:
@@ -40,13 +46,7 @@ ingresses:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-pomerium
       ingress.pomerium.io/policy: |
-        allow:
-          or:
-            {{- range $email := .Values.global.company.teams.admin.emails }}
-            - email:
-                is: {{ $email }}
-            {{- end }}
-
+        {{- tpl .Values.global.pomerium.policy.default $ | nindent 2}}
     hosts:
       - host: "tq.{{ .Values.global.company.domain.env }}"
         paths:

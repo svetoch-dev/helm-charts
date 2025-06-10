@@ -30,6 +30,12 @@ global:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2
     short_name: #pre/prd/int/dev/etc
+  access:
+    teams: ["dev", "admin"]
+    emails: []
+  pomerium:
+    policy:
+      default: ""
 
 node-1:
   enabled: false

@@ -30,6 +30,12 @@ global:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2
     short_name: #pre/prd/int/dev/etc
+  access:
+    teams: ["dev", "admin", "qa", "pm"]
+    emails: []
+  pomerium:
+    policy:
+      default: ""
 
 postgres-operator:
   enabled: false
@@ -114,14 +120,7 @@ pgadmin:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
       ingress.pomerium.io/pass_identity_headers: 'true'
       ingress.pomerium.io/policy: |
-        {{- $teams  := .Values.global.company.teams }}
-        {{- $emails := concat $teams.admin.emails $teams.dev.emails $teams.qa.emails $teams.pm.emails }}
-        allow:
-          or:
-            {{- range $email := $emails }}
-            - email:
-                is: {{ $email }}
-            {{- end }}
+        {{- tpl .Values.global.pomerium.policy.default $ | nindent 2}}
     hosts:
       - host: 'pg.{{ .Values.global.company.domain.env }}'
         paths:

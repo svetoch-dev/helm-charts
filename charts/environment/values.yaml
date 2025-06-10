@@ -28,6 +28,21 @@ global:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2
     short_name: #pre/prd/int/dev/etc
+  pomerium:
+    policy:
+      default: |
+        {{- $teams  := .Values.global.company.teams }}
+        {{- $emails := .Values.global.access.emails }}
+        {{- range $team := .Values.global.access.teams }}
+        {{- $emails = concat $emails (get $teams $team).emails }}
+        {{- end }}
+        allow:
+          or:
+            {{- range $email :=  $emails }}
+            - email:
+                is: {{ $email }}
+            {{- end }}
+
 
 externalEnvDomains: []
 
