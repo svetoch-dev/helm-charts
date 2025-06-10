@@ -47,7 +47,7 @@ ingresses:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
       ingress.pomerium.io/pass_identity_headers: 'true'
       ingress.pomerium.io/policy: |
-        {{- tpl .Values.global.pomerium.policy.default $ | nindent 2}}
+        {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
       - host: "gf.{{ .Values.global.company.domain.env }}"
         paths:

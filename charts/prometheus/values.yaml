@@ -53,7 +53,7 @@ ingresses:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-pomerium
       ingress.pomerium.io/policy: |
-        {{- tpl .Values.global.pomerium.policy.default $ | nindent 2}}
+        {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
       - host: "al.{{ .Values.global.company.domain.env }}"
         paths:
@@ -73,7 +73,7 @@ ingresses:
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-pomerium
       ingress.pomerium.io/policy: |
-        {{- tpl .Values.global.pomerium.policy.default $ | nindent 2}}
+        {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
       - host: "pm.{{ .Values.global.company.domain.env }}"
         paths:
