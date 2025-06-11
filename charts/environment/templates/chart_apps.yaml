@@ -52,6 +52,7 @@ spec:
       releaseName: {{ $app_name }}
     {{- end }}
       valueFiles:
+        - ../globals.yaml
         - {{ tpl (printf "%s/%s/values.yaml" $env_path $chart_app_name) $ }}
     {{- end }}
     {{- with $chart_app_obj.parameters }}
@@ -92,6 +93,7 @@ spec:
       releaseName: {{ $app_name }}
     {{- end }}
       valueFiles:
+        - ../globals.yaml
         - {{ tpl (printf "%s/%s/values.yaml" $env_path $chart_app_name) $ }}
     {{- end }}
     {{- with $chart_app_obj.parameters }}

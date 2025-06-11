@@ -1,39 +1,9 @@
 global:
-  company:
-    name: #example
-    teams:
-      domain: ""
-      admin:
-        emails: []
-      qa:
-        emails: []
-      dev:
-        emails: []
-      pm:
-        emails: []
-    domain:
-      root: #example.com
-      env: #int.example.com, dev.example.com, prd.example.com etc
-  network:
-    int_nat_gw:
-  registry:
-    url:
-  bucket:
-    type:
-    prefix:
-    suffix:
   ingress:
     class: pomerium
-  env:
-    name: #aws-prd or aws-int or aws-stg
-    server: #https://2.2.2.2
-    short_name: #pre/prd/int/dev/etc
   access:
     teams: ["admin"]
     emails: []
-  pomerium:
-    policy:
-      default: ""
 
 certificates:
   enabled: false

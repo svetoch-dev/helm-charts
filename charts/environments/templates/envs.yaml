@@ -28,6 +28,7 @@ spec:
     targetRevision: {{ $env_obj.revision | default $.Values.repository.revision }}
     helm:
       valueFiles:
+        - ../globals.yaml
         - {{ tpl (printf "%s/environments/%s/env.yaml" $.Values.repository.paths.root_from_chart $env_name ) $ }}
     {{- with $env_obj.parameters }}
       parameters:
