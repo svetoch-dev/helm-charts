@@ -3,6 +3,7 @@
 {{- $app_name := ternary $app_name $chart_app_obj.name (not $chart_app_obj.name) }}
 {{- $chart_path := ternary $.Values.repository.paths.app_charts $.Values.repository.paths.charts (eq $chart_app_obj.app true) }}
 {{- $env_path := ternary $.Values.repository.paths.env_from_app_charts $.Values.repository.paths.env_from_charts (eq $chart_app_obj.app true) }}
+{{- $globals_path := ternary $.Values.repository.paths.globals_from_app_charts $.Values.repository.paths.globals_from_charts (eq $chart_app_obj.app true) }}
 {{- if $chart_app_obj.enabled -}}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -52,6 +53,7 @@ spec:
       releaseName: {{ $app_name }}
     {{- end }}
       valueFiles:
+        - {{ $globals_path }}
         - {{ tpl (printf "%s/%s/values.yaml" $env_path $chart_app_name) $ }}
     {{- end }}
     {{- with $chart_app_obj.parameters }}
@@ -92,6 +94,7 @@ spec:
       releaseName: {{ $app_name }}
     {{- end }}
       valueFiles:
+        - {{ $globals_path }}
         - {{ tpl (printf "%s/%s/values.yaml" $env_path $chart_app_name) $ }}
     {{- end }}
     {{- with $chart_app_obj.parameters }}

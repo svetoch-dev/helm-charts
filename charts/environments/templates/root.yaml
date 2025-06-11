@@ -29,6 +29,7 @@ spec:
     targetRevision: {{ .revision | default $.Values.repository.revision }}
     helm:
       valueFiles:
+        - ../globals.yaml
         - {{ tpl (printf "%s/envs.yaml" $.Values.repository.paths.root_from_chart) $ }}
   {{- with .syncPolicy }}
   syncPolicy:

@@ -2,41 +2,6 @@ global:
   image:
     repository: pomerium/ingress-controller
     tag: v0.29.4@sha256:6a5b4a545ad39f0a9daa61afc0f80efb88d1e49499d02014504e17f7dc14c6f7
-  company:
-    name: #example
-    teams:
-      domain: ""
-      admin:
-        emails: []
-      qa:
-        emails: []
-      dev:
-        emails: []
-      pm:
-        emails: []
-    domain:
-      root: #example.com
-      env: #int.example.com, dev.example.com, prd.example.com etc
-  network:
-    int_nat_gw:
-  registry:
-    url:
-  bucket:
-    type:
-    prefix:
-    suffix:
-  ingress:
-    class: pomerium
-  env:
-    name: #aws-prd or aws-int or aws-stg
-    server: #https://2.2.2.2
-    short_name: #pre/prd/int/dev/etc
-  access:
-    teams: ["admin"]
-    emails: []
-  pomerium:
-    policy:
-      default: ""
 
 ingressClassName: '{{ .Values.global.ingress.class }}'
 
