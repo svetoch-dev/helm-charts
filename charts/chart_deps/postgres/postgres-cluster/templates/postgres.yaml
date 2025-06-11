@@ -4,7 +4,7 @@ If sidecar has the same key as the default sidecar
 its attrs override the attrs of the default one
 */}}
 {{- $sidecars := merge .Values.sidecars $defaultSidecars }}
-{{- $sidecars = values $sidecars }}
+{{- $sidecars = values $sidecars | sortAlpha }}
 ---
 apiVersion: "acid.zalan.do/v1"
 kind: postgresql
