@@ -11,6 +11,8 @@ repository:
     app_charts: argocd/charts/app
     env_from_charts: ../../../../environments/{{ .Values.global.env.name }}
     env_from_app_charts: ../../../environments/{{ .Values.global.env.name }}
+    globals_from_app_charts: ../../infra/charts/globals.yaml
+    globals_from_charts: ../globals.yaml
   revision: master
 
 
