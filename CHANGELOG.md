@@ -23,6 +23,7 @@ New features:
 * `gha-runner`: global common env attrs
 * `redis`: global common env attrs
 * `all charts`: 
+  * global move global attributes to a separate file
   * use digest for images instead of plain tags
   * global attributes access and pomerium
 
