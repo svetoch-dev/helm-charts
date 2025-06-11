@@ -22,7 +22,10 @@ New features:
 * `gha-operator`: global common env attrs
 * `gha-runner`: global common env attrs
 * `redis`: global common env attrs
-* `all charts`: use digest for images instead of plain tags
+* `all charts`: 
+  * global move global attributes to a separate file
+  * use digest for images instead of plain tags
+  * global attributes access and pomerium
 
 Enhancements:
 * `cert-manager`: default ingress class is now pomerium
