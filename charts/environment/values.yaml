@@ -98,6 +98,8 @@ chart_apps:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
+        ingress:
+          class: konghq
   cert-manager:
     enabled: false
     values: |
