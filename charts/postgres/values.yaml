@@ -1,11 +1,6 @@
 global:
   image:
     tag: stub
-  ingress:
-    class: pomerium
-  access:
-    teams: ["dev", "admin", "qa", "pm"]
-    emails: []
 
 postgres-operator:
   enabled: false

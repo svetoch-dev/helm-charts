@@ -84,10 +84,16 @@ chart_apps:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
+        access:
+          teams: ["admin", "dev", "pm", "qa"]
+          emails: []
   grafana:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
+        access:
+          teams: ["admin", "dev", "pm", "qa"]
+          emails: []
   konghq:
     enabled: false
     values: |
@@ -101,6 +107,9 @@ chart_apps:
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
         environment: {{ .Values.global.env | toYaml | nindent 6 }}
+        access:
+          teams: ["admin", "dev"]
+          emails: []
       argocd:
         externalRedis:
           host: rfrm-argocd-{{ .Values.global.env.name }}-redis

@@ -6,12 +6,6 @@ global:
 
   imagePullSecrets: []
 
-  ingress:
-    class: pomerium
-  access:
-    teams: ["admin"]
-    emails: []
-
 ingresses:
   alertmanager-main:
     enabled: false

@@ -1,11 +1,6 @@
 global:
   image:
     tag: 2.9.0
-  ingress:
-    class: pomerium
-  access:
-    teams: ["dev", "admin"]
-    emails: []
 
 node-1:
   enabled: false
