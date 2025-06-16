@@ -25,14 +25,6 @@ defaults:
       key: receiver-secret
     message: |
       [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }} {{ if eq .CommonLabels.severity "critical" }}:fire:{{ else }}:warning:{{ end }}{{ else }} :ok:{{ end }}]
-      {{ range .Alerts }}
-          *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
-          *Description:* {{ .Annotations.description }}
-          *Details:*
-          {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
-          {{ end }}
-      {{ end }}
-
 
 configs: {}
 #  someconfigname:
