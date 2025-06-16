@@ -4,7 +4,15 @@ If podMetricsEndpoint has the same key as default podMetricsEndpoint
 its attrs override the attrs of default one
 */}}
 {{- $podMetricsEndpoints := merge .Values.podMonitor.podMetricsEndpoints $defaultPodMetricsEndpoints }}
-{{- $podMetricsEndpoints = values $podMetricsEndpoints }}
+{{/*
+We need to use sortAlpha here so that podMetricsEndpoints will appear
+in predictable order. Also sortAlpha cant be used with 'values'
+function because it doesnt produce object
+*/}}
+{{- $podMetricsEndpoints_list := list }}
+{{- range $pmeName := (keys $podMetricsEndpoints | sortAlpha) }}
+{{- $podMetricsEndpoints_list = append $podMetricsEndpoints_list (get $podMetricsEndpoints $pmeName) }}
+{{- end }}
 {{- if .Values.podMonitor.enabled }}
 ---
 apiVersion: monitoring.coreos.com/v1
@@ -25,7 +33,7 @@ metadata:
     {{- include "postgres-cluster.labels" . | nindent 4 }}
 {{- end }}
 spec:
-  {{- with $podMetricsEndpoints }}
+  {{- with $podMetricsEndpoints_list }}
   podMetricsEndpoints:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
