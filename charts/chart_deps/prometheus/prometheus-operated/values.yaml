@@ -142,7 +142,7 @@ prometheus:
 
     enableFeatures: []
 
-    externalUrl: "pm.{{ .Values.global.company.domain.env }}"
+    externalUrl: "https://pm.{{ .Values.global.company.domain.env }}"
 
     routePrefix: "/"
 

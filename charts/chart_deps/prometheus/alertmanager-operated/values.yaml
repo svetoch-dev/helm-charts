@@ -93,7 +93,7 @@ alertmanager:
 
     volumeMounts: {}
 
-    externalUrl: "al.{{ .Values.global.company.domain.env }}"
+    externalUrl: "https://al.{{ .Values.global.company.domain.env }}"
 
     routePrefix: "/"
 
