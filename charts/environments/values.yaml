@@ -30,6 +30,7 @@ defaultValuesTpl: |
       name: {{ .env.name }}
       server: {{ .env.server }}
       short_name: {{ .env.short_name }}
+    alerts: {{ .Values.global.alerts | toYaml | nindent 4 }}
 
   repository:
     url: {{ .Values.repository.url }}

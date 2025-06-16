@@ -1,20 +1,22 @@
 nameOverride: ""
 fullnameOverride: ""
 
-defaults: {}
-#  slackConfigs:
-#    sendResolved: true
-#    color: '{{ if eq .Status "firing" }}{{ if eq .CommonLabels.severity "critical" }}danger{{ else }}warning{{ end }}{{ else }}good{{ end }}'
-#    title: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }} {{ if eq .CommonLabels.severity "critical" }}:fire:{{ else }}:warning:{{ end }}{{ else }} :ok:{{ end }}]'
-#    text: >-
-#      {{ range .Alerts }}
-#          *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
-#          *Description:* {{ .Annotations.description }}
-#          *Details:*
-#          {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
-#          {{ end }}
-#      {{ end }}
-
+defaults:
+  slackConfigs:
+    sendResolved: true
+    apiURL:
+      name: alertmanager
+      key: receiver-secret
+    color: '{{ if eq .Status "firing" }}{{ if eq .CommonLabels.severity "critical" }}danger{{ else }}warning{{ end }}{{ else }}good{{ end }}'
+    title: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }} {{ if eq .CommonLabels.severity "critical" }}:fire:{{ else }}:warning:{{ end }}{{ else }} :ok:{{ end }}]'
+    text: >-
+      {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+          *Description:* {{ .Annotations.description }}
+          *Details:*
+          {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+          {{ end }}
+      {{ end }}
 
 configs: {}
 #  someconfigname:

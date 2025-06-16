@@ -4,7 +4,15 @@ If sidecar has the same key as the default sidecar
 its attrs override the attrs of the default one
 */}}
 {{- $sidecars := merge .Values.sidecars $defaultSidecars }}
-{{- $sidecars = values $sidecars }}
+{{/*
+We need to use sortAlpha here so that sidecars will appear
+in predictable order. Also sortAlpha cant be used with 'values'
+function because it doesnt produce object
+*/}}
+{{- $sidecars_list := list }}
+{{- range $sName := (keys $sidecars | sortAlpha) }}
+{{- $sidecars_list = append $sidecars_list (get $sidecars $sName) }}
+{{- end }}
 ---
 apiVersion: "acid.zalan.do/v1"
 kind: postgresql
@@ -79,7 +87,7 @@ spec:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   sidecars:
-  {{- range $sObj := $sidecars }}
+  {{- range $sObj := $sidecars_list }}
   - name: {{ $sObj.name }}
     image: {{ $sObj.image }}
     {{- with $sObj.ports }}
