@@ -34,6 +34,12 @@ global:
   access:
     teams: ["admin"]
     emails: []
+  alerts:
+    receivers:
+      - name: default
+        slackConfigs:
+          - channel: "#alerts-{{ .Values.global.company.name }}-cloud"
+            useDefaults: true
   pomerium:
     policy:
       default: |

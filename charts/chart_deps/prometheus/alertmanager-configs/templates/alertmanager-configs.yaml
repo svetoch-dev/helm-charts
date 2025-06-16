@@ -12,18 +12,24 @@ items:
 {{ include "alertmanager-configs.labels" $ | indent 8 }}
         {{- toYaml $config.selector | nindent 8 }}
     spec:
-      {{- range $receiver := $config.receivers }}
+      {{- $receivers := list }}
+      {{- if kindIs "string" $config.receivers }}
+      {{- $receivers = (printf "receivers:\n%s" (tpl $config.receivers $) | fromYaml).receivers }}
+      {{- else }}
+      {{- $receivers = $config.receivers }}
+      {{- end }}
+      {{- range $receiver := $receivers }}
       receivers:
         - name: {{ $receiver.name }}
           {{- range $configsName, $configs := omit $receiver "name"}}
           {{ $configsName }}:
           {{- range $config := $configs }}
           {{/* We use ternary operator instead of if/else here because of helm vars scopes */}}
-          {{- $config := ternary (tpl (toYaml $config) $ | fromYaml) $config $config.useTpl }}
+          {{- $config := ternary (tpl (toYaml $config) $ | fromYaml) $config $config.useDefaults }}
           {{- if hasKey $.Values.defaults $configsName }}
           {{- $config := mustMerge $config (get $.Values.defaults $configsName) }}
           {{- end }}
-          {{- toYaml (list (omit $config "useTpl") ) | nindent 10 }}
+          {{- toYaml (list (omit $config "useDefaults") ) | nindent 10 }}
           {{- end }}
           {{- end }}
       {{- end }}

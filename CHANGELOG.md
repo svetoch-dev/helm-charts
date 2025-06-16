@@ -4,6 +4,8 @@ BrakingChanges:
 * `chart_deps/postgres/postgres-cluster`:
   * `sidecars` attr now has dict type instead of list
   * `podMonitor.podMetricsEndpoints` attr now has dict type instead of list
+* `chart_deps/prometheus/alertmanager-configs`:
+  * `useTpl` -> `useDefaults`
 * `environments`: common env attributes are now under global section
 * `environment`: common env attributes are now under global section
 * `all charts`: global.admins -> global.teams.admin + qa,pm,dev groups to teams
@@ -22,6 +24,12 @@ New features:
 * `gha-operator`: global common env attrs
 * `gha-runner`: global common env attrs
 * `redis`: global common env attrs
+* `prometheus`:
+  * move alertmanager-config defaults to `chart_deps/prometheus/alertmanager-configs` chart
+  * move alertmanager-config `route` section to chart values
+* `chart_deps/prometheus/alertmanager-configs`:
+  * slackConfigs to defaults
+  * support go templates for receivers
 * `all charts`: 
   * global move global attributes to a separate file
   * use digest for images instead of plain tags
