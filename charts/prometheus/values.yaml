@@ -77,6 +77,7 @@ alertmanager-configs:
       selector:
         alertmanager: main
       route:
+        receiver: default
         continue: false
         routes:
           #Default route
