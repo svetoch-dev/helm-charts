@@ -67,7 +67,7 @@ spec:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- if .Values.alertmanager.spec.externalUrl }}
-  externalUrl: {{ .Values.alertmanager.spec.externalUrl }}
+  externalUrl: {{ tpl .Values.alertmanager.spec.externalUrl $ }}
   {{- end }}
   {{- if .Values.alertmanager.spec.routePrefix }}
   routePrefix: {{ .Values.alertmanager.spec.routePrefix }}
