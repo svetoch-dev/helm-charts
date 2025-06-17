@@ -24,7 +24,7 @@ defaults:
       name: alertmanager
       key: receiver-secret
     message: >-
-        [\[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }} {{ if eq .CommonLabels.severity "critical" }}🔥{{ else }}{{ end }}{{ else }}👍{{ end }}\]]({{ .ExternalURL }})
+        [\[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }} {{ if eq .CommonLabels.severity "critical" }}🔥{{ else }}⚠️ {{ end }}{{ else }}👍{{ end }}\]]({{ .ExternalURL }})
         {{ range .Alerts }}
           *Alert:* `{{ .Annotations.summary }} - {{ .Labels.severity }}`
           *Description:* `{{ .Annotations.description }}`
