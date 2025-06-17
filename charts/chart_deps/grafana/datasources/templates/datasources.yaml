@@ -8,9 +8,6 @@ metadata:
   labels:
 {{- include "grafana-datasources.labels" $ | nindent 4 }}
   name: {{ $ds_obj.name }}
-  {{- if $ds_obj.uid }}
-  uid: {{ $ds_obj.uid }}
-  {{- end }}
 spec:
   {{- if $ds_obj.selector }}
   instanceSelector:
