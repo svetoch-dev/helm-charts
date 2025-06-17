@@ -20,6 +20,7 @@ defaults:
   telegramConfigs:
     sendResolved: true
     parseMode: 'MarkdownV2'
+    chatID: -1002710518017
     botToken:
       name: alertmanager
       key: receiver-secret
