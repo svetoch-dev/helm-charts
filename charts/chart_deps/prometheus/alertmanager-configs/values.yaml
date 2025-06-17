@@ -17,6 +17,22 @@ defaults:
           {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
           {{ end }}
       {{ end }}
+  telegramConfigs:
+    sendResolved: true
+    parseMode: 'MarkdownV2'
+    chatID: -1002710518017
+    botToken:
+      name: alertmanager
+      key: receiver-secret
+    message: >-
+        [\[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }} {{ if eq .CommonLabels.severity "critical" }}🔥{{ else }}⚠️ {{ end }}{{ else }}👍{{ end }}\]]({{ .ExternalURL }})
+        {{ range .Alerts }}
+          *Alert:* `{{ .Annotations.summary }} - {{ .Labels.severity }}`
+          *Description:* `{{ .Annotations.description }}`
+          *Details:*
+          {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+          {{ end }}
+        {{ end }}
 
 configs: {}
 #  someconfigname:

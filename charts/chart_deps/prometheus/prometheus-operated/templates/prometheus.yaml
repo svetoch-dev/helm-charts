@@ -89,7 +89,7 @@ spec:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- if .Values.prometheus.spec.externalUrl }}
-  externalUrl: {{ .Values.prometheus.spec.externalUrl }}
+  externalUrl: {{ tpl .Values.prometheus.spec.externalUrl $ }}
   {{- end }}
   {{- if .Values.prometheus.spec.routePrefix }}
   routePrefix: {{ .Values.prometheus.spec.routePrefix }}

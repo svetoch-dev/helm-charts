@@ -30,6 +30,9 @@ New features:
 * `chart_deps/prometheus/alertmanager-configs`:
   * slackConfigs to defaults
   * support go templates for receivers
+  * default telegramConfigs
+* `chart_deps/prometheus/alertmanager-operated`: externalUrl to `al.{{ .Values.global.domain.env }}`
+* `chart_deps/prometheus/prometheus-operated`: externalUrl to `pm.{{ .Values.global.domain.env }}`
 * `all charts`: 
   * global move global attributes to a separate file
   * use digest for images instead of plain tags
