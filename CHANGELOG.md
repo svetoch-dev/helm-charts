@@ -13,6 +13,7 @@ BrakingChanges:
 * `argocd`: argocd domain name -> ag domain name
 
 New features:
+* `chart_deps/grafana/datasources`: ability to set `uid` for grafana datasource
 * `chart_deps/postgres/postgres-cluster`:
   * `defaultSidecars` attr that controls sets up pg exporter sidecars for each created db
   * ability to override `defaultSidecar` attrs by setting the keyNames same to db names
