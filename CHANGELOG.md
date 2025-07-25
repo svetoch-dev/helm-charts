@@ -28,6 +28,7 @@ New features:
 * `prometheus`:
   * move alertmanager-config defaults to `chart_deps/prometheus/alertmanager-configs` chart
   * move alertmanager-config `route` section to chart values
+  * new alert `RabbitMQ_too_many_masters`
 * `chart_deps/prometheus/alertmanager-configs`:
   * slackConfigs to defaults
   * support go templates for receivers
