@@ -635,6 +635,11 @@ prometheus-rules:
             for: "20m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of 'Memory high watermark' limit for > 20m"
             expr: sum by (container,pod,namespace) (container_memory_working_set_bytes{container="rabbitmq"}) / on(container,pod,namespace) max by (container,pod,namespace) (rabbitmq_detailed_resident_memory_limit_bytes) > 0.9
+          RabbitMQ_too_many_masters:
+            enabled: false
+            for: "1m"
+            description: "RabbitMQ in {{ $labels.vhost }} has too many({{ $value }}) masters."
+            expr: max by (vhost) (count by (vhost, queue) (rabbitmq_detailed_queue_messages)) > 1
           # redis
           Redis_missing_master:
             enabled: false
