@@ -85,8 +85,10 @@ alertmanager-configs:
             matchers:
               - name: env
                 value: "{{ .Values.global.env.short_name }}"
+                matchType: "="
               - name: team
                 value: "sre"
+                matchType: "="
               - name: severity
                 value: "(low|medium|high|critical)"
                 matchType: "=~"

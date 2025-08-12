@@ -45,6 +45,10 @@ Enhancements:
 * `prometheus`: default ingress class is now pomerium
 * `thanos`: default ingress class is now pomerium
 
+Fixes:
+* `prometheus`: `matchers` field used a deprecated syntax (`alertmanager`)
+
+
 # 9.6.3
 
 Fixes:
