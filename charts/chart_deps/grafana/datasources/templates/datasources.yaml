@@ -23,7 +23,7 @@ spec:
   {{- end }}
   {{- with $ds_obj.datasource }}
   datasource:
-    name: {{ tpl $ds_obj.name }}
+    name: {{ tpl $ds_obj.name $ }}
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- with $ds_obj.plugins }}
