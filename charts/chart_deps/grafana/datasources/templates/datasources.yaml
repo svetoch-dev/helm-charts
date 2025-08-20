@@ -19,11 +19,11 @@ spec:
   allowCrossNamespaceImport: {{ $ds_obj.allowCrossNamespaceImport }}
   {{- end }}
   {{- with $ds_obj.uid }}
-  uid: {{ tpl (toYaml .) $ }}
+  uid: {{ tpl . $ }}
   {{- end }}
   {{- with $ds_obj.datasource }}
   datasource:
-    name: {{ tpl (toYaml $ds_obj.name) $ }}
+    name: {{ tpl $ds_obj.name $ }}
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- with $ds_obj.plugins }}
