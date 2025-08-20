@@ -18,8 +18,8 @@ spec:
   {{- if $ds_obj.allowCrossNamespaceImport }}
   allowCrossNamespaceImport: {{ $ds_obj.allowCrossNamespaceImport }}
   {{- end }}
-  {{- if $ds_obj.uid }}
-  uid: {{ tpl $ds_obj.uid $ }}
+  {{- with $ds_obj.uid }}
+  uid: {{ tpl (toYaml .) $ }}
   {{- end }}
   {{- with $ds_obj.datasource }}
   datasource:
