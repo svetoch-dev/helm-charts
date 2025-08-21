@@ -1,4 +1,4 @@
-{{- range $name $ds := .Values.datasources }}
+{{- range $name, $ds := .Values.datasources }}
 {{- if $ds.enabled }}
 ---
 apiVersion: grafana.integreatly.org/v1beta1
