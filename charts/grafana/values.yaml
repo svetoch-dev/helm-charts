@@ -105,7 +105,7 @@ datasource:
         jsonData:
           manageAlerts: 'false'
           prometheusType: Thanos
-    loki-{{ .Values.global.env.name }}
+    loki-{{ .Values.global.env.name }}:
       enabled: true
       uid: loki-{{ .Values.global.env.name }}
       selector:
