@@ -4,6 +4,7 @@ BrakingChanges:
 * `chart_deps/postgres/postgres-cluster`:
   * `sidecars` attr now has dict type instead of list
   * `podMonitor.podMetricsEndpoints` attr now has dict type instead of list
+* `chart_deps/grafana/datasources` now has dict type instead of list
 * `chart_deps/prometheus/alertmanager-configs`:
   * `useTpl` -> `useDefaults`
 * `environments`: common env attributes are now under global section
@@ -13,7 +14,9 @@ BrakingChanges:
 * `argocd`: argocd domain name -> ag domain name
 
 New features:
-* `chart_deps/grafana/datasources`: ability to set `uid` for grafana datasource
+* `grafana datasources`:
+  * ability to set `uid` for grafana datasource
+  * add new datasource, for loki in int
 * `chart_deps/postgres/postgres-cluster`:
   * `defaultSidecars` attr that controls sets up pg exporter sidecars for each created db
   * ability to override `defaultSidecar` attrs by setting the keyNames same to db names
@@ -46,7 +49,7 @@ Enhancements:
 * `thanos`: default ingress class is now pomerium
 * `grafana`:
   * `grafana` update v1.6.0 -> v1.6.5
-  * `datasources` `uid` and `name` variable support `tpl`
+  * `datasources` `uid` and `name` variables support `tpl`
 
 Fixes:
 * `prometheus`: `matchers` field used a deprecated syntax (`alertmanager`)
