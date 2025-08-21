@@ -93,7 +93,8 @@ grafana-main:
 datasource:
   enabled: false
   datasources:
-    - name: thanos-query-int
+    thanos-query-int:
+      enabled: true
       selector:
         grafana: main
       datasource:
@@ -104,6 +105,18 @@ datasource:
         jsonData:
           manageAlerts: 'false'
           prometheusType: Thanos
+    loki-{{ .Values.global.env.name }}
+      enabled: true
+      uid: loki-{{ .Values.global.env.name }}
+      selector:
+        grafana: main
+      datasource:
+        type: loki
+        isDefault: false
+        access: proxy
+        url: http://loki-read.loki.svc.cluster.local:3100
+        jsonData:
+          manageAlerts: 'false'
 
 dashboard:
   enabled: false

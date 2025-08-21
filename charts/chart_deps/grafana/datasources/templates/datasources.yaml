@@ -1,36 +1,35 @@
-{{- range $ds_obj := .Values.datasources }}
-{{- $enbld := ternary $ds_obj.enabled true ( hasKey $ds_obj "enabled") }}
-{{- if $enbld }}
+{{- range $name $ds := .Values.datasources }}
+{{- if $ds.enabled }}
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
 metadata:
   labels:
-{{- include "grafana-datasources.labels" $ | nindent 4 }}
-  name: {{ tpl $ds_obj.name $ }}
+    {{- include "grafana-datasources.labels" $ | nindent 4 }}
+  name: {{ tpl $name $ }}
 spec:
-  {{- if $ds_obj.selector }}
+  {{- with $ds.selector }}
   instanceSelector:
     matchLabels:
-    {{- toYaml $ds_obj.selector | nindent 6 }}
+      {{- toYaml . | nindent 6 }}
   {{- end }}
-  resyncPeriod: {{ $ds_obj.resyncPeriod | default "30s" }}
-  {{- if $ds_obj.allowCrossNamespaceImport }}
-  allowCrossNamespaceImport: {{ $ds_obj.allowCrossNamespaceImport }}
+  resyncPeriod: {{ $ds.resyncPeriod | default "30s" }}
+  {{- if $ds.allowCrossNamespaceImport }}
+  allowCrossNamespaceImport: {{ $ds.allowCrossNamespaceImport }}
   {{- end }}
-  {{- with $ds_obj.uid }}
+  {{- with $ds.uid }}
   uid: {{ tpl . $ }}
   {{- end }}
-  {{- with $ds_obj.datasource }}
+  {{- with $ds.datasource }}
   datasource:
-    name: {{ tpl $ds_obj.name $ }}
+    name: {{ tpl $name $ }}
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $ds_obj.plugins }}
+  {{- with $ds.plugins }}
   plugins:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $ds_obj.valuesFrom }}
+  {{- with $ds.valuesFrom }}
   valuesFrom:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
