@@ -117,6 +117,18 @@ datasource:
         url: http://loki-read.loki.svc.cluster.local:3100
         jsonData:
           manageAlerts: 'false'
+    loki-tpl:
+      enabled: true
+      uid: tpl
+      selector:
+        grafana: main
+      datasource:
+        type: loki
+        isDefault: false
+        access: proxy
+        url: tpl
+        jsonData:
+          manageAlerts: 'false'
 
 dashboard:
   enabled: false
