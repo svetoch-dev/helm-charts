@@ -2,6 +2,7 @@
 {{- $tplName := tpl $name $ -}}
 {{- if $ds.enabled }}
 {{- if eq $tplName "loki-tpl" }}
+{{- range $envName, $envDomain := .Values.externalEnvs }}
 
 ---
 apiVersion: grafana.integreatly.org/v1beta1
@@ -37,6 +38,7 @@ spec:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
 
+{{- end }}
 {{- else }}
 
 ---
