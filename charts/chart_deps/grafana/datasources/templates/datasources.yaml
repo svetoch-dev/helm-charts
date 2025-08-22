@@ -1,6 +1,7 @@
 {{- range $name, $ds := .Values.datasources }}
+{{- $tplName := tpl $name $ -}}
 {{- if $ds.enabled }}
-{{- if ({{ tpl $name $ }}) eq "loki-tpl" }}
+{{- if $tplName eq "loki-tpl" }}
 
 ---
 apiVersion: grafana.integreatly.org/v1beta1
@@ -8,7 +9,7 @@ kind: GrafanaDatasource
 metadata:
   labels:
     {{- include "grafana-datasources.labels" $ | nindent 4 }}
-  name: {{ tpl $name $ }}
+  name: $tplName
 spec:
   {{- with $ds.selector }}
   instanceSelector:
@@ -24,7 +25,7 @@ spec:
   {{- end }}
   {{- with $ds.datasource }}
   datasource:
-    name: {{ tpl $name $ }}
+    name: $tplName
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- with $ds.plugins }}
@@ -35,6 +36,43 @@ spec:
   valuesFrom:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
+
+{{- else }}
+
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  labels:
+    {{- include "grafana-datasources.labels" $ | nindent 4 }}
+  name: $tplName
+spec:
+  {{- with $ds.selector }}
+  instanceSelector:
+    matchLabels:
+      {{- toYaml . | nindent 6 }}
+  {{- end }}
+  resyncPeriod: {{ $ds.resyncPeriod | default "30s" }}
+  {{- if $ds.allowCrossNamespaceImport }}
+  allowCrossNamespaceImport: {{ $ds.allowCrossNamespaceImport }}
+  {{- end }}
+  {{- with $ds.uid }}
+  uid: {{ tpl . $ }}
+  {{- end }}
+  {{- with $ds.datasource }}
+  datasource:
+    name: $tplName
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $ds.plugins }}
+  plugins:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $ds.valuesFrom }}
+  valuesFrom:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+
 {{- end }}
 {{- end }}
 {{- end }}
