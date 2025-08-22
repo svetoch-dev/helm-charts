@@ -1,5 +1,5 @@
 {{- range $name, $ds := .Values.datasources }}
-{{- if $ds.enabled }
+{{- if $ds.enabled }}
 {{- if $name eq "loki-tpl" }}
 
 ---
