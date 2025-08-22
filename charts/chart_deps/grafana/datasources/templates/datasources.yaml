@@ -1,5 +1,7 @@
 {{- range $name, $ds := .Values.datasources }}
-{{- if $ds.enabled }}
+{{- if $ds.enabled }
+{{- if {{ tpl $name $ }} eq "loki-tpl" }}
+
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDatasource
@@ -33,5 +35,6 @@ spec:
   valuesFrom:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
