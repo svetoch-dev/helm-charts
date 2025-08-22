@@ -9,7 +9,7 @@ kind: GrafanaDatasource
 metadata:
   labels:
     {{- include "grafana-datasources.labels" $ | nindent 4 }}
-  name: $tplName
+  name: {{ $tplName }}
 spec:
   {{- with $ds.selector }}
   instanceSelector:
@@ -25,7 +25,7 @@ spec:
   {{- end }}
   {{- with $ds.datasource }}
   datasource:
-    name: $tplName
+    name: {{ $tplName }}
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- with $ds.plugins }}
@@ -45,7 +45,7 @@ kind: GrafanaDatasource
 metadata:
   labels:
     {{- include "grafana-datasources.labels" $ | nindent 4 }}
-  name: $tplName
+  name: {{ $tplName }}
 spec:
   {{- with $ds.selector }}
   instanceSelector:
@@ -61,7 +61,7 @@ spec:
   {{- end }}
   {{- with $ds.datasource }}
   datasource:
-    name: $tplName
+    name: {{ $tplName }}
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- with $ds.plugins }}
