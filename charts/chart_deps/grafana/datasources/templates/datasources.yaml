@@ -1,7 +1,7 @@
 {{- range $name, $ds := .Values.datasources }}
 {{- $tplName := tpl $name $ -}}
 {{- if $ds.enabled }}
-{{- if ($tplName | quote) eq "loki-tpl" }}
+{{- if eq $tplName "loki-tpl" }}
 
 ---
 apiVersion: grafana.integreatly.org/v1beta1
