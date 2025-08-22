@@ -1,6 +1,7 @@
 labels: {}
 
 externalEnvDomains: []
+externalEnvs: {}
 
 repository:
   url: #git@github.com:ggramal/infrared.git
