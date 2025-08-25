@@ -1,6 +1,7 @@
 labels: {}
 
 externalEnvDomains: []
+externalEnvs: {}
 
 repository:
   url: #git@github.com:ggramal/infrared.git
@@ -97,6 +98,10 @@ chart_apps:
         access:
           teams: ["admin", "dev", "pm", "qa"]
           emails: []
+      datasource:
+        datasources:
+          lokiTpl:
+            externalEnvs: {{ .Values.externalEnvs | toYaml | nindent 10 }}
   konghq:
     enabled: false
     values: |
