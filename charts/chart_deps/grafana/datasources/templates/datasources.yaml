@@ -2,7 +2,7 @@
 {{- $tplName := tpl $name $ -}}
 {{- if $ds.enabled }}
 {{- if eq $tplName "loki-tpl" }}
-{{- range $tplEnvName, $envDomain := $ds.externalEnvs }}
+{{- range $tplEnvName, $env := $ds.externalEnvs }}
 {{- $envName := tpl $tplEnvName $ -}}
 
 ---
@@ -26,7 +26,7 @@ spec:
   {{- with $ds.datasource }}
   datasource:
     name: {{ $envName }}
-    url: {{ tpl $envDomain $ }}
+    url: {{ tpl $env.domain $ }}
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- with $ds.plugins }}
