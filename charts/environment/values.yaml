@@ -100,7 +100,7 @@ chart_apps:
           emails: []
       datasource:
         datasources:
-          loki-tpl:
+          lokiTpl:
             externalEnvs: {{ .Values.externalEnvs | toYaml | nindent 10 }}
   konghq:
     enabled: false
