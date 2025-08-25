@@ -119,6 +119,7 @@ datasource:
           manageAlerts: 'false'
     loki-tpl:
       enabled: true
+      externalEnvs: {}
       uid: tpl
       selector:
         grafana: main

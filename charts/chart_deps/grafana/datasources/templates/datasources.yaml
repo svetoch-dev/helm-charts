@@ -2,7 +2,7 @@
 {{- $tplName := tpl $name $ -}}
 {{- if $ds.enabled }}
 {{- if eq $tplName "loki-tpl" }}
-{{- range $envName, $envDomain := .Values.externalEnvs }}
+{{- range $envName, $envDomain := $ds.externalEnvs }}
 
 ---
 apiVersion: grafana.integreatly.org/v1beta1
