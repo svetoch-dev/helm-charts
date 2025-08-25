@@ -2,7 +2,8 @@
 {{- $tplName := tpl $name $ -}}
 {{- if $ds.enabled }}
 {{- if eq $tplName "loki-tpl" }}
-{{- range $envName, $envDomain := $ds.externalEnvs }}
+{{- range $tplEnvName, $envDomain := $ds.externalEnvs }}
+{{- $envName := tpl $tplEnvName $ -}}
 
 ---
 apiVersion: grafana.integreatly.org/v1beta1
@@ -10,7 +11,7 @@ kind: GrafanaDatasource
 metadata:
   labels:
     {{- include "grafana-datasources.labels" $ | nindent 4 }}
-  name: {{ $tplName }}
+  name: {{ $envName }}
 spec:
   {{- with $ds.selector }}
   instanceSelector:
@@ -21,12 +22,11 @@ spec:
   {{- if $ds.allowCrossNamespaceImport }}
   allowCrossNamespaceImport: {{ $ds.allowCrossNamespaceImport }}
   {{- end }}
-  {{- with $ds.uid }}
-  uid: {{ tpl . $ }}
-  {{- end }}
+  uid: {{ $envName }}
   {{- with $ds.datasource }}
   datasource:
-    name: {{ $tplName }}
+    name: {{ $envName }}
+    url: {{ tpl $envDomain $ }}
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- with $ds.plugins }}

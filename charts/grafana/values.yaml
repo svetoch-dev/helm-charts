@@ -119,15 +119,12 @@ datasource:
           manageAlerts: 'false'
     loki-tpl:
       enabled: true
-      externalEnvs: {}
-      uid: tpl
       selector:
         grafana: main
       datasource:
         type: loki
         isDefault: false
         access: proxy
-        url: tpl
         jsonData:
           manageAlerts: 'false'
 
