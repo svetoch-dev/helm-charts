@@ -8,7 +8,7 @@ kind: GrafanaDatasource
 metadata:
   labels:
     {{- include "grafana-datasources.labels" $ | nindent 4 }}
-  name: loki-{{ $envName $ }}
+  name: loki-{{ $envName }}
 spec:
   {{- with $ds.selector }}
   instanceSelector:
@@ -19,10 +19,10 @@ spec:
   {{- if $ds.allowCrossNamespaceImport }}
   allowCrossNamespaceImport: {{ $ds.allowCrossNamespaceImport }}
   {{- end }}
-  uid: loki-{{ $envName $ }}
+  uid: loki-{{ $envName }}
   {{- with $ds.datasource }}
   datasource:
-    name: loki-{{ $envName $ }}
+    name: loki-{{ $envName }}
     url: https://loki.{{ $env.domain $ }}
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
