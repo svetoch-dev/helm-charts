@@ -23,7 +23,7 @@ spec:
   {{- with $ds.datasource }}
   datasource:
     name: loki-{{ $envName }}
-    url: https://loki.{{ $env.domain $ }}
+    url: https://loki.{{ $env.domain }}
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- with $ds.plugins }}
