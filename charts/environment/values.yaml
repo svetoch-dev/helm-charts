@@ -98,6 +98,7 @@ chart_apps:
         access:
           teams: ["admin", "dev", "pm", "qa"]
           emails: []
+      externalEnvs: {{ .Values.externalEnvs }}
   konghq:
     enabled: false
     values: |
