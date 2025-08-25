@@ -99,8 +99,9 @@ chart_apps:
           teams: ["admin", "dev", "pm", "qa"]
           emails: []
       datasource:
-        loki-tpl:
-          externalEnvs: {{ .Values.externalEnvs }}
+        datasources:
+          loki-tpl:
+            externalEnvs: {{ .Values.externalEnvs }}
   konghq:
     enabled: false
     values: |
