@@ -101,7 +101,7 @@ chart_apps:
       datasource:
         datasources:
           loki-tpl:
-            externalEnvs: {{ .Values.externalEnvs }}
+            externalEnvs: {{ .Values.externalEnvs | toYaml | nindent 8 }}
   konghq:
     enabled: false
     values: |
