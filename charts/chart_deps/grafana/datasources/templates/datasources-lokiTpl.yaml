@@ -1,6 +1,6 @@
-{{- range $name, $env := .Values.datasources.lokiTpl.externalEnvs }}
-{{- if .Values.datasources.lokiTpl.enabled }}
 {{- $ds := .Values.datasources.lokiTpl }}
+{{- range $name, $env := .Values.datasources.lokiTpl.externalEnvs }}
+{{- if $ds.enabled }}
 {{- $envName := tpl $name $ -}}
 
 ---
