@@ -49,6 +49,7 @@ Enhancements:
 * `prometheus`: default ingress class is now pomerium
 * `thanos`: default ingress class is now pomerium
 * `grafana`:
+  * `grafana-operator` and `crds` update v5.18.0 -> v5.19.4
   * `grafana` update v1.6.0 -> v1.6.5
   * `datasources` `uid` and `name` variables support `tpl`
 

@@ -3,17 +3,17 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.3
-  name: grafanacontactpoints.grafana.integreatly.org
+    controller-gen.kubebuilder.io/version: v0.17.3
+  name: grafananotificationtemplates.grafana.integreatly.org
 spec:
   group: grafana.integreatly.org
   names:
     categories:
     - grafana-operator
-    kind: GrafanaContactPoint
-    listKind: GrafanaContactPointList
-    plural: grafanacontactpoints
-    singular: grafanacontactpoint
+    kind: GrafanaNotificationTemplate
+    listKind: GrafanaNotificationTemplateList
+    plural: grafananotificationtemplates
+    singular: grafananotificationtemplate
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -27,7 +27,7 @@ spec:
     name: v1beta1
     schema:
       openAPIV3Schema:
-        description: GrafanaContactPoint is the Schema for the grafanacontactpoints
+        description: GrafanaNotificationTemplate is the Schema for the GrafanaNotificationTemplate
           API
         properties:
           apiVersion:
@@ -48,15 +48,21 @@ spec:
           metadata:
             type: object
           spec:
-            description: GrafanaContactPointSpec defines the desired state of GrafanaContactPoint
+            description: GrafanaNotificationTemplateSpec defines the desired state
+              of GrafanaNotificationTemplate
             properties:
               allowCrossNamespaceImport:
                 default: false
                 description: Allow the Operator to match this resource with Grafanas
                   outside the current namespace
                 type: boolean
-              disableResolveMessage:
+              editable:
+                description: Whether to enable or disable editing of the notification
+                  template in Grafana UI
                 type: boolean
+                x-kubernetes-validations:
+                - message: spec.editable is immutable
+                  rule: self == oldSelf
               instanceSelector:
                 description: Selects Grafana instances for import
                 properties:
@@ -107,6 +113,7 @@ spec:
                 - message: spec.instanceSelector is immutable
                   rule: self == oldSelf
               name:
+                description: Template name
                 type: string
               resyncPeriod:
                 default: 10m0s
@@ -114,96 +121,21 @@ spec:
                   not set
                 pattern: ^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$
                 type: string
-              settings:
-                x-kubernetes-preserve-unknown-fields: true
-              type:
-                minLength: 1
+              suspend:
+                description: Suspend pauses synchronizing attempts and tells the operator
+                  to ignore changes
+                type: boolean
+              template:
+                description: Template content
                 type: string
-              uid:
-                description: Manually specify the UID the Contact Point is created
-                  with. Can be any string consisting of alphanumeric characters, -
-                  and _ with a maximum length of 40
-                maxLength: 40
-                pattern: ^[a-zA-Z0-9-_]+$
-                type: string
-                x-kubernetes-validations:
-                - message: spec.uid is immutable
-                  rule: self == oldSelf
-              valuesFrom:
-                items:
-                  properties:
-                    targetPath:
-                      type: string
-                    valueFrom:
-                      properties:
-                        configMapKeyRef:
-                          description: Selects a key of a ConfigMap.
-                          properties:
-                            key:
-                              description: The key to select.
-                              type: string
-                            name:
-                              default: ""
-                              description: |-
-                                Name of the referent.
-                                This field is effectively required, but due to backwards compatibility is
-                                allowed to be empty. Instances of this type with an empty value here are
-                                almost certainly wrong.
-                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                              type: string
-                            optional:
-                              description: Specify whether the ConfigMap or its key
-                                must be defined
-                              type: boolean
-                          required:
-                          - key
-                          type: object
-                          x-kubernetes-map-type: atomic
-                        secretKeyRef:
-                          description: Selects a key of a Secret.
-                          properties:
-                            key:
-                              description: The key of the secret to select from.  Must
-                                be a valid secret key.
-                              type: string
-                            name:
-                              default: ""
-                              description: |-
-                                Name of the referent.
-                                This field is effectively required, but due to backwards compatibility is
-                                allowed to be empty. Instances of this type with an empty value here are
-                                almost certainly wrong.
-                                More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-                              type: string
-                            optional:
-                              description: Specify whether the Secret or its key must
-                                be defined
-                              type: boolean
-                          required:
-                          - key
-                          type: object
-                          x-kubernetes-map-type: atomic
-                      type: object
-                      x-kubernetes-validations:
-                      - message: Either configMapKeyRef or secretKeyRef must be set
-                        rule: (has(self.configMapKeyRef) && !has(self.secretKeyRef))
-                          || (!has(self.configMapKeyRef) && has(self.secretKeyRef))
-                  required:
-                  - targetPath
-                  - valueFrom
-                  type: object
-                maxItems: 99
-                type: array
             required:
             - instanceSelector
             - name
-            - settings
-            - type
             type: object
             x-kubernetes-validations:
-            - message: spec.uid is immutable
-              rule: ((!has(oldSelf.uid) && !has(self.uid)) || (has(oldSelf.uid) &&
-                has(self.uid)))
+            - message: spec.editable is immutable
+              rule: ((!has(oldSelf.editable) && !has(self.editable)) || (has(oldSelf.editable)
+                && has(self.editable)))
             - message: disabling spec.allowCrossNamespaceImport requires a recreate
                 to ensure desired state
               rule: '!oldSelf.allowCrossNamespaceImport || (oldSelf.allowCrossNamespaceImport

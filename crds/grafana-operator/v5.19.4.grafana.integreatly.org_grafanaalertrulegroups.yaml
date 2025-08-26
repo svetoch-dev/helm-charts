@@ -3,17 +3,17 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.16.3
-  name: grafanamutetimings.grafana.integreatly.org
+    controller-gen.kubebuilder.io/version: v0.17.3
+  name: grafanaalertrulegroups.grafana.integreatly.org
 spec:
   group: grafana.integreatly.org
   names:
     categories:
     - grafana-operator
-    kind: GrafanaMuteTiming
-    listKind: GrafanaMuteTimingList
-    plural: grafanamutetimings
-    singular: grafanamutetiming
+    kind: GrafanaAlertRuleGroup
+    listKind: GrafanaAlertRuleGroupList
+    plural: grafanaalertrulegroups
+    singular: grafanaalertrulegroup
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -27,7 +27,8 @@ spec:
     name: v1beta1
     schema:
       openAPIV3Schema:
-        description: GrafanaMuteTiming is the Schema for the GrafanaMuteTiming API
+        description: GrafanaAlertRuleGroup is the Schema for the grafanaalertrulegroups
+          API
         properties:
           apiVersion:
             description: |-
@@ -47,7 +48,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: GrafanaMuteTimingSpec defines the desired state of GrafanaMuteTiming
+            description: GrafanaAlertRuleGroupSpec defines the desired state of GrafanaAlertRuleGroup
             properties:
               allowCrossNamespaceImport:
                 default: false
@@ -55,12 +56,25 @@ spec:
                   outside the current namespace
                 type: boolean
               editable:
-                default: true
-                description: Whether to enable or disable editing of the mute timing
-                  in Grafana UI
+                description: Whether to enable or disable editing of the alert rule
+                  group in Grafana UI
                 type: boolean
                 x-kubernetes-validations:
-                - message: spec.editable is immutable
+                - message: Value is immutable
+                  rule: self == oldSelf
+              folderRef:
+                description: Match GrafanaFolders CRs to infer the uid
+                type: string
+                x-kubernetes-validations:
+                - message: Value is immutable
+                  rule: self == oldSelf
+              folderUID:
+                description: |-
+                  UID of the folder containing this rule group
+                  Overrides the FolderSelector
+                type: string
+                x-kubernetes-validations:
+                - message: Value is immutable
                   rule: self == oldSelf
               instanceSelector:
                 description: Selects Grafana instances for import
@@ -111,8 +125,13 @@ spec:
                 x-kubernetes-validations:
                 - message: spec.instanceSelector is immutable
                   rule: self == oldSelf
+              interval:
+                format: duration
+                pattern: ^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$
+                type: string
               name:
-                description: A unique name for the mute timing
+                description: Name of the alert rule group. If not specified, the resource
+                  name will be used.
                 type: string
               resyncPeriod:
                 default: 10m0s
@@ -120,68 +139,163 @@ spec:
                   not set
                 pattern: ^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$
                 type: string
-              time_intervals:
-                description: Time intervals for muting
+              rules:
                 items:
+                  description: AlertRule defines a specific rule to be evaluated.
+                    It is based on the upstream model with some k8s specific type
+                    mappings
                   properties:
-                    days_of_month:
-                      description: |-
-                        The date 1-31 of a month. Negative values can also be used to represent days that begin at the end of the month.
-                        For example: -1 for the last day of the month.
-                      items:
+                    annotations:
+                      additionalProperties:
                         type: string
-                      type: array
-                    location:
-                      description: Depending on the location, the time range is displayed
-                        in local time.
+                      type: object
+                    condition:
                       type: string
-                    months:
-                      description: |-
-                        The months of the year in either numerical or the full calendar month.
-                        For example: 1, may.
-                      items:
-                        type: string
-                      type: array
-                    times:
-                      description: The time inclusive of the start and exclusive of
-                        the end time (in UTC if no location has been selected, otherwise
-                        local time).
+                    data:
                       items:
                         properties:
-                          end_time:
-                            description: end time
+                          datasourceUid:
+                            description: Grafana data source unique identifier; it
+                              should be '__expr__' for a Server Side Expression operation.
                             type: string
-                          start_time:
-                            description: start time
+                          model:
+                            description: JSON is the raw JSON query and includes the
+                              above properties as well as custom properties.
+                            x-kubernetes-preserve-unknown-fields: true
+                          queryType:
+                            description: |-
+                              QueryType is an optional identifier for the type of query.
+                              It can be used to distinguish different types of queries.
                             type: string
-                        required:
-                        - end_time
-                        - start_time
+                          refId:
+                            description: RefID is the unique identifier of the query,
+                              set by the frontend call.
+                            type: string
+                          relativeTimeRange:
+                            description: relative time range
+                            properties:
+                              from:
+                                description: from
+                                format: int64
+                                type: integer
+                              to:
+                                description: to
+                                format: int64
+                                type: integer
+                            type: object
                         type: object
                       type: array
-                    weekdays:
-                      description: |-
-                        The day or range of days of the week.
-                        For example: monday, thursday
-                      items:
+                    execErrState:
+                      enum:
+                      - OK
+                      - Alerting
+                      - Error
+                      - KeepLast
+                      type: string
+                    for:
+                      default: 0s
+                      format: duration
+                      pattern: ^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$
+                      type: string
+                    isPaused:
+                      type: boolean
+                    keepFiringFor:
+                      format: duration
+                      pattern: ^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$
+                      type: string
+                    labels:
+                      additionalProperties:
                         type: string
-                      type: array
-                    years:
-                      description: |-
-                        The year or years for the interval.
-                        For example: 2021
-                      items:
-                        type: string
-                      type: array
+                      type: object
+                    missingSeriesEvalsToResolve:
+                      description: The number of missing series evaluations that must
+                        occur before the rule is considered to be resolved.
+                      format: int64
+                      type: integer
+                    noDataState:
+                      enum:
+                      - Alerting
+                      - NoData
+                      - OK
+                      - KeepLast
+                      type: string
+                    notificationSettings:
+                      properties:
+                        group_by:
+                          items:
+                            type: string
+                          type: array
+                        group_interval:
+                          type: string
+                        group_wait:
+                          type: string
+                        mute_time_intervals:
+                          items:
+                            type: string
+                          type: array
+                        receiver:
+                          type: string
+                        repeat_interval:
+                          type: string
+                      required:
+                      - receiver
+                      type: object
+                    record:
+                      properties:
+                        from:
+                          type: string
+                        metric:
+                          type: string
+                      required:
+                      - from
+                      - metric
+                      type: object
+                    title:
+                      example: Always firing
+                      maxLength: 190
+                      minLength: 1
+                      type: string
+                    uid:
+                      description: UID of the alert rule. Can be any string consisting
+                        of alphanumeric characters, - and _ with a maximum length
+                        of 40
+                      maxLength: 40
+                      pattern: ^[a-zA-Z0-9-_]+$
+                      type: string
+                  required:
+                  - condition
+                  - data
+                  - execErrState
+                  - for
+                  - noDataState
+                  - title
+                  - uid
                   type: object
                 minItems: 1
                 type: array
+              suspend:
+                description: Suspend pauses synchronizing attempts and tells the operator
+                  to ignore changes
+                type: boolean
             required:
             - instanceSelector
-            - name
-            - time_intervals
+            - interval
+            - rules
             type: object
             x-kubernetes-validations:
+            - message: Only one of FolderUID or FolderRef can be set and one must
+                be defined
+              rule: (has(self.folderUID) && !(has(self.folderRef))) || (has(self.folderRef)
+                && !(has(self.folderUID)))
+            - message: spec.editable is immutable
+              rule: ((!has(oldSelf.editable) && !has(self.editable)) || (has(oldSelf.editable)
+                && has(self.editable)))
+            - message: spec.folderUID is immutable
+              rule: ((!has(oldSelf.folderUID) && !has(self.folderUID)) || (has(oldSelf.folderUID)
+                && has(self.folderUID)))
+            - message: spec.folderRef is immutable
+              rule: ((!has(oldSelf.folderRef) && !has(self.folderRef)) || (has(oldSelf.folderRef)
+                && has(self.folderRef)))
             - message: disabling spec.allowCrossNamespaceImport requires a recreate
                 to ensure desired state
               rule: '!oldSelf.allowCrossNamespaceImport || (oldSelf.allowCrossNamespaceImport
