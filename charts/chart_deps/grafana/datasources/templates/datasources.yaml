@@ -1,6 +1,5 @@
-{{- range $name, $ds_obj := .Values.datasources }}
+{{- range $dsName, $ds_obj := .Values.datasources }}
 {{- if $ds_obj.enabled }}
-{{- $dsName := tpl $name $ -}}
 
 ---
 apiVersion: grafana.integreatly.org/v1beta1
@@ -8,7 +7,7 @@ kind: GrafanaDatasource
 metadata:
   labels:
     {{- include "grafana-datasources.labels" $ | nindent 4 }}
-  name: {{ $dsName }}
+  name: {{ tpl $dsName $ }}
 spec:
   {{- with $ds_obj.selector }}
   instanceSelector:
@@ -24,7 +23,7 @@ spec:
   {{- end }}
   {{- with $ds_obj.datasource }}
   datasource:
-    name: {{ $dsName }}
+    name: {{ tpl $dsName $ }}
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- with $ds_obj.plugins }}
