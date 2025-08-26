@@ -1,6 +1,6 @@
 labels: {}
 
-externalEnvDomains: []
+externalEnvs: {}
 
 repository:
   url: #git@github.com:ggramal/infrared.git
@@ -97,6 +97,22 @@ chart_apps:
         access:
           teams: ["admin", "dev", "pm", "qa"]
           emails: []
+      datasource:
+        datasources:
+          {{- range $env_name, $env_obj := .Values.externalEnvs }}
+          loki-{{ tpl $env_name $ }}:
+            enabled: true
+            uid: loki-{{ tpl $env_name $ }}
+            selector:
+              grafana: main
+            datasource:
+              type: loki
+              isDefault: false
+              access: proxy
+              jsonData:
+                manageAlerts: 'false'
+              url: https://loki.{{ $env_obj.domain }}
+          {{- end }}
   konghq:
     enabled: false
     values: |
