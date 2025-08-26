@@ -8,7 +8,9 @@ BrakingChanges:
 * `chart_deps/prometheus/alertmanager-configs`:
   * `useTpl` -> `useDefaults`
 * `environments`: common env attributes are now under global section
-* `environment`: common env attributes are now under global section
+* `environment`:
+  * common env attributes are now under global section
+  * new var `externalEnvs {}` instead of `externalEnvDomain []`
 * `all charts`: global.admins -> global.teams.admin + qa,pm,dev groups to teams
 * `grafana`: grafana domain name -> gf domain name
 * `argocd`: argocd domain name -> ag domain name
