@@ -5,6 +5,7 @@ BrakingChanges:
   * `sidecars` attr now has dict type instead of list
   * `podMonitor.podMetricsEndpoints` attr now has dict type instead of list
 * `chart_deps/grafana/datasources` now has dict type instead of list
+* `chart_deps/grafana/dashboards` now has dict type instead of list
 * `chart_deps/prometheus/alertmanager-configs`:
   * `useTpl` -> `useDefaults`
 * `environments`: common env attributes are now under global section

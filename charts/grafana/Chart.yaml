@@ -6,18 +6,8 @@ dependencies:
   - name: grafana-dashboards
     version: 0.1.0
     repository: file://../chart_deps/grafana/dashboards
-    alias: common-google-cloud-dashboard
-    condition: common-google-cloud-dashboard.enabled
-  - name: grafana-dashboards
-    version: 0.1.0
-    repository: file://../chart_deps/grafana/dashboards
     alias: dashboard
     condition: dashboard.enabled
-  - name: grafana-dashboards
-    version: 0.1.0
-    repository: file://../chart_deps/grafana/dashboards
-    alias: common-dashboard
-    condition: common-dashboard.enabled
   - name: grafana-datasources
     version: 0.1.0
     repository: file://../chart_deps/grafana/datasources
