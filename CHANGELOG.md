@@ -4,16 +4,22 @@ BrakingChanges:
 * `chart_deps/postgres/postgres-cluster`:
   * `sidecars` attr now has dict type instead of list
   * `podMonitor.podMetricsEndpoints` attr now has dict type instead of list
+* `chart_deps/grafana/datasources` now has dict type instead of list
 * `chart_deps/prometheus/alertmanager-configs`:
   * `useTpl` -> `useDefaults`
 * `environments`: common env attributes are now under global section
-* `environment`: common env attributes are now under global section
+* `environment`:
+  * common env attributes are now under global section
+  * new var `externalEnvs {}` instead of `externalEnvDomain []`
 * `all charts`: global.admins -> global.teams.admin + qa,pm,dev groups to teams
 * `grafana`: grafana domain name -> gf domain name
 * `argocd`: argocd domain name -> ag domain name
 
 New features:
-* `chart_deps/grafana/datasources`: ability to set `uid` for grafana datasource
+* `grafana datasources`:
+  * ability to set `uid` for grafana datasource
+  * add new `datasource`, for `loki in int`
+  * `datasources` for loki in all new env are created dinamically from `externalEnvs` variable
 * `chart_deps/postgres/postgres-cluster`:
   * `defaultSidecars` attr that controls sets up pg exporter sidecars for each created db
   * ability to override `defaultSidecar` attrs by setting the keyNames same to db names
@@ -44,6 +50,10 @@ Enhancements:
 * `cert-manager`: default ingress class is now pomerium
 * `prometheus`: default ingress class is now pomerium
 * `thanos`: default ingress class is now pomerium
+* `grafana`:
+  * `grafana-operator` and `crds` update v5.18.0 -> v5.19.4
+  * `grafana` update v11.6.0 -> v12.1.1
+  * `datasources` `uid` and `name` variables support `tpl`
 
 Fixes:
 * `prometheus`: `matchers` field used a deprecated syntax (`alertmanager`)
@@ -67,7 +77,7 @@ Enhancements:
 * `rabbitmq`: update chart 4.4.6 -> 4.4.11
 * `external-dns`: update chart 8.7.8 -> 8.8.2
 * `cert-manager`: update chart v1.17.1 -> v1.17.2
-* `grafana`: update v5.17.1 -> v5.18.0
+* `grafana-operator`: update v5.17.1 -> v5.18.0
 
 # 9.6.0
 
@@ -81,10 +91,10 @@ New features:
 # 9.5.1
 
 Enhancements:
-* Update spilo image with
-  * postgresql version 17.2 -> 17.4
-  * walg version 3.0.3 -> 3.0.7
-  * patroni version 4.0.4 -> 4.0.5
+* Update `spilo` image with
+  * `postgresql` version 17.2 -> 17.4
+  * `walg` version 3.0.3 -> 3.0.7
+  * `patroni` version 4.0.4 -> 4.0.5
   * `pg_profile` version 4.7 -> 4.8
 
 # 9.5.0
@@ -97,15 +107,15 @@ New features:
     * move autoscaling to chart values
   * `pomerium`: jwtClaim header for authenticated user email
   * `postgres.pgadmin`:
-    * update pgadmin to 9.3
+    * update `pgadmin` to 9.3
     * move all common attrs to chart values
     * enable pomerium auth for it
   * `thanos`:
     * create ingress resources from `chart_deps/app/core` helm lib chart
     * `storegateway,query` ingress resources
     * move common attrs to chart values
-    * thanos app 0.37.2 -> 0.38.0
-    * thanos chart 15.14.0 -> 16.0.4
+    * `thanos app` 0.37.2 -> 0.38.0
+    * `thanos chart` 15.14.0 -> 16.0.4
 
 # 9.4.0
 
