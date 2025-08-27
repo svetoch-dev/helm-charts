@@ -17,10 +17,11 @@ BrakingChanges:
 * `argocd`: argocd domain name -> ag domain name
 
 New features:
-* `grafana datasources`:
+* `grafana`:
   * ability to set `uid` for grafana datasource
   * add new `datasource`, for `loki in int`
   * `datasources` for loki in all new env are created dinamically from `externalEnvs` variable
+  * new panels for `logs` on `services dashboard`
 * `chart_deps/postgres/postgres-cluster`:
   * `defaultSidecars` attr that controls sets up pg exporter sidecars for each created db
   * ability to override `defaultSidecar` attrs by setting the keyNames same to db names
