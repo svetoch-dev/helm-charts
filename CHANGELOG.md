@@ -59,7 +59,7 @@ Enhancements:
 
 Fixes:
 * `prometheus`: `matchers` field used a deprecated syntax (`alertmanager`)
-
+* `grafana`: panel `container traffic throughput` rename to `pod traffic throughput`
 
 # 9.6.3
 
