@@ -17,6 +17,7 @@ BrakingChanges:
 * `argocd`: argocd domain name -> ag domain name
 * `thanos` use official image instead `bitnami`
 * `external-dns` use official image instead `bitnami`
+* `kube-state-metrics` use official image instead `bitnami`
 
 New features:
 * `grafana`:
@@ -52,18 +53,27 @@ New features:
 
 Enhancements:
 * `cert-manager`: default ingress class is now pomerium
-* `prometheus`: default ingress class is now pomerium
-* `thanos`: default ingress class is now pomerium
+* `prometheus`:
+  * default ingress class is now pomerium
+  * update v3.2.1 -> v3.5.0
+  * crds update v0.81.0 -> v0.85.0
 * `grafana`:
   * `grafana-operator` and `crds` update v5.18.0 -> v5.19.4
   * `grafana` update v11.6.0 -> v12.1.1
   * `datasources` `uid` and `name` variables support `tpl`
 * `thanos`:
-  * `chart` update v16.0.4 -> 17.3.1
+  * default ingress class is now pomerium
   * image update 0.38.0 -> 0.39.2
-* `external-dns`:
-  * `chart` update v8.8.2 -> v9.0.3
-  * image update v0.16.1 -> v0.18.0
+* `external-dns` + crds update v0.16.1 -> v0.18.0
+* charts update:
+  * `prometheus-postgres-exporter` 6.10.0 -> 6.10.2
+  * `prometheus-blackbox-exporter` 9.4.0 -> 11.3.1
+  * `prometheus-node-exporter` 4.45.0 -> 4.47.3
+  * `kube-state-metrics` 5.0.4 -> 5.1.0
+  * `kube-prometheus-stack` 70.4.1 -> 77.0.2
+  * `prometheus-stackdriver-exporter` 4.8.2 -> 4.10.0
+  * `external-dns` 8.8.2 -> 9.0.3
+  * `thanos` 16.0.4 -> 17.3.1
 
 Fixes:
 * `prometheus`: `matchers` field used a deprecated syntax (`alertmanager`)
