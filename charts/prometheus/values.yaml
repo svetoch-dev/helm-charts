@@ -192,6 +192,9 @@ prometheus-node-exporter:
 
 kube-state-metrics:
   enabled: false
+  global:
+    security:
+      allowInsecureImages: true
   resources:
     limits:
       cpu: 100m
