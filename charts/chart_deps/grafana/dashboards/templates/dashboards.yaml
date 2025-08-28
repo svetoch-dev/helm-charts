@@ -1,68 +1,69 @@
-{{- range $dshbrd_obj := .Values.dashboards }}
-{{- $enbld := ternary $dshbrd_obj.enabled true ( hasKey $dshbrd_obj "enabled") }}
-{{- if $enbld }}
+{{- range $dboard_name, $dboard_obj := .Values.dashboards }}
+{{- if $dboard_obj.enabled }}
+
 ---
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
   labels:
 {{- include "grafana-dashboards.labels" $ | nindent 4 }}
-  name: {{ $dshbrd_obj.name }}
+  name: {{ tpl $dboard_name $ }}
 spec:
-  {{- if $dshbrd_obj.selector }}
+  {{- with $dboard_obj.selector }}
   instanceSelector:
     matchLabels:
-    {{- toYaml $dshbrd_obj.selector | nindent 6 }}
+    {{- toYaml . | nindent 6 }}
   {{- end }}
-  resyncPeriod: {{ $dshbrd_obj.resyncPeriod | default "30s" }}
-  {{- if $dshbrd_obj.allowCrossNamespaceImport }}
-  allowCrossNamespaceImport: {{ $dshbrd_obj.allowCrossNamespaceImport }}
+  resyncPeriod: {{ $dboard_obj.resyncPeriod | default "30s" }}
+  {{- if $dboard_obj.allowCrossNamespaceImport }}
+  allowCrossNamespaceImport: {{ $dboard_obj.allowCrossNamespaceImport }}
   {{- end }}
-  {{- if $dshbrd_obj.jsonnet }}
-  jsonnet: {{ toYaml $dshbrd_obj.jsonnet | nindent 4 }}
+  {{- if $dboard_obj.jsonnet }}
+  jsonnet: {{ toYaml $dboard_obj.jsonnet | nindent 4 }}
   {{- end }}
-  {{- if $dshbrd_obj.gzipJson }}
-  gzipJson: {{ toYaml $dshbrd_obj.gzipJson | nindent 4 }}
+  {{- if $dboard_obj.gzipJson }}
+  gzipJson: {{ toYaml $dboard_obj.gzipJson | nindent 4 }}
   {{- end }}
-  {{- if $dshbrd_obj.json }}
-  json: {{ toYaml $dshbrd_obj.json | nindent 4 }}
+  {{- if $dboard_obj.json }}
+  json: {{ toYaml $dboard_obj.json | nindent 4 }}
   {{- end }}
-  {{- if $dshbrd_obj.folder }}
-  folder: {{ $dshbrd_obj.folder }}
+  {{- if $dboard_obj.folder }}
+  folder: {{ $dboard_obj.folder }}
   {{- end }}
-  {{- if $dshbrd_obj.url }}
-  url: {{ $dshbrd_obj.url }}
+  {{- if $dboard_obj.url }}
+  url: {{ $dboard_obj.url }}
   {{- end }}
-  {{- if $dshbrd_obj.contentCacheDuration }}
-  contentCacheDuration: {{ $dshbrd_obj.contentCacheDuration }}
+  {{- if $dboard_obj.contentCacheDuration }}
+  contentCacheDuration: {{ $dboard_obj.contentCacheDuration }}
   {{- end }}
-  {{- with $dshbrd_obj.datasource }}
+  {{- with $dboard_obj.datasource }}
   datasource:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $dshbrd_obj.plugins }}
+  {{- with $dboard_obj.plugins }}
   plugins:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $dshbrd_obj.configMapRef }}
+  {{- with $dboard_obj.configMapRef }}
   configMapRef:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $dshbrd_obj.envFrom }}
+  {{- with $dboard_obj.envFrom }}
   envFrom:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $dshbrd_obj.envs }}
+  {{- with $dboard_obj.envs }}
   envs:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $dshbrd_obj.grafanaCom }}
+  {{- with $dboard_obj.grafanaCom }}
   grafanaCom:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $dshbrd_obj.jsonnetLib }}
+  {{- with $dboard_obj.jsonnetLib }}
   jsonnetLib:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
+
 {{- end }}
 {{- end }}

@@ -5,6 +5,7 @@ BrakingChanges:
   * `sidecars` attr now has dict type instead of list
   * `podMonitor.podMetricsEndpoints` attr now has dict type instead of list
 * `chart_deps/grafana/datasources` now has dict type instead of list
+* `chart_deps/grafana/dashboards` now has dict type instead of list
 * `chart_deps/prometheus/alertmanager-configs`:
   * `useTpl` -> `useDefaults`
 * `environments`: common env attributes are now under global section
@@ -16,10 +17,11 @@ BrakingChanges:
 * `argocd`: argocd domain name -> ag domain name
 
 New features:
-* `grafana datasources`:
+* `grafana`:
   * ability to set `uid` for grafana datasource
   * add new `datasource`, for `loki in int`
   * `datasources` for loki in all new env are created dinamically from `externalEnvs` variable
+  * new panels for `logs` on `services dashboard`
 * `chart_deps/postgres/postgres-cluster`:
   * `defaultSidecars` attr that controls sets up pg exporter sidecars for each created db
   * ability to override `defaultSidecar` attrs by setting the keyNames same to db names
@@ -57,7 +59,7 @@ Enhancements:
 
 Fixes:
 * `prometheus`: `matchers` field used a deprecated syntax (`alertmanager`)
-
+* `grafana`: panel `container traffic throughput` rename to `pod traffic throughput`
 
 # 9.6.3
 
