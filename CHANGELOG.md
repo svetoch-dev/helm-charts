@@ -15,6 +15,7 @@ BrakingChanges:
 * `all charts`: global.admins -> global.teams.admin + qa,pm,dev groups to teams
 * `grafana`: grafana domain name -> gf domain name
 * `argocd`: argocd domain name -> ag domain name
+* `thanos` use official image instead `bitnami`
 
 New features:
 * `grafana`:
@@ -56,6 +57,9 @@ Enhancements:
   * `grafana-operator` and `crds` update v5.18.0 -> v5.19.4
   * `grafana` update v11.6.0 -> v12.1.1
   * `datasources` `uid` and `name` variables support `tpl`
+* `thanos`:
+  * `chart` update v16.0.4 -> 17.3.1
+  * image update 0.38.0 -> 0.39.2
 
 Fixes:
 * `prometheus`: `matchers` field used a deprecated syntax (`alertmanager`)
