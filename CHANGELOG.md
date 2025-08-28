@@ -16,6 +16,7 @@ BrakingChanges:
 * `grafana`: grafana domain name -> gf domain name
 * `argocd`: argocd domain name -> ag domain name
 * `thanos` use official image instead `bitnami`
+* `external-dns` use official image instead `bitnami`
 
 New features:
 * `grafana`:
@@ -60,6 +61,9 @@ Enhancements:
 * `thanos`:
   * `chart` update v16.0.4 -> 17.3.1
   * image update 0.38.0 -> 0.39.2
+* `external-dns`:
+  * `chart` update v8.8.2 -> v9.0.3
+  * image update v0.16.1 -> v0.18.0
 
 Fixes:
 * `prometheus`: `matchers` field used a deprecated syntax (`alertmanager`)
