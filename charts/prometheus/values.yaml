@@ -683,7 +683,7 @@ prometheus-rules:
             enabled: false
             for: "2h"
             description: "Cronjob {{ $labels.cronjob }} failed"
-            expr: ((kube_cronjob_next_schedule_time - on(cronjob, exported_namespace) kube_cronjob_status_last_successful_time)/3600) > 25
+            expr: ((kube_cronjob_next_schedule_time - on(job, cronjob, namespace) kube_cronjob_status_last_successful_time)/3600) > 25
           # Resources
           PVC_low_capacity:
             enabled: false
