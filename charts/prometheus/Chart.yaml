@@ -64,10 +64,10 @@ dependencies:
     version: 4.47.3
     alias: prometheus-node-exporter
     condition: prometheus-node-exporter.enabled
-  #https://github.com/bitnami/charts/tree/main/bitnami/kube-state-metrics
+  #https://github.com/prometheus-community/helm-charts/tree/kube-state-metrics-6.1.5/charts/kube-state-metrics
   - name: kube-state-metrics
-    version: 5.1.0
-    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 6.1.5
+    repository: oci://ghcr.io/prometheus-community/charts
     condition: kube-state-metrics.enabled
   #https://github.com/prometheus-community/helm-charts/tree/kube-prometheus-stack-77.0.2/charts/kube-prometheus-stack
   - name: kube-prometheus-stack

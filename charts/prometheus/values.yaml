@@ -192,9 +192,6 @@ prometheus-node-exporter:
 
 kube-state-metrics:
   enabled: false
-  global:
-    security:
-      allowInsecureImages: true
   resources:
     limits:
       cpu: 100m
@@ -203,66 +200,69 @@ kube-state-metrics:
       cpu: 10m
       memory: 20Mi
   image:
-    registry: registry.k8s.io
-    repository: kube-state-metrics/kube-state-metrics
     tag: v2.16.0
 
   extraArgs:
-    metric-labels-allowlist: "pods=[*],deployments=[*],nodes=[*]"
+    - metric-labels-allowlist: "=pods=[*],deployments=[*],nodes=[*]"
 
-  kubeResources:
-    certificatesigningrequests: false
-    configmaps: false
-    cronjobs: true
-    daemonsets: true
-    deployments: true
-    endpoints: false
-    horizontalpodautoscalers: false
-    ingresses: false
-    jobs: false
-    limitranges: false
-    mutatingwebhookconfigurations: false
-    namespaces: false
-    networkpolicies: false
-    nodes: true
-    persistentvolumeclaims: true
-    persistentvolumes: true
-    poddisruptionbudgets: false
-    pods: true
-    replicasets: false
-    replicationcontrollers: false
-    resourcequotas: false
-    secrets: false
-    services: false
-    statefulsets: true
-    storageclasses: false
-    validatingwebhookconfigurations: false
-    volumeattachments: false
+  collectors:
+    # - certificatesigningrequests
+    # - configmaps
+    - cronjobs
+    - daemonsets
+    - deployments
+    # - endpoints
+    # - horizontalpodautoscalers
+    # - ingresses
+    # - jobs
+    - leases
+    # - limitranges
+    # - mutatingwebhookconfigurations
+    # - namespaces
+    # - networkpolicies
+    - nodes
+    - persistentvolumeclaims
+    - persistentvolumes
+    # - poddisruptionbudgets
+    - pods
+    # - replicasets
+    # - replicationcontrollers
+    # - resourcequotas
+    # - secrets
+    # - services
+    - statefulsets
+    # - storageclasses
+    # - validatingwebhookconfigurations
+    # - volumeattachments
+    # - ingressclasses
+    # - clusterrolebindings
+    # - clusterroles
+    # - roles
 
-  serviceMonitor:
-    enabled: true
-    metricRelabelings:
-      # ADD COMMON pod and LABEL TO ALL METRICS
-      # values based on orgiginal exported_pod label (container also)
-      - sourceLabels: ["exported_pod"]
-        action: "replace"
-        targetLabel: "pod"
-      - sourceLabels: ["exported_container", "label_app_kubernetes_io_name"]
-        separator: ""
-        action: "replace"
-        targetLabel: "container"
-      - sourceLabels: ["exported_namespace"]
-        targetLabel: "namespace"
-      # Abstract away from cloud related node
-      # labels
-      - sourceLabels: ["label_cloud_google_com_gke_nodepool"]
-        targetLabel: "nodepool"
-        action: "replace"
-
-    namespace: prometheus
-
-    labels:
-      prometheus: main
+  prometheus:
+    monitor:
+      enabled: true
+      namespace: prometheus
+      additionalLabels:
+        prometheus: main
+      http:
+        metricRelabelings:
+          # ADD COMMON pod and LABEL TO ALL METRICS
+          # values based on orgiginal exported_pod label (container also)
+          - sourceLabels: ["exported_pod"]
+            action: "replace"
+            targetLabel: "pod"
+          - sourceLabels: ["exported_container", "label_app_kubernetes_io_name"]
+            separator: ""
+            action: "replace"
+            targetLabel: "container"
+          - sourceLabels: ["exported_namespace"]
+            targetLabel: "namespace"
+          # Abstract away from cloud related node
+          # labels
+          - sourceLabels: ["label_cloud_google_com_gke_nodepool"]
+            targetLabel: "nodepool"
+            action: "replace"
 
 operator:
   enabled: false
