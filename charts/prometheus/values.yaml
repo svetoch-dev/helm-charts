@@ -205,7 +205,7 @@ kube-state-metrics:
   serviceAccount:
     automountServiceAccountToken: false
   extraArgs:
-    - --metric-labels-allowlist '=pods=[*],deployments=[*],nodes=[*]'
+    - --metric-labels-allowlist =pods=[*],deployments=[*],nodes=[*]
   podDisruptionBudget:
     maxUnavailable: 1
   collectors:
