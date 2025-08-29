@@ -192,6 +192,7 @@ prometheus-node-exporter:
 
 kube-state-metrics:
   enabled: false
+  prometheusScrape: false
   resources:
     limits:
       cpu: 100m
@@ -201,7 +202,7 @@ kube-state-metrics:
       memory: 20Mi
   image:
     tag: v2.16.0
-
+  automountServiceAccountToken: false
   extraArgs:
     - metric-labels-allowlist: "=pods=[*],deployments=[*],nodes=[*]"
 
