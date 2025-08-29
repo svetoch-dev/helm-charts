@@ -22,8 +22,19 @@ ingresses:
 
 rabbitmq-cluster-operator:
   enabled: false
+  global:
+    security:
+      allowInsecureImages: true
+  rabbitmqImage:
+    registry: hub.docker.com
+    repository: rabbitmq
+    tag: 4.1.3
   useCertManager: true
   clusterOperator:
+    image:
+      registry: hub.docker.com
+      repository: rabbitmqoperator/cluster-operator
+      tag: 2.16.1
     resources:
       limits:
         cpu: 100m
@@ -32,6 +43,10 @@ rabbitmq-cluster-operator:
         cpu: 10m
         memory: 25Mi
   msgTopologyOperator:
+    image:
+      registry: hub.docker.com
+      repository: rabbitmqoperator/messaging-topology-operator
+      tag: 1.17.4
     resources:
       limits:
         cpu: 100m

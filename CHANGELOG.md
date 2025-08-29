@@ -15,11 +15,12 @@ BrakingChanges:
 * `all charts`: global.admins -> global.teams.admin + qa,pm,dev groups to teams
 * `grafana`: grafana domain name -> gf domain name
 * `argocd`: argocd domain name -> ag domain name
-* `thanos` use official image instead `bitnami`
-* `external-dns` use official image instead `bitnami`
+* `thanos` uses official image instead `bitnami`
+* `external-dns` uses official image instead `bitnami`
 * `kube-state-metrics`:
-  * use official image instead `bitnami`
-  * use `prometheus-community/helm-charts` instead `bitnami`
+  * uses official image instead `bitnami`
+  * uses `prometheus-community/helm-charts` instead `bitnami`
+* `rabbitmq` uses official images instead `bitnami`
 
 New features:
 * `grafana`:
@@ -76,9 +77,12 @@ Enhancements:
   * `prometheus-stackdriver-exporter` 4.8.2 -> 4.10.0
   * `external-dns` 8.8.2 -> 9.0.3
   * `thanos` 16.0.4 -> 17.3.1
+  * `rabbitmq` + crds 4.4.1 -> 4.4.34
 
 Fixes:
-* `prometheus`: `matchers` field used a deprecated syntax (`alertmanager`)
+* `prometheus`:
+  * `matchers` field used a deprecated syntax (`alertmanager`)
+  * alert `Postgres_logical_backup_error` fix `matching labels must be unique on one side`
 * `grafana`: panel `container traffic throughput` rename to `pod traffic throughput`
 
 
