@@ -29,6 +29,10 @@ rabbitmq-cluster-operator:
     registry: docker.io
     repository: rabbitmq
     tag: 4.1.3
+  credentialUpdaterImage:
+    registry: docker.io
+    repository: rabbitmqoperator/default-user-credential-updater
+    tag: 1.0.8
   useCertManager: true
   clusterOperator:
     image:
