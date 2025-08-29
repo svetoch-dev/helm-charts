@@ -63,6 +63,7 @@ Enhancements:
   * `grafana-operator` and `crds` update v5.18.0 -> v5.19.4
   * `grafana` update v11.6.0 -> v12.1.1
   * `datasources` `uid` and `name` variables support `tpl`
+  * `dashboard services` enabled by default
 * `thanos`:
   * default ingress class is now pomerium
   * image update 0.38.0 -> 0.39.2
