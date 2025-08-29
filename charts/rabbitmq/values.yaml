@@ -26,13 +26,13 @@ rabbitmq-cluster-operator:
     security:
       allowInsecureImages: true
   rabbitmqImage:
-    registry: hub.docker.com
+    registry: docker.io
     repository: rabbitmq
     tag: 4.1.3
   useCertManager: true
   clusterOperator:
     image:
-      registry: hub.docker.com
+      registry: docker.io
       repository: rabbitmqoperator/cluster-operator
       tag: 2.16.1
     resources:
@@ -44,7 +44,7 @@ rabbitmq-cluster-operator:
         memory: 25Mi
   msgTopologyOperator:
     image:
-      registry: hub.docker.com
+      registry: docker.io
       repository: rabbitmqoperator/messaging-topology-operator
       tag: 1.17.4
     resources:
