@@ -17,7 +17,9 @@ BrakingChanges:
 * `argocd`: argocd domain name -> ag domain name
 * `thanos` use official image instead `bitnami`
 * `external-dns` use official image instead `bitnami`
-* `kube-state-metrics` use official image instead `bitnami`
+* `kube-state-metrics`:
+  * use official image instead `bitnami`
+  * use `prometheus-community/helm-charts` instead `bitnami`
 
 New features:
 * `grafana`:
@@ -69,7 +71,6 @@ Enhancements:
   * `prometheus-postgres-exporter` 6.10.0 -> 6.10.2
   * `prometheus-blackbox-exporter` 9.4.0 -> 11.3.1
   * `prometheus-node-exporter` 4.45.0 -> 4.47.3
-  * `kube-state-metrics` 5.0.4 -> 5.1.0
   * `kube-prometheus-stack` 70.4.1 -> 77.0.2
   * `prometheus-stackdriver-exporter` 4.8.2 -> 4.10.0
   * `external-dns` 8.8.2 -> 9.0.3
@@ -78,6 +79,7 @@ Enhancements:
 Fixes:
 * `prometheus`: `matchers` field used a deprecated syntax (`alertmanager`)
 * `grafana`: panel `container traffic throughput` rename to `pod traffic throughput`
+
 
 # 9.6.3
 
