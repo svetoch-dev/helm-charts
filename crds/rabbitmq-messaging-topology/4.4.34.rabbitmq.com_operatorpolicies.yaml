@@ -1,5 +1,5 @@
-# Source: https://raw.githubusercontent.com/rabbitmq/messaging-topology-operator/v{version}/config/crd/bases/rabbitmq.com_queues.yaml
-# Version: 1.16.0
+# Source: https://raw.githubusercontent.com/rabbitmq/messaging-topology-operator/v{version}/config/crd/bases/rabbitmq.com_operatorpolicies.yaml
+# Version: 1.17.4
 # VersionOf: rmq-messaging-topology-operator
 ---
 apiVersion: apiextensions.k8s.io/v1
@@ -7,22 +7,22 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.17.1
-  name: queues.rabbitmq.com
+  name: operatorpolicies.rabbitmq.com
 spec:
   group: rabbitmq.com
   names:
     categories:
     - rabbitmq
-    kind: Queue
-    listKind: QueueList
-    plural: queues
-    singular: queue
+    kind: OperatorPolicy
+    listKind: OperatorPolicyList
+    plural: operatorpolicies
+    singular: operatorpolicy
   scope: Namespaced
   versions:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: Queue is the Schema for the queues API
+        description: OperatorPolicy is the Schema for the operator policies API
         properties:
           apiVersion:
             description: |-
@@ -42,34 +42,42 @@ spec:
           metadata:
             type: object
           spec:
-            description: QueueSpec defines the desired state of Queue
+            description: |-
+              OperatorPolicySpec defines the desired state of OperatorPolicy
+              https://www.rabbitmq.com/parameters.html#operator-policies
             properties:
-              arguments:
+              applyTo:
+                default: queues
                 description: |-
-                  Queue arguments in the format of KEY: VALUE. e.g. x-delivery-limit: 10000.
-                  Configuring queues through arguments is not recommended because they cannot be updated once set; we recommend configuring queues through policies instead.
+                  What this operator policy applies to: 'queues', 'classic_queues', 'quorum_queues', 'streams'.
+                  Default to 'queues'.
+                enum:
+                - queues
+                - classic_queues
+                - quorum_queues
+                - streams
+                type: string
+              definition:
+                description: OperatorPolicy definition. Required property.
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
-              autoDelete:
-                description: when set to true, queues that have had at least one consumer
-                  before are deleted after the last consumer unsubscribes.
-                type: boolean
-              deleteIfEmpty:
-                description: when set to true, queues are deleted only if empty.
-                type: boolean
-              deleteIfUnused:
-                description: when set to true, queues are delete only if they have
-                  no consumer.
-                type: boolean
-              durable:
-                description: When set to false queues does not survive server restart.
-                type: boolean
               name:
-                description: Name of the queue; required property.
+                description: Required property; cannot be updated
                 type: string
+              pattern:
+                description: |-
+                  Regular expression pattern used to match queues, e.g. "^my-queue$".
+                  Required property.
+                type: string
+              priority:
+                default: 0
+                description: |-
+                  Default to '0'.
+                  In the event that more than one operator policy can match a given queue, the operator policy with the greatest priority applies.
+                type: integer
               rabbitmqClusterReference:
                 description: |-
-                  Reference to the RabbitmqCluster that the queue will be created in.
+                  Reference to the RabbitmqCluster that the operator policy will be created in.
                   Required property.
                 properties:
                   connectionSecret:
@@ -100,18 +108,18 @@ spec:
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
-              type:
-                type: string
               vhost:
                 default: /
-                description: Default to vhost '/'
+                description: Default to vhost '/'; cannot be updated
                 type: string
             required:
+            - definition
             - name
+            - pattern
             - rabbitmqClusterReference
             type: object
           status:
-            description: QueueStatus defines the observed state of Queue
+            description: OperatorPolicyStatus defines the observed state of OperatorPolicy
             properties:
               conditions:
                 items:
@@ -141,8 +149,8 @@ spec:
                 type: array
               observedGeneration:
                 description: |-
-                  observedGeneration is the most recent successful generation observed for this Queue. It corresponds to the
-                  Queue's generation, which is updated on mutation by the API Server.
+                  observedGeneration is the most recent successful generation observed for this OperatorPolicy. It corresponds to the
+                  OperatorPolicy's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object

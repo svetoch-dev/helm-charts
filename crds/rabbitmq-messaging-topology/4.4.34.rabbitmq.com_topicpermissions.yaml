@@ -1,5 +1,5 @@
-# Source: https://raw.githubusercontent.com/rabbitmq/messaging-topology-operator/v{version}/config/crd/bases/rabbitmq.com_federations.yaml
-# Version: 1.16.0
+# Source: https://raw.githubusercontent.com/rabbitmq/messaging-topology-operator/v{version}/config/crd/bases/rabbitmq.com_topicpermissions.yaml
+# Version: 1.17.4
 # VersionOf: rmq-messaging-topology-operator
 ---
 apiVersion: apiextensions.k8s.io/v1
@@ -7,22 +7,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.17.1
-  name: federations.rabbitmq.com
+  name: topicpermissions.rabbitmq.com
 spec:
   group: rabbitmq.com
   names:
-    categories:
-    - rabbitmq
-    kind: Federation
-    listKind: FederationList
-    plural: federations
-    singular: federation
+    kind: TopicPermission
+    listKind: TopicPermissionList
+    plural: topicpermissions
+    singular: topicpermission
   scope: Namespaced
   versions:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: Federation is the Schema for the federations API
+        description: TopicPermission is the Schema for the topicpermissions API
         properties:
           apiVersion:
             description: |-
@@ -42,34 +40,26 @@ spec:
           metadata:
             type: object
           spec:
-            description: |-
-              FederationSpec defines the desired state of Federation
-              For how to configure federation upstreams, see: https://www.rabbitmq.com/federation-reference.html.
+            description: TopicPermissionSpec defines the desired state of TopicPermission
             properties:
-              ackMode:
-                enum:
-                - on-confirm
-                - on-publish
-                - no-ack
-                type: string
-              exchange:
-                type: string
-              expires:
-                type: integer
-              maxHops:
-                type: integer
-              messageTTL:
-                type: integer
-              name:
-                description: Required property; cannot be updated
-                type: string
-              prefetch-count:
-                type: integer
-              queue:
-                type: string
+              permissions:
+                description: Permissions to grant to the user to a topic exchange;
+                  required property.
+                properties:
+                  exchange:
+                    description: Name of a topic exchange; required property; cannot
+                      be updated.
+                    type: string
+                  read:
+                    type: string
+                  write:
+                    type: string
+                required:
+                - exchange
+                type: object
               rabbitmqClusterReference:
                 description: |-
-                  Reference to the RabbitmqCluster that this federation upstream will be created in.
+                  Reference to the RabbitmqCluster that both the provided user and vhost are.
                   Required property.
                 properties:
                   connectionSecret:
@@ -100,16 +90,14 @@ spec:
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
-              reconnectDelay:
-                type: integer
-              trustUserId:
-                type: boolean
-              uriSecret:
-                description: |-
-                  Secret contains the AMQP URI(s) for the upstream.
-                  The Secret must contain the key `uri` or operator will error.
-                  `uri` should be one or multiple uris separated by ','.
-                  Required property.
+              user:
+                description: Name of an existing user; must provide user or userReference,
+                  else create/update will fail; cannot be updated.
+                type: string
+              userReference:
+                description: Reference to an existing user.rabbitmq.com object; must
+                  provide user or userReference, else create/update will fail; cannot
+                  be updated.
                 properties:
                   name:
                     default: ""
@@ -123,16 +111,16 @@ spec:
                 type: object
                 x-kubernetes-map-type: atomic
               vhost:
-                default: /
-                description: Default to vhost '/'; cannot be updated
+                description: Name of an existing vhost; required property; cannot
+                  be updated.
                 type: string
             required:
-            - name
+            - permissions
             - rabbitmqClusterReference
-            - uriSecret
+            - vhost
             type: object
           status:
-            description: FederationStatus defines the observed state of Federation
+            description: TopicPermissionStatus defines the observed state of TopicPermission
             properties:
               conditions:
                 items:
@@ -162,8 +150,8 @@ spec:
                 type: array
               observedGeneration:
                 description: |-
-                  observedGeneration is the most recent successful generation observed for this Federation. It corresponds to the
-                  Federation's generation, which is updated on mutation by the API Server.
+                  observedGeneration is the most recent successful generation observed for this TopicPermission. It corresponds to the
+                  TopicPermission's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object

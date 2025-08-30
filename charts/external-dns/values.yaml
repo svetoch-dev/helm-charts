@@ -1,5 +1,12 @@
 external-dns:
   enabled: false
+  global:
+    security:
+      allowInsecureImages: true
+  image:
+    registry: registry.k8s.io
+    repository: external-dns/external-dns
+    tag: v0.18.0
   resources:
     limits:
       cpu: 300m

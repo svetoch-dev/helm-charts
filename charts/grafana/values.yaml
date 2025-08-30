@@ -122,7 +122,7 @@ dashboard:
   enabled: false
   dashboards:
     services:
-      enabled: false
+      enabled: true
       folder: general
       resyncPeriod: 30m
       selector:
