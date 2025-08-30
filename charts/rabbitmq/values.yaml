@@ -35,6 +35,8 @@ rabbitmq-cluster-operator:
     tag: 1.0.8
   useCertManager: true
   clusterOperator:
+    command:
+      - /manager
     image:
       registry: docker.io
       repository: rabbitmqoperator/cluster-operator
@@ -47,6 +49,8 @@ rabbitmq-cluster-operator:
         cpu: 10m
         memory: 25Mi
   msgTopologyOperator:
+    command:
+      - /manager
     image:
       registry: docker.io
       repository: rabbitmqoperator/messaging-topology-operator
