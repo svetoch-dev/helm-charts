@@ -15,12 +15,12 @@ BrakingChanges:
 * `all charts`: global.admins -> global.teams.admin + qa,pm,dev groups to teams
 * `grafana`: grafana domain name -> gf domain name
 * `argocd`: argocd domain name -> ag domain name
-* `thanos` uses official new image instead `bitnami`
-* `external-dns` uses official new image instead `bitnami`
+* `thanos` uses official and updated image instead `bitnami`
+* `external-dns` uses official and updated image instead `bitnami`
 * `kube-state-metrics`:
-  * uses official new image instead `bitnami`
+  * uses official and updated image instead `bitnami`
   * uses `prometheus-community/helm-charts` instead `bitnami`
-* `rabbitmq` uses official new images instead `bitnami`
+* `rabbitmq` uses official and updated images instead `bitnami`
 
 New features:
 * `grafana`:
@@ -53,6 +53,7 @@ New features:
   * global move global attributes to a separate file
   * use digest for images instead of plain tags
   * global attributes access and pomerium
+* ability to set `rabbitmq` `image` (for default set `docker.io/rabbitmq:4.1.3`)
 
 Enhancements:
 * `cert-manager`: default ingress class is now pomerium
@@ -77,8 +78,8 @@ Enhancements:
   * `prometheus-stackdriver-exporter` 4.8.2 -> 4.10.0
   * `external-dns` 8.8.2 -> 9.0.3
   * `thanos` 16.0.4 -> 17.3.1
-  * `rabbitmq` + crds 4.4.1 -> 4.4.34
-  * `cert-manager` + crds 1.17.1 -> 1.17.4
+  * `rabbitmq` 4.4.11 + crds 4.4.6 -> 4.4.34
+  * `cert-manager` 1.17.2 + crds 1.17.1 -> 1.17.4
 
 Fixes:
 * `prometheus`:
