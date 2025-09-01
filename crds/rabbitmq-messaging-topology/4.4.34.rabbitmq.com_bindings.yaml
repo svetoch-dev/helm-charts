@@ -1,5 +1,5 @@
-# Source: https://raw.githubusercontent.com/rabbitmq/messaging-topology-operator/v{version}/config/crd/bases/rabbitmq.com_exchanges.yaml
-# Version: 1.16.0
+# Source: https://raw.githubusercontent.com/rabbitmq/messaging-topology-operator/v{version}/config/crd/bases/rabbitmq.com_bindings.yaml
+# Version: 1.17.4
 # VersionOf: rmq-messaging-topology-operator
 ---
 apiVersion: apiextensions.k8s.io/v1
@@ -7,22 +7,22 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.17.1
-  name: exchanges.rabbitmq.com
+  name: bindings.rabbitmq.com
 spec:
   group: rabbitmq.com
   names:
     categories:
     - rabbitmq
-    kind: Exchange
-    listKind: ExchangeList
-    plural: exchanges
-    singular: exchange
+    kind: Binding
+    listKind: BindingList
+    plural: bindings
+    singular: binding
   scope: Namespaced
   versions:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: Exchange is the Schema for the exchanges API
+        description: Binding is the Schema for the bindings API
         properties:
           apiVersion:
             description: |-
@@ -42,23 +42,24 @@ spec:
           metadata:
             type: object
           spec:
-            description: ExchangeSpec defines the desired state of Exchange
+            description: BindingSpec defines the desired state of Binding
             properties:
               arguments:
+                description: Cannot be updated
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
-              autoDelete:
+              destination:
                 description: Cannot be updated
-                type: boolean
-              durable:
+                type: string
+              destinationType:
                 description: Cannot be updated
-                type: boolean
-              name:
-                description: Required property; cannot be updated
+                enum:
+                - exchange
+                - queue
                 type: string
               rabbitmqClusterReference:
                 description: |-
-                  Reference to the RabbitmqCluster that the exchange will be created in.
+                  Reference to the RabbitmqCluster that the binding will be created in.
                   Required property.
                 properties:
                   connectionSecret:
@@ -89,8 +90,10 @@ spec:
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
-              type:
-                default: direct
+              routingKey:
+                description: Cannot be updated
+                type: string
+              source:
                 description: Cannot be updated
                 type: string
               vhost:
@@ -98,11 +101,10 @@ spec:
                 description: Default to vhost '/'; cannot be updated
                 type: string
             required:
-            - name
             - rabbitmqClusterReference
             type: object
           status:
-            description: ExchangeStatus defines the observed state of Exchange
+            description: BindingStatus defines the observed state of Binding
             properties:
               conditions:
                 items:
@@ -132,8 +134,8 @@ spec:
                 type: array
               observedGeneration:
                 description: |-
-                  observedGeneration is the most recent successful generation observed for this Exchange. It corresponds to the
-                  Exchange's generation, which is updated on mutation by the API Server.
+                  observedGeneration is the most recent successful generation observed for this Binding. It corresponds to the
+                  Binding's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object

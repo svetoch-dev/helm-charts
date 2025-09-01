@@ -4,9 +4,9 @@ dependencies:
   version: 0.1.0
 - name: thanos
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 16.0.4
+  version: 17.3.1
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:0678730427b697a2a74ff97a58a25805f9ff59673d25bead3ff55b07d0470933
-generated: "2025-04-30T14:50:43.937123959+03:00"
+digest: sha256:4d3b9fb416516cde1de6e939ae64af9fbaf01d4a8512359c4230b8dd4e9f4166
+generated: "2025-08-28T12:46:22.329842771Z"

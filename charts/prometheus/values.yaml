@@ -192,6 +192,7 @@ prometheus-node-exporter:
 
 kube-state-metrics:
   enabled: false
+  prometheusScrape: false
   resources:
     limits:
       cpu: 100m
@@ -200,66 +201,71 @@ kube-state-metrics:
       cpu: 10m
       memory: 20Mi
   image:
-    registry: docker.io
-    repository: bitnami/kube-state-metrics
-    tag: 2.15.0@sha256:5bd00870f1a7c9d57556d3b11e99d4ff3baf3f5a7adc1f9c20d63bf0e50c9682
-
+    tag: v2.16.0
+  serviceAccount:
+    automountServiceAccountToken: false
   extraArgs:
-    metric-labels-allowlist: "pods=[*],deployments=[*],nodes=[*]"
+    - --metric-labels-allowlist=pods=[*],deployments=[*],nodes=[*]
+  collectors:
+    # - certificatesigningrequests
+    # - configmaps
+    - cronjobs
+    - daemonsets
+    - deployments
+    # - endpoints
+    # - horizontalpodautoscalers
+    # - ingresses
+    # - jobs
+    - leases
+    # - limitranges
+    # - mutatingwebhookconfigurations
+    # - namespaces
+    # - networkpolicies
+    - nodes
+    - persistentvolumeclaims
+    - persistentvolumes
+    # - poddisruptionbudgets
+    - pods
+    # - replicasets
+    # - replicationcontrollers
+    # - resourcequotas
+    # - secrets
+    # - services
+    - statefulsets
+    # - storageclasses
+    # - validatingwebhookconfigurations
+    # - volumeattachments
+    # - ingressclasses
+    # - clusterrolebindings
+    # - clusterroles
+    # - roles
 
-  kubeResources:
-    certificatesigningrequests: false
-    configmaps: false
-    cronjobs: true
-    daemonsets: true
-    deployments: true
-    endpoints: false
-    horizontalpodautoscalers: false
-    ingresses: false
-    jobs: false
-    limitranges: false
-    mutatingwebhookconfigurations: false
-    namespaces: false
-    networkpolicies: false
-    nodes: true
-    persistentvolumeclaims: true
-    persistentvolumes: true
-    poddisruptionbudgets: false
-    pods: true
-    replicasets: false
-    replicationcontrollers: false
-    resourcequotas: false
-    secrets: false
-    services: false
-    statefulsets: true
-    storageclasses: false
-    validatingwebhookconfigurations: false
-    volumeattachments: false
-
-  serviceMonitor:
-    enabled: true
-    metricRelabelings:
-      # ADD COMMON pod and LABEL TO ALL METRICS
-      # values based on orgiginal exported_pod label (container also)
-      - sourceLabels: ["exported_pod"]
-        action: "replace"
-        targetLabel: "pod"
-      - sourceLabels: ["exported_container", "label_app_kubernetes_io_name"]
-        separator: ""
-        action: "replace"
-        targetLabel: "container"
-      - sourceLabels: ["exported_namespace"]
-        targetLabel: "namespace"
-      # Abstract away from cloud related node
-      # labels
-      - sourceLabels: ["label_cloud_google_com_gke_nodepool"]
-        targetLabel: "nodepool"
-        action: "replace"
-
-    namespace: prometheus
-
-    labels:
-      prometheus: main
+  prometheus:
+    monitor:
+      enabled: true
+      namespace: prometheus
+      namespaceSelector:
+        - prometheus
+      additionalLabels:
+        prometheus: main
+      http:
+        metricRelabelings:
+          # ADD COMMON pod and LABEL TO ALL METRICS
+          # values based on orgiginal exported_pod label (container also)
+          - sourceLabels: ["exported_pod"]
+            action: "replace"
+            targetLabel: "pod"
+          - sourceLabels: ["exported_container", "label_app_kubernetes_io_name"]
+            separator: ""
+            action: "replace"
+            targetLabel: "container"
+          - sourceLabels: ["exported_namespace"]
+            targetLabel: "namespace"
+          # Abstract away from cloud related node
+          # labels
+          - sourceLabels: ["label_cloud_google_com_gke_nodepool"]
+            targetLabel: "nodepool"
+            action: "replace"
 
 operator:
   enabled: false
@@ -409,8 +415,8 @@ prometheus-main:
     spec:
       enableAdminAPI: true
       thanos:
-        image: quay.io/thanos/thanos:v0.38.0@sha256:ac51a3944e762cd90ed85bf10c4376e70e5f9141f6b7eec431b6580890e97f41
-        version: v0.38.0
+        image: quay.io/thanos/thanos:v0.39.2@sha256:1d022ef4b8eff056a0e3b7822f953d931c5704d068413f2d7ce5266aa96c9e80
+        version: v0.39.2
         objectStorageConfig:
           key: objstore.yml
           name: thanos
@@ -675,7 +681,7 @@ prometheus-rules:
             enabled: false
             for: "2h"
             description: "Cronjob {{ $labels.cronjob }} failed"
-            expr: ((kube_cronjob_next_schedule_time - on(cronjob, exported_namespace) kube_cronjob_status_last_successful_time)/3600) > 25
+            expr: ((kube_cronjob_next_schedule_time - on(job, cronjob, namespace) kube_cronjob_status_last_successful_time)/3600) > 25
           # Resources
           PVC_low_capacity:
             enabled: false

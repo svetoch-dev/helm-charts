@@ -54,6 +54,13 @@ kong-plugins:
 
 thanos:
   enabled: false
+  global:
+    security:
+      allowInsecureImages: true
+  image:
+    registry: quay.io
+    repository: thanos/thanos
+    tag: v0.39.2
   existingObjstoreSecret: "thanos"
   query:
     enabled: false
