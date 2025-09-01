@@ -15,6 +15,12 @@ BrakingChanges:
 * `all charts`: global.admins -> global.teams.admin + qa,pm,dev groups to teams
 * `grafana`: grafana domain name -> gf domain name
 * `argocd`: argocd domain name -> ag domain name
+* `thanos` uses official and updated image instead `bitnami`
+* `external-dns` uses official and updated image instead `bitnami`
+* `kube-state-metrics`:
+  * uses official and updated image instead `bitnami`
+  * uses `prometheus-community/helm-charts` instead `bitnami`
+* `rabbitmq` uses official and updated images instead `bitnami`
 
 New features:
 * `grafana`:
@@ -47,19 +53,40 @@ New features:
   * global move global attributes to a separate file
   * use digest for images instead of plain tags
   * global attributes access and pomerium
+* ability to set `rabbitmq` `image` (for default set `docker.io/rabbitmq:4.1.3`)
 
 Enhancements:
 * `cert-manager`: default ingress class is now pomerium
-* `prometheus`: default ingress class is now pomerium
-* `thanos`: default ingress class is now pomerium
+* `prometheus`:
+  * default ingress class is now pomerium
+  * update v3.2.1 -> v3.5.0
+  * crds update v0.81.0 -> v0.85.0
 * `grafana`:
   * `grafana-operator` and `crds` update v5.18.0 -> v5.19.4
   * `grafana` update v11.6.0 -> v12.1.1
   * `datasources` `uid` and `name` variables support `tpl`
+  * `dashboard services` enabled by default
+* `thanos`:
+  * default ingress class is now pomerium
+  * image update 0.38.0 -> 0.39.2
+* `external-dns` + crds update v0.16.1 -> v0.18.0
+* charts update:
+  * `prometheus-postgres-exporter` 6.10.0 -> 6.10.2
+  * `prometheus-blackbox-exporter` 9.4.0 -> 11.3.1
+  * `prometheus-node-exporter` 4.45.0 -> 4.47.3
+  * `kube-prometheus-stack` 70.4.1 -> 77.0.2
+  * `prometheus-stackdriver-exporter` 4.8.2 -> 4.10.0
+  * `external-dns` 8.8.2 -> 9.0.3
+  * `thanos` 16.0.4 -> 17.3.1
+  * `rabbitmq` 4.4.11 + crds 4.4.6 -> 4.4.34
+  * `cert-manager` 1.17.2 + crds 1.17.1 -> 1.17.4
 
 Fixes:
-* `prometheus`: `matchers` field used a deprecated syntax (`alertmanager`)
+* `prometheus`:
+  * `matchers` field used a deprecated syntax (`alertmanager`)
+  * alert `Postgres_logical_backup_error` fix `matching labels must be unique on one side`
 * `grafana`: panel `container traffic throughput` rename to `pod traffic throughput`
+
 
 # 9.6.3
 
