@@ -15,7 +15,9 @@ metadata:
     {{- include "rabbitmq-cluster.labels" . | nindent 4 }}
 {{- end }}
 spec:
-  image: {{ .Values.image }}
+  {{- with .Values.image }}
+  image: {{ . }}
+  {{- end }}
   replicas: {{ .Values.replicas | default "1" }}
   {{- with .Values.resources }}
   resources:

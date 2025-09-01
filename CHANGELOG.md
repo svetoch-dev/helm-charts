@@ -15,12 +15,12 @@ BrakingChanges:
 * `all charts`: global.admins -> global.teams.admin + qa,pm,dev groups to teams
 * `grafana`: grafana domain name -> gf domain name
 * `argocd`: argocd domain name -> ag domain name
-* `thanos` uses official image instead `bitnami`
-* `external-dns` uses official image instead `bitnami`
+* `thanos` uses official new image instead `bitnami`
+* `external-dns` uses official new image instead `bitnami`
 * `kube-state-metrics`:
-  * uses official image instead `bitnami`
+  * uses official new image instead `bitnami`
   * uses `prometheus-community/helm-charts` instead `bitnami`
-* `rabbitmq` uses official images instead `bitnami`
+* `rabbitmq` uses official new images instead `bitnami`
 
 New features:
 * `grafana`:
