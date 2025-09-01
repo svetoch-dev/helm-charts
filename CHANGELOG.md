@@ -78,6 +78,7 @@ Enhancements:
   * `external-dns` 8.8.2 -> 9.0.3
   * `thanos` 16.0.4 -> 17.3.1
   * `rabbitmq` + crds 4.4.1 -> 4.4.34
+  * `cert-manager` + crds 1.17.1 -> 1.17.4
 
 Fixes:
 * `prometheus`:
