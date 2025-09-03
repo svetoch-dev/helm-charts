@@ -3,7 +3,8 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: Input
 metadata:
-  name: {{ $input_name }}
+  name: {{ printf "%s-%s" (include "fluentbit-inputs.fullname" $) $input_name }}
+  namespace: "{{ $input_obj.namespace | default $.Release.Namespace }}"
   labels:
 {{- include "fluentbit-inputs.labels" $ | nindent 4 }}
 {{- with $input_obj.labels }}

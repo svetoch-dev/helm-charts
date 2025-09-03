@@ -3,7 +3,8 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: Parser
 metadata:
-  name: {{ $parser_name }}
+  name: {{ printf "%s-%s" (include "fluentbit-parsers.fullname" $) $parser_name }}
+  namespace: "{{ $parser_obj.namespace | default $.Release.Namespace }}"
   labels:
 {{- include "fluentbit-parsers.labels" $ | nindent 4 }}
 {{- with $parser_obj.labels }}

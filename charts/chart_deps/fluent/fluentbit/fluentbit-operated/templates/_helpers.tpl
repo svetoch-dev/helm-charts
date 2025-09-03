@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "fluentbit-parsers.name" -}}
+{{- define "fluentbit-operated.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "fluentbit-parsers.fullname" -}}
+{{- define "fluentbit-operated.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,16 +27,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "fluentbit-parsers.chart" -}}
+{{- define "fluentbit-operated.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "fluentbit-parsers.labels" -}}
-app.kubernetes.io/name: {{ include "fluentbit-parsers.name" . }}
-helm.sh/chart: {{ include "fluentbit-parsers.chart" . }}
+{{- define "fluentbit-operated.labels" -}}
+app.kubernetes.io/name: {{ include "fluentbit-operated.name" . }}
+helm.sh/chart: {{ include "fluentbit-operated.chart" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -47,7 +47,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Service Selector labels
 */}}
-{{- define "fluentbit-parsers.serviceSelectorLabels" -}}
-app.kubernetes.io/name: {{ .Release.Name }}-{{ include "fluentbit-parsers.name" . }}
+{{- define "fluentbit-operated.serviceSelectorLabels" -}}
+app.kubernetes.io/name: {{ .Release.Name }}-{{ include "fluentbit-operated.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

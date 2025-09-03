@@ -3,7 +3,7 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterInput
 metadata:
-  name: {{ $cl_input_name }}
+  name: {{ printf "%s-%s" (include "fluentbit-inputs.fullname" $) $cl_input_name }}
   labels:
 {{- include "fluentbit-inputs.labels" $ | nindent 4 }}
 {{- with $cl_input_obj.labels }}

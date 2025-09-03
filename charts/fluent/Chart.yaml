@@ -24,3 +24,8 @@ dependencies:
     version: 3.4.2
     alias: operator
     condition: operator.enabled
+  - name: fluentbit-operated
+    repository: file://../chart_deps/fluent/fluentbit/fluentbit-operated/
+    version: 0.1.0
+    alias: fluentbit
+    condition: fluentbit.enabled

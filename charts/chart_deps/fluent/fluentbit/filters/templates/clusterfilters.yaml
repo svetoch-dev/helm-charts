@@ -3,7 +3,7 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterFilter
 metadata:
-  name: {{ $cl_filter_name }}
+  name: {{ printf "%s-%s" (include "fluentbit-filters.fullname" $) $cl_filter_name }}
   labels:
 {{- include "fluentbit-filters.labels" $ | nindent 4 }}
 {{- with $cl_filter_obj.labels }}

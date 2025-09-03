@@ -17,3 +17,136 @@ operator:
   fluentd:
     enable: false
     crdsEnable: false
+
+fluentbit:
+  enabled: true
+  inputs:
+    enabled: true
+    labels:
+      fluentbit: "main"
+    clusterInputs:
+      main:
+        tail:
+          tag: kube.*
+          path: "/var/log/containers/*.log"
+          readFromHead: false
+          parser: cri
+          refreshIntervalSeconds: 10
+          memBufLimit: 100MB
+          skipLongLines: true
+          skipEmptyLines: true
+          db: /fluent-bit/tail/pos.db
+          dbSync: Normal
+          storageType: memory
+
+  outputs:
+    enabled: true
+    labels:
+      fluentbit: "main"
+    clusterOutputs:
+      main:
+        matchRegex: (?:kube|service)\.(.*)
+        retry_limit: "no_limits"
+        logLevel: "info"
+        loki:
+          host: "loki-write.loki.svc.cluster.local"
+          port: 3100
+          autoKubernetesLabels: "on"
+          dropSingleKey: "on"
+          labels:
+            - env=gcp-int
+            - job=fluent-bit
+            - pod=$kubernetes['pod_name']
+            - container=$kubernetes['container_name']
+            - namespace=$kubernetes['namespace_name']
+            - node=$kubernetes['host']
+            - stream=$stream
+          removeKeys:
+            - _p
+            - time
+            - stream
+            - kubernetes
+            - ts
+            - logtag
+
+  filters:
+    enabled: true
+    labels:
+      fluentbit: "main"
+    clusterFilters:
+      main:
+        match: kube.*
+        filters:
+          - kubernetes:
+              kubeURL: https://kubernetes.default.svc:443
+              kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+              kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+          - nest:
+              operation: lift
+              nestedUnder: kubernetes
+              addPrefix: kubernetes_
+          - modify:
+              rules:
+                - remove: stream
+                - remove: kubernetes_pod_id
+                - remove: kubernetes_host
+                - remove: kubernetes_container_hash
+          - nest:
+              operation: nest
+              wildcard:
+                - kubernetes_*
+              nestUnder: kubernetes
+              removePrefix: kubernetes_
+
+  clusterConfig:
+    enabled: true
+    configFileFormat: "classic"
+    service:
+      parsersFile: /fluent-bit/etc/parsers.conf
+      httpServer: true
+    inputSelector:
+      matchLabels:
+        fluentbit: "main"
+    filterSelector:
+      matchLabels:
+        fluentbit: "main"
+    parserSelector:
+      matchLabels:
+        fluentbit: "main"
+    outputSelector:
+      matchLabels:
+        fluentbit: "main"
+    multilineParserSelector:
+      matchLabels:
+        fluentbit: "main"
+
+  fluentbit:
+    enabled: true
+    image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.1
+    positionDB:
+      hostPath:
+        path: /var/lib/fluent-bit/
+    resources:
+      limits:
+        cpu: 500m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 25Mi
+    fluentBitConfigName: '{{ include "fluentbit-operated.fullname" . }}'
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        path: /
+        port: 2020
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 15
+    rbacRules:
+      - apiGroups:
+          - ""
+        resources:
+          - events
+        verbs:
+          - list

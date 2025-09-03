@@ -3,7 +3,8 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: Output
 metadata:
-  name: {{ $output_name }}
+  name: {{ printf "%s-%s" (include "fluentbit-outputs.fullname" $) $output_name }}
+  namespace: "{{ $output_obj.namespace | default $.Release.Namespace }}"
   labels:
 {{- include "fluentbit-outputs.labels" $ | nindent 4 }}
 {{- with $output_obj.labels }}

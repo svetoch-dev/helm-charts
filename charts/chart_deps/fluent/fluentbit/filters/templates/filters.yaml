@@ -3,7 +3,7 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: Filter
 metadata:
-  name: {{ $filter_name }}
+  name: {{ printf "%s-%s" (include "fluentbit-filters.fullname" $) $filter_name }}
   namespace: "{{ $filter_obj.namespace | default $.Release.Namespace }}"
   labels:
 {{- include "fluentbit-filters.labels" $ | nindent 4 }}

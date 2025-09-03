@@ -3,7 +3,8 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: MultilineParser
 metadata:
-  name: {{ $multilineParser_name }}
+  name: {{ printf "%s-%s" (include "fluentbit-parsers.fullname" $) $multilineParser_name }}
+  namespace: "{{ $multilineParser_obj.namespace | default $.Release.Namespace }}"
   labels:
 {{- include "fluentbit-parsers.labels" $ | nindent 4 }}
 {{- with $multilineParser_obj.labels }}

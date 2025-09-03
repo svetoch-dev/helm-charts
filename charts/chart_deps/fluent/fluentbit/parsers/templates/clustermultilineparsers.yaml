@@ -3,7 +3,7 @@
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterMultilineParser
 metadata:
-  name: {{ $cl_multilineParser_name }}
+  name: {{ printf "%s-%s" (include "fluentbit-parsers.fullname" $) $cl_multilineParser_name }}
   labels:
 {{- include "fluentbit-parsers.labels" $ | nindent 4 }}
 {{- with $cl_multilineParser_obj.labels }}
