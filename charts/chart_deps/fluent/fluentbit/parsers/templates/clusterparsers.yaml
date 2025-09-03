@@ -1,0 +1,36 @@
+{{- range $cl_parser_name, $cl_parser_obj :=  .Values.clusterparsers }}
+---
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterParser
+metadata:
+  name: {{ $cl_parser_name }}
+  labels:
+{{- include "fluentbit-parsers.labels" $ | nindent 4 }}
+{{- with $cl_parser_obj.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+{{- with $.Values.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+spec:
+  {{- with $cl_parser_obj.decoders }}
+  decoders:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_parser_obj.json }}
+  json:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_parser_obj.logFmt }}
+  logFmt:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_parser_obj.ltsv }}
+  ltsv:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_parser_obj.regex }}
+  regex:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+{{- end }}

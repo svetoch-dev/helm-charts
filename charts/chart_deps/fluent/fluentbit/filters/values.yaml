@@ -1,0 +1,51 @@
+filters:
+#  test:
+#    match: kube.*
+#    namespace: test
+#    filters:
+#      - kubernetes:
+#          kubeURL: https://kubernetes.default.svc:443
+#          kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+#          kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+#      - nest:
+#          operation: lift
+#          nestedUnder: kubernetes
+#          addPrefix: kubernetes_
+#      - modify:
+#          rules:
+#          - remove: stream
+#          - remove: kubernetes_pod_id
+#          - remove: kubernetes_host
+#          - remove: kubernetes_container_hash
+#      - nest:
+#          operation: nest
+#          wildcard:
+#          - kubernetes_*
+#          nestUnder: kubernetes
+#          removePrefix: kubernetes_
+
+clusterFilters:
+#  test:
+#    match: kube.*
+#    filters:
+#      - kubernetes:
+#          kubeURL: https://kubernetes.default.svc:443
+#          kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+#          kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+#      - nest:
+#          operation: lift
+#          nestedUnder: kubernetes
+#          addPrefix: kubernetes_
+#      - modify:
+#          rules:
+#          - remove: stream
+#          - remove: kubernetes_pod_id
+#          - remove: kubernetes_host
+#          - remove: kubernetes_container_hash
+#      - nest:
+#          operation: nest
+#          wildcard:
+#          - kubernetes_*
+#          nestUnder: kubernetes
+#          removePrefix: kubernetes_
+#

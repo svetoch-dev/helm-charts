@@ -1,0 +1,32 @@
+{{- range $cl_multilineParser_name, $cl_multilineParser_obj :=  .Values.clusterMultilineParsers }}
+---
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterMultilineParser
+metadata:
+  name: {{ $cl_multilineParser_name }}
+  labels:
+{{- include "fluentbit-parsers.labels" $ | nindent 4 }}
+{{- with $cl_multilineParser_obj.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+{{- with $.Values.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+spec:
+  {{- with $cl_multilineParser_obj.flushTimeout}}
+  flushTimeout: {{ . }}
+  {{- end }}
+  {{- with $cl_multilineParser_obj.keyContent}}
+  keyContent: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $cl_multilineParser_obj.parser}}
+  parser: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $cl_multilineParser_obj.type}}
+  type: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $cl_multilineParser_obj.rules }}
+  rules:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+{{- end }}

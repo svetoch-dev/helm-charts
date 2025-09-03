@@ -1,0 +1,19 @@
+operator:
+  enabled: true
+  containerRuntime: containerd
+  fluentbit:
+    crdsEnable: false
+    enable: false
+    input:
+      tail:
+        enable: false
+      systemd:
+        enable: false
+      containerd:
+        enable: false
+    filter:
+      kubernetes:
+        enable: false
+  fluentd:
+    enable: false
+    crdsEnable: false

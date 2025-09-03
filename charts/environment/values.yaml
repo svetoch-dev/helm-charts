@@ -50,6 +50,8 @@ crds:
 #      enabled: true
 #    rabbitmq-messaging-topology:
 #      enabled: true
+#    fluent-operator:
+#      enabled: true
 
   labels: {}
   finalizers: {}

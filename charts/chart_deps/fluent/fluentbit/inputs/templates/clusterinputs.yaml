@@ -1,0 +1,103 @@
+{{- range $cl_input_name, $cl_input_obj :=  .Values.clusterInputs }}
+---
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterInput
+metadata:
+  name: {{ $cl_input_name }}
+  labels:
+{{- include "fluentbit-inputs.labels" $ | nindent 4 }}
+{{- with $cl_input_obj.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+{{- with $.Values.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+spec:
+  {{- with $cl_input_obj.alias }}
+  alias:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.collectd }}
+  collectd:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.customPlugin }}
+  customPlugin:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.dummy }}
+  dummy:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.execWasi }}
+  execWasi:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.fluentBitMetrics }}
+  fluentBitMetrics:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.forward }}
+  forward:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.http }}
+  http:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.kubernetesEvents }}
+  kubernetesEvents:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.logLevel}}
+  logLevel: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $cl_input_obj.mqtt }}
+  mqtt:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.nginx }}
+  nginx:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.nodeExporterMetrics }}
+  nodeExporterMetrics:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.openTelemetry }}
+  openTelemetry:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.processors }}
+  processors:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.prometheusScrapeMetrics }}
+  prometheusScrapeMetrics:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.statsd }}
+  statsd:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.syslog }}
+  syslog:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.systemd }}
+  systemd:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.tail }}
+  tail:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.tcp }}
+  tcp:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $cl_input_obj.udp }}
+  udp:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+{{- end }}

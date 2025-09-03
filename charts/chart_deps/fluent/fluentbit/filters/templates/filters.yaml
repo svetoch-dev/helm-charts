@@ -1,0 +1,33 @@
+{{- range $filter_name, $filter_obj :=  .Values.filters }}
+---
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: Filter
+metadata:
+  name: {{ $filter_name }}
+  namespace: "{{ $filter_obj.namespace | default $.Release.Namespace }}"
+  labels:
+{{- include "fluentbit-filters.labels" $ | nindent 4 }}
+{{- with $filter_obj.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+{{- with $.Values.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+spec:
+  {{- with $filter_obj.filters }}
+  filters:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $filter_obj.logLevel}}
+  logLevel: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $filter_obj.match}}
+  match: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $filter_obj.matchRegEx}}
+  matchRegEx: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $filter_obj.ordinal}}
+  ordinal: {{ tpl . $ | quote }}
+  {{- end }}
+{{- end }}
