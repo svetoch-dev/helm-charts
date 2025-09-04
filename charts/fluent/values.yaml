@@ -69,6 +69,15 @@ fluentbit:
             - kubernetes
             - ts
             - logtag
+            - apps_kubernetes_io_pod_index
+            - controller_revision_hash
+            - helm_sh_chart
+            - app_kubernetes_io_version
+            - apps_kubernetes_io_pod_index
+            - app_kubernetes_io_part_of
+            - pod_template_hash
+            - helm_sh_chart
+            - app_kubernetes_io_managed_by
 
   filters:
     enabled: true
