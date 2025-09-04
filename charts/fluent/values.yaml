@@ -52,32 +52,18 @@ fluentbit:
         loki:
           host: "loki-write.loki.svc.cluster.local"
           port: 3100
-          autoKubernetesLabels: "on"
-          dropSingleKey: "on"
           labels:
-            - env=gcp-int
+            - env={{ .Values.global.env.name }}
             - job=fluent-bit
             - pod=$kubernetes['pod_name']
             - container=$kubernetes['container_name']
             - namespace=$kubernetes['namespace_name']
             - node=$kubernetes['host']
             - stream=$stream
-          removeKeys:
-            - _p
-            - time
-            - stream
-            - kubernetes
-            - ts
-            - logtag
-            - apps_kubernetes_io_pod_index
-            - controller_revision_hash
-            - helm_sh_chart
-            - app_kubernetes_io_version
-            - apps_kubernetes_io_pod_index
-            - app_kubernetes_io_part_of
-            - pod_template_hash
-            - helm_sh_chart
-            - app_kubernetes_io_managed_by
+            - app_kubernetes_io_instance=$kubernetes['labels']['app.kubernetes.io/instance']
+            - app_kubernetes_io_name=$kubernetes['labels']['app.kubernetes.io/name']
+            - app_kubernetes_io_version=$kubernetes['labels']['app.kubernetes.io/version']
+            - app_kubernetes_io_component=$kubernetes['labels']['app.kubernetes.io/component']
 
   filters:
     enabled: true
@@ -117,6 +103,8 @@ fluentbit:
 
   parsers:
     enabled: true
+    labels:
+      fluentbit: "main"
     clusterParsers:
       container-no-time:
         json:
