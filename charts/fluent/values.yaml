@@ -1,5 +1,5 @@
 operator:
-  enabled: true
+  enabled: false
   containerRuntime: containerd
   fluentbit:
     crdsEnable: false
@@ -64,6 +64,13 @@ fluentbit:
             - app_kubernetes_io_name=$kubernetes['labels']['app.kubernetes.io/name']
             - app_kubernetes_io_version=$kubernetes['labels']['app.kubernetes.io/version']
             - app_kubernetes_io_component=$kubernetes['labels']['app.kubernetes.io/component']
+          removeKeys:
+            - _p
+            - time
+            - stream
+            - kubernetes
+            - ts
+            - logtag
 
   filters:
     enabled: true
