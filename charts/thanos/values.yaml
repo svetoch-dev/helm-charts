@@ -64,6 +64,7 @@ thanos:
   existingObjstoreSecret: "thanos"
   query:
     enabled: false
+    logFormat: json
     dnsDiscovery:
       enabled: false
     resources:
@@ -79,6 +80,7 @@ thanos:
     enabled: false
   compactor:
     enabled: false
+    logFormat: json
     persistence:
       size: 15Gi
     resources:
@@ -93,6 +95,7 @@ thanos:
       name: thanos
   storegateway:
     enabled: false
+    logFormat: json
     resources:
       requests:
         cpu: 10m
