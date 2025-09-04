@@ -1,4 +1,4 @@
-{{- range $cl_parser_name, $cl_parser_obj :=  .Values.clusterparsers }}
+{{- range $cl_parser_name, $cl_parser_obj :=  .Values.clusterParsers }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterParser

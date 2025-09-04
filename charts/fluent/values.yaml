@@ -19,7 +19,7 @@ operator:
     crdsEnable: false
 
 fluentbit:
-  enabled: true
+  enabled: false
   inputs:
     enabled: true
     labels:
@@ -35,6 +35,7 @@ fluentbit:
           memBufLimit: 100MB
           skipLongLines: true
           skipEmptyLines: true
+          multilineParser: "cri"
           db: /fluent-bit/tail/pos.db
           dbSync: Normal
           storageType: memory
@@ -45,7 +46,7 @@ fluentbit:
       fluentbit: "main"
     clusterOutputs:
       main:
-        matchRegex: (?:kube|service)\.(.*)
+        matchRegex: ".*"
         retry_limit: "no_limits"
         logLevel: "info"
         loki:
@@ -74,29 +75,14 @@ fluentbit:
     labels:
       fluentbit: "main"
     clusterFilters:
-      main:
+      kube:
         match: kube.*
         filters:
           - kubernetes:
               kubeURL: https://kubernetes.default.svc:443
               kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
               kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-          - nest:
-              operation: lift
-              nestedUnder: kubernetes
-              addPrefix: kubernetes_
-          - modify:
-              rules:
-                - remove: stream
-                - remove: kubernetes_pod_id
-                - remove: kubernetes_host
-                - remove: kubernetes_container_hash
-          - nest:
-              operation: nest
-              wildcard:
-                - kubernetes_*
-              nestUnder: kubernetes
-              removePrefix: kubernetes_
+              kubeTagPrefix: "kube.var.log.containers."
 
   clusterConfig:
     enabled: true
@@ -119,6 +105,15 @@ fluentbit:
     multilineParserSelector:
       matchLabels:
         fluentbit: "main"
+
+  parsers:
+    enabled: true
+    clusterParsers:
+      container-no-time:
+        json:
+          timeFormat: "%Y-%m-%dT%H:%M:%S.%L"
+          timeKeep: off
+          timeKey: time
 
   fluentbit:
     enabled: true
