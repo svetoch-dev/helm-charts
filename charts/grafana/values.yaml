@@ -23,6 +23,8 @@ ingresses:
 
 grafana-operator:
   enabled: false
+  logging:
+    encoder: json
   resources:
     requests:
       cpu: 10m
@@ -38,7 +40,9 @@ grafana-main:
     grafana: main
   config:
     log:
-      mode: "console"
+      mode: console
+    log.console:
+      format: json
     auth:
       disable_login_form: "true"
     auth.generic_oauth:
