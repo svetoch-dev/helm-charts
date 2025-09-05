@@ -1,0 +1,29 @@
+inputs:
+#  test:
+#    tail:
+#      tag: kube.*
+#      path: "/var/log/containers/*.log"
+#      readFromHead: false
+#      parser: cri
+#      refreshIntervalSeconds: 10
+#      memBufLimit: 100MB
+#      skipLongLines: true
+#      skipEmptyLines: true
+#      db: /fluent-bit/tail/pos.db
+#      dbSync: Normal
+#      storageType: memory
+
+clusterInputs:
+#  test:
+#    tail:
+#      tag: kube.*
+#      path: "/var/log/containers/*.log"
+#      readFromHead: false
+#      parser: cri
+#      refreshIntervalSeconds: 10
+#      memBufLimit: 100MB
+#      skipLongLines: true
+#      skipEmptyLines: true
+#      db: /fluent-bit/tail/pos.db
+#      dbSync: Normal
+#      storageType: memory

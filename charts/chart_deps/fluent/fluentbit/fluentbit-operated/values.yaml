@@ -1,0 +1,22 @@
+inputs:
+  enabled: false
+
+outputs:
+  enabled: false
+
+filters:
+  enabled: false
+
+clusterConfig:
+  enabled: false
+  configFileFormat: "yaml"
+
+config:
+  enabled: false
+  configFileFormat: "yaml"
+
+parsers:
+  enabled: false
+
+fluentbit:
+  enabled: false
