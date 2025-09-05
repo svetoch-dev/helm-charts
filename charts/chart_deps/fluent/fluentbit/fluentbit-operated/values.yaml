@@ -9,11 +9,11 @@ filters:
 
 clusterConfig:
   enabled: false
-  configFileFormat: "classic"
+  configFileFormat: "yaml"
 
 config:
   enabled: false
-  configFileFormat: "classic"
+  configFileFormat: "yaml"
 
 parsers:
   enabled: false
