@@ -1,0 +1,151 @@
+operator:
+  enabled: false
+  containerRuntime: containerd
+  fluentbit:
+    crdsEnable: false
+    enable: false
+    input:
+      tail:
+        enable: false
+      systemd:
+        enable: false
+      containerd:
+        enable: false
+    filter:
+      kubernetes:
+        enable: false
+  fluentd:
+    enable: false
+    crdsEnable: false
+
+fluentbit:
+  enabled: true
+  inputs:
+    enabled: true
+    labels:
+      fluentbit: "main"
+    clusterInputs:
+      main:
+        tail:
+          tag: kube.*
+          path: "/var/log/containers/*.log"
+          readFromHead: true
+          parser: cri
+          refreshIntervalSeconds: 10
+          memBufLimit: 100MB
+          skipLongLines: true
+          skipEmptyLines: true
+          multilineParser: "cri"
+          db: /fluent-bit/tail/pos.db
+          dbSync: Normal
+          storageType: memory
+
+  outputs:
+    enabled: true
+    labels:
+      fluentbit: "main"
+    clusterOutputs:
+      main:
+        matchRegex: ".*"
+        retry_limit: "no_limits"
+        logLevel: "info"
+        loki:
+          host: "loki-write.loki.svc.cluster.local"
+          port: 3100
+          labels:
+            #env: {{ .Values.global.env.name }}
+            job: fluent-bit
+            pod: $kubernetes['pod_name']
+            container: $kubernetes['container_name']
+            namespace: $kubernetes['namespace_name']
+            node: $kubernetes['host']
+            stream: $stream
+            app_kubernetes_io_instance: $kubernetes['labels']['app.kubernetes.io/instance']
+            app_kubernetes_io_name: $kubernetes['labels']['app.kubernetes.io/name']
+            app_kubernetes_io_version: $kubernetes['labels']['app.kubernetes.io/version']
+            app_kubernetes_io_component: $kubernetes['labels']['app.kubernetes.io/component']
+          removeKeys:
+            - _p
+            - time
+            - stream
+            - kubernetes
+            - ts
+            - logtag
+
+  filters:
+    enabled: true
+    labels:
+      fluentbit: "main"
+    clusterFilters:
+      kube:
+        match: kube.*
+        filters:
+          kubeMain:
+            kubernetes:
+              kubeURL: https://kubernetes.default.svc:443
+              kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+              kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              kubeTagPrefix: "kube.var.log.containers."
+
+  clusterConfig:
+    enabled: true
+    service:
+      parsersFile: /fluent-bit/etc/parsers.conf
+      httpServer: true
+    inputSelector:
+      matchLabels:
+        fluentbit: "main"
+    filterSelector:
+      matchLabels:
+        fluentbit: "main"
+    parserSelector:
+      matchLabels:
+        fluentbit: "main"
+    outputSelector:
+      matchLabels:
+        fluentbit: "main"
+    multilineParserSelector:
+      matchLabels:
+        fluentbit: "main"
+
+  parsers:
+    enabled: true
+    labels:
+      fluentbit: "main"
+    clusterParsers:
+      container-no-time:
+        json:
+          timeFormat: "%Y-%m-%dT%H:%M:%S.%L"
+          timeKeep: off
+          timeKey: time
+
+  fluentbit:
+    enabled: true
+    image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.1
+    positionDB:
+      hostPath:
+        path: /var/lib/fluent-bit/
+    resources:
+      limits:
+        cpu: 500m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 25Mi
+    fluentBitConfigName: '{{ include "fluentbit-operated.fullname" . }}'
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        path: /
+        port: 2020
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 15
+    rbacRules:
+      - apiGroups:
+          - ""
+        resources:
+          - events
+        verbs:
+          - list

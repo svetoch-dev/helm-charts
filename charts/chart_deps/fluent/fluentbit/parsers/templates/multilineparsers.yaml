@@ -1,0 +1,33 @@
+{{- range $multilineParser_name, $multilineParser_obj :=  .Values.multilineParsers }}
+---
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: MultilineParser
+metadata:
+  name: {{ printf "%s-%s" (include "fluentbit-parsers.fullname" $) $multilineParser_name }}
+  namespace: "{{ $multilineParser_obj.namespace | default $.Release.Namespace }}"
+  labels:
+{{- include "fluentbit-parsers.labels" $ | nindent 4 }}
+{{- with $multilineParser_obj.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+{{- with $.Values.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+spec:
+  {{- with $multilineParser_obj.flushTimeout}}
+  flushTimeout: {{ . }}
+  {{- end }}
+  {{- with $multilineParser_obj.keyContent}}
+  keyContent: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $multilineParser_obj.parser}}
+  parser: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $multilineParser_obj.type}}
+  type: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $multilineParser_obj.rules }}
+  rules:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+{{- end }}
