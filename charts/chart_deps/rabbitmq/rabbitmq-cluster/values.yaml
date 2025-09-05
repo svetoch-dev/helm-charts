@@ -4,6 +4,7 @@ nameOverride: ""
 prometheusSelector: {}
 annotations: {}
 replicas: 1
+rabbitmq: {}
 persistence: {}
 tolerations: {}
 affinity: {}
