@@ -51,6 +51,7 @@ fluentbit:
         logLevel: "info"
         loki:
           host: "loki-write.loki.svc.cluster.local"
+          dropSingleKey: "on"
           port: 3100
           labels:
             #env: {{ .Values.global.env.name }}
