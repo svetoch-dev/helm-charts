@@ -84,7 +84,13 @@ spec:
   {{- end }}
   {{- with $cl_output_obj.loki }}
   loki:
-  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- $labels := list }}
+  {{- range $label_name, $label_value := .labels }}
+  {{- $labels = append $labels (printf "%s=%s" $label_name $label_value) }} 
+  {{- end }}
+  {{- $context := mustDeepCopy . }}
+  {{- $context := set $context "labels" $labels }}
+  {{- tpl (toYaml $context) $ | nindent 4 }}
   {{- end }}
   {{- with $cl_output_obj.opensearch }}
   opensearch:

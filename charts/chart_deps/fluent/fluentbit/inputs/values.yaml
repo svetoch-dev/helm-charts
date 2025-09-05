@@ -1,4 +1,4 @@
-inputs: {}
+inputs:
 #  test:
 #    tail:
 #      tag: kube.*
@@ -13,7 +13,7 @@ inputs: {}
 #      dbSync: Normal
 #      storageType: memory
 
-clusterInputs: {}
+clusterInputs:
 #  test:
 #    tail:
 #      tag: kube.*

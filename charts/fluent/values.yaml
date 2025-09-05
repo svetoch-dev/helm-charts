@@ -19,7 +19,7 @@ operator:
     crdsEnable: false
 
 fluentbit:
-  enabled: false
+  enabled: true
   inputs:
     enabled: true
     labels:
@@ -29,7 +29,7 @@ fluentbit:
         tail:
           tag: kube.*
           path: "/var/log/containers/*.log"
-          readFromHead: false
+          readFromHead: true
           parser: cri
           refreshIntervalSeconds: 10
           memBufLimit: 100MB
@@ -53,17 +53,17 @@ fluentbit:
           host: "loki-write.loki.svc.cluster.local"
           port: 3100
           labels:
-            - env={{ .Values.global.env.name }}
-            - job=fluent-bit
-            - pod=$kubernetes['pod_name']
-            - container=$kubernetes['container_name']
-            - namespace=$kubernetes['namespace_name']
-            - node=$kubernetes['host']
-            - stream=$stream
-            - app_kubernetes_io_instance=$kubernetes['labels']['app.kubernetes.io/instance']
-            - app_kubernetes_io_name=$kubernetes['labels']['app.kubernetes.io/name']
-            - app_kubernetes_io_version=$kubernetes['labels']['app.kubernetes.io/version']
-            - app_kubernetes_io_component=$kubernetes['labels']['app.kubernetes.io/component']
+            #env: {{ .Values.global.env.name }}
+            job: fluent-bit
+            pod: $kubernetes['pod_name']
+            container: $kubernetes['container_name']
+            namespace: $kubernetes['namespace_name']
+            node: $kubernetes['host']
+            stream: $stream
+            app_kubernetes_io_instance: $kubernetes['labels']['app.kubernetes.io/instance']
+            app_kubernetes_io_name: $kubernetes['labels']['app.kubernetes.io/name']
+            app_kubernetes_io_version: $kubernetes['labels']['app.kubernetes.io/version']
+            app_kubernetes_io_component: $kubernetes['labels']['app.kubernetes.io/component']
           removeKeys:
             - _p
             - time
@@ -80,7 +80,8 @@ fluentbit:
       kube:
         match: kube.*
         filters:
-          - kubernetes:
+          kubeMain:
+            kubernetes:
               kubeURL: https://kubernetes.default.svc:443
               kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
               kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token

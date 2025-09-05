@@ -1,8 +1,8 @@
-parsers: {}
+parsers:
 
-clusterParsers: {}
+clusterParsers:
 
-multilineParsers: {}
+multilineParsers:
 #  test:
 #    type: "regex"
 #    flushTimeout: 1000
@@ -21,7 +21,7 @@ multilineParsers: {}
 #        regex: '/^Caused.*$/'
 #        next: "cont"
 
-clusterMultilineParsers: {}
+clusterMultilineParsers:
 #  test:
 #    type: "regex"
 #    flushTimeout: 1000

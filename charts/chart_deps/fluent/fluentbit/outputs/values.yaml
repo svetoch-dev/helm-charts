@@ -1,4 +1,4 @@
-outputs: {}
+outputs:
 #  test:
 #    matchRegex: (?:kube|service)\.(.*)
 #    retry_limit: "no_limits"
@@ -9,13 +9,13 @@ outputs: {}
 #      autoKubernetesLabels: "on"
 #      dropSingleKey: "on"
 #      labels:
-#        - env=gcp-int
-#        - job=fluent-bit
-#        - pod=$kubernetes['pod_name']
-#        - container=$kubernetes['container_name']
-#        - namespace=$kubernetes['namespace_name']
-#        - node=$kubernetes['host']
-#        - stream=$stream
+#        env: gcp-int
+#        job: fluent-bit
+#        pord: $kubernetes['pod_name']
+#        container: $kubernetes['container_name']
+#        namespace: $kubernetes['namespace_name']
+#        node: $kubernetes['host']
+#        stream: $stream
 #      removeKeys:
 #        - _p
 #        - time
@@ -24,7 +24,7 @@ outputs: {}
 #        - ts
 #        - logtag
 
-clusterOutputs: {}
+clusterOutputs:
 #  test:
 #    matchRegex: (?:kube|service)\.(.*)
 #    retry_limit: "no_limits"
@@ -35,13 +35,13 @@ clusterOutputs: {}
 #      autoKubernetesLabels: "on"
 #      dropSingleKey: "on"
 #      labels:
-#        - env=gcp-int
-#        - job=fluent-bit
-#        - pod=$kubernetes['pod_name']
-#        - container=$kubernetes['container_name']
-#        - namespace=$kubernetes['namespace_name']
-#        - node=$kubernetes['host']
-#        - stream=$stream
+#        env: gcp-int
+#        job: fluent-bit
+#        pord: $kubernetes['pod_name']
+#        container: $kubernetes['container_name']
+#        namespace: $kubernetes['namespace_name']
+#        node: $kubernetes['host']
+#        stream: $stream
 #      removeKeys:
 #        - _p
 #        - time
