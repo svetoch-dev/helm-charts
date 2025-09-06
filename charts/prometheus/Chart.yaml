@@ -46,10 +46,10 @@ dependencies:
     version: 0.1.0
     alias: alertmanager-main
     condition: alertmanager-main.enabled
-  #https://github.com/prometheus-community/helm-charts/tree/prometheus-postgres-exporter-7.1.11/charts/prometheus-postgres-exporter
+  #https://github.com/prometheus-community/helm-charts/tree/prometheus-postgres-exporter-7.1.1/charts/prometheus-postgres-exporter
   - name: prometheus-postgres-exporter
     repository: https://prometheus-community.github.io/helm-charts
-    version: 7.1.11
+    version: 7.1.1
     alias: prometheus-postgres-exporter
     condition: prometheus-postgres-exporter.enabled
   #https://github.com/prometheus-community/helm-charts/tree/prometheus-blackbox-exporter-11.3.1/charts/prometheus-blackbox-exporter
