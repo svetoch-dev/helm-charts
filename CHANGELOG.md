@@ -54,7 +54,9 @@ New features:
   * global move global attributes to a separate file
   * use digest for images instead of plain tags
   * global attributes access and pomerium
-* ability to set `rabbitmq` `image` (for default set `docker.io/rabbitmq:4.1.3`)
+* `rabbitmq`:
+  * ability to set `image` (for default set `docker.io/rabbitmq:4.1.3`)
+  * ability to set `rabbitmq: {}` values 
 
 Enhancements:
 * `cert-manager`: default ingress class is now pomerium
@@ -72,7 +74,7 @@ Enhancements:
   * image update 0.38.0 -> 0.39.2
 * `external-dns` + crds update v0.16.1 -> v0.18.0
 * charts update:
-  * `prometheus-postgres-exporter` 6.10.0 -> 6.10.2
+  * `prometheus-postgres-exporter` 6.10.0 -> 7.1.1
   * `prometheus-blackbox-exporter` 9.4.0 -> 11.3.1
   * `prometheus-node-exporter` 4.45.0 -> 4.47.3
   * `kube-prometheus-stack` 70.4.1 -> 77.0.2
@@ -81,6 +83,28 @@ Enhancements:
   * `thanos` 16.0.4 -> 17.3.1
   * `rabbitmq` 4.4.11 + crds 4.4.6 -> 4.4.34
   * `cert-manager` 1.17.2 + crds 1.17.1 -> 1.17.4
+* use `json logs` for default:
+  * `argocd`
+  * `cert-manager`
+  * `rabbitmq-cluster`
+  * `external-dns`
+  * `gha-operator`
+  * `grafana-operator` + `grafana`
+  * `konghq ingressController`
+  * `postgres-operator` + `pgExporterImage`
+  * `redis exporter` + `sentinel exporter`
+  * `prometheus`:
+    * `prometheus`
+    * `node-exporter`
+    * `kube-prometheus-stack`
+    * `blackbox-exporter`
+    * `alertmanager`
+    * `stackdriver-exporter`
+  * `thanos`:
+    * `query`
+    * `compactor`
+    * `storegateway`
+
 
 Fixes:
 * `prometheus`:
