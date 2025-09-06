@@ -39,3 +39,7 @@ spec:
   override:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
+  {{- with .Values.rabbitmq }}
+  rabbitmq:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}

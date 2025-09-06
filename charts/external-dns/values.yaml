@@ -1,5 +1,6 @@
 external-dns:
   enabled: false
+  logFormat: json
   global:
     security:
       allowInsecureImages: true

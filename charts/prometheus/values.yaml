@@ -159,6 +159,8 @@ alertmanager-configs:
 
 prometheus-node-exporter:
   enabled: false
+  extraArgs:
+    - '--log.format=json'
   kubeRBACProxy:
     enabled: false
   resources:
@@ -309,6 +311,7 @@ operator:
 
   prometheusOperator:
     enabled: false
+    logFormat: json
     admissionWebhooks:
       enabled: false
     tls:
@@ -334,6 +337,8 @@ operator:
 
 prometheus-blackbox-exporter:
   enabled: false
+  extraArgs:
+    - '--log.format=json'
   resources:
     limits:
       cpu: 100m
@@ -413,6 +418,7 @@ prometheus-main:
 
   prometheus:
     spec:
+      logFormat: json
       enableAdminAPI: true
       thanos:
         image: quay.io/thanos/thanos:v0.39.2@sha256:1d022ef4b8eff056a0e3b7822f953d931c5704d068413f2d7ce5266aa96c9e80
@@ -501,6 +507,7 @@ alertmanager-main:
         path: /metrics
   alertmanager:
     spec:
+      logFormat: json
       resources:
         limits:
           cpu: 100m
@@ -517,6 +524,8 @@ prometheus-postgres-exporter:
 
 prometheus-stackdriver-exporter:
   enabled: false
+  extraArgs:
+    log.format: json
   resources:
     limits:
       cpu: 300m

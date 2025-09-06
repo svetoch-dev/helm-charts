@@ -1,5 +1,7 @@
 gha-operator:
   enabled: false
+  flags:
+    logFormat: "json"
   resources:
     limits:
       cpu: 300m

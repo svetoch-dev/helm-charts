@@ -4,6 +4,7 @@ global:
 
 postgres-operator:
   enabled: false
+  enableJsonLogging: true
   resources:
     limits:
       cpu: 350m

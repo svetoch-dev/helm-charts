@@ -4,6 +4,9 @@ nameOverride: ""
 prometheusSelector: {}
 annotations: {}
 replicas: 1
+rabbitmq:
+  additionalConfig: |
+    log.console.formatter = json
 persistence: {}
 tolerations: {}
 affinity: {}

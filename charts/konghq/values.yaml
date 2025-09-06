@@ -95,6 +95,8 @@ kong:
       external-dns.alpha.kubernetes.io/ttl: "60"
   ingressController:
     ingressClass: konghq
+    args:
+      - '--log-format=json'
     resources:
       limits:
         cpu: 500m
