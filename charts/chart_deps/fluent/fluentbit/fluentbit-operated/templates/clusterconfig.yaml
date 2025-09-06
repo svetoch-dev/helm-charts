@@ -1,0 +1,43 @@
+{{- if .Values.clusterConfig.enabled }}
+---
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: ClusterFluentBitConfig
+metadata:
+  name: {{ include "fluentbit-operated.fullname" . }}
+  labels:
+{{- include "fluentbit-operated.labels" $ | nindent 4 }}
+{{- with .Values.clusterConfig.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+{{- with .Values.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+spec:
+  {{- with .Values.clusterConfig.configFileFormat }}
+  configFileFormat: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with .Values.clusterConfig.filterSelector }}
+  filterSelector:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.clusterConfig.inputSelector }}
+  inputSelector:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.clusterConfig.multilineParserSelector }}
+  multilineParserSelector:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.clusterConfig.outputSelector }}
+  outputSelector:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.clusterConfig.parserSelector }}
+  parserSelector:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.clusterConfig.service }}
+  service:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+{{- end }}

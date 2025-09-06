@@ -50,6 +50,8 @@ crds:
 #      enabled: true
 #    rabbitmq-messaging-topology:
 #      enabled: true
+#    fluent-operator:
+#      enabled: true
 
   labels: {}
   finalizers: {}
@@ -137,6 +139,10 @@ chart_apps:
           port: 6379
           existingSecret: "argocd-redis"
   prometheus:
+    enabled: false
+    values: |
+      global: {{ .Values.global | toYaml | nindent 4 }}
+  fluent:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}

@@ -23,6 +23,7 @@ BrakingChanges:
 * `rabbitmq` uses official and updated images instead `bitnami`
 
 New features:
+* `fluent`: new chart for fluent operator + fluentbit
 * `grafana`:
   * ability to set `uid` for grafana datasource
   * add new `datasource`, for `loki in int`

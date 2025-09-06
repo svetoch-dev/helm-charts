@@ -2,3 +2,4 @@
 123
 charts/**/charts
 !charts/chart_deps/app/common/charts
+!charts/chart_deps/fluent/fluentbit/fluentbit-operated/charts

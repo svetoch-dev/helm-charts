@@ -1,0 +1,44 @@
+{{- range $filter_name, $filter_obj :=  .Values.filters }}
+{{- $filters_map := $filter_obj.filters }}
+{{/*
+We need to use sortAlpha here so that sidecars will appear
+in predictable order. Also sortAlpha cant be used with 'values'
+function because it doesnt produce object
+*/}}
+{{- $filters_list := list }}
+{{- range $fName := (keys $filters_map | sortAlpha) }}
+{{- $filters_list = append $filters_list (get $filters_map $fName) }}
+{{- end }}
+
+---
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: Filter
+metadata:
+  name: {{ printf "%s-%s" (include "fluentbit-filters.fullname" $) $filter_name }}
+  namespace: "{{ $filter_obj.namespace | default $.Release.Namespace }}"
+  labels:
+{{- include "fluentbit-filters.labels" $ | nindent 4 }}
+{{- with $filter_obj.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+{{- with $.Values.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+spec:
+  {{- with $filters_list }}
+  filters:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with $filter_obj.logLevel}}
+  logLevel: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $filter_obj.match}}
+  match: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $filter_obj.matchRegEx}}
+  matchRegEx: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with $filter_obj.ordinal}}
+  ordinal: {{ tpl . $ | quote }}
+  {{- end }}
+{{- end }}

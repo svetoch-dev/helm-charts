@@ -1,0 +1,15 @@
+dependencies:
+- name: fluentbit-filters
+  repository: file://../filters/
+  version: 0.1.0
+- name: fluentbit-inputs
+  repository: file://../inputs/
+  version: 0.1.0
+- name: fluentbit-outputs
+  repository: file://../outputs/
+  version: 0.1.0
+- name: fluentbit-parsers
+  repository: file://../parsers/
+  version: 0.1.0
+digest: sha256:c06b0458999759419d8c3905051d1157bdb064585fceb47b3d1fb4357e836077
+generated: "2025-09-03T16:06:52.881538182+03:00"
