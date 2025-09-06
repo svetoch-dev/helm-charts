@@ -91,7 +91,7 @@ Enhancements:
   * `gha-operator`
   * `grafana-operator` + `grafana`
   * `konghq ingressController`
-  * `postgres-operator` + `pgExporterImage`
+  * `postgres-operator` + `pgExporterImage` + `postgres`(inside pod)
   * `redis exporter` + `sentinel exporter`
   * `prometheus`:
     * `prometheus`
