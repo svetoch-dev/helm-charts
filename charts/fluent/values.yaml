@@ -81,6 +81,19 @@ fluentbit:
       kube:
         match: kube.*
         filters:
+          parseJsonLog:
+            parser:
+              parser: '{{ include "fluentbit-operated.fullname" . }}-containers'
+              keyName: log
+          removeKeys:
+            modify:
+              rules:
+                - remove: ts
+                - remove: time
+          nestAllUnderLog:
+            nest:
+              nestUnder: log
+              wildcard: '*'
           kubeMain:
             kubernetes:
               kubeURL: https://kubernetes.default.svc:443
@@ -114,7 +127,7 @@ fluentbit:
     labels:
       fluentbit: "main"
     clusterParsers:
-      container-no-time:
+      containers:
         json:
           timeFormat: "%Y-%m-%dT%H:%M:%S.%L"
           timeKeep: off
