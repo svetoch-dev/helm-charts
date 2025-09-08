@@ -29,6 +29,10 @@ argocd:
   crds:
     install: false
 
+  global:
+    logging:
+      format: json
+
   configs:
     cm:
       create: true
