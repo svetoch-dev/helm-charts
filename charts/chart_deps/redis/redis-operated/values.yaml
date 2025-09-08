@@ -1,9 +1,13 @@
 sentinel:
   exporter:
     enabled: false
+    args:
+      - '--log-format=json'
 redis:
   exporter:
     enabled: false
+    args:
+      - '--log-format=json'
 auth: {}
 bootstrapNode: {}
 labelWhitelist: {}
