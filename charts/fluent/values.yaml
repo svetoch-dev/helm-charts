@@ -81,20 +81,20 @@ fluentbit:
       kube:
         match: kube.*
         filters:
-          parseJsonLog:
+          1parseJsonLog:
             parser:
               parser: '{{ include "fluentbit-operated.fullname" . }}-containers'
               keyName: log
-          removeKeys:
+          2removeKeys:
             modify:
               rules:
                 - remove: ts
                 - remove: time
-          nestAllUnderLog:
+          3nestAllUnderLog:
             nest:
               nestUnder: log
               wildcard: '*'
-          kubeMain:
+          4kubeMetadata:
             kubernetes:
               kubeURL: https://kubernetes.default.svc:443
               kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
