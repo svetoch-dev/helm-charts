@@ -26,12 +26,17 @@ loki:
     analytics:
       reporting_enabled: false
     storage:
-      use_thanos_objstore: true
-      object_store:
-        type: "{{ .Values.global.bucket.type }}"
-          #"{{ .Values.global.bucket.type }}":
-          #  bucket_name: 
-          #  service_account: grafana-loki
+      type: "{{ .Values.global.bucket.type }}"
+      bucketNames:
+        chunks: ""
+        ruler: ""
+        admin: ""
+      use_thanos_objstore: false
+      #object_store:
+        #type: "{{ .Values.global.bucket.type }}"
+        #gcs:
+          #bucket_name: ""
+          #service_account: ""
     schemaConfig:
       configs:
         - from: 2025-05-01
