@@ -12,6 +12,7 @@ kong-plugins:
 loki:
   enabled: false
   deploymentMode: SimpleScalable
+  nameOverride: "loki-{{ .Values.global.env.name }}"
   test:
     enabled: false
   lokiCanary:
@@ -28,14 +29,14 @@ loki:
     storage:
       type: "{{ .Values.global.bucket.type }}"
       bucketNames:
-        chunks: ""
-        ruler: ""
-        admin: ""
+        chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
+        ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
+        admin: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
       use_thanos_objstore: false
       #object_store:
         #type: "{{ .Values.global.bucket.type }}"
         #gcs:
-          #bucket_name: ""
+          #bucket_name:  "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
           #service_account: ""
     schemaConfig:
       configs:
