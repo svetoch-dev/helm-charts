@@ -24,6 +24,7 @@ BrakingChanges:
 
 New features:
 * `fluent`: new chart for fluent operator + fluentbit
+* new chart for `Loki` Simple Scalable Deployment
 * `grafana`:
   * ability to set `uid` for grafana datasource
   * add new `datasource`, for `loki in int`
