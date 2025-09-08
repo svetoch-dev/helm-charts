@@ -61,6 +61,7 @@ fluentbit:
             namespace: $kubernetes['namespace_name']
             node: $kubernetes['host']
             stream: $stream
+            level: $level
             app_kubernetes_io_instance: $kubernetes['labels']['app.kubernetes.io/instance']
             app_kubernetes_io_name: $kubernetes['labels']['app.kubernetes.io/name']
             app_kubernetes_io_version: $kubernetes['labels']['app.kubernetes.io/version']
@@ -83,19 +84,14 @@ fluentbit:
         filters:
           1parseJsonLog:
             parser:
-              parser: '{{ include "fluentbit-operated.fullname" . }}-containers'
+              parser: '{{ .Release.Name }}-parsers-json'
               keyName: log
           2removeKeys:
             modify:
               rules:
                 - remove: ts
                 - remove: time
-          3nestAllUnderLog:
-            nest:
-              nestUnder: log
-              wildcard:
-                - '*'
-          4kubeMetadata:
+          99kubeMetadata:
             kubernetes:
               kubeURL: https://kubernetes.default.svc:443
               kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -128,11 +124,9 @@ fluentbit:
     labels:
       fluentbit: "main"
     clusterParsers:
-      containers:
+      json:
         json:
-          timeFormat: "%Y-%m-%dT%H:%M:%S.%L"
-          timeKeep: off
-          timeKey: time
+          timeKeep: false
 
   fluentbit:
     enabled: true
