@@ -93,7 +93,8 @@ fluentbit:
           3nestAllUnderLog:
             nest:
               nestUnder: log
-              wildcard: '*'
+              wildcard:
+                - '*'
           4kubeMetadata:
             kubernetes:
               kubeURL: https://kubernetes.default.svc:443
