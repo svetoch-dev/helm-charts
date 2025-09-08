@@ -150,3 +150,7 @@ chart_apps:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
+  loki:
+    enabled: false
+    values: |
+      global: {{ .Values.global | toYaml | nindent 4 }}

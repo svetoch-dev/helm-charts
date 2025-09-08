@@ -1,0 +1,57 @@
+kong-plugins:
+  enabled: false
+  plugins:
+    - name: loki-ip-restriction
+      plugin_name: ip-restriction
+      annotations:
+        kubernetes.io/ingress.class: konghq
+      config:
+        allow:
+          - "{{ .Values.global.network.int_nat_gw }}"
+
+loki:
+  enabled: false
+  deploymentMode: SimpleScalable
+  test:
+    enabled: false
+  lokiCanary:
+    enabled: false
+  serviceAccount:
+    create: false
+    name: grafana-loki
+  loki:
+    auth_enabled: false
+    limits_config:
+      max_label_names_per_series: 20
+    analytics:
+      reporting_enabled: false
+    storage:
+      use_thanos_objstore: true
+      object_store:
+        type: "{{ .Values.global.bucket.type }}"
+          #"{{ .Values.global.bucket.type }}":
+          #  bucket_name: 
+          #  service_account: grafana-loki
+    schemaConfig:
+      configs:
+        - from: 2025-05-01
+          object_store: "{{ .Values.global.bucket.type }}"
+          store: tsdb
+          schema: v13
+          index:
+            prefix: index_
+            period: 24h
+  gateway:
+    enabled: false
+  ingress:
+    enabled: false
+    ingressClassName: "konghq"
+    annotations:
+      konghq.com/plugins: loki-ip-restriction
+      cert-manager.io/cluster-issuer: letsencrypt-kongh
+    hosts:
+      - loki.{{ .Values.global.company.domain.env }}"
+    tls:
+      - secretName: loki-read-tls
+        hosts:
+          - loki.{{ .Values.global.company.domain.env }}"

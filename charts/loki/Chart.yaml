@@ -1,0 +1,18 @@
+apiVersion: v2
+name: loki
+description: loki stack for all environments
+type: application
+version: 0.1.0
+
+dependencies:
+  # https://github.com/grafana/loki/tree/main/production/helm/loki
+  - name: loki
+    version: 6.39.0
+    repository: https://grafana.github.io/helm-charts
+    alias: loki
+    condition: loki.enabled
+  - name: kong-plugins
+    version: 0.1.0
+    repository: file://../chart_deps/konghq/plugins
+    alias: kong-plugins
+    condition: kong-plugins.enabled
