@@ -54,7 +54,7 @@ fluentbit:
           dropSingleKey: "on"
           port: 3100
           labels:
-            env: {{ .Values.global.env.name }}
+            env: "{{ .Values.global.env.name }}"
             job: fluent-bit
             pod: $kubernetes['pod_name']
             container: $kubernetes['container_name']
