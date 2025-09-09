@@ -28,7 +28,8 @@ loki:
     limits_config:
       max_label_names_per_series: 20
       discover_log_levels: false
-      log_level_fields: []
+      discover_service_name: []
+      #log_level_fields: []
     analytics:
       reporting_enabled: false
     storage:
