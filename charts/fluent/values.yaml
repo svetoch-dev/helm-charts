@@ -27,7 +27,8 @@ fluentbit:
     clusterInputs:
       main:
         tail:
-          tag: kube.*
+          tag: kube.<namespace_name>.<pod_name>.<container_name>.<container_id>
+          tagRegex: '(?<pod_name>[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)_(?<namespace_name>[^_]+)_(?<container_name>.+)-(?<container_id>[a-z0-9]{64})\.log$'
           path: "/var/log/containers/*.log"
           readFromHead: true
           parser: cri
@@ -91,12 +92,21 @@ fluentbit:
               rules:
                 - remove: ts
                 - remove: time
+                - remove: t
           99kubeMetadata:
             kubernetes:
               kubeURL: https://kubernetes.default.svc:443
               kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
               kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-              kubeTagPrefix: "kube.var.log.containers."
+              kubeTagPrefix: "kube."
+              regexParser: '{{ .Release.Name }}-parsers-tail-tag'
+      fluentbit:
+        match: 'kube.fluent.{{ .Release.Name }}-fluentbit*'
+        filters:
+          fluentbit:
+            pareser:
+              parser: '{{ .Release.Name }}-parsers-fluentbit'
+              keyName: log
 
   clusterConfig:
     enabled: true
@@ -127,6 +137,15 @@ fluentbit:
       json:
         json:
           timeKeep: false
+      fluentbit:
+        regex:
+          regex: '^\[(?<time>[^\]]+)\][ ]*\[[ ]*(?<severity>[^\]]+)\][ ]*\[(?<plugin>[^\]]+)\] (?<log>.*)'
+          timeKey: 'time'
+          timeFormat: '%Y/%m/%d %H:%M:%S'
+      tail-tag:
+        regex:
+          regex: '^(?<namespace_name>[^_]+)\.(?<pod_name>[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)\.(?<container_name>.+)\.(?<container_id>[a-z0-9]{64})'
+
 
   fluentbit:
     enabled: true
