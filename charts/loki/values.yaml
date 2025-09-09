@@ -28,7 +28,7 @@ loki:
       log_level_fields: []
     analytics:
       reporting_enabled: false
-    #storage:
+    storage:
     #  type: "{{ .Values.global.bucket.type }}"
     #  bucketNames:
     #    chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
