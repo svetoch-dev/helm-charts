@@ -50,8 +50,7 @@ fluentbit:
         retry_limit: "no_limits"
         logLevel: "info"
         loki:
-          host: "loki-write.loki.svc.cluster.local"
-          dropSingleKey: "on"
+          host: "loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local"
           port: 3100
           labels:
             env: "{{ .Values.global.env.name }}"
