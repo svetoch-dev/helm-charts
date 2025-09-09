@@ -82,7 +82,7 @@ fluentbit:
     clusterFilters:
       kube:
         match: kube.*
-        odinal: 100
+        ordinal: 100
         filters:
           1parseJsonLog:
             parser:
