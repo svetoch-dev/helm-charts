@@ -90,6 +90,8 @@ fluentbit:
           2removeKeys:
             modify:
               rules:
+                - hardRename:
+                    severity: "level"
                 - remove: ts
                 - remove: time
                 - remove: t
@@ -139,7 +141,7 @@ fluentbit:
           timeKeep: false
       fluentbit:
         regex:
-          regex: '^\[(?<time>[^\]]+)\][ ]*\[[ ]*(?<severity>[^\]]+)\][ ]*\[(?<plugin>[^\]]+)\] (?<log>.*)'
+          regex: '^\[(?<time>[^\]]+)\][ ]*\[[ ]*(?<level>[^\]]+)\][ ]*\[(?<plugin>[^\]]+)\] (?<log>.*)'
           timeKey: 'time'
           timeFormat: '%Y/%m/%d %H:%M:%S'
       tail-tag:
