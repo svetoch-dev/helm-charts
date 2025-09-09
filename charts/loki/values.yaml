@@ -1,7 +1,29 @@
+ingresses:
+  loki-read:
+    enabled: false
+    name: '{{ include "loki.fullname" . }}-read'
+    service:
+      name: '{{ include "loki.fullname" . }}-read'
+      port: 3100
+    className: konghq
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-konghq
+      #konghq.com/protocols: grpc,grpcs
+      konghq.com/plugins: loki-read-ip-restriction
+    hosts:
+      - host: "loki.{{ .Values.global.company.domain.env }}"
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - secretName: loki-read-tls
+        hosts:
+          - "loki.{{ .Values.global.company.domain.env }}"
+
 kong-plugins:
   enabled: false
   plugins:
-    - name: loki-ip-restriction
+    - name: loki-read-ip-restriction
       plugin_name: ip-restriction
       annotations:
         kubernetes.io/ingress.class: konghq
