@@ -57,14 +57,14 @@ loki:
     storage:
     #  type: "{{ .Values.global.bucket.type }}"
     #  bucketNames:
-    #    chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
-    #    ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
-    #    admin: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
+    #    chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
+    #    ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
+    #    admin: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
       use_thanos_objstore: false
       #object_store:
         #type: "{{ .Values.global.bucket.type }}"
         #gcs:
-          #bucket_name:  "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
+          #bucket_name:  "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
           #service_account: ""
     #schemaConfig:
     #  configs:

@@ -160,9 +160,9 @@ chart_apps:
           storage:
             type: "{{ .Values.global.bucket.type }}"
             bucketNames:
-              chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
-              ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
-              admin: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
+              chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
+              ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
+              admin: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
           schemaConfig:
             configs:
               - from: 2025-05-01
