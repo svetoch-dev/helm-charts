@@ -39,6 +39,6 @@ spec:
   matchRegEx: {{ tpl . $ | quote }}
   {{- end }}
   {{- with $filter_obj.ordinal}}
-  ordinal: {{ tpl . $ | quote }}
+  ordinal: {{ . }}
   {{- end }}
 {{- end }}
