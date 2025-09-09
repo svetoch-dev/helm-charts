@@ -12,6 +12,9 @@ kong-plugins:
 loki:
   enabled: false
   deploymentMode: SimpleScalable
+  global:
+    extraArgs:
+      - '-log.format=json'
   #nameOverride: "loki-{{ .Values.global.env.name }}"
   test:
     enabled: false
