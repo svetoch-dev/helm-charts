@@ -104,7 +104,7 @@ fluentbit:
         match: 'kube.fluent.{{ .Release.Name }}-fluentbit*'
         filters:
           fluentbit:
-            pareser:
+            parser:
               parser: '{{ .Release.Name }}-parsers-fluentbit'
               keyName: log
 
