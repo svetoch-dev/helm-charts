@@ -82,6 +82,7 @@ fluentbit:
     clusterFilters:
       kube:
         match: kube.*
+        odinal: 100
         filters:
           1parseJsonLog:
             parser:
@@ -104,6 +105,7 @@ fluentbit:
               regexParser: '{{ .Release.Name }}-parsers-tail-tag'
       fluentbit:
         match: 'kube.fluent.{{ .Release.Name }}-fluentbit*'
+        ordinal: 0
         filters:
           fluentbit:
             parser:
