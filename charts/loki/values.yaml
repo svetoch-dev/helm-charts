@@ -12,7 +12,7 @@ kong-plugins:
 loki:
   enabled: false
   deploymentMode: SimpleScalable
-  nameOverride: "loki-{{ .Values.global.env.name }}"
+  #nameOverride: "loki-{{ .Values.global.env.name }}"
   test:
     enabled: false
   lokiCanary:
@@ -28,27 +28,27 @@ loki:
       log_level_fields: []
     analytics:
       reporting_enabled: false
-    storage:
-      type: "{{ .Values.global.bucket.type }}"
-      bucketNames:
-        chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
-        ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
-        admin: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
+    #storage:
+    #  type: "{{ .Values.global.bucket.type }}"
+    #  bucketNames:
+    #    chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
+    #    ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
+    #    admin: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
       use_thanos_objstore: false
       #object_store:
         #type: "{{ .Values.global.bucket.type }}"
         #gcs:
           #bucket_name:  "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.name }}"
           #service_account: ""
-    schemaConfig:
-      configs:
-        - from: 2025-05-01
-          object_store: "{{ .Values.global.bucket.type }}"
-          store: tsdb
-          schema: v13
-          index:
-            prefix: index_
-            period: 24h
+    #schemaConfig:
+    #  configs:
+    #    - from: 2025-05-01
+    #      object_store: "{{ .Values.global.bucket.type }}"
+    #      store: tsdb
+    #      schema: v13
+    #      index:
+    #        prefix: index_
+    #        period: 24h
   gateway:
     enabled: false
   ingress:
