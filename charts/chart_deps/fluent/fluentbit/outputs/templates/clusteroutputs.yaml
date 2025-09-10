@@ -136,4 +136,7 @@ spec:
   tcp:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
+  {{- if (hasKey $cl_output_obj "null") }}
+  "null": {}
+  {{- end }}
 {{- end }}
