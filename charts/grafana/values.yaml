@@ -21,6 +21,21 @@ ingresses:
         hosts:
           - "gf.{{ .Values.global.company.domain.env }}"
 
+fluentbit-filters:
+  enabled: false
+  labels:
+    fluentbit: "main"
+  clusterFilters:
+    grafana:
+      match: kube.grafana.*
+      ordinal: 101
+      filters:
+        1removeKeys:
+          modify:
+            rules:
+              - remove: dsUID
+
+
 grafana-operator:
   enabled: false
   logging:

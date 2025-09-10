@@ -27,3 +27,8 @@ dependencies:
   - name: core
     version: 0.1.0
     repository: file://../chart_deps/app/core
+  - name: fluentbit-filters
+    repository: file://../chart_deps/fluent/fluentbit/filters/
+    version: 0.1.0
+    alias: fluentbit-filters
+    condition: fluentbit-filters.enabled
