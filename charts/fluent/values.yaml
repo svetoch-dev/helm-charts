@@ -27,7 +27,8 @@ fluentbit:
     clusterInputs:
       main:
         tail:
-          tag: kube.*
+          tag: kube.<namespace_name>.<pod_name>.<container_name>.<container_id>
+          tagRegex: '(?<pod_name>[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)_(?<namespace_name>[^_]+)_(?<container_name>.+)-(?<container_id>[a-z0-9]{64})\.log$'
           path: "/var/log/containers/*.log"
           readFromHead: true
           parser: cri
@@ -50,16 +51,18 @@ fluentbit:
         retry_limit: "no_limits"
         logLevel: "info"
         loki:
-          host: "loki-write.loki.svc.cluster.local"
+          dropSingleKey: "on"
+          host: "loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local"
           port: 3100
           labels:
-            #env: {{ .Values.global.env.name }}
-            job: fluent-bit
+            env: "{{ .Values.global.env.name }}"
+            job: fluentbit-main
             pod: $kubernetes['pod_name']
             container: $kubernetes['container_name']
             namespace: $kubernetes['namespace_name']
             node: $kubernetes['host']
             stream: $stream
+            level: $level
             app_kubernetes_io_instance: $kubernetes['labels']['app.kubernetes.io/instance']
             app_kubernetes_io_name: $kubernetes['labels']['app.kubernetes.io/name']
             app_kubernetes_io_version: $kubernetes['labels']['app.kubernetes.io/version']
@@ -79,13 +82,35 @@ fluentbit:
     clusterFilters:
       kube:
         match: kube.*
+        ordinal: 100
         filters:
-          kubeMain:
+          1parseJsonLog:
+            parser:
+              parser: '{{ .Release.Name }}-parsers-json'
+              keyName: log
+          2removeKeys:
+            modify:
+              rules:
+                - hardRename:
+                    severity: "level"
+                - remove: ts
+                - remove: time
+                - remove: t
+          99kubeMetadata:
             kubernetes:
               kubeURL: https://kubernetes.default.svc:443
               kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
               kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-              kubeTagPrefix: "kube.var.log.containers."
+              kubeTagPrefix: "kube."
+              regexParser: '{{ .Release.Name }}-parsers-tail-tag'
+      fluentbit:
+        match: 'kube.fluent.{{ .Release.Name }}-fluentbit*'
+        ordinal: 0
+        filters:
+          fluentbit:
+            parser:
+              parser: '{{ .Release.Name }}-parsers-fluentbit'
+              keyName: log
 
   clusterConfig:
     enabled: true
@@ -113,11 +138,18 @@ fluentbit:
     labels:
       fluentbit: "main"
     clusterParsers:
-      container-no-time:
+      json:
         json:
-          timeFormat: "%Y-%m-%dT%H:%M:%S.%L"
-          timeKeep: off
-          timeKey: time
+          timeKeep: false
+      fluentbit:
+        regex:
+          regex: '^\[(?<time>[^\]]+)\][ ]*\[[ ]*(?<level>[^\]]+)\][ ]*\[(?<plugin>[^\]]+)\] (?<log>.*)'
+          timeKey: 'time'
+          timeFormat: '%Y/%m/%d %H:%M:%S'
+      tail-tag:
+        regex:
+          regex: '^(?<namespace_name>[^_]+)\.(?<pod_name>[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)\.(?<container_name>.+)\.(?<container_id>[a-z0-9]{64})'
+
 
   fluentbit:
     enabled: true
