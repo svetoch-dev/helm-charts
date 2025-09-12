@@ -162,6 +162,10 @@ chart_apps:
             bucketNames:
               chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
               ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
+            object_store:
+              type: "{{ .Values.global.bucket.type }}"
+              gcs:
+                bucket_name: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
           schemaConfig:
             configs:
               - from: 2025-05-01

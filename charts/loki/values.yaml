@@ -57,7 +57,7 @@ loki:
     analytics:
       reporting_enabled: false
     storage:
-      use_thanos_objstore: false
+      use_thanos_objstore: true
     schemaConfig:
       configs: []
   gateway:
