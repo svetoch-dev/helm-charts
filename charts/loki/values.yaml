@@ -8,7 +8,6 @@ ingresses:
     className: konghq
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-konghq
-      #konghq.com/protocols: grpc,grpcs
       konghq.com/plugins: loki-read-ip-restriction
     hosts:
       - host: "loki.{{ .Values.global.company.domain.env }}"
