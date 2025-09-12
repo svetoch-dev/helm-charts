@@ -150,3 +150,28 @@ chart_apps:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
+  loki:
+    enabled: false
+    values: |
+      global: {{ .Values.global | toYaml | nindent 4 }}
+      loki:
+        nameOverride: "loki-{{ .Values.global.env.name }}"
+        loki:
+          storage:
+            type: "{{ .Values.global.bucket.type }}"
+            bucketNames:
+              chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
+              ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
+            object_store:
+              type: "{{ .Values.global.bucket.type }}"
+              gcs:
+                bucket_name: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
+          schemaConfig:
+            configs:
+              - from: 2025-05-01
+                object_store: "{{ .Values.global.bucket.type }}"
+                store: tsdb
+                schema: v13
+                index:
+                  prefix: index_
+                  period: 24h
