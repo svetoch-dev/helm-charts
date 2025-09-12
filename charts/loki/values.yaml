@@ -46,9 +46,12 @@ loki:
   loki:
     auth_enabled: false
     limits_config:
-      max_label_names_per_series: 20
       discover_log_levels: false
       discover_service_name: []
+      ingestion_rate_mb: 90
+      ingestion_burst_size_mb: 20
+      max_global_streams_per_user: 9000
+      max_label_names_per_series: 20
     analytics:
       reporting_enabled: false
     storage:
