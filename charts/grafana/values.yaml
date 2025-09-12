@@ -133,7 +133,7 @@ datasource:
         type: loki
         isDefault: false
         access: proxy
-        url: http://loki-read.loki.svc.cluster.local:3100
+        url: http://loki-{{ .Values.global.env.name }}-read.loki.svc.cluster.local:3100
         jsonData:
           manageAlerts: 'false'
 
