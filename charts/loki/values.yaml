@@ -64,5 +64,3 @@ loki:
     enabled: false
   ingress:
     enabled: false
-  ruler:
-    enabled: false
