@@ -83,7 +83,7 @@ fluentbit:
           port: 3100
           labels:
             env: "{{ .Values.global.env.name }}"
-            job: fluentbit-main
+            job: fluentbit-pods
             pod: $kubernetes['pod_name']
             container: $kubernetes['container_name']
             namespace: $kubernetes['namespace_name']
