@@ -68,6 +68,11 @@ fluentbit:
             stream: $_TRANSPORT
             level: $level
             systemd_unit: $_SYSTEMD_UNIT
+          removeKeys:
+            - _TRANSPORT
+            - level
+            - _SYSTEMD_UNIT
+            - _HOSTNAME
       pods:
         match: "kube.pods.*"
         retry_limit: "no_limits"
@@ -105,7 +110,71 @@ fluentbit:
       systemd:
         match: systemd.*
         filters:
-          1removeKeys:
+          1levelEmerg:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "0"
+              rules:
+                - set:
+                    level: emerg
+          2levelAlert:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "0"
+              rules:
+                - set:
+                    level: alert
+          3levelCrit:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "2"
+              rules:
+                - set:
+                    level: crit
+          4levelErr:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "3"
+              rules:
+                - set:
+                    level: err
+          5levelWarn:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "4"
+              rules:
+                - set:
+                    level: warn
+          6levelNotice:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "5"
+              rules:
+                - set:
+                    level: notice
+          7levelInfo:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "6"
+              rules:
+                - set:
+                    level: info
+          8leveldebug:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "7"
+              rules:
+                - set:
+                  level: debug
+          9removeKeys:
             modify:
               rules:
                 - remove: _SYSTEMD_INVOCATION_ID
@@ -116,6 +185,9 @@ fluentbit:
                 - remove: _RUNTIME_SCOPE
                 - remove: _SYSTEMD_SLICE
                 - remove: _SOURCE_REALTIME_TIMESTAMP
+                - remove: PRIORITY
+                - remove: SYSLOG_TIMESTAMP
+
       pods:
         match: kube.pods.*
         ordinal: 100
