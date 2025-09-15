@@ -567,6 +567,9 @@ prometheus-rules:
           pg_up:
             enabled: false
             source: "prometheus-portgres-exporter"
+          pg_stat_activity_count:
+            enabled: false
+            source: "prometheus-portgres-exporter"
       CriticalMetric:
         enabled: false
         interval: "31s"
