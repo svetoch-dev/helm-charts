@@ -55,8 +55,19 @@ fluentbit:
     clusterOutputs:
       systemd:
         match: "systemd.*"
-        stdout:
-          format: json
+        retry_limit: "no_limits"
+        logLevel: "info"
+        loki:
+          dropSingleKey: "on"
+          host: "loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local"
+          port: 3100
+          labels:
+            env: "{{ .Values.global.env.name }}"
+            job: fluentbit-systemd
+            node: $_HOSTNAME
+            stream: $_TRANSPORT
+            level: $level
+            systemd_unit: $_SYSTEMD_UNIT
       pods:
         match: "kube.pods.*"
         retry_limit: "no_limits"
@@ -99,10 +110,12 @@ fluentbit:
               rules:
                 - remove: _SYSTEMD_INVOCATION_ID
                 - remove: _STREAM_ID
-                - remove: _CAP_EFFECTIVE
                 - remove: _MACHINE_ID
+                - remove: JOB_ID
+                - remove: MESSAGE_ID
                 - remove: _RUNTIME_SCOPE
                 - remove: _SYSTEMD_SLICE
+                - remove: _SOURCE_REALTIME_TIMESTAMP
       pods:
         match: kube.pods.*
         ordinal: 100
