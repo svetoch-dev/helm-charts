@@ -21,7 +21,7 @@ spec:
       {{- range $absentMetricRuleName, $absentMetricRule := .AbsentMetricCritical.rules }}
       {{- if $absentMetricRule.enabled }}
       {{- $query := ($absentMetricRule.query | default "{}") }}
-      {{- $tm := ($absentMetricRule.for | default "30m") }}
+      {{- $tm := ($absentMetricRule.for | default "10m") }}
         - alert: absent_{{$absentMetricRuleName}}
           expr: absent({{$absentMetricRuleName}}{{$query}})
           for: {{ $tm }}
