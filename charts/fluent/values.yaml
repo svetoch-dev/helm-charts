@@ -123,7 +123,7 @@ fluentbit:
               kubeURL: https://kubernetes.default.svc:443
               kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
               kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-              kubeTagPrefix: "kube.pods"
+              kubeTagPrefix: "kube.pods."
               regexParser: '{{ .Release.Name }}-parsers-tail-tag'
       fluentbit:
         match: 'kube.pods.fluent.{{ .Release.Name }}-fluentbit*'
