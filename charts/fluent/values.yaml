@@ -95,13 +95,14 @@ fluentbit:
         match: systemd.*
         filters:
           1removeKeys:
-            rules:
-              - remove: _SYSTEMD_INVOCATION_ID
-              - remove: _STREAM_ID
-              - remove: _CAP_EFFECTIVE
-              - remove: _MACHINE_ID
-              - remove: _RUNTIME_SCOPE
-              - remove: _SYSTEMD_SLICE
+            modify:
+              rules:
+                - remove: _SYSTEMD_INVOCATION_ID
+                - remove: _STREAM_ID
+                - remove: _CAP_EFFECTIVE
+                - remove: _MACHINE_ID
+                - remove: _RUNTIME_SCOPE
+                - remove: _SYSTEMD_SLICE
       pods:
         match: kube.pods.*
         ordinal: 100
