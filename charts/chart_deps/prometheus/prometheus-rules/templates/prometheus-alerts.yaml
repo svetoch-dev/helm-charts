@@ -8,20 +8,20 @@ kind: PrometheusRule
 metadata:
   name: {{ $releasename }}-{{ $name }}-alerts
   labels:
-{{- include "prometheus-rules.labels" $ | nindent 4 }}
+    {{- include "prometheus-rules.labels" $ | nindent 4 }}
     {{- toYaml $alert.selector | nindent 4 }}
-{{- $tm := "30m" }}
 spec:
   groups:
   {{- if .AbsentMetricCritical.enabled }}
     - name: AbsentMetricCritical
-    {{- if .AbsentMetricCritical.interval }}
+      {{- if .AbsentMetricCritical.interval }}
       interval: {{ .AbsentMetricCritical.interval }}
-    {{- end }}
+      {{- end }}
       rules:
       {{- range $absentMetricRuleName, $absentMetricRule := .AbsentMetricCritical.rules }}
       {{- if $absentMetricRule.enabled }}
       {{- $query := ($absentMetricRule.query | default "{}") }}
+      {{- $tm := ($absentMetricRule.for | default "30m") }}
         - alert: absent_{{$absentMetricRuleName}}
           expr: absent({{$absentMetricRuleName}}{{$query}})
           for: {{ $tm }}
