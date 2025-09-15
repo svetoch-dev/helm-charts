@@ -173,7 +173,7 @@ fluentbit:
                     PRIORITY: "7"
               rules:
                 - set:
-                  level: debug
+                    level: debug
           9removeKeys:
             modify:
               rules:
