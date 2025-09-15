@@ -27,7 +27,7 @@ fluentbit-filters:
     fluentbit: "main"
   clusterFilters:
     grafana:
-      match: kube.grafana.*
+      match: kube.pods.grafana.*
       ordinal: 101
       filters:
         1removeKeys:

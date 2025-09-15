@@ -25,9 +25,16 @@ fluentbit:
     labels:
       fluentbit: "main"
     clusterInputs:
-      main:
+      systemd:
+        systemd:
+          tag: systemd.*
+          path: "/var/log/journal"
+          db: "/fluent-bit/tail/systemd.db"
+          dbSync: Normal
+          storageType: memory
+      pods:
         tail:
-          tag: kube.<namespace_name>.<pod_name>.<container_name>.<container_id>
+          tag: kube.pods.<namespace_name>.<pod_name>.<container_name>.<container_id>
           tagRegex: '(?<pod_name>[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)_(?<namespace_name>[^_]+)_(?<container_name>.+)-(?<container_id>[a-z0-9]{64})\.log$'
           path: "/var/log/containers/*.log"
           readFromHead: true
@@ -46,8 +53,12 @@ fluentbit:
     labels:
       fluentbit: "main"
     clusterOutputs:
-      main:
-        matchRegex: ".*"
+      systemd:
+        match: "systemd.*"
+        stdout:
+          format: json
+      pods:
+        match: "kube.pods.*"
         retry_limit: "no_limits"
         logLevel: "info"
         loki:
@@ -80,8 +91,19 @@ fluentbit:
     labels:
       fluentbit: "main"
     clusterFilters:
-      kube:
-        match: kube.*
+      systemd:
+        match: systemd.*
+        filters:
+          1removeKeys:
+            rules:
+              - remove: _SYSTEMD_INVOCATION_ID
+              - remove: _STREAM_ID
+              - remove: _CAP_EFFECTIVE
+              - remove: _MACHINE_ID
+              - remove: _RUNTIME_SCOPE
+              - remove: _SYSTEMD_SLICE
+      pods:
+        match: kube.pods.*
         ordinal: 100
         filters:
           1parseJsonLog:
@@ -101,10 +123,10 @@ fluentbit:
               kubeURL: https://kubernetes.default.svc:443
               kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
               kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-              kubeTagPrefix: "kube."
+              kubeTagPrefix: "kube.pods"
               regexParser: '{{ .Release.Name }}-parsers-tail-tag'
       fluentbit:
-        match: 'kube.fluent.{{ .Release.Name }}-fluentbit*'
+        match: 'kube.pods.fluent.{{ .Release.Name }}-fluentbit*'
         ordinal: 0
         filters:
           fluentbit:
