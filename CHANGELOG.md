@@ -44,7 +44,8 @@ New features:
 * `prometheus`:
   * move alertmanager-config defaults to `chart_deps/prometheus/alertmanager-configs` chart
   * move alertmanager-config `route` section to chart values
-  * new alert `RabbitMQ_too_many_masters`
+  * change default `AbsentMetricCritical` `for` time `30min -> 10min`
+  * ability to set `for` for `AbsentMetricCritical` alert
 * `chart_deps/prometheus/alertmanager-configs`:
   * slackConfigs to defaults
   * support go templates for receivers
@@ -65,6 +66,8 @@ Enhancements:
   * default ingress class is now pomerium
   * update v3.2.1 -> v3.5.0
   * crds update v0.81.0 -> v0.85.0
+  * new alert `RabbitMQ_too_many_masters`
+  * new alert `pg_stat_activity_count` (AbsentMetricCritical)
 * `grafana`:
   * `grafana-operator` and `crds` update v5.18.0 -> v5.19.4
   * `grafana` update v11.6.0 -> v12.1.1
