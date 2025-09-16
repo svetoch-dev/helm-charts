@@ -232,6 +232,8 @@ fluentbit:
               conditions:
                 - keyValueEquals:
                     level: "WARN"
+                - keyValueEquals:
+                    level: "warning"
               rules:
                 - set:
                     level: warn
