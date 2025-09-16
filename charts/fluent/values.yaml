@@ -122,7 +122,7 @@ fluentbit:
             modify:
               conditions:
                 - keyValueEquals:
-                    PRIORITY: "0"
+                    PRIORITY: "1"
               rules:
                 - set:
                     level: alert
@@ -141,7 +141,7 @@ fluentbit:
                     PRIORITY: "3"
               rules:
                 - set:
-                    level: err
+                    level: error
           5levelWarn:
             modify:
               conditions:
