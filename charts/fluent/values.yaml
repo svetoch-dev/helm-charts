@@ -25,9 +25,16 @@ fluentbit:
     labels:
       fluentbit: "main"
     clusterInputs:
-      main:
+      systemd:
+        systemd:
+          tag: systemd.*
+          path: "/var/log/journal"
+          db: "/fluent-bit/tail/systemd.db"
+          dbSync: Normal
+          storageType: memory
+      pods:
         tail:
-          tag: kube.<namespace_name>.<pod_name>.<container_name>.<container_id>
+          tag: kube.pods.<namespace_name>.<pod_name>.<container_name>.<container_id>
           tagRegex: '(?<pod_name>[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)_(?<namespace_name>[^_]+)_(?<container_name>.+)-(?<container_id>[a-z0-9]{64})\.log$'
           path: "/var/log/containers/*.log"
           readFromHead: true
@@ -46,8 +53,8 @@ fluentbit:
     labels:
       fluentbit: "main"
     clusterOutputs:
-      main:
-        matchRegex: ".*"
+      systemd:
+        match: "systemd.*"
         retry_limit: "no_limits"
         logLevel: "info"
         loki:
@@ -56,7 +63,27 @@ fluentbit:
           port: 3100
           labels:
             env: "{{ .Values.global.env.name }}"
-            job: fluentbit-main
+            job: fluentbit-systemd
+            node: $_HOSTNAME
+            stream: $_TRANSPORT
+            level: $level
+            systemd_unit: $_SYSTEMD_UNIT
+          removeKeys:
+            - _TRANSPORT
+            - level
+            - _SYSTEMD_UNIT
+            - _HOSTNAME
+      pods:
+        match: "kube.pods.*"
+        retry_limit: "no_limits"
+        logLevel: "info"
+        loki:
+          dropSingleKey: "on"
+          host: "loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local"
+          port: 3100
+          labels:
+            env: "{{ .Values.global.env.name }}"
+            job: fluentbit-pods
             pod: $kubernetes['pod_name']
             container: $kubernetes['container_name']
             namespace: $kubernetes['namespace_name']
@@ -80,8 +107,89 @@ fluentbit:
     labels:
       fluentbit: "main"
     clusterFilters:
-      kube:
-        match: kube.*
+      systemd:
+        match: systemd.*
+        filters:
+          1levelEmerg:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "0"
+              rules:
+                - set:
+                    level: emerg
+          2levelAlert:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "1"
+              rules:
+                - set:
+                    level: alert
+          3levelCrit:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "2"
+              rules:
+                - set:
+                    level: crit
+          4levelErr:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "3"
+              rules:
+                - set:
+                    level: error
+          5levelWarn:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "4"
+              rules:
+                - set:
+                    level: warn
+          6levelNotice:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "5"
+              rules:
+                - set:
+                    level: notice
+          7levelInfo:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "6"
+              rules:
+                - set:
+                    level: info
+          8leveldebug:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    PRIORITY: "7"
+              rules:
+                - set:
+                    level: debug
+          9removeKeys:
+            modify:
+              rules:
+                - remove: _SYSTEMD_INVOCATION_ID
+                - remove: _STREAM_ID
+                - remove: _MACHINE_ID
+                - remove: JOB_ID
+                - remove: MESSAGE_ID
+                - remove: _RUNTIME_SCOPE
+                - remove: _SYSTEMD_SLICE
+                - remove: _SOURCE_REALTIME_TIMESTAMP
+                - remove: PRIORITY
+                - remove: SYSLOG_TIMESTAMP
+
+      pods:
+        match: kube.pods.*
         ordinal: 100
         filters:
           1parseJsonLog:
@@ -101,10 +209,53 @@ fluentbit:
               kubeURL: https://kubernetes.default.svc:443
               kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
               kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-              kubeTagPrefix: "kube."
+              kubeTagPrefix: "kube.pods."
               regexParser: '{{ .Release.Name }}-parsers-tail-tag'
+          100levelCrit:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    level: "CRITICAL"
+              rules:
+                - set:
+                    level: crit
+          101levelErr:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    level: "ERROR"
+              rules:
+                - set:
+                    level: error
+          102levelWarn:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    level: "WARN"
+                - keyValueEquals:
+                    level: "warning"
+              rules:
+                - set:
+                    level: warn
+          103levelInfo:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    level: "INFO"
+              rules:
+                - set:
+                    level: info
+          104leveldebug:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    level: "DEBUG"
+              rules:
+                - set:
+                    level: debug
+
       fluentbit:
-        match: 'kube.fluent.{{ .Release.Name }}-fluentbit*'
+        match: 'kube.pods.fluent.{{ .Release.Name }}-fluentbit*'
         ordinal: 0
         filters:
           fluentbit:
