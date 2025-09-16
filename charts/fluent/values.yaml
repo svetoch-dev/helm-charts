@@ -211,6 +211,47 @@ fluentbit:
               kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
               kubeTagPrefix: "kube.pods."
               regexParser: '{{ .Release.Name }}-parsers-tail-tag'
+          100levelCrit:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    level: "CRITICAL"
+              rules:
+                - set:
+                    level: crit
+          101levelErr:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    level: "ERROR"
+              rules:
+                - set:
+                    level: error
+          102levelWarn:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    level: "WARN"
+              rules:
+                - set:
+                    level: warn
+          103levelInfo:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    level: "INFO"
+              rules:
+                - set:
+                    level: info
+          104leveldebug:
+            modify:
+              conditions:
+                - keyValueEquals:
+                    level: "DEBUG"
+              rules:
+                - set:
+                    level: debug
+
       fluentbit:
         match: 'kube.pods.fluent.{{ .Release.Name }}-fluentbit*'
         ordinal: 0
