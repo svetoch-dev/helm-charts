@@ -73,7 +73,7 @@ Enhancements:
   * new alert `RabbitMQ_too_many_masters`
   * new alert `pg_stat_activity_count` (AbsentMetricCritical)
   * alerts are arranged in alphabetical order
-  * use container/pod/namespace instead of exported_container/exported_pod/exported_namespace
+  * use container/pod/namespace instead of exported_container/exported_pod/exported_namespace (deleted)
   * `CriticalMetric` alerts:
     * `Available_postgresql_connections_are_running_out` now it works when less than 30 connections are available (instead of 20)
     * `Daemonset_not_ready` shows namespace in description
