@@ -725,16 +725,6 @@ prometheus-rules:
             expr: count by (job) (redis_instance_info{role="slave"}) < 2
 
           # Resources
-          PVC_low_capacity:
-            enabled: false
-            for: "1h"
-            description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity {{ humanizePercentage $value }}"
-            expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes) < 0.1
-          High_postgres_container_cpu_throttling:
-            enabled: false
-            for: "1h"
-            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} throttled for >1h with throttle of {{ humanizeDuration $value }}"
-            expr: rate(container_cpu_cfs_throttled_seconds_total{container="postgres"}[5m]) > 0.1
           High_cpu_throttling:
             enabled: false
             for: "1h"
@@ -745,9 +735,18 @@ prometheus-rules:
             for: "30m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using {{ humanizePercentage $value }} of Memory limit for > 30m"
             expr: sum by (container, pod, namespace) (container_memory_working_set_bytes{container!="", namespace!="kube-system"}) / on (container, pod, namespace) max by (container, pod, namespace) (kube_pod_container_resource_limits{unit="byte"}) > 0.9
+          High_postgres_container_cpu_throttling:
+            enabled: false
+            for: "1h"
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} throttled for >1h with throttle of {{ humanizeDuration $value }}"
+            expr: rate(container_cpu_cfs_throttled_seconds_total{container="postgres"}[5m]) > 0.1
           OOM_killed_pods_(on_node):
             enabled: false
             for: "1m"
             description: "Some container located on node {{ $labels.node }} was killed by OOM killer"
             expr: increase(node_vmstat_oom_kill[10m]) > 0
-
+          PVC_low_capacity:
+            enabled: false
+            for: "1h"
+            description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity {{ humanizePercentage $value }}"
+            expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes) < 0.1
