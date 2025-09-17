@@ -120,7 +120,7 @@ alertmanager-configs:
           targetMatch:
             - name: alertname
               value: "Pods_waiting_state"
-          equal: ['container']
+          equal: ['label_app_kubernetes_io_name']
         - sourceMatch:
             - name: alertname
               value: "Pods_waiting_state"
@@ -134,7 +134,7 @@ alertmanager-configs:
           targetMatch:
             - name: alertname
               value: "Container_too_many_restarts"
-          equal: ['container']
+          equal: ['label_app_kubernetes_io_name']
         - sourceMatch:
             - name: alertname
               value: "Postgres_is_down"
@@ -255,19 +255,17 @@ kube-state-metrics:
           # ADD COMMON pod and LABEL TO ALL METRICS
           # values based on orgiginal exported_pod label (container also)
           - sourceLabels: ["exported_pod"]
-            action: "replace"
             targetLabel: "pod"
-          - sourceLabels: ["exported_container", "label_app_kubernetes_io_name"]
-            separator: ""
-            action: "replace"
+          - sourceLabels: ["exported_container"]
             targetLabel: "container"
           - sourceLabels: ["exported_namespace"]
             targetLabel: "namespace"
+          - regex: "exported_namespace|exported_pod|exported_container"
+            action: "labeldrop"
           # Abstract away from cloud related node
           # labels
           - sourceLabels: ["label_cloud_google_com_gke_nodepool"]
             targetLabel: "nodepool"
-            action: "replace"
 
 operator:
   enabled: false
@@ -602,17 +600,17 @@ prometheus-rules:
             enabled: false
             for: "15m"
             description: "Pods replicas less than specified for '{{ $labels.deployment }}' in {{ $labels.namespace }} for > 15m"
-            expr: (kube_deployment_spec_replicas * on (deployment, instance) group_left (container) kube_deployment_labels) != (kube_deployment_status_replicas_available * on (deployment, instance) group_left (container) kube_deployment_labels)
+            expr: (kube_deployment_spec_replicas != kube_deployment_status_replicas_available) * on (namespace, deployment) group_left (label_app_kubernetes_io_name) kube_deployment_labels
           Pods_waiting_state:
             enabled: false
             for: "20m"
             description: "Container {{ $labels.container }} in {{ $labels.pod }} in namespace {{ $labels.namespace }} waiting with reason {{ $labels.reason }} for >20 minutes"
-            expr: sum by (pod, container, namespace, reason) (kube_pod_container_status_waiting_reason{namespace!="kube-system", reason!="OOMKilled"})>0
+            expr: sum by (pod, container, namespace, reason) (kube_pod_container_status_waiting_reason{namespace!="kube-system", reason!="OOMKilled"}) * on (namespace, pod) group_left (label_app_kubernetes_io_name) kube_pod_labels > 0
           Pods_waiting_state_kube-system:
             enabled: false
             for: "1h"
             description: "Container {{ $labels.container }} in {{ $labels.pod }} in namespace {{ $labels.namespace }} waiting with reason {{ $labels.reason }} for >1h"
-            expr: sum by (pod, container, namespace, reason) (kube_pod_container_status_waiting_reason{namespace="kube-system", reason!="OOMKilled"})>0
+            expr: sum by (pod, container, namespace, reason) (kube_pod_container_status_waiting_reason{namespace="kube-system", reason!="OOMKilled"}) > 0
           Statefulset_not_ready:
             enabled: false
             for: "15m"
@@ -700,7 +698,7 @@ prometheus-rules:
             for: "10m"
             keep_firing_for: "12m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} too many restarts (>10 for 10m)"
-            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[5m]) > 10
+            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[5m]) * on (namespace, pod) group_left (label_app_kubernetes_io_name) kube_pod_labels > 10
 
           # GCP
           To_many_gcp_logs:

@@ -134,6 +134,7 @@ Fixes:
 * `prometheus`:
   * `matchers` field used a deprecated syntax (`alertmanager`)
   * alert `Postgres_logical_backup_error` fix `matching labels must be unique on one side`
+  * fix relabling `label_app_kubernetes_io_name` -> `container` and linked `inhibitRules` and `alerts`
 * `grafana`: panel `container traffic throughput` rename to `pod traffic throughput`
 
 
