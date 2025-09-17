@@ -588,7 +588,7 @@ prometheus-rules:
           Chainlink_multi_node_states:
             enabled: false
             expr: sum by (chainId) (chainlink_multi_node_states{state!="Alive"} > 0) > 1
-            for: "3m"
+            for: "0m"
             keep_firing_for: "15m"
             description: "There are {{ $value }} EVM Nodes with chainId {{ $labels.chainId }} is down"
 
@@ -667,15 +667,15 @@ prometheus-rules:
           PVC_low_capacity:
             enabled: false
             for: "15m"
-            description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity < 5%"
-            expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes*100) < 5
+            description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity {{ humanizePercentage $value }}"
+            expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes) < 0.05
 
           # RMQ
           RabbitMQ_High_memory(watermark)_usage:
             enabled: false
             for: "20m"
-            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >{{ $value }}% of 'Memory high watermark' limit for > 20m"
-            expr: (sum by (container,pod,namespace) (container_memory_working_set_bytes{container="rabbitmq"}) / on(container,pod,namespace) max by (container,pod,namespace) (rabbitmq_detailed_resident_memory_limit_bytes)*100) > 90
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using {{ humanizePercentage $value }} of 'Memory high watermark' limit for > 20m"
+            expr: (sum by (container,pod,namespace) (container_memory_working_set_bytes{container="rabbitmq"}) / on(container,pod,namespace) max by (container,pod,namespace) (rabbitmq_detailed_resident_memory_limit_bytes)) > 0.9
           RabbitMQ_masters:
             enabled: false
             for: "5m"
@@ -686,24 +686,50 @@ prometheus-rules:
         enabled: false
         interval: "31s"
         rules:
-          # redis
-          Redis_disconnected_slaves:
+          # Chainlink node
+          Chainlink_node_states:
             enabled: false
-            for: "15m"
-            description: "Redis not replicating for all slaves. Consider reviewing the redis replication status."
-            expr: count by (job) (redis_instance_info{role="slave"}) < 2
-          # postgres
+            for: "5m"
+            expr: chainlink_multi_node_states{state!="Alive"} > 0
+            keep_firing_for: "15m"
+            description: "EVM Node ({{ $labels.network }} chainId {{ $labels.chainId }}, container {{ $labels.container }}) is down"
+
+          # Deployment
+          Container_too_many_restarts:
+            enabled: false
+            for: "10m"
+            keep_firing_for: "12m"
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} too many restarts (>10 for 10m)"
+            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[5m]) > 10
+
+          # GCP
+          To_many_gcp_logs:
+            enabled: false
+            for: "5m"
+            description: "Container {{ $labels.container_name }} in pod {{ $labels.pod_name }} located in namespace {{ $labels.namespace_name }} sends to many logs ({{ $labels.log }})"
+            # since stackdriver has a problem with obtaining Delta metrics and the metrics are not accurate, we experimentally found that dividing the result by 5 gives the most accurate results. Therefore, we divide the result by 5
+            expr: rate(stackdriver_k_8_s_container_logging_googleapis_com_log_entry_count[10m])/5 > 1000
+
+          # Postgres
           Postgres_logical_backup_error:
             enabled: false
             for: "2h"
             description: "Cronjob {{ $labels.cronjob }} failed"
             expr: ((kube_cronjob_next_schedule_time - on(job, cronjob, namespace) kube_cronjob_status_last_successful_time)/3600) > 25
+
+          # Redis
+          Redis_disconnected_slaves:
+            enabled: false
+            for: "15m"
+            description: "Redis '{{ $labels.job }}' not replicating for all slaves. Consider reviewing the redis replication status."
+            expr: count by (job) (redis_instance_info{role="slave"}) < 2
+
           # Resources
           PVC_low_capacity:
             enabled: false
             for: "1h"
-            description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity < 10%"
-            expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes*100) < 10
+            description: "Volume {{ $labels.persistentvolumeclaim }} located in namespace {{ $labels.namespace }} (on {{ $labels.node }}) has capacity {{ humanizePercentage $value }}"
+            expr: (kubelet_volume_stats_available_bytes / on(instance,namespace,node,persistentvolumeclaim,service) kubelet_volume_stats_capacity_bytes) < 0.1
           High_postgres_container_cpu_throttling:
             enabled: false
             for: "1h"
@@ -717,30 +743,11 @@ prometheus-rules:
           High_memory_usage:
             enabled: false
             for: "30m"
-            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using >90% of Memory limit for > 30m"
-            expr: sum by (container, pod, namespace) (container_memory_working_set_bytes{namespace!="kube-system"}) / on (container, pod, namespace) max by (container, pod, namespace) (kube_pod_container_resource_limits{unit="byte"}) > 0.9
+            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using {{ humanizePercentage $value }} of Memory limit for > 30m"
+            expr: sum by (container, pod, namespace) (container_memory_working_set_bytes{container!="", namespace!="kube-system"}) / on (container, pod, namespace) max by (container, pod, namespace) (kube_pod_container_resource_limits{unit="byte"}) > 0.9
           OOM_killed_pods_(on_node):
             enabled: false
             for: "1m"
             description: "Some container located on node {{ $labels.node }} was killed by OOM killer"
             expr: increase(node_vmstat_oom_kill[10m]) > 0
-          # Deployment
-          Container_too_many_restarts:
-            enabled: false
-            for: "10m"
-            keep_firing_for: "12m"
-            description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} too many restarts (>10 for 10m)"
-            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[5m]) > 10
-          # Chainlink node
-          Chainlink_node_states:
-            enabled: false
-            for: "2m"
-            expr: chainlink_multi_node_states{state!="Alive"} > 0
-            keep_firing_for: "15m"
-            description: "EVM Node ({{ $labels.network }} chainId {{ $labels.chainId }}, container {{ $labels.container }}) is down"
-          To_many_gcp_logs:
-            enabled: false
-            for: "5m"
-            description: "Container {{ $labels.container_name }} in pod {{ $labels.pod_name }} located in namespace {{ $labels.namespace_name }} sends to many logs ({{ $labels.log }})"
-            # since stackdriver has a problem with obtaining Delta metrics and the metrics are not accurate, we experimentally found that dividing the result by 5 gives the most accurate results. Therefore, we divide the result by 5
-            expr: rate(stackdriver_k_8_s_container_logging_googleapis_com_log_entry_count[10m])/5 > 1000
+
