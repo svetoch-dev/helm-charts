@@ -80,9 +80,14 @@ Enhancements:
     * `Pod_replicas_not_ready` shows namespace in description
     * `Pods_waiting_state` shows namespace in description
     * `Pods_waiting_state_kube-system` shows namespace in description
-    * `RabbitMQ_High_memory(watermark)_usage` shows actual usage value of `Memory high watermark` limit
+    * `PVC_low_capacity` shows actual capacity value(%)
+    * `RabbitMQ_High_memory(watermark)_usage` shows actual usage value(%) of `Memory high watermark` limit
     * `RabbitMQ_masters` also works in the absence of masters
     * `Redis_masters` shows job(instance) name
+  * `WarningMetric` alerts:
+    * `High_memory_usage` shows actual memory usage value(%)
+    * `Redis_disconnected_slaves` shows job(instance) name
+    * `PVC_low_capacity` shows actual capacity value(%)
 * `grafana`:
   * `grafana-operator` and `crds` update v5.18.0 -> v5.19.4
   * `grafana` update v11.6.0 -> v12.1.1
