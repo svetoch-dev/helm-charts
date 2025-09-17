@@ -21,6 +21,9 @@ BrakingChanges:
   * uses official and updated image instead `bitnami`
   * uses `prometheus-community/helm-charts` instead `bitnami`
 * `rabbitmq` uses official and updated images instead `bitnami`
+* `prometheus`:
+  * merge alerts `Redis_missing_master` and `Redis_too_many_masters` to one `Redis_masters`
+  * rename alert `RabbitMQ_too_many_masters` to `RabbitMQ_masters`
 
 New features:
 * `fluent`: new chart for fluent operator + fluentbit
@@ -69,6 +72,17 @@ Enhancements:
   * crds update v0.81.0 -> v0.85.0
   * new alert `RabbitMQ_too_many_masters`
   * new alert `pg_stat_activity_count` (AbsentMetricCritical)
+  * alerts are arranged in alphabetical order
+  * use container/pod/namespace instead of exported_container/exported_pod/exported_namespace
+  * `CriticalMetric` alerts:
+    * `Available_postgresql_connections_are_running_out` now it works when less than 30 connections are available (instead of 20)
+    * `Daemonset_not_ready` shows namespace in description
+    * `Pod_replicas_not_ready` shows namespace in description
+    * `Pods_waiting_state` shows namespace in description
+    * `Pods_waiting_state_kube-system` shows namespace in description
+    * `RabbitMQ_High_memory(watermark)_usage` shows actual usage value of `Memory high watermark` limit
+    * `RabbitMQ_masters` also works in the absence of masters
+    * `Redis_masters` shows job(instance) name
 * `grafana`:
   * `grafana-operator` and `crds` update v5.18.0 -> v5.19.4
   * `grafana` update v11.6.0 -> v12.1.1
