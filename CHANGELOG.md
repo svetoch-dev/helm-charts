@@ -60,6 +60,7 @@ New features:
 * `rabbitmq`:
   * ability to set `image` (for default set `docker.io/rabbitmq:4.1.3`)
   * ability to set `rabbitmq: {}` values 
+  * new alert `RabbitMQ_missing_master`
 
 Enhancements:
 * `cert-manager`: default ingress class is now pomerium
@@ -69,6 +70,21 @@ Enhancements:
   * crds update v0.81.0 -> v0.85.0
   * new alert `RabbitMQ_too_many_masters`
   * new alert `pg_stat_activity_count` (AbsentMetricCritical)
+  * alerts are arranged in alphabetical order
+  * use container/pod/namespace instead of exported_container/exported_pod/exported_namespace (deleted)
+  * `CriticalMetric` alerts:
+    * `Available_postgresql_connections_are_running_out` now it works when less than 30 connections are available (instead of 20)
+    * `Daemonset_not_ready` shows namespace in description
+    * `Pod_replicas_not_ready` shows namespace in description
+    * `Pods_waiting_state` shows namespace in description
+    * `Pods_waiting_state_kube-system` shows namespace in description
+    * `PVC_low_capacity` shows actual capacity value(%)
+    * `RabbitMQ_High_memory(watermark)_usage` shows actual usage value(%) of `Memory high watermark` limit
+    * `Redis_missing_master` and `Redis_too_many_masters` show job(instance) name
+  * `WarningMetric` alerts:
+    * `High_memory_usage` shows actual memory usage value(%)
+    * `Redis_disconnected_slaves` shows job(instance) name
+    * `PVC_low_capacity` shows actual capacity value(%)
 * `grafana`:
   * `grafana-operator` and `crds` update v5.18.0 -> v5.19.4
   * `grafana` update v11.6.0 -> v12.1.1
@@ -115,6 +131,7 @@ Fixes:
 * `prometheus`:
   * `matchers` field used a deprecated syntax (`alertmanager`)
   * alert `Postgres_logical_backup_error` fix `matching labels must be unique on one side`
+  * fix relabling `label_app_kubernetes_io_name` -> `container` and linked `inhibitRules` and `alerts`
 * `grafana`: panel `container traffic throughput` rename to `pod traffic throughput`
 
 
