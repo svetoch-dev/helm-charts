@@ -53,6 +53,10 @@ fluentbit:
     labels:
       fluentbit: "main"
     clusterOutputs:
+      kube-system:
+        match: "kube.pods.kube-system.*"
+        stdout:
+          format: json
       systemd:
         match: "systemd.*"
         retry_limit: "no_limits"
