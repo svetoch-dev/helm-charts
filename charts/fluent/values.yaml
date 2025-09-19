@@ -210,7 +210,7 @@ fluentbit:
               kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
               kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
               kubeTagPrefix: "kube.pods."
-              regexParser: '{{ .Release.Name }}-parsers-tail-tag'
+              regexParser: '{{ .Release.Name }}-parsers-kube-pod-tag'
           100levelCrit:
             modify:
               conditions:
@@ -230,10 +230,8 @@ fluentbit:
           102levelWarn:
             modify:
               conditions:
-                - keyValueEquals:
-                    level: "WARN"
-                - keyValueEquals:
-                    level: "warning"
+                - keyValueMatches:
+                    level: "WARN|warning"
               rules:
                 - set:
                     level: warn
@@ -262,6 +260,15 @@ fluentbit:
             parser:
               parser: '{{ .Release.Name }}-parsers-fluentbit'
               keyName: log
+      kube-system:
+        match: 'kube.pods.kube-system.*'
+        ordinal: 101
+        filters:
+          workloads:
+            parser:
+              parser: '{{ .Release.Name }}-parsers-workloads'
+              keyName: $kubernetes['pod_name']
+
 
   clusterConfig:
     enabled: true
@@ -297,9 +304,12 @@ fluentbit:
           regex: '^\[(?<time>[^\]]+)\][ ]*\[[ ]*(?<level>[^\]]+)\][ ]*\[(?<plugin>[^\]]+)\] (?<log>.*)'
           timeKey: 'time'
           timeFormat: '%Y/%m/%d %H:%M:%S'
-      tail-tag:
+      kube-pod-tag:
         regex:
           regex: '^(?<namespace_name>[^_]+)\.(?<pod_name>[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)\.(?<container_name>.+)\.(?<container_id>[a-z0-9]{64})'
+      workloads:
+        regex:
+          regex: '^(?P<app_kubernetes_io_instance>[-a-z0-9]+?)(?:-[a-z0-9]{9,10}-[a-z0-9]{5}|-\d+|-[a-z0-9]{5}|)$'
 
 
   fluentbit:
