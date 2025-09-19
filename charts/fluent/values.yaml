@@ -309,7 +309,7 @@ fluentbit:
           regex: '^(?<namespace_name>[^_]+)\.(?<pod_name>[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)\.(?<container_name>.+)\.(?<container_id>[a-z0-9]{64})'
       workloads:
         regex:
-          regex: '^(?P<app_kubernetes_io_instance>[-a-z0-9]+?)(?:-[a-z0-9]{9,10}-[a-z0-9]{5}|-\d+|-[a-z0-9]{5}|)$'
+          regex: '^(?<app_kubernetes_io_instance>[-a-z0-9]+?)(?:-[a-z0-9]{9,10}-[a-z0-9]{5}|-\d+|-[a-z0-9]{5}|)$'
 
 
   fluentbit:
