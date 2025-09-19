@@ -650,11 +650,16 @@ prometheus-rules:
             expr: sum by (label_app_kubernetes_io_instance, namespace) (pg_replication_is_replica) < 1
 
           # Redis
-          Redis_masters:
+          Redis_missing_master:
             enabled: false
             for: "5m"
-            description: "Redis cluster '{{ $labels.job }}' has incorrect number({{ $value }}) of masters."
-            expr: count by (job) (redis_instance_info{role="master"}) != 1
+            description: "Redis cluster '{{ $labels.job }}' has no node marked as master"
+            expr: count by (job) (redis_instance_info{role="master"}) == 0
+          Redis_too_many_masters:
+            enabled: false
+            for: "5m"
+            description: "Redis cluster '{{ $labels.job }}' has too many({{ $value }}) masters"
+            expr: count by (job) (redis_instance_info{role="master"}) > 1
 
           # Resources
           OOM_killed_pods:
@@ -674,11 +679,16 @@ prometheus-rules:
             for: "20m"
             description: "Container {{ $labels.container }} in pod {{ $labels.pod }} located in namespace {{ $labels.namespace }} is using {{ humanizePercentage $value }} of 'Memory high watermark' limit for > 20m"
             expr: (sum by (container,pod,namespace) (container_memory_working_set_bytes{container="rabbitmq"}) / on(container,pod,namespace) max by (container,pod,namespace) (rabbitmq_detailed_resident_memory_limit_bytes)) > 0.9
-          RabbitMQ_masters:
+          RabbitMQ_missing_master:
             enabled: false
             for: "5m"
-            description: "RabbitMQ in {{ $labels.vhost }} has incorrect number({{ $value }}) of masters."
-            expr: max by (vhost) (count by (vhost, queue) (rabbitmq_detailed_queue_messages)) != 1
+            description: "RabbitMQ in {{ $labels.vhost }} has no master"
+            expr: max by (vhost) (count by (vhost, queue) (rabbitmq_detailed_queue_messages)) == 0
+          RabbitMQ_too_many_masters:
+            enabled: false
+            for: "5m"
+            description: "RabbitMQ in {{ $labels.vhost }} has to many({{ $value }}) masters"
+            expr: max by (vhost) (count by (vhost, queue) (rabbitmq_detailed_queue_messages)) > 1
 
       WarningMetric:
         enabled: false

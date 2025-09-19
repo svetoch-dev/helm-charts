@@ -21,9 +21,6 @@ BrakingChanges:
   * uses official and updated image instead `bitnami`
   * uses `prometheus-community/helm-charts` instead `bitnami`
 * `rabbitmq` uses official and updated images instead `bitnami`
-* `prometheus`:
-  * merge alerts `Redis_missing_master` and `Redis_too_many_masters` to one `Redis_masters`
-  * rename alert `RabbitMQ_too_many_masters` to `RabbitMQ_masters`
 
 New features:
 * `fluent`: new chart for fluent operator + fluentbit
@@ -63,6 +60,7 @@ New features:
 * `rabbitmq`:
   * ability to set `image` (for default set `docker.io/rabbitmq:4.1.3`)
   * ability to set `rabbitmq: {}` values 
+  * new alert `RabbitMQ_missing_master`
 
 Enhancements:
 * `cert-manager`: default ingress class is now pomerium
@@ -82,8 +80,7 @@ Enhancements:
     * `Pods_waiting_state_kube-system` shows namespace in description
     * `PVC_low_capacity` shows actual capacity value(%)
     * `RabbitMQ_High_memory(watermark)_usage` shows actual usage value(%) of `Memory high watermark` limit
-    * `RabbitMQ_masters` also works in the absence of masters
-    * `Redis_masters` shows job(instance) name
+    * `Redis_missing_master` and `Redis_too_many_masters` show job(instance) name
   * `WarningMetric` alerts:
     * `High_memory_usage` shows actual memory usage value(%)
     * `Redis_disconnected_slaves` shows job(instance) name
