@@ -114,72 +114,63 @@ fluentbit:
       systemd:
         match: systemd.*
         filters:
-          1levelEmerg:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "0"
               rules:
                 - set:
                     level: emerg
-          2levelAlert:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "1"
               rules:
                 - set:
                     level: alert
-          3levelCrit:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "2"
               rules:
                 - set:
                     level: crit
-          4levelErr:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "3"
               rules:
                 - set:
                     level: error
-          5levelWarn:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "4"
               rules:
                 - set:
                     level: warn
-          6levelNotice:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "5"
               rules:
                 - set:
                     level: notice
-          7levelInfo:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "6"
               rules:
                 - set:
                     level: info
-          8leveldebug:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "7"
               rules:
                 - set:
                     level: debug
-          9removeKeys:
-            modify:
+          - modify:
               rules:
                 - remove: _SYSTEMD_INVOCATION_ID
                 - remove: _STREAM_ID
@@ -196,59 +187,51 @@ fluentbit:
         match: kube.pods.*
         ordinal: 100
         filters:
-          1parseJsonLog:
-            parser:
+          - parser:
               parser: '{{ .Release.Name }}-parsers-json'
               keyName: log
-          2removeKeys:
-            modify:
+          - modify:
               rules:
                 - hardRename:
                     severity: "level"
                 - remove: ts
                 - remove: time
                 - remove: t
-          99kubeMetadata:
-            kubernetes:
+          - kubernetes:
               kubeURL: https://kubernetes.default.svc:443
               kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
               kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
               kubeTagPrefix: "kube.pods."
               regexParser: '{{ .Release.Name }}-parsers-kube-pod-tag'
-          100levelCrit:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     level: "CRITICAL"
               rules:
                 - set:
                     level: crit
-          101levelErr:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     level: "ERROR"
               rules:
                 - set:
                     level: error
-          102levelWarn:
-            modify:
+          - modify:
               conditions:
                 - keyValueMatches:
                     level: "WARN|warning"
               rules:
                 - set:
                     level: warn
-          103levelInfo:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     level: "INFO"
               rules:
                 - set:
                     level: info
-          104leveldebug:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     level: "DEBUG"
@@ -260,16 +243,14 @@ fluentbit:
         match: 'kube.pods.fluent.{{ .Release.Name }}-fluentbit*'
         ordinal: 0
         filters:
-          fluentbit:
-            parser:
+          - parser:
               parser: '{{ .Release.Name }}-parsers-fluentbit'
               keyName: log
       kube-system:
         match: 'kube.pods.kube-system.*'
         ordinal: 101
         filters:
-          workloads:
-            parser:
+          - parser:
               parser: '{{ .Release.Name }}-parsers-workloads'
               keyName: $kubernetes['pod_name']
 
