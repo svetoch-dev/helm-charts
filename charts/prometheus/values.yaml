@@ -123,6 +123,13 @@ alertmanager-configs:
           equal: ['label_app_kubernetes_io_name']
         - sourceMatch:
             - name: alertname
+              value: "Statefulset_not_ready"
+          targetMatch:
+            - name: alertname
+              value: "Pods_waiting_state"
+          equal: ['label_app_kubernetes_io_name']
+        - sourceMatch:
+            - name: alertname
               value: "Pods_waiting_state"
           targetMatch:
             - name: alertname
@@ -207,7 +214,7 @@ kube-state-metrics:
   serviceAccount:
     automountServiceAccountToken: false
   extraArgs:
-    - '--metric-labels-allowlist=pods=[*],deployments=[*],nodes=[*]'
+    - '--metric-labels-allowlist=pods=[*],deployments=[*],nodes=[*],statefulsets=[*]'
   collectors:
     # - certificatesigningrequests
     # - configmaps
