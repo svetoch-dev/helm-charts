@@ -299,7 +299,7 @@ fluentbit:
 
   fluentbit:
     enabled: true
-    image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.1
+    image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9
     positionDB:
       hostPath:
         path: /var/lib/fluent-bit/
