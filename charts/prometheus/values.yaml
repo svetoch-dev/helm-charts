@@ -622,7 +622,7 @@ prometheus-rules:
             enabled: false
             for: "15m"
             description: "StatefulSet '{{ $labels.statefulset }}' in namespace '{{ $labels.namespace }}' has not matched the expected number of replicas for >15 minutes"
-            expr: (kube_statefulset_status_replicas_ready != kube_statefulset_status_replicas) * on (namespace,statefulset) group_left (label_app_kubernetes_io_instance) kube_statefulset_labels
+            expr: (kube_statefulset_status_replicas_ready != kube_statefulset_status_replicas) * on (namespace,statefulset) group_left (label_app_kubernetes_io_name) kube_statefulset_labels
 
           # Kong (nginx)
           ErrorRateIncreasedFor_5XX:
