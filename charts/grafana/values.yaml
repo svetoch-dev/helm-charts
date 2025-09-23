@@ -30,8 +30,7 @@ fluentbit-filters:
       match: kube.pods.grafana.*
       ordinal: 101
       filters:
-        1removeKeys:
-          modify:
+        - modify:
             rules:
               - remove: dsUID
 
