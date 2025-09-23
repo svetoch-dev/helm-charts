@@ -340,7 +340,8 @@ operator:
     - name: CONTAINER_ROOT_DIR
       value: /var/log
   args:
-    - '-zap-encoder json'
+    - '-zap-encoder'
+    - 'json'
   clusterRole:
     enabled: true
     rules:
