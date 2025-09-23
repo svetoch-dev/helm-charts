@@ -335,9 +335,9 @@ operator:
       cpu: 100m
       memory: 20Mi
   environment:
-    - key: NAMESPACE
+    - name: NAMESPACE
       value: '{{ .Release.Namespace }}'
-    - key: CONTAINER_ROOT_DIR
+    - name: CONTAINER_ROOT_DIR
       value: /var/log
   args:
     - '-zap-encoder json'
