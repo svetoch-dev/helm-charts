@@ -90,6 +90,7 @@ Enhancements:
     * `Redis_disconnected_slaves` shows job(instance) name
     * `PVC_low_capacity` shows actual capacity value(%)
 * `grafana`:
+  * set `grafama` `resources limits` memory 250Mi -> 500Mi and CPU 0.5 -> 3
   * `grafana-operator` and `crds` update v5.18.0 -> v5.19.4
   * `grafana` update v11.6.0 -> v12.1.1
   * `datasources` `uid` and `name` variables support `tpl`
