@@ -27,7 +27,7 @@ defaults:
     message: >-
         [\[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }} {{ if eq .CommonLabels.severity "critical" }}🔥{{ else }}⚠️ {{ end }}{{ else }}👍{{ end }}\]]({{ .ExternalURL }})
         {{ range .Alerts }}
-          *Alert:* `{{ .Annotations.summary }}` \\- __*{{ .Labels.severity }}*__
+          *Alert:* `{{ .Annotations.summary }} -` __*{{ .Labels.severity }}*__
           *Description:* `{{ .Annotations.description }}`
           *Details:*
           {{ range .Labels.SortedPairs }} • `{{ .Name }}`*:* *"*`{{ .Value }}`*"*
