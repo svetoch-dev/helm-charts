@@ -130,6 +130,13 @@ alertmanager-configs:
           equal: ['label_app_kubernetes_io_name']
         - sourceMatch:
             - name: alertname
+              value: "Daemonset_not_ready"
+          targetMatch:
+            - name: alertname
+              value: "Pods_waiting_state"
+          equal: ['label_app_kubernetes_io_name']
+        - sourceMatch:
+            - name: alertname
               value: "Pods_waiting_state"
           targetMatch:
             - name: alertname
@@ -214,7 +221,7 @@ kube-state-metrics:
   serviceAccount:
     automountServiceAccountToken: false
   extraArgs:
-    - '--metric-labels-allowlist=pods=[*],deployments=[*],nodes=[*],statefulsets=[*]'
+    - '--metric-labels-allowlist=pods=[*],deployments=[*],nodes=[*],statefulsets=[*],daemonsets=[*]'
   collectors:
     # - certificatesigningrequests
     # - configmaps
@@ -601,8 +608,8 @@ prometheus-rules:
           Daemonset_not_ready:
             enabled: false
             for: "15m"
-            description: "daemonset '{{ $labels.daemonset }}' in '{{ $labels.namespace }}' not scheduled in 15m"
-            expr: kube_daemonset_status_number_misscheduled > 1
+            description: "daemonset '{{ $labels.daemonset }}' in '{{ $labels.namespace }}' not ready in 15m"
+            expr: (kube_daemonset_status_desired_number_scheduled != kube_daemonset_status_number_available) * on (namespace, daemonset) group_left (label_app_kubernetes_io_name) kube_daemonset_labels
           Pod_replicas_not_ready:
             enabled: false
             for: "15m"
