@@ -63,6 +63,7 @@ New features:
   * new alert `RabbitMQ_missing_master`
 
 Enhancements:
+* set `argocd controller` resources `limits memory` 2Gi -> 4Gi
 * `cert-manager`: default ingress class is now pomerium
 * `prometheus`:
   * default ingress class is now pomerium
@@ -136,6 +137,7 @@ Fixes:
   * alert `Postgres_logical_backup_error` fix `matching labels must be unique on one side`
   * fix relabling `label_app_kubernetes_io_name` -> `container` and linked `inhibitRules` and `alerts`
   * fix alert `Daemonset_not_ready`(did not work)
+  * fix sending alerts to tg
 * `grafana`: panel `container traffic throughput` rename to `pod traffic throughput`
 
 
