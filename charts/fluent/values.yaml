@@ -1,5 +1,5 @@
 operator:
-  enabled: false
+  enabled: true
   containerRuntime: containerd
   fluentbit:
     crdsEnable: false
@@ -19,7 +19,7 @@ operator:
     crdsEnable: false
 
 fluentbit:
-  enabled: true
+  enabled: false
   inputs:
     enabled: true
     labels:
@@ -110,72 +110,63 @@ fluentbit:
       systemd:
         match: systemd.*
         filters:
-          1levelEmerg:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "0"
               rules:
                 - set:
                     level: emerg
-          2levelAlert:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "1"
               rules:
                 - set:
                     level: alert
-          3levelCrit:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "2"
               rules:
                 - set:
                     level: crit
-          4levelErr:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "3"
               rules:
                 - set:
                     level: error
-          5levelWarn:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "4"
               rules:
                 - set:
                     level: warn
-          6levelNotice:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "5"
               rules:
                 - set:
                     level: notice
-          7levelInfo:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "6"
               rules:
                 - set:
                     level: info
-          8leveldebug:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     PRIORITY: "7"
               rules:
                 - set:
                     level: debug
-          9removeKeys:
-            modify:
+          - modify:
               rules:
                 - remove: _SYSTEMD_INVOCATION_ID
                 - remove: _STREAM_ID
@@ -192,61 +183,51 @@ fluentbit:
         match: kube.pods.*
         ordinal: 100
         filters:
-          1parseJsonLog:
-            parser:
+          - parser:
               parser: '{{ .Release.Name }}-parsers-json'
               keyName: log
-          2removeKeys:
-            modify:
+          - modify:
               rules:
                 - hardRename:
                     severity: "level"
                 - remove: ts
                 - remove: time
                 - remove: t
-          99kubeMetadata:
-            kubernetes:
+          - kubernetes:
               kubeURL: https://kubernetes.default.svc:443
               kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
               kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
               kubeTagPrefix: "kube.pods."
-              regexParser: '{{ .Release.Name }}-parsers-tail-tag'
-          100levelCrit:
-            modify:
+              regexParser: '{{ .Release.Name }}-parsers-kube-pod-tag'
+          - modify:
               conditions:
                 - keyValueEquals:
                     level: "CRITICAL"
               rules:
                 - set:
                     level: crit
-          101levelErr:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     level: "ERROR"
               rules:
                 - set:
                     level: error
-          102levelWarn:
-            modify:
+          - modify:
               conditions:
-                - keyValueEquals:
-                    level: "WARN"
-                - keyValueEquals:
-                    level: "warning"
+                - keyValueMatches:
+                    level: "WARN|warning"
               rules:
                 - set:
                     level: warn
-          103levelInfo:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     level: "INFO"
               rules:
                 - set:
                     level: info
-          104leveldebug:
-            modify:
+          - modify:
               conditions:
                 - keyValueEquals:
                     level: "DEBUG"
@@ -258,10 +239,31 @@ fluentbit:
         match: 'kube.pods.fluent.{{ .Release.Name }}-fluentbit*'
         ordinal: 0
         filters:
-          fluentbit:
-            parser:
+          - parser:
               parser: '{{ .Release.Name }}-parsers-fluentbit'
               keyName: log
+      kube-system:
+        match: 'kube.pods.kube-system.*'
+        ordinal: 101
+        filters:
+          - parser:
+              parser: '{{ .Release.Name }}-parsers-workloads'
+              keyName: $kubernetes['pod_name']
+              reserveData: true
+          - lua:
+              code: |
+                function nest_under_kubernetes(tag, timestamp, record)
+                    if record["app_kubernetes_io_name"] and record["kubernetes"] then
+                       if record["kubernetes"]["labels"] == nil then
+                           record["kubernetes"]["labels"] = {}
+                       end
+                       record["kubernetes"]["labels"]["app.kubernetes.io/instance"] = record["app_kubernetes_io_name"]
+                       record["kubernetes"]["labels"]["app.kubernetes.io/name"] = record["app_kubernetes_io_name"]
+                       record["app_kubernetes_io_name"] = nil
+                    end
+                    return 1, timestamp, record
+                end
+              call: nest_under_kubernetes
 
   clusterConfig:
     enabled: true
@@ -297,14 +299,17 @@ fluentbit:
           regex: '^\[(?<time>[^\]]+)\][ ]*\[[ ]*(?<level>[^\]]+)\][ ]*\[(?<plugin>[^\]]+)\] (?<log>.*)'
           timeKey: 'time'
           timeFormat: '%Y/%m/%d %H:%M:%S'
-      tail-tag:
+      kube-pod-tag:
         regex:
           regex: '^(?<namespace_name>[^_]+)\.(?<pod_name>[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)\.(?<container_name>.+)\.(?<container_id>[a-z0-9]{64})'
+      workloads:
+        regex:
+          regex: '^(?<app_kubernetes_io_name>[-a-z0-9]+?)(?:-[a-z0-9]{9,10}-[a-z0-9]{5}|-\d+|-[a-z0-9]{5}|)$'
 
 
   fluentbit:
     enabled: true
-    image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.1
+    image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9
     positionDB:
       hostPath:
         path: /var/lib/fluent-bit/
