@@ -71,6 +71,9 @@ Enhancements:
   * new alert `RabbitMQ_too_many_masters`
   * new alert `pg_stat_activity_count` (AbsentMetricCritical)
   * alerts are arranged in alphabetical order
+  * enable `metric-labels` for `statefulsets` and `daemonsets`
+  * alert `Pods_waiting_state` was inhibited by active alerts `Statefulset_not_ready` or `Daemonset_not_ready`
+  * all labels in description of alerts were put in quotation marks
   * use container/pod/namespace instead of exported_container/exported_pod/exported_namespace (deleted)
   * `CriticalMetric` alerts:
     * `Available_postgresql_connections_are_running_out` now it works when less than 30 connections are available (instead of 20)
@@ -132,6 +135,7 @@ Fixes:
   * `matchers` field used a deprecated syntax (`alertmanager`)
   * alert `Postgres_logical_backup_error` fix `matching labels must be unique on one side`
   * fix relabling `label_app_kubernetes_io_name` -> `container` and linked `inhibitRules` and `alerts`
+  * fix alert `Daemonset_not_ready`(did not work)
 * `grafana`: panel `container traffic throughput` rename to `pod traffic throughput`
 
 
