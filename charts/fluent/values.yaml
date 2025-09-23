@@ -53,10 +53,6 @@ fluentbit:
     labels:
       fluentbit: "main"
     clusterOutputs:
-      kube-system:
-        match: "kube.pods.kube-system.*"
-        stdout:
-          format: json
       systemd:
         match: "systemd.*"
         retry_limit: "no_limits"
@@ -253,7 +249,19 @@ fluentbit:
           - parser:
               parser: '{{ .Release.Name }}-parsers-workloads'
               keyName: $kubernetes['pod_name']
-
+          - lua:
+              code: |
+                function nest_under_kubernetes(tag, timestamp, record)
+                    if record["app_kubernetes_io_instance"] and record["kubernetes"] then
+                       if record["kubernetes"]["labels"] == nil then
+                           record["kubernetes"]["labels"] = {}
+                       end
+                       record["kubernetes"]["labels"]["app.kubernetes.io/instance"] = record["app_kubernetes_io_instance"]
+                       record["app_kubernetes_io_instance"] = nil
+                    end
+                    return 1, timestamp, record
+                end
+              call: nest_under_kubernetes
 
   clusterConfig:
     enabled: true
