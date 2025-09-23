@@ -249,6 +249,7 @@ fluentbit:
           - parser:
               parser: '{{ .Release.Name }}-parsers-workloads'
               keyName: $kubernetes['pod_name']
+              reserveData: true
           - lua:
               code: |
                 function nest_under_kubernetes(tag, timestamp, record)
