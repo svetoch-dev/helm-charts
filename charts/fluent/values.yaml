@@ -1,5 +1,5 @@
 operator:
-  enabled: false
+  enabled: true
   containerRuntime: containerd
   fluentbit:
     crdsEnable: false
@@ -19,7 +19,7 @@ operator:
     crdsEnable: false
 
 fluentbit:
-  enabled: true
+  enabled: false
   inputs:
     enabled: true
     labels:
@@ -252,12 +252,13 @@ fluentbit:
           - lua:
               code: |
                 function nest_under_kubernetes(tag, timestamp, record)
-                    if record["app_kubernetes_io_instance"] and record["kubernetes"] then
+                    if record["app_kubernetes_io_name"] and record["kubernetes"] then
                        if record["kubernetes"]["labels"] == nil then
                            record["kubernetes"]["labels"] = {}
                        end
-                       record["kubernetes"]["labels"]["app.kubernetes.io/instance"] = record["app_kubernetes_io_instance"]
-                       record["app_kubernetes_io_instance"] = nil
+                       record["kubernetes"]["labels"]["app.kubernetes.io/instance"] = record["app_kubernetes_io_name"]
+                       record["kubernetes"]["labels"]["app.kubernetes.io/name"] = record["app_kubernetes_io_name"]
+                       record["app_kubernetes_io_name"] = nil
                     end
                     return 1, timestamp, record
                 end
@@ -302,7 +303,7 @@ fluentbit:
           regex: '^(?<namespace_name>[^_]+)\.(?<pod_name>[a-z0-9](?:[-a-z0-9]*[a-z0-9])?(?:\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*)\.(?<container_name>.+)\.(?<container_id>[a-z0-9]{64})'
       workloads:
         regex:
-          regex: '^(?<app_kubernetes_io_instance>[-a-z0-9]+?)(?:-[a-z0-9]{9,10}-[a-z0-9]{5}|-\d+|-[a-z0-9]{5}|)$'
+          regex: '^(?<app_kubernetes_io_name>[-a-z0-9]+?)(?:-[a-z0-9]{9,10}-[a-z0-9]{5}|-\d+|-[a-z0-9]{5}|)$'
 
 
   fluentbit:
