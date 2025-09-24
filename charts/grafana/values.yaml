@@ -84,11 +84,11 @@ grafana-main:
             - name: grafana
               resources:
                 limits:
-                  cpu: 500m
-                  memory: 250Mi
+                  cpu: 3000m
+                  memory: 500Mi
                 requests:
-                  cpu: 10m
-                  memory: 65Mi
+                  cpu: 50m
+                  memory: 100Mi
               env:
                 - name: GF_AUTH_SIGNOUT_REDIRECT_URL
                   value: 'https://gf.{{ .Values.global.company.domain.env }}/.pomerium/sign_out'
