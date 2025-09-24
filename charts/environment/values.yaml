@@ -113,6 +113,7 @@ chart_apps:
               access: proxy
               jsonData:
                 manageAlerts: 'false'
+                timeout: 60
               url: https://loki.{{ $env_obj.domain }}
           {{- end }}
   konghq:

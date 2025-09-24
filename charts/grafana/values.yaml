@@ -8,6 +8,8 @@ ingresses:
     className: "{{ .Values.global.ingress.class }}"
     annotations:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+      ingress.pomerium.io/allow_websockets: 'true'
+      ingress.pomerium.io/timeout: '60s'
       ingress.pomerium.io/pass_identity_headers: 'true'
       ingress.pomerium.io/policy: |
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
@@ -135,6 +137,7 @@ datasource:
         url: http://loki-{{ .Values.global.env.name }}-read.loki.svc.cluster.local:3100
         jsonData:
           manageAlerts: 'false'
+          timeout: 60
 
 dashboard:
   enabled: false
