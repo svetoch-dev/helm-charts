@@ -324,7 +324,7 @@ fluentbit:
           - list
 
 operator:
-  enabled: true
+  enabled: false
   service:
     enabled: false
   resources:
