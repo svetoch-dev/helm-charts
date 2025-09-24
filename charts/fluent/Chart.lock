@@ -1,9 +1,9 @@
 dependencies:
-- name: fluent-operator
-  repository: https://fluent.github.io/helm-charts
-  version: 3.4.2
+- name: common
+  repository: file://../chart_deps/app/common/
+  version: 0.1.0
 - name: fluentbit-operated
   repository: file://../chart_deps/fluent/fluentbit/fluentbit-operated/
   version: 0.1.0
-digest: sha256:4def10723703f99479daab372b184bc09cc0b6b451ce932a7bf46fde996a4517
-generated: "2025-09-03T17:48:14.32162322+03:00"
+digest: sha256:0e16e90fcc5aea31966cba670c9a384c40076d89b9af6bf70f5add5ad4003e6b
+generated: "2025-09-23T16:41:53.268290914+03:00"

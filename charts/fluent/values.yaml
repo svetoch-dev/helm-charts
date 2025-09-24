@@ -1,22 +1,7 @@
-operator:
-  enabled: true
-  containerRuntime: containerd
-  fluentbit:
-    crdsEnable: false
-    enable: false
-    input:
-      tail:
-        enable: false
-      systemd:
-        enable: false
-      containerd:
-        enable: false
-    filter:
-      kubernetes:
-        enable: false
-  fluentd:
-    enable: false
-    crdsEnable: false
+global:
+  image:
+    repository: ghcr.io/fluent/fluent-operator/fluent-operator
+    tag: v3.4.0@sha256:5d6a3d048aaae3acfbb67269acc996b566d63ce2478ff16cf1f49f4cceb6b4ed
 
 fluentbit:
   enabled: false
@@ -337,3 +322,164 @@ fluentbit:
           - events
         verbs:
           - list
+
+operator:
+  enabled: false
+  service:
+    enabled: false
+  resources:
+    limits:
+      cpu: 100m
+      memory: 60Mi
+    requests:
+      cpu: 100m
+      memory: 20Mi
+  environment:
+    - name: NAMESPACE
+      value: '{{ .Release.Namespace }}'
+    - name: CONTAINER_ROOT_DIR
+      value: /var/log
+  args:
+    - '-zap-encoder'
+    - 'json'
+  clusterRole:
+    enabled: true
+    rules:
+      - apiGroups:
+          - apps
+        resources:
+          - daemonsets
+          - statefulsets
+        verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+      - apiGroups:
+          - ""
+        resources:
+          - pods
+        verbs:
+          - get
+      - apiGroups:
+          - ""
+        resources:
+          - events
+        verbs:
+          - list
+          - watch
+      - apiGroups:
+          - ""
+        resources:
+          - secrets
+          - configmaps
+          - serviceaccounts
+          - services
+          - namespaces
+        verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+      - apiGroups:
+          - fluentbit.fluent.io
+        resources:
+          - collectors
+          - fluentbits
+          - fluentbits/finalizers
+          - clusterfluentbitconfigs
+          - clusterfluentbitconfigs/finalizers
+          - clusterfilters
+          - clusterfilters/finalizers
+          - clusterinputs
+          - clusterinputs/finalizers
+          - clusteroutputs
+          - clusteroutputs/finalizers
+          - clusterparsers
+          - clusterparsers/finalizers
+          - fluentbitconfigs
+          - fluentbitconfigs/finalizers
+          - multilineparsers
+          - multilineparsers/finalizers
+          - clustermultilineparsers
+          - clustermultilineparsers/finalizers
+          - filters
+          - outputs
+          - parsers
+        verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+      - apiGroups:
+          - fluentd.fluent.io
+        resources:
+          - fluentds
+          - fluentds/status
+          - clusterfluentdconfigs
+          - clusterfluentdconfigs/status
+          - fluentdconfigs
+          - fluentdconfigs/status
+          - clusterfilters
+          - filters
+          - clusteroutputs
+          - outputs
+          - inputs
+          - clusterinputs
+        verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+      - apiGroups:
+          - rbac.authorization.k8s.io
+        resources:
+          - clusterrolebindings
+        verbs:
+          - create
+          - list
+          - get
+          - watch
+          - patch
+      - apiGroups:
+          - rbac.authorization.k8s.io
+        resources:
+          - clusterroles
+        verbs:
+          - create
+          - list
+          - get
+          - watch
+          - patch
+      - apiGroups:
+          - rbac.authorization.k8s.io
+        resources:
+          - rolebindings
+        verbs:
+          - create
+          - list
+          - get
+          - watch
+          - patch
+      - apiGroups:
+          - rbac.authorization.k8s.io
+        resources:
+          - roles
+        verbs:
+          - create
+          - list
+          - get
+          - watch
+          - patch
