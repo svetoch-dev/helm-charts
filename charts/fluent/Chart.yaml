@@ -18,10 +18,9 @@ type: application
 version: 0.1.0
 
 dependencies:
-  #https://github.com/fluent/helm-charts/tree/fluent-operator-3.4.2/charts/fluent-operator
-  - name: fluent-operator
-    repository: https://fluent.github.io/helm-charts
-    version: 3.4.2
+  - name: common
+    version: 0.1.0
+    repository: file://../chart_deps/app/common/
     alias: operator
     condition: operator.enabled
   - name: fluentbit-operated

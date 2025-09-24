@@ -95,6 +95,10 @@ Enhancements:
   * `grafana` update v11.6.0 -> v12.1.1
   * `datasources` `uid` and `name` variables support `tpl`
   * `dashboard services` enabled by default
+  * `loki datasources`: timeout increased to 60s
+  * `pomerium`
+    * increase timeout to 60s
+    * enable websockets
 * `thanos`:
   * default ingress class is now pomerium
   * image update 0.38.0 -> 0.39.2
