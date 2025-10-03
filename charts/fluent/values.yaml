@@ -323,6 +323,30 @@ fluentbit:
         verbs:
           - list
 
+gcp:
+  enabled: false
+  inputs:
+    enabled: false
+
+  outputs:
+    enabled: false
+
+  filters:
+    enabled: false
+
+  clusterConfig:
+    enabled: false
+
+  config:
+    enabled: false
+
+  parsers:
+    enabled: false
+
+  collector:
+    enabled: false
+    fluentBitConfigName: '{{ include "fluentbit-operated.fullname" . }}'
+
 operator:
   enabled: false
   service:
