@@ -1,4 +1,5 @@
 {{- range $name, $pv := .Values.pvs }}
+{{- $pv = set $pv "name" ( printf "%s-%s" (include "common.fullname" $ )  $name ) }}
 {{- $pv = set $pv "enabled" true }}
 {{- include "core.pv" (list $ (list ) $pv ) }}
 {{- end }}
