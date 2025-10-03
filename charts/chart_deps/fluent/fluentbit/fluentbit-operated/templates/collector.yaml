@@ -1,0 +1,106 @@
+{{- if .Values.collector.enabled }}
+---
+apiVersion: fluentbit.fluent.io/v1alpha2
+kind: Collector
+metadata:
+  name: {{ include "fluentbit-operated.fullname" . }}-collector
+  labels:
+{{- include "fluentbit-operated.labels" $ | nindent 4 }}
+{{- with .Values.collector.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+{{- with .Values.labels }}
+{{- tpl (toYaml .) $ | nindent 4 }}
+{{- end }}
+spec:
+  {{- with .Values.collector.affinity }}
+  affinity:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.annotations }}
+  annotations:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.args }}
+  args:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.bufferPath }}
+  bufferPath: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with .Values.collector.disableService}}
+  disableService: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with .Values.collector.fluentBitConfigName }}
+  fluentBitConfigName: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with .Values.collector.hostNetwork }}
+  hostNetwork:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.image}}
+  image: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with .Values.collector.imagePullPolicy }}
+  imagePullPolicy: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with .Values.collector.imagePullPolicy }}
+  imagePullSecrets:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.nodeSelector }}
+  nodeSelector: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with .Values.collector.ports}}
+  ports:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.priorityClassName }}
+  priorityClassName: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with .Values.collector.rbacRules }}
+  rbacRules:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.replicas }}
+  replicas: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with .Values.collector.resources }}
+  resources:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.runtimeClassName}}
+  runtimeClassName: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with .Values.collector.schedulerName}}
+  schedulerName: {{ tpl . $ | quote }}
+  {{- end }}
+  {{- with .Values.collector.secrets }}
+  secrets:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.securityContext }}
+  securityContext:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.service }}
+  service:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.serviceAccountAnnotations }}
+  serviceAccountAnnotations:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.tolerations }}
+  tolerations:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.volumes }}
+  volumes:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.collector.volumesMounts }}
+  volumesMounts:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+{{- end }}
