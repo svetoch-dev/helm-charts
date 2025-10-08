@@ -1,5 +1,8 @@
 outputs:
 #  test:
+#    namespace: test
+#    labels:
+#      fluentbit: test
 #    matchRegex: (?:kube|service)\.(.*)
 #    retry_limit: "no_limits"
 #    logLevel: "info"
@@ -24,8 +27,13 @@ outputs:
 #        - ts
 #        - logtag
 
+#labels:
+#  fluentbit1: test
+
 clusterOutputs:
 #  test:
+#    labels:
+#      fluentbit: test
 #    matchRegex: (?:kube|service)\.(.*)
 #    retry_limit: "no_limits"
 #    logLevel: "info"
