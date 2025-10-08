@@ -1,4 +1,4 @@
 {{- $clConfig :=  .Values.clusterConfig }}
 {{- $labels := include "fluentbit-operated.labels" $ | fromYaml }}
 {{- $clConfig = set $clConfig "name" (include "fluentbit-operated.fullname" . ) }}
-{{- include "fluentbit.clusterconfig" (list $ (toYaml $labels) $clConfig ) }}
+{{- include "fluentbit.clusterconfig" (list $ $labels $clConfig ) }}

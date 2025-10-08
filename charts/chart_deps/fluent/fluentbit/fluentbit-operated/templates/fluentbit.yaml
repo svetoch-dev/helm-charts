@@ -1,4 +1,4 @@
 {{- $fluentbit :=  .Values.fluentbit }}
 {{- $labels := include "fluentbit-operated.labels" $ | fromYaml }}
 {{- $fluentbit = set $fluentbit "name" (include "fluentbit-operated.fullname" . ) }}
-{{- include "fluentbit.fluentbit" (list $ (toYaml $labels) $fluentbit ) }}
+{{- include "fluentbit.fluentbit" (list $ $labels $fluentbit ) }}

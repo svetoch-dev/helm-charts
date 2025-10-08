@@ -1,27 +1,14 @@
 {{- define "fluentbit.config" -}}
 {{- $ := index . 0 }}
-{{- $labels := index . 1 | fromYaml }}
-{{- $obj := index . 2 }}
-{{- if eq (hasKey $obj "namespace") false }}
-{{- $obj = set $obj "namespace" $.Release.Namespace }}
-{{- end }}
-{{- if eq (hasKey $obj "enabled") false }}
-{{- $obj = set $obj "enabled" true }}
-{{- end }}
-{{- if $obj.labels }}
-{{- $labels = merge $labels $obj.labels }}
-{{- end }}
-{{- if $.Values.labels }}
-{{- $labels = merge $labels $.Values.labels }}
-{{- end }}
-
+{{- $labels := index . 1 }}
+{{- $obj := include "fluentbit.obj.enricher" (list $ $labels (index . 2)) | fromYaml }}
 {{- if $obj.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: FluentBitConfig
 metadata:
   labels:
-{{- tpl (toYaml $labels ) $ | nindent 4 }}
+{{- include "fluentbit.labels.constructor" (list $ $labels $obj) | nindent 4 }}
   name: {{ tpl $obj.name $ }} 
   namespace: "{{ $obj.namespace }}"
 spec:
