@@ -344,12 +344,13 @@ fluentbit-gcp:
           storageType: memory
 
   outputs:
-    enabled: false
+    enabled: true
     labels:
       fluentbit: "gcp"
     clusterOutputs:
       stdout:
         stdout:
+          match: 'kube.control-plane.*'
           format: json
 
   filters:
