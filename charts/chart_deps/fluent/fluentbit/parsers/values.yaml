@@ -54,23 +54,23 @@ multilineParsers:
 #        next: "cont"
 
 clusterMultilineParsers:
-  test:
-    enabled: true
-    labels:
-      fluentbit: test
-    type: "regex"
-    flushTimeout: 1000
-    keyContent: "log"
-    rules:
-      - start: "start_state"
-        regex: '/^\[?(\d+\-\d+\-\d+ \d+\:\d+\:\d+(\.\d+)?)\]? /'
-        next: "cont"
-      - start: "cont"
-        regex: '/^com\..*/'
-        next: "cont"
-      - start: "cont"
-        regex: '/^\s+.*/'
-        next: "cont"
-      - start: "cont"
-        regex: '/^Caused.*$/'
-        next: "cont"
+#  test:
+#    enabled: true
+#    labels:
+#      fluentbit: test
+#    type: "regex"
+#    flushTimeout: 1000
+#    keyContent: "log"
+#    rules:
+#      - start: "start_state"
+#        regex: '/^\[?(\d+\-\d+\-\d+ \d+\:\d+\:\d+(\.\d+)?)\]? /'
+#        next: "cont"
+#      - start: "cont"
+#        regex: '/^com\..*/'
+#        next: "cont"
+#      - start: "cont"
+#        regex: '/^\s+.*/'
+#        next: "cont"
+#      - start: "cont"
+#        regex: '/^Caused.*$/'
+#        next: "cont"
