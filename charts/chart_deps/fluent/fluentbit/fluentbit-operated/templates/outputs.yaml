@@ -1,5 +1,5 @@
 {{- range $name, $output :=  .Values.outputs }}
 {{- $labels := include "fluentbit-operated.labels" $ | fromYaml }}
-{{- $output = set $output "name" ( printf "%s-outputs-%s" (include "fluentbit-operated.fullname" $ )  $name ) }}
+{{- $output = set $output "name" ( printf "%s-%s" (include "fluentbit-operated.fullname" $ )  $name ) }}
 {{- include "fluentbit.output" (list $ (toYaml $labels) $output ) }}
 {{- end }}
