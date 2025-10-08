@@ -1,17 +1,5 @@
 {{- range $name, $input :=  .Values.inputs }}
 {{- $labels := include "fluentbit-inputs.labels" $ | fromYaml }}
 {{- $input = set $input "name" ( printf "%s-%s" (include "fluentbit-inputs.fullname" $ )  $name ) }}
-{{- if eq (hasKey $input "namespace") false }}
-{{- $input = set $input "namespace" $.Release.Namespace }}
-{{- end }}
-{{- if eq (hasKey $input "enabled") false }}
-{{- $input = set $input "enabled" true }}
-{{- end }}
-{{- if $input.labels }}
-{{- $labels = merge $labels $input.labels }}
-{{- end }}
-{{- if $.Values.labels }}
-{{- $labels = merge $labels $.Values.labels }}
-{{- end }}
 {{- include "fluentbit.input" (list $ (toYaml $labels) $input ) }}
 {{- end }}

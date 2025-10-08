@@ -2,6 +2,15 @@
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
 {{- $clFilter := index . 2 }}
+{{- if eq (hasKey $clFilter "enabled") false }}
+{{- $clFilter = set $clFilter "enabled" true }}
+{{- end }}
+{{- if $clFilter.labels }}
+{{- $labels = merge $labels $clFilter.labels }}
+{{- end }}
+{{- if $.Values.labels }}
+{{- $labels = merge $labels $.Values.labels }}
+{{- end }}
 {{- if $clFilter.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2

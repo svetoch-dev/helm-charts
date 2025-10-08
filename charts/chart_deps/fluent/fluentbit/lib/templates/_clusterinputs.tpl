@@ -2,6 +2,15 @@
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
 {{- $clInput := index . 2 }}
+{{- if eq (hasKey $clInput "enabled") false }}
+{{- $clInput = set $clInput "enabled" true }}
+{{- end }}
+{{- if $clInput.labels }}
+{{- $labels = merge $labels $clInput.labels }}
+{{- end }}
+{{- if $.Values.labels }}
+{{- $labels = merge $labels $.Values.labels }}
+{{- end }}
 {{- if $clInput.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2

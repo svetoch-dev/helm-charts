@@ -1,14 +1,5 @@
 {{- range $name, $clFilter :=  .Values.clusterFilters }}
 {{- $labels := include "fluentbit-filters.labels" $ | fromYaml }}
 {{- $clFilter = set $clFilter "name" ( printf "%s-%s" (include "fluentbit-filters.fullname" $ )  $name ) }}
-{{- if eq (hasKey $clFilter "enabled") false }}
-{{- $clFilter = set $clFilter "enabled" true }}
-{{- end }}
-{{- if $clFilter.labels }}
-{{- $labels = merge $labels $clFilter.labels }}
-{{- end }}
-{{- if $.Values.labels }}
-{{- $labels = merge $labels $.Values.labels }}
-{{- end }}
 {{- include "fluentbit.clusterfilter" (list $ (toYaml $labels) $clFilter ) }}
 {{- end }}

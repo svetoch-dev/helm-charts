@@ -1,17 +1,5 @@
 {{- range $name, $filter :=  .Values.filters }}
 {{- $labels := include "fluentbit-filters.labels" $ | fromYaml }}
 {{- $filter = set $filter "name" ( printf "%s-%s" (include "fluentbit-filters.fullname" $ )  $name ) }}
-{{- if eq (hasKey $filter "namespace") false }}
-{{- $filter = set $filter "namespace" $.Release.Namespace }}
-{{- end }}
-{{- if eq (hasKey $filter "enabled") false }}
-{{- $filter = set $filter "enabled" true }}
-{{- end }}
-{{- if $filter.labels }}
-{{- $labels = merge $labels $filter.labels }}
-{{- end }}
-{{- if $.Values.labels }}
-{{- $labels = merge $labels $.Values.labels }}
-{{- end }}
 {{- include "fluentbit.filter" (list $ (toYaml $labels) $filter ) }}
 {{- end }}

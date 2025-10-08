@@ -2,6 +2,16 @@
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
 {{- $clMultilineParsers := index . 2 }}
+{{- if eq (hasKey $clMultilineParsers "enabled") false }}
+{{- $clMultilineParsers = set $clMultilineParsers "enabled" true }}
+{{- end }}
+{{- if $clMultilineParsers.labels }}
+{{- $labels = merge $labels $clMultilineParsers.labels }}
+{{- end }}
+{{- if $.Values.labels }}
+{{- $labels = merge $labels $.Values.labels }}
+{{- end }}
+
 {{- if $clMultilineParsers.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2

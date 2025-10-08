@@ -2,6 +2,15 @@
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
 {{- $clParser := index . 2 }}
+{{- if eq (hasKey $clParser "enabled") false }}
+{{- $clParser = set $clParser "enabled" true }}
+{{- end }}
+{{- if $clParser.labels }}
+{{- $labels = merge $labels $clParser.labels }}
+{{- end }}
+{{- if $.Values.labels }}
+{{- $labels = merge $labels $.Values.labels }}
+{{- end }}
 {{- if $clParser.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2

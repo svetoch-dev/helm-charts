@@ -1,17 +1,5 @@
 {{- range $name, $parser :=  .Values.parsers }}
 {{- $labels := include "fluentbit-parsers.labels" $ | fromYaml }}
 {{- $parser = set $parser "name" ( printf "%s-%s" (include "fluentbit-parsers.fullname" $ )  $name ) }}
-{{- if eq (hasKey $parser "namespace") false }}
-{{- $parser = set $parser "namespace" $.Release.Namespace }}
-{{- end }}
-{{- if eq (hasKey $parser "enabled") false }}
-{{- $parser = set $parser "enabled" true }}
-{{- end }}
-{{- if $parser.labels }}
-{{- $labels = merge $labels $parser.labels }}
-{{- end }}
-{{- if $.Values.labels }}
-{{- $labels = merge $labels $.Values.labels }}
-{{- end }}
 {{- include "fluentbit.parser" (list $ (toYaml $labels) $parser ) }}
 {{- end }}

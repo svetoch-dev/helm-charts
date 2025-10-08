@@ -1,14 +1,5 @@
 {{- range $name, $clInput :=  .Values.clusterInputs }}
 {{- $labels := include "fluentbit-inputs.labels" $ | fromYaml }}
 {{- $clInput = set $clInput "name" ( printf "%s-%s" (include "fluentbit-inputs.fullname" $ )  $name ) }}
-{{- if eq (hasKey $clInput "enabled") false }}
-{{- $clInput = set $clInput "enabled" true }}
-{{- end }}
-{{- if $clInput.labels }}
-{{- $labels = merge $labels $clInput.labels }}
-{{- end }}
-{{- if $.Values.labels }}
-{{- $labels = merge $labels $.Values.labels }}
-{{- end }}
 {{- include "fluentbit.clusterinput" (list $ (toYaml $labels) $clInput ) }}
 {{- end }}

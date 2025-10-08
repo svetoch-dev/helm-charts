@@ -2,6 +2,18 @@
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
 {{- $output := index . 2 }}
+{{- if eq (hasKey $output "namespace") false }}
+{{- $output = set $output "namespace" $.Release.Namespace }}
+{{- end }}
+{{- if eq (hasKey $output "enabled") false }}
+{{- $output = set $output "enabled" true }}
+{{- end }}
+{{- if $output.labels }}
+{{- $labels = merge $labels $output.labels }}
+{{- end }}
+{{- if $.Values.labels }}
+{{- $labels = merge $labels $.Values.labels }}
+{{- end }}
 {{- if $output.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2

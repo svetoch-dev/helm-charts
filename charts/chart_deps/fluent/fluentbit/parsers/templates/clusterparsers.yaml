@@ -1,14 +1,5 @@
 {{- range $name, $clParser :=  .Values.clusterParsers }}
 {{- $labels := include "fluentbit-parsers.labels" $ | fromYaml }}
 {{- $clParser = set $clParser "name" ( printf "%s-%s" (include "fluentbit-parsers.fullname" $ )  $name ) }}
-{{- if eq (hasKey $clParser "enabled") false }}
-{{- $clParser = set $clParser "enabled" true }}
-{{- end }}
-{{- if $clParser.labels }}
-{{- $labels = merge $labels $clParser.labels }}
-{{- end }}
-{{- if $.Values.labels }}
-{{- $labels = merge $labels $.Values.labels }}
-{{- end }}
 {{- include "fluentbit.clusterparser" (list $ (toYaml $labels) $clParser ) }}
 {{- end }}

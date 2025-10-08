@@ -2,6 +2,19 @@
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
 {{- $multilineParser := index . 2 }}
+{{- if eq (hasKey $multilineParser "namespace") false }}
+{{- $multilineParser = set $multilineParser "namespace" $.Release.Namespace }}
+{{- end }}
+{{- if eq (hasKey $multilineParser "enabled") false }}
+{{- $multilineParser = set $multilineParser "enabled" true }}
+{{- end }}
+{{- if $multilineParser.labels }}
+{{- $labels = merge $labels $multilineParser.labels }}
+{{- end }}
+{{- if $.Values.labels }}
+{{- $labels = merge $labels $.Values.labels }}
+{{- end }}
+
 {{- if $multilineParser.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2

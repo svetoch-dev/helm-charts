@@ -1,5 +1,7 @@
 inputs:
 #  test:
+#    enabled: true
+#    namespace: test
 #    labels:
 #      fluentbit: test
 #    tail:
@@ -16,7 +18,7 @@ inputs:
 #      storageType: memory
 
 #labels:
-#  fluentbit: test
+#  fluentbit1: test
 
 clusterInputs:
 #  systemd:
