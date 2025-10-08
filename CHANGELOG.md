@@ -25,6 +25,7 @@ BrakingChanges:
 New features:
 * `fluent`: new chart for fluent operator + fluentbit
 * new chart for `Loki` Simple Scalable Deployment
+* `loki` logs retention = 60 days
 * `grafana`:
   * ability to set `uid` for grafana datasource
   * add new `datasource`, for `loki in int`
@@ -134,7 +135,6 @@ Enhancements:
     * `query`
     * `compactor`
     * `storegateway`
-
 
 Fixes:
 * `prometheus`:
