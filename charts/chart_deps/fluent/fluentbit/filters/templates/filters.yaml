@@ -1,33 +1,17 @@
-{{- range $filter_name, $filter_obj :=  .Values.filters }}
----
-apiVersion: fluentbit.fluent.io/v1alpha2
-kind: Filter
-metadata:
-  name: {{ printf "%s-%s" (include "fluentbit-filters.fullname" $) $filter_name }}
-  namespace: "{{ $filter_obj.namespace | default $.Release.Namespace }}"
-  labels:
-{{- include "fluentbit-filters.labels" $ | nindent 4 }}
-{{- with $filter_obj.labels }}
-{{- tpl (toYaml .) $ | nindent 4 }}
+{{- range $name, $filter :=  .Values.filters }}
+{{- $labels := include "fluentbit-filters.labels" $ | fromYaml }}
+{{- $filter = set $filter "name" ( printf "%s-%s" (include "fluentbit-filters.fullname" $ )  $name ) }}
+{{- if eq (hasKey $filter "namespace") false }}
+{{- $filter = set $filter "namespace" $.Release.Namespace }}
 {{- end }}
-{{- with $.Values.labels }}
-{{- tpl (toYaml .) $ | nindent 4 }}
+{{- if eq (hasKey $filter "enabled") false }}
+{{- $filter = set $filter "enabled" true }}
 {{- end }}
-spec:
-  {{- with $filter_obj.filters }}
-  filters:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $filter_obj.logLevel}}
-  logLevel: {{ tpl . $ | quote }}
-  {{- end }}
-  {{- with $filter_obj.match}}
-  match: {{ tpl . $ | quote }}
-  {{- end }}
-  {{- with $filter_obj.matchRegEx}}
-  matchRegEx: {{ tpl . $ | quote }}
-  {{- end }}
-  {{- with $filter_obj.ordinal}}
-  ordinal: {{ . }}
-  {{- end }}
+{{- if $filter.labels }}
+{{- $labels = merge $labels $filter.labels }}
+{{- end }}
+{{- if $.Values.labels }}
+{{- $labels = merge $labels $.Values.labels }}
+{{- end }}
+{{- include "fluentbit.filter" (list $ (toYaml $labels) $filter ) }}
 {{- end }}

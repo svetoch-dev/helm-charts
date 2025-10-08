@@ -1,5 +1,8 @@
 filters:
 #  test:
+#    namespace: test
+#    labels:
+#      fluentbit: test
 #    match: kube.*
 #    namespace: test
 #    filters:
@@ -27,11 +30,15 @@ filters:
 #          - kubernetes_*
 #          nestUnder: kubernetes
 #          removePrefix: kubernetes_
+#
+#labels:
+#  fluentbit1: test
 
 clusterFilters:
 #  test:
+#    labels:
+#      fluentbit: test
 #    match: kube.*
-#    namespace: test
 #    filters:
 #      mainKube:
 #        kubernetes:

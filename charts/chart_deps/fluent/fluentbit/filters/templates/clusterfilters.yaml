@@ -1,32 +1,14 @@
-{{- range $cl_filter_name, $cl_filter_obj :=  .Values.clusterFilters }}
----
-apiVersion: fluentbit.fluent.io/v1alpha2
-kind: ClusterFilter
-metadata:
-  name: {{ printf "%s-%s" (include "fluentbit-filters.fullname" $) $cl_filter_name }}
-  labels:
-{{- include "fluentbit-filters.labels" $ | nindent 4 }}
-{{- with $cl_filter_obj.labels }}
-{{- tpl (toYaml .) $ | nindent 4 }}
+{{- range $name, $clFilter :=  .Values.clusterFilters }}
+{{- $labels := include "fluentbit-filters.labels" $ | fromYaml }}
+{{- $clFilter = set $clFilter "name" ( printf "%s-%s" (include "fluentbit-filters.fullname" $ )  $name ) }}
+{{- if eq (hasKey $clFilter "enabled") false }}
+{{- $clFilter = set $clFilter "enabled" true }}
 {{- end }}
-{{- with $.Values.labels }}
-{{- tpl (toYaml .) $ | nindent 4 }}
+{{- if $clFilter.labels }}
+{{- $labels = merge $labels $clFilter.labels }}
 {{- end }}
-spec:
-  {{- with $cl_filter_obj.filters }}
-  filters:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $cl_filter_obj.logLevel}}
-  logLevel: {{ tpl . $ | quote }}
-  {{- end }}
-  {{- with $cl_filter_obj.match}}
-  match: {{ tpl . $ | quote }}
-  {{- end }}
-  {{- with $cl_filter_obj.matchRegEx}}
-  matchRegEx: {{ tpl . $ | quote }}
-  {{- end }}
-  {{- with $cl_filter_obj.ordinal}}
-  ordinal: {{ . }}
-  {{- end }}
+{{- if $.Values.labels }}
+{{- $labels = merge $labels $.Values.labels }}
+{{- end }}
+{{- include "fluentbit.clusterfilter" (list $ (toYaml $labels) $clFilter ) }}
 {{- end }}
