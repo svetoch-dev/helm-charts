@@ -1,99 +1,99 @@
 {{- define "fluentbit.output" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
-{{- $output := index . 2 }}
-{{- if eq (hasKey $output "namespace") false }}
-{{- $output = set $output "namespace" $.Release.Namespace }}
+{{- $obj := index . 2 }}
+{{- if eq (hasKey $obj "namespace") false }}
+{{- $obj = set $obj "namespace" $.Release.Namespace }}
 {{- end }}
-{{- if eq (hasKey $output "enabled") false }}
-{{- $output = set $output "enabled" true }}
+{{- if eq (hasKey $obj "enabled") false }}
+{{- $obj = set $obj "enabled" true }}
 {{- end }}
-{{- if $output.labels }}
-{{- $labels = merge $labels $output.labels }}
+{{- if $obj.labels }}
+{{- $labels = merge $labels $obj.labels }}
 {{- end }}
 {{- if $.Values.labels }}
 {{- $labels = merge $labels $.Values.labels }}
 {{- end }}
-{{- if $output.enabled }}
+{{- if $obj.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: Output
 metadata:
   labels:
 {{- tpl (toYaml $labels ) $ | nindent 4 }}
-  name: {{ tpl $output.name $ }} 
-  namespace: "{{ $output.namespace }}"
+  name: {{ tpl $obj.name $ }} 
+  namespace: "{{ $obj.namespace }}"
 spec:
-  {{- with $output.matchRegex}}
+  {{- with $obj.matchRegex}}
   matchRegex: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $output.match}}
+  {{- with $obj.match}}
   match: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $output.logLevel}}
+  {{- with $obj.logLevel}}
   logLevel: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $output.alias }}
+  {{- with $obj.alias }}
   alias:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.azureBlob }}
+  {{- with $obj.azureBlob }}
   azureBlob:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.azureLogAnalytics }}
+  {{- with $obj.azureLogAnalytics }}
   azureLogAnalytics:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.cloudWatch }}
+  {{- with $obj.cloudWatch }}
   cloudWatch:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.datadog }}
+  {{- with $obj.datadog }}
   datadog:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.es }}
+  {{- with $obj.es }}
   es:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.file }}
+  {{- with $obj.file }}
   file:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.firehouse }}
+  {{- with $obj.firehouse }}
   firehouse:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.forward }}
+  {{- with $obj.forward }}
   forward:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.gelf }}
+  {{- with $obj.gelf }}
   gelf:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.http }}
+  {{- with $obj.http }}
   http:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.customPlugin }}
+  {{- with $obj.customPlugin }}
   customPlugin:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.influxDB }}
+  {{- with $obj.influxDB }}
   influxDB:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.kafka }}
+  {{- with $obj.kafka }}
   kafka:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.kinesis }}
+  {{- with $obj.kinesis }}
   kinesis:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.loki }}
+  {{- with $obj.loki }}
   loki:
   {{- $labels := list }}
   {{- range $label_name, $label_value := .labels }}
@@ -103,51 +103,51 @@ spec:
   {{- $context := set $context "labels" $labels }}
   {{- tpl (toYaml $context) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.opensearch }}
+  {{- with $obj.opensearch }}
   opensearch:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.opentelemetry }}
+  {{- with $obj.opentelemetry }}
   opentelemetry:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.processors }}
+  {{- with $obj.processors }}
   processors:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.prometheusExporter }}
+  {{- with $obj.prometheusExporter }}
   prometheusExporter:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.prometheusRemoteWrite }}
+  {{- with $obj.prometheusRemoteWrite }}
   prometheusRemoteWrite:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.s3 }}
+  {{- with $obj.s3 }}
   s3:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.splunks }}
+  {{- with $obj.splunks }}
   splunks:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.stackdriver }}
+  {{- with $obj.stackdriver }}
   stackdriver:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.stdout }}
+  {{- with $obj.stdout }}
   stdout:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.syslog }}
+  {{- with $obj.syslog }}
   syslog:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $output.tcp }}
+  {{- with $obj.tcp }}
   tcp:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- if (hasKey $output "null") }}
+  {{- if (hasKey $obj "null") }}
   "null": {}
   {{- end }}
 {{- end }}

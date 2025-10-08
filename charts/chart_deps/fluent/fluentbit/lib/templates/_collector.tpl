@@ -1,117 +1,117 @@
 {{- define "fluentbit.collector" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
-{{- $collector := index . 2 }}
-{{- if eq (hasKey $collector "namespace") false }}
-{{- $collector = set $collector "namespace" $.Release.Namespace }}
+{{- $obj := index . 2 }}
+{{- if eq (hasKey $obj "namespace") false }}
+{{- $obj = set $obj "namespace" $.Release.Namespace }}
 {{- end }}
-{{- if eq (hasKey $collector "enabled") false }}
-{{- $collector = set $collector "enabled" true }}
+{{- if eq (hasKey $obj "enabled") false }}
+{{- $obj = set $obj "enabled" true }}
 {{- end }}
-{{- if $collector.labels }}
-{{- $labels = merge $labels $collector.labels }}
+{{- if $obj.labels }}
+{{- $labels = merge $labels $obj.labels }}
 {{- end }}
 {{- if $.Values.labels }}
 {{- $labels = merge $labels $.Values.labels }}
 {{- end }}
 
-{{- if $collector.enabled }}
+{{- if $obj.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: Collector
 metadata:
   labels:
 {{- tpl (toYaml $labels ) $ | nindent 4 }}
-  name: {{ tpl $collector.name $ }} 
-  namespace: "{{ $collector.namespace }}"
+  name: {{ tpl $obj.name $ }} 
+  namespace: "{{ $obj.namespace }}"
 spec:
-  {{- with $collector.affinity }}
+  {{- with $obj.affinity }}
   affinity:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.annotations }}
+  {{- with $obj.annotations }}
   annotations:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.args }}
+  {{- with $obj.args }}
   args:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.bufferPath }}
+  {{- with $obj.bufferPath }}
   bufferPath: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $collector.disableService}}
+  {{- with $obj.disableService}}
   disableService: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $collector.fluentBitConfigName }}
+  {{- with $obj.fluentBitConfigName }}
   fluentBitConfigName: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $collector.hostNetwork }}
+  {{- with $obj.hostNetwork }}
   hostNetwork:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.image}}
+  {{- with $obj.image}}
   image: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $collector.imagePullPolicy }}
+  {{- with $obj.imagePullPolicy }}
   imagePullPolicy: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $collector.imagePullPolicy }}
+  {{- with $obj.imagePullPolicy }}
   imagePullSecrets:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.nodeSelector }}
+  {{- with $obj.nodeSelector }}
   nodeSelector: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $collector.ports}}
+  {{- with $obj.ports}}
   ports:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.priorityClassName }}
+  {{- with $obj.priorityClassName }}
   priorityClassName: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $collector.rbacRules }}
+  {{- with $obj.rbacRules }}
   rbacRules:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.replicas }}
+  {{- with $obj.replicas }}
   replicas: {{ . }}
   {{- end }}
-  {{- with $collector.resources }}
+  {{- with $obj.resources }}
   resources:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.runtimeClassName}}
+  {{- with $obj.runtimeClassName}}
   runtimeClassName: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $collector.schedulerName}}
+  {{- with $obj.schedulerName}}
   schedulerName: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $collector.secrets }}
+  {{- with $obj.secrets }}
   secrets:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.securityContext }}
+  {{- with $obj.securityContext }}
   securityContext:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.service }}
+  {{- with $obj.service }}
   service:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.serviceAccountAnnotations }}
+  {{- with $obj.serviceAccountAnnotations }}
   serviceAccountAnnotations:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.tolerations }}
+  {{- with $obj.tolerations }}
   tolerations:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.volumes }}
+  {{- with $obj.volumes }}
   volumes:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $collector.volumesMounts }}
+  {{- with $obj.volumesMounts }}
   volumesMounts:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}

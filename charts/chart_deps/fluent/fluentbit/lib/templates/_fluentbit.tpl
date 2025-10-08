@@ -1,170 +1,170 @@
 {{- define "fluentbit.fluentbit" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
-{{- $fluentbit := index . 2 }}
-{{- if eq (hasKey $fluentbit "namespace") false }}
-{{- $fluentbit = set $fluentbit "namespace" $.Release.Namespace }}
+{{- $obj := index . 2 }}
+{{- if eq (hasKey $obj "namespace") false }}
+{{- $obj = set $obj "namespace" $.Release.Namespace }}
 {{- end }}
-{{- if eq (hasKey $fluentbit "enabled") false }}
-{{- $fluentbit = set $fluentbit "enabled" true }}
+{{- if eq (hasKey $obj "enabled") false }}
+{{- $obj = set $obj "enabled" true }}
 {{- end }}
-{{- if $fluentbit.labels }}
-{{- $labels = merge $labels $fluentbit.labels }}
+{{- if $obj.labels }}
+{{- $labels = merge $labels $obj.labels }}
 {{- end }}
 {{- if $.Values.labels }}
 {{- $labels = merge $labels $.Values.labels }}
 {{- end }}
 
-{{- if $fluentbit.enabled }}
+{{- if $obj.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: FluentBit
 metadata:
   labels:
 {{- tpl (toYaml $labels ) $ | nindent 4 }}
-  name: {{ tpl $fluentbit.name $ }} 
-  namespace: "{{ $fluentbit.namespace }}"
+  name: {{ tpl $obj.name $ }} 
+  namespace: "{{ $obj.namespace }}"
 spec:
-  {{- with $fluentbit.affinity }}
+  {{- with $obj.affinity }}
   affinity:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.annotations }}
+  {{- with $obj.annotations }}
   annotations:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.args }}
+  {{- with $obj.args }}
   args:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.command }}
+  {{- with $obj.command }}
   command:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.containerLogRealPath }}
+  {{- with $obj.containerLogRealPath }}
   containerLogRealPath: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $fluentbit.containerSecurityContext }}
+  {{- with $obj.containerSecurityContext }}
   containerSecurityContext:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.disableLogVolumes }}
+  {{- with $obj.disableLogVolumes }}
   disableLogVolumes: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $fluentbit.disableService}}
+  {{- with $obj.disableService}}
   disableService: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $fluentbit.dnsPolicy}}
+  {{- with $obj.dnsPolicy}}
   dnsPolicy: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $fluentbit.envVars }}
+  {{- with $obj.envVars }}
   envVars:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.fluentBitConfigName }}
+  {{- with $obj.fluentBitConfigName }}
   fluentBitConfigName: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $fluentbit.hostAliases }}
+  {{- with $obj.hostAliases }}
   hostAliases:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.hostNetwork }}
+  {{- with $obj.hostNetwork }}
   hostNetwork:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.image}}
+  {{- with $obj.image}}
   image: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $fluentbit.imagePullPolicy }}
+  {{- with $obj.imagePullPolicy }}
   imagePullPolicy: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $fluentbit.imagePullPolicy }}
+  {{- with $obj.imagePullPolicy }}
   imagePullSecrets:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.initContainers }}
+  {{- with $obj.initContainers }}
   initContainers:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.internalMountPropagation }}
+  {{- with $obj.internalMountPropagation }}
   internalMountPropagation: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $fluentbit.labels }}
+  {{- with $obj.labels }}
   labels:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.livenessProbe}}
+  {{- with $obj.livenessProbe}}
   livenessProbe:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.metricsPort}}
+  {{- with $obj.metricsPort}}
   metricsPort: {{ . }}
   {{- end }}
-  {{- with $fluentbit.namespaceFluentBitCfgSelector }}
+  {{- with $obj.namespaceFluentBitCfgSelector }}
   namespaceFluentBitCfgSelector:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.nodeSelector }}
+  {{- with $obj.nodeSelector }}
   nodeSelector: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $fluentbit.ports}}
+  {{- with $obj.ports}}
   ports:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.positionDB }}
+  {{- with $obj.positionDB }}
   positionDB:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.priorityClassName }}
+  {{- with $obj.priorityClassName }}
   priorityClassName: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $fluentbit.rbacRules }}
+  {{- with $obj.rbacRules }}
   rbacRules:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.readinessProbe }}
+  {{- with $obj.readinessProbe }}
   readinessProbe:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.resources }}
+  {{- with $obj.resources }}
   resources:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.runtimeClassName}}
+  {{- with $obj.runtimeClassName}}
   runtimeClassName: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $fluentbit.schedulerName}}
+  {{- with $obj.schedulerName}}
   schedulerName: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $fluentbit.secrets }}
+  {{- with $obj.secrets }}
   secrets:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.securityContext }}
+  {{- with $obj.securityContext }}
   securityContext:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.service }}
+  {{- with $obj.service }}
   service:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.serviceAccountAnnotations }}
+  {{- with $obj.serviceAccountAnnotations }}
   serviceAccountAnnotations:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.terminationGracePeriodSeconds }}
+  {{- with $obj.terminationGracePeriodSeconds }}
   terminationGracePeriodSeconds:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.tolerations }}
+  {{- with $obj.tolerations }}
   tolerations:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.volumes }}
+  {{- with $obj.volumes }}
   volumes:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $fluentbit.volumesMounts }}
+  {{- with $obj.volumesMounts }}
   volumesMounts:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}

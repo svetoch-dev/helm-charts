@@ -1,54 +1,54 @@
 {{- define "fluentbit.config" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
-{{- $config := index . 2 }}
-{{- if eq (hasKey $config "namespace") false }}
-{{- $config = set $config "namespace" $.Release.Namespace }}
+{{- $obj := index . 2 }}
+{{- if eq (hasKey $obj "namespace") false }}
+{{- $obj = set $obj "namespace" $.Release.Namespace }}
 {{- end }}
-{{- if eq (hasKey $config "enabled") false }}
-{{- $config = set $config "enabled" true }}
+{{- if eq (hasKey $obj "enabled") false }}
+{{- $obj = set $obj "enabled" true }}
 {{- end }}
-{{- if $config.labels }}
-{{- $labels = merge $labels $config.labels }}
+{{- if $obj.labels }}
+{{- $labels = merge $labels $obj.labels }}
 {{- end }}
 {{- if $.Values.labels }}
 {{- $labels = merge $labels $.Values.labels }}
 {{- end }}
 
-{{- if $config.enabled }}
+{{- if $obj.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: FluentBitConfig
 metadata:
   labels:
 {{- tpl (toYaml $labels ) $ | nindent 4 }}
-  name: {{ tpl $config.name $ }} 
-  namespace: "{{ $config.namespace }}"
+  name: {{ tpl $obj.name $ }} 
+  namespace: "{{ $obj.namespace }}"
 spec:
-  {{- with $config.configFileFormat }}
+  {{- with $obj.configFileFormat }}
   configFileFormat: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $config.filterSelector }}
+  {{- with $obj.filterSelector }}
   filterSelector:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $config.inputSelector }}
+  {{- with $obj.inputSelector }}
   inputSelector:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $config.multilineParserSelector }}
+  {{- with $obj.multilineParserSelector }}
   multilineParserSelector:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $config.outputSelector }}
+  {{- with $obj.outputSelector }}
   outputSelector:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $config.parserSelector }}
+  {{- with $obj.parserSelector }}
   parserSelector:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $config.service }}
+  {{- with $obj.service }}
   service:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}

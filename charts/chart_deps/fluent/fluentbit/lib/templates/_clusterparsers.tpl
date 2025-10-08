@@ -1,42 +1,42 @@
 {{- define "fluentbit.clusterparser" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
-{{- $clParser := index . 2 }}
-{{- if eq (hasKey $clParser "enabled") false }}
-{{- $clParser = set $clParser "enabled" true }}
+{{- $obj := index . 2 }}
+{{- if eq (hasKey $obj "enabled") false }}
+{{- $obj = set $obj "enabled" true }}
 {{- end }}
-{{- if $clParser.labels }}
-{{- $labels = merge $labels $clParser.labels }}
+{{- if $obj.labels }}
+{{- $labels = merge $labels $obj.labels }}
 {{- end }}
 {{- if $.Values.labels }}
 {{- $labels = merge $labels $.Values.labels }}
 {{- end }}
-{{- if $clParser.enabled }}
+{{- if $obj.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterParser
 metadata:
   labels:
 {{- tpl (toYaml $labels ) $ | nindent 4 }}
-  name: {{ tpl $clParser.name $ }} 
+  name: {{ tpl $obj.name $ }} 
 spec:
-  {{- with $clParser.decoders }}
+  {{- with $obj.decoders }}
   decoders:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clParser.json }}
+  {{- with $obj.json }}
   json:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clParser.logFmt }}
+  {{- with $obj.logFmt }}
   logFmt:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clParser.ltsv }}
+  {{- with $obj.ltsv }}
   ltsv:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clParser.regex }}
+  {{- with $obj.regex }}
   regex:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}

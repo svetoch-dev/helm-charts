@@ -1,39 +1,39 @@
 {{- define "fluentbit.clustermultilineparsers" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
-{{- $clMultilineParsers := index . 2 }}
-{{- if eq (hasKey $clMultilineParsers "enabled") false }}
-{{- $clMultilineParsers = set $clMultilineParsers "enabled" true }}
+{{- $obj := index . 2 }}
+{{- if eq (hasKey $obj "enabled") false }}
+{{- $obj = set $obj "enabled" true }}
 {{- end }}
-{{- if $clMultilineParsers.labels }}
-{{- $labels = merge $labels $clMultilineParsers.labels }}
+{{- if $obj.labels }}
+{{- $labels = merge $labels $obj.labels }}
 {{- end }}
 {{- if $.Values.labels }}
 {{- $labels = merge $labels $.Values.labels }}
 {{- end }}
 
-{{- if $clMultilineParsers.enabled }}
+{{- if $obj.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterMultilineParser
 metadata:
   labels:
 {{- tpl (toYaml $labels ) $ | nindent 4 }}
-  name: {{ tpl $clMultilineParsers.name $ }} 
+  name: {{ tpl $obj.name $ }} 
 spec:
-  {{- with $clMultilineParsers.flushTimeout}}
+  {{- with $obj.flushTimeout}}
   flushTimeout: {{ . }}
   {{- end }}
-  {{- with $clMultilineParsers.keyContent}}
+  {{- with $obj.keyContent}}
   keyContent: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $clMultilineParsers.parser}}
+  {{- with $obj.parser}}
   parser: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $clMultilineParsers.type}}
+  {{- with $obj.type}}
   type: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $clMultilineParsers.rules }}
+  {{- with $obj.rules }}
   rules:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}

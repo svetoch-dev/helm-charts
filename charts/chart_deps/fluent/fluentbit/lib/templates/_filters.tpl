@@ -1,43 +1,43 @@
 {{- define "fluentbit.filter" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
-{{- $filter := index . 2 }}
-{{- if eq (hasKey $filter "namespace") false }}
-{{- $filter = set $filter "namespace" $.Release.Namespace }}
+{{- $obj := index . 2 }}
+{{- if eq (hasKey $obj "namespace") false }}
+{{- $obj = set $obj "namespace" $.Release.Namespace }}
 {{- end }}
-{{- if eq (hasKey $filter "enabled") false }}
-{{- $filter = set $filter "enabled" true }}
+{{- if eq (hasKey $obj "enabled") false }}
+{{- $obj = set $obj "enabled" true }}
 {{- end }}
-{{- if $filter.labels }}
-{{- $labels = merge $labels $filter.labels }}
+{{- if $obj.labels }}
+{{- $labels = merge $labels $obj.labels }}
 {{- end }}
 {{- if $.Values.labels }}
 {{- $labels = merge $labels $.Values.labels }}
 {{- end }}
-{{- if $filter.enabled }}
+{{- if $obj.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: Filter
 metadata:
   labels:
 {{- tpl (toYaml $labels ) $ | nindent 4 }}
-  name: {{ tpl $filter.name $ }} 
-  namespace: "{{ $filter.namespace }}"
+  name: {{ tpl $obj.name $ }} 
+  namespace: "{{ $obj.namespace }}"
 spec:
-  {{- with $filter.filters }}
+  {{- with $obj.filters }}
   filters:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $filter.logLevel}}
+  {{- with $obj.logLevel}}
   logLevel: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $filter.match}}
+  {{- with $obj.match}}
   match: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $filter.matchRegEx}}
+  {{- with $obj.matchRegEx}}
   matchRegEx: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $filter.ordinal}}
+  {{- with $obj.ordinal}}
   ordinal: {{ . }}
   {{- end }}
 {{- end }}

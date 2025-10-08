@@ -1,95 +1,95 @@
 {{- define "fluentbit.clusteroutput" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
-{{- $clOutput := index . 2 }}
-{{- if eq (hasKey $clOutput "enabled") false }}
-{{- $clOutput = set $clOutput "enabled" true }}
+{{- $obj := index . 2 }}
+{{- if eq (hasKey $obj "enabled") false }}
+{{- $obj = set $obj "enabled" true }}
 {{- end }}
-{{- if $clOutput.labels }}
-{{- $labels = merge $labels $clOutput.labels }}
+{{- if $obj.labels }}
+{{- $labels = merge $labels $obj.labels }}
 {{- end }}
 {{- if $.Values.labels }}
 {{- $labels = merge $labels $.Values.labels }}
 {{- end }}
-{{- if $clOutput.enabled }}
+{{- if $obj.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
 metadata:
   labels:
 {{- tpl (toYaml $labels ) $ | nindent 4 }}
-  name: {{ tpl $clOutput.name $ }} 
+  name: {{ tpl $obj.name $ }} 
 spec:
-  {{- with $clOutput.matchRegex}}
+  {{- with $obj.matchRegex}}
   matchRegex: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $clOutput.match}}
+  {{- with $obj.match}}
   match: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $clOutput.logLevel}}
+  {{- with $obj.logLevel}}
   logLevel: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $clOutput.alias }}
+  {{- with $obj.alias }}
   alias:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.azureBlob }}
+  {{- with $obj.azureBlob }}
   azureBlob:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.azureLogAnalytics }}
+  {{- with $obj.azureLogAnalytics }}
   azureLogAnalytics:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.cloudWatch }}
+  {{- with $obj.cloudWatch }}
   cloudWatch:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.datadog }}
+  {{- with $obj.datadog }}
   datadog:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.es }}
+  {{- with $obj.es }}
   es:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.file }}
+  {{- with $obj.file }}
   file:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.firehouse }}
+  {{- with $obj.firehouse }}
   firehouse:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.forward }}
+  {{- with $obj.forward }}
   forward:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.gelf }}
+  {{- with $obj.gelf }}
   gelf:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.http }}
+  {{- with $obj.http }}
   http:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.customPlugin }}
+  {{- with $obj.customPlugin }}
   customPlugin:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.influxDB }}
+  {{- with $obj.influxDB }}
   influxDB:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.kafka }}
+  {{- with $obj.kafka }}
   kafka:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.kinesis }}
+  {{- with $obj.kinesis }}
   kinesis:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.loki }}
+  {{- with $obj.loki }}
   loki:
   {{- $labels := list }}
   {{- range $label_name, $label_value := .labels }}
@@ -99,51 +99,51 @@ spec:
   {{- $context := set $context "labels" $labels }}
   {{- tpl (toYaml $context) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.opensearch }}
+  {{- with $obj.opensearch }}
   opensearch:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.opentelemetry }}
+  {{- with $obj.opentelemetry }}
   opentelemetry:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.processors }}
+  {{- with $obj.processors }}
   processors:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.prometheusExporter }}
+  {{- with $obj.prometheusExporter }}
   prometheusExporter:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.prometheusRemoteWrite }}
+  {{- with $obj.prometheusRemoteWrite }}
   prometheusRemoteWrite:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.s3 }}
+  {{- with $obj.s3 }}
   s3:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.splunks }}
+  {{- with $obj.splunks }}
   splunks:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.stackdriver }}
+  {{- with $obj.stackdriver }}
   stackdriver:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.stdout }}
+  {{- with $obj.stdout }}
   stdout:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.syslog }}
+  {{- with $obj.syslog }}
   syslog:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clOutput.tcp }}
+  {{- with $obj.tcp }}
   tcp:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- if (hasKey $clOutput "null") }}
+  {{- if (hasKey $obj "null") }}
   "null": {}
   {{- end }}
 {{- end }}

@@ -1,43 +1,43 @@
 {{- define "fluentbit.multilineparser" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
-{{- $multilineParser := index . 2 }}
-{{- if eq (hasKey $multilineParser "namespace") false }}
-{{- $multilineParser = set $multilineParser "namespace" $.Release.Namespace }}
+{{- $obj := index . 2 }}
+{{- if eq (hasKey $obj "namespace") false }}
+{{- $obj = set $obj "namespace" $.Release.Namespace }}
 {{- end }}
-{{- if eq (hasKey $multilineParser "enabled") false }}
-{{- $multilineParser = set $multilineParser "enabled" true }}
+{{- if eq (hasKey $obj "enabled") false }}
+{{- $obj = set $obj "enabled" true }}
 {{- end }}
-{{- if $multilineParser.labels }}
-{{- $labels = merge $labels $multilineParser.labels }}
+{{- if $obj.labels }}
+{{- $labels = merge $labels $obj.labels }}
 {{- end }}
 {{- if $.Values.labels }}
 {{- $labels = merge $labels $.Values.labels }}
 {{- end }}
 
-{{- if $multilineParser.enabled }}
+{{- if $obj.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: MultilineParser
 metadata:
   labels:
 {{- tpl (toYaml $labels ) $ | nindent 4 }}
-  name: {{ tpl $multilineParser.name $ }} 
-  namespace: "{{ $multilineParser.namespace }}"
+  name: {{ tpl $obj.name $ }} 
+  namespace: "{{ $obj.namespace }}"
 spec:
-  {{- with $multilineParser.flushTimeout}}
+  {{- with $obj.flushTimeout}}
   flushTimeout: {{ . }}
   {{- end }}
-  {{- with $multilineParser.keyContent}}
+  {{- with $obj.keyContent}}
   keyContent: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $multilineParser.parser}}
+  {{- with $obj.parser}}
   parser: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $multilineParser.type}}
+  {{- with $obj.type}}
   type: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $multilineParser.rules }}
+  {{- with $obj.rules }}
   rules:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}

@@ -1,109 +1,109 @@
 {{- define "fluentbit.clusterinput" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
-{{- $clInput := index . 2 }}
-{{- if eq (hasKey $clInput "enabled") false }}
-{{- $clInput = set $clInput "enabled" true }}
+{{- $obj := index . 2 }}
+{{- if eq (hasKey $obj "enabled") false }}
+{{- $obj = set $obj "enabled" true }}
 {{- end }}
-{{- if $clInput.labels }}
-{{- $labels = merge $labels $clInput.labels }}
+{{- if $obj.labels }}
+{{- $labels = merge $labels $obj.labels }}
 {{- end }}
 {{- if $.Values.labels }}
 {{- $labels = merge $labels $.Values.labels }}
 {{- end }}
-{{- if $clInput.enabled }}
+{{- if $obj.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterInput
 metadata:
   labels:
 {{- tpl (toYaml $labels ) $ | nindent 4 }}
-  name: {{ tpl $clInput.name $ }} 
+  name: {{ tpl $obj.name $ }} 
 spec:
-  {{- with $clInput.alias }}
+  {{- with $obj.alias }}
   alias:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.collectd }}
+  {{- with $obj.collectd }}
   collectd:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.customPlugin }}
+  {{- with $obj.customPlugin }}
   customPlugin:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.dummy }}
+  {{- with $obj.dummy }}
   dummy:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.execWasi }}
+  {{- with $obj.execWasi }}
   execWasi:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.fluentBitMetrics }}
+  {{- with $obj.fluentBitMetrics }}
   fluentBitMetrics:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.forward }}
+  {{- with $obj.forward }}
   forward:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.http }}
+  {{- with $obj.http }}
   http:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.kubernetesEvents }}
+  {{- with $obj.kubernetesEvents }}
   kubernetesEvents:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.logLevel}}
+  {{- with $obj.logLevel}}
   logLevel: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $clInput.mqtt }}
+  {{- with $obj.mqtt }}
   mqtt:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.nginx }}
+  {{- with $obj.nginx }}
   nginx:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.nodeExporterMetrics }}
+  {{- with $obj.nodeExporterMetrics }}
   nodeExporterMetrics:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.openTelemetry }}
+  {{- with $obj.openTelemetry }}
   openTelemetry:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.processors }}
+  {{- with $obj.processors }}
   processors:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.prometheusScrapeMetrics }}
+  {{- with $obj.prometheusScrapeMetrics }}
   prometheusScrapeMetrics:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.statsd }}
+  {{- with $obj.statsd }}
   statsd:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.syslog }}
+  {{- with $obj.syslog }}
   syslog:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.systemd }}
+  {{- with $obj.systemd }}
   systemd:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.tail }}
+  {{- with $obj.tail }}
   tail:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.tcp }}
+  {{- with $obj.tcp }}
   tcp:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $clInput.udp }}
+  {{- with $obj.udp }}
   udp:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}

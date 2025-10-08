@@ -1,47 +1,47 @@
 {{- define "fluentbit.parser" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 | fromYaml }}
-{{- $parser := index . 2 }}
-{{- if eq (hasKey $parser "namespace") false }}
-{{- $parser = set $parser "namespace" $.Release.Namespace }}
+{{- $obj := index . 2 }}
+{{- if eq (hasKey $obj "namespace") false }}
+{{- $obj = set $obj "namespace" $.Release.Namespace }}
 {{- end }}
-{{- if eq (hasKey $parser "enabled") false }}
-{{- $parser = set $parser "enabled" true }}
+{{- if eq (hasKey $obj "enabled") false }}
+{{- $obj = set $obj "enabled" true }}
 {{- end }}
-{{- if $parser.labels }}
-{{- $labels = merge $labels $parser.labels }}
+{{- if $obj.labels }}
+{{- $labels = merge $labels $obj.labels }}
 {{- end }}
 {{- if $.Values.labels }}
 {{- $labels = merge $labels $.Values.labels }}
 {{- end }}
 
-{{- if $parser.enabled }}
+{{- if $obj.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: Parser
 metadata:
   labels:
 {{- tpl (toYaml $labels ) $ | nindent 4 }}
-  name: {{ tpl $parser.name $ }} 
-  namespace: "{{ $parser.namespace }}"
+  name: {{ tpl $obj.name $ }} 
+  namespace: "{{ $obj.namespace }}"
 spec:
-  {{- with $parser.decoders }}
+  {{- with $obj.decoders }}
   decoders:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $parser.json }}
+  {{- with $obj.json }}
   json:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $parser.logFmt }}
+  {{- with $obj.logFmt }}
   logFmt:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $parser.ltsv }}
+  {{- with $obj.ltsv }}
   ltsv:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $parser.regex }}
+  {{- with $obj.regex }}
   regex:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
