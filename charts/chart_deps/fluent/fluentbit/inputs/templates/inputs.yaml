@@ -1,104 +1,17 @@
-{{- range $input_name, $input_obj :=  .Values.inputs }}
----
-apiVersion: fluentbit.fluent.io/v1alpha2
-kind: Input
-metadata:
-  name: {{ printf "%s-%s" (include "fluentbit-inputs.fullname" $) $input_name }}
-  namespace: "{{ $input_obj.namespace | default $.Release.Namespace }}"
-  labels:
-{{- include "fluentbit-inputs.labels" $ | nindent 4 }}
-{{- with $input_obj.labels }}
-{{- tpl (toYaml .) $ | nindent 4 }}
+{{- range $name, $input :=  .Values.inputs }}
+{{- $labels := include "fluentbit-inputs.labels" $ | fromYaml }}
+{{- $input = set $input "name" ( printf "%s-%s" (include "fluentbit-inputs.fullname" $ )  $name ) }}
+{{- if eq (hasKey $input "namespace") false }}
+{{- $input = set $input "namespace" $.Release.Namespace }}
 {{- end }}
-{{- with $.Values.labels }}
-{{- tpl (toYaml .) $ | nindent 4 }}
+{{- if eq (hasKey $input "enabled") false }}
+{{- $input = set $input "enabled" true }}
 {{- end }}
-spec:
-  {{- with $input_obj.alias }}
-  alias:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.collectd }}
-  collectd:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.customPlugin }}
-  customPlugin:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.dummy }}
-  dummy:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.execWasi }}
-  execWasi:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.fluentBitMetrics }}
-  fluentBitMetrics:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.forward }}
-  forward:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.http }}
-  http:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.kubernetesEvents }}
-  kubernetesEvents:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.logLevel}}
-  logLevel: {{ tpl . $ | quote }}
-  {{- end }}
-  {{- with $input_obj.mqtt }}
-  mqtt:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.nginx }}
-  nginx:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.nodeExporterMetrics }}
-  nodeExporterMetrics:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.openTelemetry }}
-  openTelemetry:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.processors }}
-  processors:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.prometheusScrapeMetrics }}
-  prometheusScrapeMetrics:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.statsd }}
-  statsd:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.syslog }}
-  syslog:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.systemd }}
-  systemd:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.tail }}
-  tail:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.tcp }}
-  tcp:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $input_obj.udp }}
-  udp:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
+{{- if $input.labels }}
+{{- $labels = merge $labels $input.labels }}
+{{- end }}
+{{- if $.Values.labels }}
+{{- $labels = merge $labels $.Values.labels }}
+{{- end }}
+{{- include "fluentbit.input" (list $ (toYaml $labels) $input ) }}
 {{- end }}

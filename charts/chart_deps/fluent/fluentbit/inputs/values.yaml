@@ -1,5 +1,7 @@
 inputs:
 #  test:
+#    labels:
+#      fluentbit: test
 #    tail:
 #      tag: kube.*
 #      path: "/var/log/containers/*.log"
@@ -13,8 +15,13 @@ inputs:
 #      dbSync: Normal
 #      storageType: memory
 
+#labels:
+#  fluentbit: test
+
 clusterInputs:
 #  test:
+#    labels:
+#      fluentbit: test
 #    tail:
 #      tag: kube.*
 #      path: "/var/log/containers/*.log"

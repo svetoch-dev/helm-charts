@@ -3,3 +3,8 @@ appVersion: "1.0"
 description: Chart for configuring fluentbit inputs
 name: fluentbit-inputs
 version: 0.1.0
+
+dependencies:
+  - name: fluentbit-lib
+    version: 0.1.0
+    repository: file://../lib

@@ -324,7 +324,7 @@ fluentbit:
           - list
 
 fluentbit-gcp:
-  enabled: true
+  enabled: false
   inputs:
     enabled: true
     labels:

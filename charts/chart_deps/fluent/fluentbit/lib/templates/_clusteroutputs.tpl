@@ -1,101 +1,86 @@
-{{- range $name, $clInput :=  .Values.clusterInputs }}
-{{- $labels := include "fluentbit-inputs.labels" $ | fromYaml }}
-{{- $clInput = set $clInput "name" ( printf "%s-%s" (include "fluentbit-inputs.fullname" $ )  $name ) }}
-{{- if eq (hasKey $clInput "enabled") false }}
-{{- $clInput = set $clInput "enabled" true }}
-{{- end }}
-{{- if $clInput.labels }}
-{{- $labels = merge $labels $clInput.labels }}
-{{- end }}
-{{- if $.Values.labels }}
-{{- $labels = merge $labels $.Values.labels }}
-{{- end }}
-{{- include "fluentbit.clusterinput" (list $ (toYaml $labels) $clInput ) }}
-{{- end }}
+{{- define "fluentbit.clusteroutput" -}}
+{{- $ := index . 0 }}
+{{- $labels := index . 1 | fromYaml }}
+{{- $clOutput := index . 2 }}
+{{- if $clOutput.enabled }}
 ---
 apiVersion: fluentbit.fluent.io/v1alpha2
 kind: ClusterOutput
 metadata:
-  name: {{ printf "%s-%s" (include "fluentbit-outputs.fullname" $) $cl_output_name }}
   labels:
-{{- include "fluentbit-outputs.labels" $ | nindent 4 }}
-{{- with $cl_output_obj.labels }}
-{{- tpl (toYaml .) $ | nindent 4 }}
-{{- end }}
-{{- with $.Values.labels }}
-{{- tpl (toYaml .) $ | nindent 4 }}
-{{- end }}
+{{- tpl (toYaml $labels ) $ | nindent 4 }}
+  name: {{ tpl $clOutput.name $ }} 
 spec:
-  {{- with $cl_output_obj.matchRegex}}
+  {{- with $clOutput.matchRegex}}
   matchRegex: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $cl_output_obj.match}}
+  {{- with $clOutput.match}}
   match: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $cl_output_obj.logLevel}}
+  {{- with $clOutput.logLevel}}
   logLevel: {{ tpl . $ | quote }}
   {{- end }}
-  {{- with $cl_output_obj.alias }}
+  {{- with $clOutput.alias }}
   alias:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.azureBlob }}
+  {{- with $clOutput.azureBlob }}
   azureBlob:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.azureLogAnalytics }}
+  {{- with $clOutput.azureLogAnalytics }}
   azureLogAnalytics:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.cloudWatch }}
+  {{- with $clOutput.cloudWatch }}
   cloudWatch:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.datadog }}
+  {{- with $clOutput.datadog }}
   datadog:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.es }}
+  {{- with $clOutput.es }}
   es:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.file }}
+  {{- with $clOutput.file }}
   file:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.firehouse }}
+  {{- with $clOutput.firehouse }}
   firehouse:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.forward }}
+  {{- with $clOutput.forward }}
   forward:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.gelf }}
+  {{- with $clOutput.gelf }}
   gelf:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.http }}
+  {{- with $clOutput.http }}
   http:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.customPlugin }}
+  {{- with $clOutput.customPlugin }}
   customPlugin:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.influxDB }}
+  {{- with $clOutput.influxDB }}
   influxDB:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.kafka }}
+  {{- with $clOutput.kafka }}
   kafka:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.kinesis }}
+  {{- with $clOutput.kinesis }}
   kinesis:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.loki }}
+  {{- with $clOutput.loki }}
   loki:
   {{- $labels := list }}
   {{- range $label_name, $label_value := .labels }}
@@ -105,51 +90,52 @@ spec:
   {{- $context := set $context "labels" $labels }}
   {{- tpl (toYaml $context) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.opensearch }}
+  {{- with $clOutput.opensearch }}
   opensearch:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.opentelemetry }}
+  {{- with $clOutput.opentelemetry }}
   opentelemetry:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.processors }}
+  {{- with $clOutput.processors }}
   processors:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.prometheusExporter }}
+  {{- with $clOutput.prometheusExporter }}
   prometheusExporter:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.prometheusRemoteWrite }}
+  {{- with $clOutput.prometheusRemoteWrite }}
   prometheusRemoteWrite:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.s3 }}
+  {{- with $clOutput.s3 }}
   s3:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.splunks }}
+  {{- with $clOutput.splunks }}
   splunks:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.stackdriver }}
+  {{- with $clOutput.stackdriver }}
   stackdriver:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.stdout }}
+  {{- with $clOutput.stdout }}
   stdout:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.syslog }}
+  {{- with $clOutput.syslog }}
   syslog:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $cl_output_obj.tcp }}
+  {{- with $clOutput.tcp }}
   tcp:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- if (hasKey $cl_output_obj "null") }}
+  {{- if (hasKey $clOutput "null") }}
   "null": {}
   {{- end }}
+{{- end }}
 {{- end }}
