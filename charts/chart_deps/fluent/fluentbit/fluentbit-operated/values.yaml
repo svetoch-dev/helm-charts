@@ -1,4 +1,4 @@
-#labels:
+labels:
 #  fluentbit1: test
 
 filters: {}
@@ -78,9 +78,12 @@ config:
 
 fluentbit:
   enabled: false
+  fluentBitConfigName: '{{ include "fluentbit-operated.fullname" . }}'
 
 collector:
   enabled: false
+  fluentBitConfigName: '{{ include "fluentbit-operated.fullname" . }}'
+
 
 pvs: {}
 
