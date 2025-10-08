@@ -1,3 +1,6 @@
+#labels:
+#  fluentbit1: test
+
 filters: {}
 
 clusterFilters: {}
@@ -26,10 +29,52 @@ clusterMultilineParsers: {}
 clusterConfig:
   enabled: false
   configFileFormat: "yaml"
+#  labels:
+#    fluentbit: test
+#  service:
+#    parsersFile: /fluent-bit/etc/parsers.conf
+#    httpServer: true
+#  inputSelector:
+#    matchLabels:
+#      fluentbit: "test"
+#  filterSelector:
+#    matchLabels:
+#      fluentbit: "test"
+#  parserSelector:
+#    matchLabels:
+#      fluentbit: "test"
+#  outputSelector:
+#    matchLabels:
+#      fluentbit: "test"
+#  multilineParserSelector:
+#    matchLabels:
+#      fluentbit: "test"
+
 
 config:
   enabled: false
   configFileFormat: "yaml"
+#  labels:
+#    fluentbit: test
+#  service:
+#    parsersFile: /fluent-bit/etc/parsers.conf
+#    httpServer: true
+#  inputSelector:
+#    matchLabels:
+#      fluentbit: "test"
+#  filterSelector:
+#    matchLabels:
+#      fluentbit: "test"
+#  parserSelector:
+#    matchLabels:
+#      fluentbit: "test"
+#  outputSelector:
+#    matchLabels:
+#      fluentbit: "test"
+#  multilineParserSelector:
+#    matchLabels:
+#      fluentbit: "test"
+
 
 fluentbit:
   enabled: false
