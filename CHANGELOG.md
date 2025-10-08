@@ -135,7 +135,6 @@ Enhancements:
     * `compactor`
     * `storegateway`
 
-
 Fixes:
 * `prometheus`:
   * `matchers` field used a deprecated syntax (`alertmanager`)

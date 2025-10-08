@@ -158,6 +158,8 @@ chart_apps:
       loki:
         nameOverride: "loki-{{ .Values.global.env.name }}"
         loki:
+          compactor:
+            delete_request_store: "{{ .Values.global.bucket.type }}"
           storage:
             type: "{{ .Values.global.bucket.type }}"
             bucketNames:
