@@ -326,10 +326,31 @@ fluentbit:
 fluentbit-gcp:
   enabled: true
   inputs:
-    enabled: false
+    enabled: true
+    labels:
+      fluentbit: "gcp"
+    clusterInputs:
+      control-plane:
+        tail:
+          tag: kube.control-plane.*
+          path: "/var/log/k8s/kube-proxy/*.json"
+          readFromHead: true
+          parser: cri
+          memBufLimit: 100MB
+          skipLongLines: true
+          skipEmptyLines: true
+          db: /fluent-bit/tail/pos.db
+          dbSync: Normal
+          storageType: memory
 
   outputs:
     enabled: false
+    labels:
+      fluentbit: "gcp"
+    clusterOutputs:
+      stdout:
+        stdout:
+          format: json
 
   filters:
     enabled: false
