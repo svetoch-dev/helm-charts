@@ -25,3 +25,6 @@ dependencies:
     repository: file://../parsers/
     alias: parsers
     condition: parsers.enabled
+  - name: core
+    version: 0.1.0
+    repository: file://../../../app/core

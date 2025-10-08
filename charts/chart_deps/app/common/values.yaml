@@ -156,5 +156,5 @@ command: []
 
 args: []
 
-servicemonitor:
+serviceMonitor:
   enabled: false

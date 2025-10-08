@@ -323,8 +323,8 @@ fluentbit:
         verbs:
           - list
 
-gcp:
-  enabled: false
+fluentbit-gcp:
+  enabled: true
   inputs:
     enabled: false
 
@@ -335,17 +335,75 @@ gcp:
     enabled: false
 
   clusterConfig:
-    enabled: false
+    enabled: true
+    service:
+      parsersFile: /fluent-bit/etc/parsers.conf
+      httpServer: true
+    inputSelector:
+      matchLabels:
+        fluentbit: "gcp"
+    filterSelector:
+      matchLabels:
+        fluentbit: "gcp"
+    parserSelector:
+      matchLabels:
+        fluentbit: "gcp"
+    outputSelector:
+      matchLabels:
+        fluentbit: "gcp"
+    multilineParserSelector:
+      matchLabels:
+        fluentbit: "gcp"
 
-  config:
-    enabled: false
 
   parsers:
     enabled: false
 
   collector:
-    enabled: false
+    enabled: true
+    annotations:
+      gke-gcsfuse/volumes: 'true'
+    image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9-debug
+    replicas: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1200Mi
+      requests:
+        cpu: 10m
+        memory: 25Mi
     fluentBitConfigName: '{{ include "fluentbit-operated.fullname" . }}'
+    volumesMounts:
+      - name: gcsfuse
+        mountPath: /var/log/k8s
+    volumes:
+      - name: gcsfuse
+        persistentVolumeClaim:
+          claimName: '{{ include "fluentbit-operated.fullname" $ }}-gcsfuse'
+  pvcs:
+    gcsfuse:
+      storage: 5Gi
+      storageClass: gcsfuse
+      volumeName: '{{ include "fluentbit-operated.fullname" $ }}-gcsfuse'
+      accessModes:
+        - ReadWriteMany
+  pvs:
+    gcsfuse:
+      accessModes:
+        - ReadWriteMany
+      storage: 5Gi
+      storageClass: gcsfuse
+      mountOptions:
+        - implicit-dirs
+        - uid=1000
+        - gid=1000
+      csi:
+        driver: gcsfuse.csi.storage.gke.io
+        volumeHandle: '{{printf "%s-logs-%s" .Values.global.bucket.prefix .Values.global.bucket.suffix }}'
+      claimRef:
+        name: '{{ include "fluentbit-operated.fullname" $ }}-gcsfuse'
+        namespace: '{{ .Release.Namespace }}'
+
 
 operator:
   enabled: false

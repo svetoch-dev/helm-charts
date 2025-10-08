@@ -63,7 +63,7 @@ spec:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- with .Values.collector.replicas }}
-  replicas: {{ tpl . $ | quote }}
+  replicas: {{ . }}
   {{- end }}
   {{- with .Values.collector.resources }}
   resources:

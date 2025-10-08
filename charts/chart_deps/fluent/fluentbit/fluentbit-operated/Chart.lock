@@ -11,5 +11,8 @@ dependencies:
 - name: fluentbit-parsers
   repository: file://../parsers/
   version: 0.1.0
-digest: sha256:c06b0458999759419d8c3905051d1157bdb064585fceb47b3d1fb4357e836077
-generated: "2025-09-03T16:06:52.881538182+03:00"
+- name: core
+  repository: file://../../../app/core
+  version: 0.1.0
+digest: sha256:945ed491326d66f33c65bc5e97a26d8fa29ca501c83902cd2ab89725cb631077
+generated: "2025-10-06T13:16:56.576699921+03:00"

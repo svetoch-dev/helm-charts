@@ -1,0 +1,5 @@
+{{- range $name, $pv := .Values.pvs }}
+{{- $pv = set $pv "name" ( printf "%s-%s" (include "fluentbit-operated.fullname" $ )  $name ) }}
+{{- $pv = set $pv "enabled" true }}
+{{- include "core.pv" (list $ (list ) $pv ) }}
+{{- end }}
