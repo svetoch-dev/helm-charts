@@ -1,31 +1,32 @@
 {{- define "core.pvc" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 }}
-{{- $pvc := index . 2 }}
-{{- if $pvc.enabled }}
+{{- $obj := include "core.obj.enricher" (list $ $labels (index . 2)) | fromYaml }}
+{{- if $obj.enabled }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   labels:
-{{- $labels | nindent 4 }}
-  name: {{ tpl $pvc.name $ }} 
+{{- include "core.labels.constructor" (list $ $labels $obj) | nindent 4 }}
+  name: {{ tpl $obj.name $ }}
+  namespace: "{{ $obj.namespace }}"
 spec:
-  {{- if $pvc.accessModes }}
+  {{- if $obj.accessModes }}
   accessModes:
-  {{- toYaml $pvc.accessModes | nindent 4}}
+  {{- toYaml $obj.accessModes | nindent 4}}
   {{- else }}
   accessModes:
   - ReadWriteOnce
   {{- end }}
-  {{- if $pvc.volumeName }}
-  volumeName: {{ tpl $pvc.volumeName $ }}
+  {{- if $obj.volumeName }}
+  volumeName: {{ tpl $obj.volumeName $ }}
   {{- end }}
   resources:
     requests:
-      storage: {{ $pvc.storage }}
-  {{- if $pvc.storageClass }}
-  storageClassName: {{ $pvc.storageClass }}
+      storage: {{ $obj.storage }}
+  {{- if $obj.storageClass }}
+  storageClassName: {{ $obj.storageClass }}
   {{- end }}
 {{- end }}
 {{- end }}

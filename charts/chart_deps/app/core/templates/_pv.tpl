@@ -1,35 +1,37 @@
 {{- define "core.pv" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 }}
-{{- $pv := index . 2 }}
-{{- if $pv.enabled }}
+{{- $obj := include "core.obj.enricher" (list $ $labels (index . 2)) | fromYaml }}
+{{- if $obj.enabled }}
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ tpl $pv.name $ }}
+  labels:
+{{- include "core.labels.constructor" (list $ $labels $obj) | nindent 4 }}
+  name: {{ tpl $obj.name $ }}
 spec:
-  {{- if $pv.accessModes }}
+  {{- if $obj.accessModes }}
   accessModes:
-  {{- toYaml $pv.accessModes | nindent 4}}
+  {{- toYaml $obj.accessModes | nindent 4}}
   {{- else }}
   accessModes:
   - ReadWriteOnce
   {{- end }}
   capacity:
-    storage: {{ $pv.storage }}
-  {{- if $pv.storageClass }}
-  storageClassName: {{ $pv.storageClass }}
+    storage: {{ $obj.storage }}
+  {{- if $obj.storageClass }}
+  storageClassName: {{ $obj.storageClass }}
   {{- end }}
-  {{- with $pv.mountOptions }}
+  {{- with $obj.mountOptions }}
   mountOptions:
   {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- with $pv.csi }}
+  {{- with $obj.csi }}
   csi:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $pv.claimRef }}
+  {{- with $obj.claimRef }}
   claimRef:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}

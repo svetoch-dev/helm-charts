@@ -1,9 +1,5 @@
 {{- range $name, $pvc := .Values.pvcs }}
 {{- $labels := include "common.labels" $ | fromYaml }}
 {{- $pvc = set $pvc "name" ( printf "%s-%s" (include "common.fullname" $ )  $name ) }}
-{{- $pvc = set $pvc "enabled" true }}
-{{- if $pvc.labels }}
-{{- $labels = merge $labels $pvc.labels }}
-{{- end }}
-{{- include "core.pvc" (list $ (toYaml $labels) $pvc ) }}
+{{- include "core.pvc" (list $ $labels $pvc ) }}
 {{- end }}
