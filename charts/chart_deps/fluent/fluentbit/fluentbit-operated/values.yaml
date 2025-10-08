@@ -1,29 +1,252 @@
 labels:
 #  fluentbit1: test
 
-filters: {}
+filters:
+#  test:
+#    namespace: test
+#    enabled: true
+#    labels:
+#      fluentbit: test
+#    match: kube.*
+#    namespace: test
+#    filters:
+#      mainKube:
+#        kubernetes:
+#          kubeURL: https://kubernetes.default.svc:443
+#          kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+#          kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+#      nestKube:
+#        nest:
+#          operation: lift
+#          nestedUnder: kubernetes
+#          addPrefix: kubernetes_
+#      mainModify:
+#        modify:
+#          rules:
+#          - remove: stream
+#          - remove: kubernetes_pod_id
+#          - remove: kubernetes_host
+#          - remove: kubernetes_container_hash
+#      nestAll:
+#        nest:
+#          operation: nest
+#          wildcard:
+#          - kubernetes_*
+#          nestUnder: kubernetes
+#          removePrefix: kubernetes_
 
-clusterFilters: {}
+
+clusterFilters:
+#  test:
+#    enabled: true
+#    labels:
+#      fluentbit: test
+#    match: kube.*
+#    filters:
+#      mainKube:
+#        kubernetes:
+#          kubeURL: https://kubernetes.default.svc:443
+#          kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+#          kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+#      nestKube:
+#        nest:
+#          operation: lift
+#          nestedUnder: kubernetes
+#          addPrefix: kubernetes_
+#      mainModify:
+#        modify:
+#          rules:
+#          - remove: stream
+#          - remove: kubernetes_pod_id
+#          - remove: kubernetes_host
+#          - remove: kubernetes_container_hash
+#      nestAll:
+#        nest:
+#        operation: nest
+#        wildcard:
+#        - kubernetes_*
+#        nestUnder: kubernetes
+#        removePrefix: kubernetes_
 
 
-inputs: {}
+inputs:
+  test:
+    enabled: true
+    namespace: test
+    labels:
+      fluentbit: test
+    tail:
+      tag: kube.*
+      path: "/var/log/containers/*.log"
+      readFromHead: false
+      parser: cri
+      refreshIntervalSeconds: 10
+      memBufLimit: 100MB
+      skipLongLines: true
+      skipEmptyLines: true
+      db: /fluent-bit/tail/pos.db
+      dbSync: Normal
+      storageType: memory
 
-clusterInputs: {}
+
+clusterInputs:
+#  systemd:
+#    enabled: false
+#    systemd:
+#      tag: systemd.*
+#      path: "/var/log/journal"
+#      db: "/fluent-bit/tail/systemd.db"
+#      dbSync: Normal
+#      storageType: memory
+#
+#  test:
+#    labels:
+#      fluentbit: test
+#    tail:
+#      tag: kube.*
+#      path: "/var/log/containers/*.log"
+#      readFromHead: false
+#      parser: cri
+#      refreshIntervalSeconds: 10
+#      memBufLimit: 100MB
+#      skipLongLines: true
+#      skipEmptyLines: true
+#      db: /fluent-bit/tail/pos.db
+#      dbSync: Normal
+#      storageType: memory
 
 
-outputs: {}
+outputs:
+#  test:
+#    namespace: test
+#    labels:
+#      fluentbit: test
+#    matchRegex: (?:kube|service)\.(.*)
+#    retry_limit: "no_limits"
+#    logLevel: "info"
+#    loki:
+#      host: "loki-write.loki.svc.cluster.local"
+#      port: 3100
+#      autoKubernetesLabels: "on"
+#      dropSingleKey: "on"
+#      labels:
+#        env: gcp-int
+#        job: fluent-bit
+#        pord: $kubernetes['pod_name']
+#        container: $kubernetes['container_name']
+#        namespace: $kubernetes['namespace_name']
+#        node: $kubernetes['host']
+#        stream: $stream
+#      removeKeys:
+#        - _p
+#        - time
+#        - stream
+#        - kubernetes
+#        - ts
+#        - logtag
 
-clusterOutputs: {}
+
+clusterOutputs:
+#  test:
+#    enabled: true
+#    labels:
+#      fluentbit: test
+#    matchRegex: (?:kube|service)\.(.*)
+#    retry_limit: "no_limits"
+#    logLevel: "info"
+#    loki:
+#      host: "loki-write.loki.svc.cluster.local"
+#      port: 3100
+#      autoKubernetesLabels: "on"
+#      dropSingleKey: "on"
+#      labels:
+#        env: gcp-int
+#        job: fluent-bit
+#        pord: $kubernetes['pod_name']
+#        container: $kubernetes['container_name']
+#        namespace: $kubernetes['namespace_name']
+#        node: $kubernetes['host']
+#        stream: $stream
+#      removeKeys:
+#        - _p
+#        - time
+#        - stream
+#        - kubernetes
+#        - ts
+#        - logtag
+
+parsers:
+#  test:
+#    namespace: test
+#    labels:
+#      fluentbit: test
+#    json:
+#      timeKeep: false
+#  fluentbit:
+#    namespace: test1
+#    regex:
+#      regex: '^\[(?<time>[^\]]+)\][ ]*\[[ ]*(?<level>[^\]]+)\][ ]*\[(?<plugin>[^\]]+)\] (?<log>.*)'
+#      timeKey: 'time'
+#      timeFormat: '%Y/%m/%d %H:%M:%S'
+
+clusterParsers:
+#  test:
+#    labels:
+#      fluentbit: test
+#    json:
+#      timeKeep: false
+#  fluentbit:
+#    enabled: true
+#    regex:
+#      regex: '^\[(?<time>[^\]]+)\][ ]*\[[ ]*(?<level>[^\]]+)\][ ]*\[(?<plugin>[^\]]+)\] (?<log>.*)'
+#      timeKey: 'time'
+#      timeFormat: '%Y/%m/%d %H:%M:%S'
 
 
-parsers: {}
+multilineParsers:
+#  test:
+#    enabled: true
+#    labels:
+#      fluentbit: test
+#    type: "regex"
+#    flushTimeout: 1000
+#    namespace: test
+#    keyContent: "log"
+#    rules:
+#      - start: "start_state"
+#        regex: '/^\[?(\d+\-\d+\-\d+ \d+\:\d+\:\d+(\.\d+)?)\]? /'
+#        next: "cont"
+#      - start: "cont"
+#        regex: '/^com\..*/'
+#        next: "cont"
+#      - start: "cont"
+#        regex: '/^\s+.*/'
+#        next: "cont"
+#      - start: "cont"
+#        regex: '/^Caused.*$/'
+#        next: "cont"
 
-clusterParsers: {}
-
-
-multilineParsers: {}
-
-clusterMultilineParsers: {}
+clusterMultilineParsers:
+#  test:
+#    enabled: true
+#    labels:
+#      fluentbit: test
+#    type: "regex"
+#    flushTimeout: 1000
+#    keyContent: "log"
+#    rules:
+#      - start: "start_state"
+#        regex: '/^\[?(\d+\-\d+\-\d+ \d+\:\d+\:\d+(\.\d+)?)\]? /'
+#        next: "cont"
+#      - start: "cont"
+#        regex: '/^com\..*/'
+#        next: "cont"
+#      - start: "cont"
+#        regex: '/^\s+.*/'
+#        next: "cont"
+#      - start: "cont"
+#        regex: '/^Caused.*$/'
+#        next: "cont"
 
 
 clusterConfig:
