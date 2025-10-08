@@ -1,11 +1,40 @@
 parsers:
+#  test:
+#    namespace: test
+#    labels:
+#      fluentbit: test
+#    json:
+#      timeKeep: false
+#  fluentbit:
+#    namespace: test1
+#    regex:
+#      regex: '^\[(?<time>[^\]]+)\][ ]*\[[ ]*(?<level>[^\]]+)\][ ]*\[(?<plugin>[^\]]+)\] (?<log>.*)'
+#      timeKey: 'time'
+#      timeFormat: '%Y/%m/%d %H:%M:%S'
+
+
+labels:
+  fluentbit1: test
 
 clusterParsers:
+#  test:
+#    labels:
+#      fluentbit: test
+#    json:
+#      timeKeep: false
+#  fluentbit:
+#    enabled: false
+#    regex:
+#      regex: '^\[(?<time>[^\]]+)\][ ]*\[[ ]*(?<level>[^\]]+)\][ ]*\[(?<plugin>[^\]]+)\] (?<log>.*)'
+#      timeKey: 'time'
+#      timeFormat: '%Y/%m/%d %H:%M:%S'
+
 
 multilineParsers:
 #  test:
 #    type: "regex"
 #    flushTimeout: 1000
+#    namespace: test
 #    keyContent: "log"
 #    rules:
 #      - start: "start_state"
@@ -23,6 +52,8 @@ multilineParsers:
 
 clusterMultilineParsers:
 #  test:
+#    labels:
+#      fluentbit: test
 #    type: "regex"
 #    flushTimeout: 1000
 #    keyContent: "log"

@@ -1,37 +1,17 @@
-{{- range $parser_name, $parser_obj :=  .Values.parsers }}
----
-apiVersion: fluentbit.fluent.io/v1alpha2
-kind: Parser
-metadata:
-  name: {{ printf "%s-%s" (include "fluentbit-parsers.fullname" $) $parser_name }}
-  namespace: "{{ $parser_obj.namespace | default $.Release.Namespace }}"
-  labels:
-{{- include "fluentbit-parsers.labels" $ | nindent 4 }}
-{{- with $parser_obj.labels }}
-{{- tpl (toYaml .) $ | nindent 4 }}
+{{- range $name, $parser :=  .Values.parsers }}
+{{- $labels := include "fluentbit-parsers.labels" $ | fromYaml }}
+{{- $parser = set $parser "name" ( printf "%s-%s" (include "fluentbit-parsers.fullname" $ )  $name ) }}
+{{- if eq (hasKey $parser "namespace") false }}
+{{- $parser = set $parser "namespace" $.Release.Namespace }}
 {{- end }}
-{{- with $.Values.labels }}
-{{- tpl (toYaml .) $ | nindent 4 }}
+{{- if eq (hasKey $parser "enabled") false }}
+{{- $parser = set $parser "enabled" true }}
 {{- end }}
-spec:
-  {{- with $parser_obj.decoders }}
-  decoders:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $parser_obj.json }}
-  json:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $parser_obj.logFmt }}
-  logFmt:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $parser_obj.ltsv }}
-  ltsv:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $parser_obj.regex }}
-  regex:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
+{{- if $parser.labels }}
+{{- $labels = merge $labels $parser.labels }}
+{{- end }}
+{{- if $.Values.labels }}
+{{- $labels = merge $labels $.Values.labels }}
+{{- end }}
+{{- include "fluentbit.parser" (list $ (toYaml $labels) $parser ) }}
 {{- end }}

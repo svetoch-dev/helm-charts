@@ -19,6 +19,15 @@ inputs:
 #  fluentbit: test
 
 clusterInputs:
+#  systemd:
+#    enabled: false
+#    systemd:
+#      tag: systemd.*
+#      path: "/var/log/journal"
+#      db: "/fluent-bit/tail/systemd.db"
+#      dbSync: Normal
+#      storageType: memory
+#
 #  test:
 #    labels:
 #      fluentbit: test
