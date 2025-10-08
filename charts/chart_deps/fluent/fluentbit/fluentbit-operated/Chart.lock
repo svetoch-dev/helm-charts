@@ -1,18 +1,9 @@
 dependencies:
-- name: fluentbit-filters
-  repository: file://../filters/
-  version: 0.1.0
-- name: fluentbit-inputs
-  repository: file://../inputs/
-  version: 0.1.0
-- name: fluentbit-outputs
-  repository: file://../outputs/
-  version: 0.1.0
-- name: fluentbit-parsers
-  repository: file://../parsers/
+- name: fluentbit-lib
+  repository: file://../lib
   version: 0.1.0
 - name: core
   repository: file://../../../app/core
   version: 0.1.0
-digest: sha256:945ed491326d66f33c65bc5e97a26d8fa29ca501c83902cd2ab89725cb631077
-generated: "2025-10-06T13:16:56.576699921+03:00"
+digest: sha256:32a9beaaea63a70df07f33906b734106dc2ca169b7fc9bb27c7326287a0bd070
+generated: "2025-10-08T18:45:01.67193495+03:00"

@@ -1,11 +1,27 @@
-inputs:
-  enabled: false
+filters: {}
 
-outputs:
-  enabled: false
+clusterFilters: {}
 
-filters:
-  enabled: false
+
+inputs: {}
+
+clusterInputs: {}
+
+
+outputs: {}
+
+clusterOutputs: {}
+
+
+parsers: {}
+
+clusterParsers: {}
+
+
+multilineParsers: {}
+
+clusterMultilineParsers: {}
+
 
 clusterConfig:
   enabled: false
@@ -14,9 +30,6 @@ clusterConfig:
 config:
   enabled: false
   configFileFormat: "yaml"
-
-parsers:
-  enabled: false
 
 fluentbit:
   enabled: false

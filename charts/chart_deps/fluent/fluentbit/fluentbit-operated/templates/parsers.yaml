@@ -1,0 +1,5 @@
+{{- range $name, $parser :=  .Values.parsers }}
+{{- $labels := include "fluentbit-operated.labels" $ | fromYaml }}
+{{- $parser = set $parser "name" ( printf "%s-%s" (include "fluentbit-operated.fullname" $ )  $name ) }}
+{{- include "fluentbit.parser" (list $ (toYaml $labels) $parser ) }}
+{{- end }}
