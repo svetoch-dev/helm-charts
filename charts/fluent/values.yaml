@@ -215,7 +215,7 @@ fluentbit:
       ordinal: 0
       filters:
         - parser:
-            parser: '{{ include "fluentbit-operated.fullname" $ }}'
+            parser: '{{ include "fluentbit-operated.fullname" $ }}-fluentbit'
             keyName: log
     kube-system:
       match: 'kube.pods.kube-system.*'
@@ -328,8 +328,8 @@ fluentbit-gcp:
 
   clusterOutputs:
     stdout:
+      match: 'kube.control-plane.*'
       stdout:
-        match: 'kube.control-plane.*'
         format: json
 
 
