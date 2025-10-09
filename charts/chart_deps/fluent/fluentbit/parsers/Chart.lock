@@ -1,6 +1,0 @@
-dependencies:
-- name: fluentbit-lib
-  repository: file://../lib
-  version: 0.1.0
-digest: sha256:8588aa37e91da82656e5c22a2f289f5034c2e8ac83073f2322e27895b4fe62ea
-generated: "2025-10-08T16:20:39.519626984+03:00"

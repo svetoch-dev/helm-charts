@@ -1,5 +1,0 @@
-{{- range $name, $clFilter :=  .Values.clusterFilters }}
-{{- $labels := include "fluentbit-filters.labels" $ | fromYaml }}
-{{- $clFilter = set $clFilter "name" ( printf "%s-%s" (include "fluentbit-filters.fullname" $ )  $name ) }}
-{{- include "fluentbit.clusterfilter" (list $ (toYaml $labels) $clFilter ) }}
-{{- end }}

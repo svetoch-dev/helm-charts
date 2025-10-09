@@ -1,5 +1,0 @@
-{{- range $name, $input :=  .Values.inputs }}
-{{- $labels := include "fluentbit-inputs.labels" $ }}
-{{- $input = set $input "name" ( printf "%s-%s" (include "fluentbit-inputs.fullname" $ )  $name ) }}
-{{- include "fluentbit.input" (list $ $labels $input ) }}
-{{- end }}

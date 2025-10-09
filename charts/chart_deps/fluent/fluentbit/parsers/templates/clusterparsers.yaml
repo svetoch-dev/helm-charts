@@ -1,5 +1,0 @@
-{{- range $name, $clParser :=  .Values.clusterParsers }}
-{{- $labels := include "fluentbit-parsers.labels" $ | fromYaml }}
-{{- $clParser = set $clParser "name" ( printf "%s-%s" (include "fluentbit-parsers.fullname" $ )  $name ) }}
-{{- include "fluentbit.clusterparser" (list $ (toYaml $labels) $clParser ) }}
-{{- end }}
