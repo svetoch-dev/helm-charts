@@ -1,4 +1,5 @@
 {{- range $name, $pv := .Values.pvs }}
+{{- $labels := include "fluentbit-operated.labels" $ | fromYaml }}
 {{- $pv = set $pv "name" ( printf "%s-%s" (include "fluentbit-operated.fullname" $ )  $name ) }}
-{{- include "core.pv" (list $ (list ) $pv ) }}
+{{- include "core.pv" (list $ $labels $pv ) }}
 {{- end }}
