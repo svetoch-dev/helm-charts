@@ -159,7 +159,7 @@ fluentbit:
       ordinal: 100
       filters:
         - parser:
-            parser: '{{ .Release.Name }}-parsers-json'
+            parser: '{{ include "fluentbit-operated.fullname" $ }}-json'
             keyName: log
         - modify:
             rules:
@@ -173,7 +173,7 @@ fluentbit:
             kubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
             kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
             kubeTagPrefix: "kube.pods."
-            regexParser: '{{ .Release.Name }}-parsers-kube-pod-tag'
+            regexParser: '{{ include "fluentbit-operated.fullname" $ }}-kube-pod-tag'
         - modify:
             conditions:
               - keyValueEquals:
@@ -211,18 +211,18 @@ fluentbit:
                   level: debug
 
     fluentbit:
-      match: 'kube.pods.fluent.{{ .Release.Name }}-fluentbit*'
+      match: 'kube.pods.fluent.{{ include "fluentbit-operated.fullname" $ }}*'
       ordinal: 0
       filters:
         - parser:
-            parser: '{{ .Release.Name }}-parsers-fluentbit'
+            parser: '{{ include "fluentbit-operated.fullname" $ }}'
             keyName: log
     kube-system:
       match: 'kube.pods.kube-system.*'
       ordinal: 101
       filters:
         - parser:
-            parser: '{{ .Release.Name }}-parsers-workloads'
+            parser: '{{ include "fluentbit-operated.fullname" $ }}-workloads'
             keyName: $kubernetes['pod_name']
             reserveData: true
         - lua:
@@ -291,7 +291,6 @@ fluentbit:
       requests:
         cpu: 10m
         memory: 25Mi
-    fluentBitConfigName: '{{ include "fluentbit-operated.fullname" . }}'
     livenessProbe:
       failureThreshold: 8
       httpGet:
@@ -369,7 +368,6 @@ fluentbit-gcp:
       requests:
         cpu: 10m
         memory: 25Mi
-    fluentBitConfigName: '{{ include "fluentbit-operated.fullname" . }}'
     volumesMounts:
       - name: gcsfuse
         mountPath: /var/log/k8s
