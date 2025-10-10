@@ -5,23 +5,9 @@ name: fluentbit-operated
 version: 0.1.0
 
 dependencies:
-  - name: fluentbit-filters
+  - name: fluentbit-lib
     version: 0.1.0
-    repository: file://../filters/
-    alias: filters
-    condition: filters.enabled
-  - name: fluentbit-inputs
+    repository: file://../lib
+  - name: core
     version: 0.1.0
-    repository: file://../inputs/
-    alias: inputs
-    condition: inputs.enabled
-  - name: fluentbit-outputs
-    version: 0.1.0
-    repository: file://../outputs/
-    alias: outputs
-    condition: outputs.enabled
-  - name: fluentbit-parsers
-    version: 0.1.0
-    repository: file://../parsers/
-    alias: parsers
-    condition: parsers.enabled
+    repository: file://../../../app/core

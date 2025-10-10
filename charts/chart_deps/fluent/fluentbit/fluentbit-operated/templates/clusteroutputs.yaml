@@ -1,0 +1,5 @@
+{{- range $name, $clOutput :=  .Values.clusterOutputs }}
+{{- $labels := include "fluentbit-operated.labels" $ | fromYaml }}
+{{- $clOutput = set $clOutput "name" ( printf "%s-%s" (include "fluentbit-operated.fullname" $ )  $name ) }}
+{{- include "fluentbit.clusteroutput" (list $ $labels $clOutput ) }}
+{{- end }}
