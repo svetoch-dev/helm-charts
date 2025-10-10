@@ -31,6 +31,7 @@ New features:
   * `datasources` for loki in all new env are created dinamically from `externalEnvs` variable
   * new panels for `logs` on `services dashboard`
   * new dashboard system
+  * fluentbit filters chart
 * `chart_deps/postgres/postgres-cluster`:
   * `defaultSidecars` attr that controls sets up pg exporter sidecars for each created db
   * ability to override `defaultSidecar` attrs by setting the keyNames same to db names
@@ -61,6 +62,13 @@ New features:
   * ability to set `image` (for default set `docker.io/rabbitmq:4.1.3`)
   * ability to set `rabbitmq: {}` values 
   * new alert `RabbitMQ_missing_master`
+* `chart_deps/prometheus/lib`: library chart with prometheus operator object definitions
+* `chart_deps/app/common`:
+  * pvc/pv definitions moved to `chart_deps/app/core`
+  * setviceMonitor definition moved to `chart_deps/prometheus/lib`
+* `chart_deps/app/core`:
+  * helper functions `core.labels.constructor` `core.obj.enricher`
+ 
 
 Enhancements:
 * set `argocd controller` resources `limits memory` 2Gi -> 4Gi
