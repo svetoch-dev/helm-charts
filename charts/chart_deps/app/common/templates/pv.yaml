@@ -1,31 +1,5 @@
 {{- range $name, $pv := .Values.pvs }}
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: {{ include "common.fullname" $ }}-{{ $name }}
-spec:
-  {{- if $pv.accessModes }}
-  accessModes:
-  {{- toYaml $pv.accessModes | nindent 4}}
-  {{- else }}
-  accessModes:
-  - ReadWriteOnce
-  {{- end }}
-  capacity:
-    storage: {{ $pv.storage }}
-  {{- if $pv.storageClass }}
-  storageClassName: {{ $pv.storageClass }}
-  {{- end }}
-  {{- with $pv.mountOptions }}
-  mountOptions:
-  {{- toYaml . | nindent 4 }}
-  {{- end }}
-  {{- with $pv.csi }}
-  csi:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with $pv.claimRef }}
-  claimRef:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
+{{- $labels := include "common.labels" $ | fromYaml }}
+{{- $pv = set $pv "name" ( printf "%s-%s" (include "common.fullname" $ )  $name ) }}
+{{- include "core.pv" (list $ $labels $pv ) }}
 {{- end }}

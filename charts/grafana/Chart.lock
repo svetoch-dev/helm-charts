@@ -14,8 +14,8 @@ dependencies:
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-- name: fluentbit-filters
-  repository: file://../chart_deps/fluent/fluentbit/filters/
+- name: fluentbit-operated
+  repository: file://../chart_deps/fluent/fluentbit/fluentbit-operated/
   version: 0.1.0
-digest: sha256:a5f41912d3214d4fce038bbda9e8f62fcc1241d7825263d1afb5074d3623111a
-generated: "2025-09-09T18:00:12.617942368+03:00"
+digest: sha256:b3ed567c9ae27a000ef5db7efd803447a905bb181bdcb2ea7dbaa6827c482d84
+generated: "2025-10-09T12:16:33.462496644+03:00"

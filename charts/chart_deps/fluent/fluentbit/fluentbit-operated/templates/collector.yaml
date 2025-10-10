@@ -1,0 +1,4 @@
+{{- $collector :=  .Values.collector }}
+{{- $labels := include "fluentbit-operated.labels" $ | fromYaml }}
+{{- $collector = set $collector "name" (include "fluentbit-operated.fullname" . ) }}
+{{- include "fluentbit.collector" (list $ $labels $collector ) }}
