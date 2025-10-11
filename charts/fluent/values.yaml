@@ -388,7 +388,7 @@ fluentbit-gcp:
           claimName: '{{ include "fluentbit-operated.fullname" $ }}-gcsfuse'
   pvcs:
     gcsfuse:
-      storage: 5Gi
+      storage: 1Gi
       storageClass: gcsfuse
       volumeName: '{{ include "fluentbit-operated.fullname" $ }}-gcsfuse'
       accessModes:
@@ -397,7 +397,7 @@ fluentbit-gcp:
     gcsfuse:
       accessModes:
         - ReadWriteMany
-      storage: 5Gi
+      storage: 1Gi
       storageClass: gcsfuse
       mountOptions:
         - implicit-dirs
