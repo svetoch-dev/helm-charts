@@ -355,13 +355,10 @@ fluentbit-gcp:
         fluentbit: "gcp"
 
 
-  fluentbit:
+  collector:
     enabled: true
     annotations:
       gke-gcsfuse/volumes: 'true'
-    positionDB:
-      hostPath:
-        path: /var/lib/fluent-bit/
     image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9-debug
     resources:
       limits:
@@ -370,15 +367,6 @@ fluentbit-gcp:
       requests:
         cpu: 10m
         memory: 25Mi
-    livenessProbe:
-      failureThreshold: 8
-      httpGet:
-        path: /
-        port: 2020
-      initialDelaySeconds: 10
-      periodSeconds: 10
-      successThreshold: 1
-      timeoutSeconds: 15
     volumesMounts:
       - name: gcsfuse
         mountPath: /var/log/k8s
