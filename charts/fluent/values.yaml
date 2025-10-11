@@ -322,7 +322,7 @@ fluentbit-gcp:
         memBufLimit: 100MB
         skipLongLines: true
         skipEmptyLines: true
-        db: /fluent-bit/tail/pos.db
+        db: /fluent-bit/tail/k8s.db
         dbSync: Normal
         storageType: memory
 
@@ -355,12 +355,14 @@ fluentbit-gcp:
         fluentbit: "gcp"
 
 
-  collector:
+  fluentbit:
     enabled: true
     annotations:
       gke-gcsfuse/volumes: 'true'
+    positionDB:
+      hostPath:
+        path: /var/lib/fluent-bit/
     image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9-debug
-    replicas: 1
     resources:
       limits:
         cpu: 500m
@@ -368,6 +370,15 @@ fluentbit-gcp:
       requests:
         cpu: 10m
         memory: 25Mi
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        path: /
+        port: 2020
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 15
     volumesMounts:
       - name: gcsfuse
         mountPath: /var/log/k8s
