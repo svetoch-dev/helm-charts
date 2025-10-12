@@ -359,6 +359,7 @@ fluentbit-gcp:
     enabled: true
     annotations:
       gke-gcsfuse/volumes: 'true'
+      gke-gcsfuse/ephemeral-storage-request: '500Mi'
     image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9-debug
     resources:
       limits:
