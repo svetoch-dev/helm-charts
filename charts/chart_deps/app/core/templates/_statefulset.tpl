@@ -13,6 +13,10 @@ metadata:
   namespace: "{{ $obj.namespace }}"
 spec:
   replicas: {{ $obj.replicaCount }}
+  {{- with $obj.persistentVolumeClaimRetentionPolicy }}
+  persistentVolumeClaimRetentionPolicy:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
   {{- if $obj.volumeClaimTemplates }}
   volumeClaimTemplates:
   {{- range $name, $pvcTemplate :=  $obj.volumeClaimTemplates }}

@@ -82,11 +82,14 @@ env:
 {{- end }}
 
 {{- define "common.volumeMounts" }}
-{{- if .Values.pvcs }}
+{{- if or .Values.pvcs .Values.volumeMounts }}
 volumeMounts:
   {{- range $name, $pvc := .Values.pvcs }}
   - name: {{ $name }}
     mountPath: {{ $pvc.mountPath }}
+  {{- end }}
+  {{- with .Values.volumeMounts }}
+  {{- tpl (toYaml .) $ | nindent 2 }}
   {{- end }}
 {{- end }}
 {{- end }}
@@ -106,12 +109,15 @@ initContainers:
 {{- end }}
 
 {{- define "common.volumes" }}
-{{- if .Values.pvcs }}
+{{- if or .Values.pvcs .Values.volumes }}
 volumes:
   {{- range $name, $pvc := .Values.pvcs }}
   - name: {{ $name }}
     persistentVolumeClaim:
       claimName: {{ include "common.fullname" $ }}-{{ $name }}
+  {{- end }}
+  {{- with .Values.volumes }}
+  {{- tpl (toYaml .) $ | nindent 2 }}
   {{- end }}
 {{- end }}
 {{- end }}

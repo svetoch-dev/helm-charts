@@ -22,6 +22,12 @@ statefulsetEnabled: false
 
 volumeClaimTemplates: {}
 
+volumes: {}
+volumeMounts: {}
+persistentVolumeClaimRetentionPolicy: {}
+#  whenDelted: "Delete"
+#  whenScaled: "Retain"
+
 clusterRole:
   enabled: false
   name: '{{ include "common.fullname" . }}'
