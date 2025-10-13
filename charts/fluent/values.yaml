@@ -322,7 +322,7 @@ fluentbit-gcp:
         memBufLimit: 100MB
         skipLongLines: true
         skipEmptyLines: true
-        db: /fluent-bit/tail/pos.db
+        db: /buffers/fluentbit/log/k8s.db
         dbSync: Normal
         storageType: memory
 
@@ -359,8 +359,8 @@ fluentbit-gcp:
     enabled: true
     annotations:
       gke-gcsfuse/volumes: 'true'
+      gke-gcsfuse/ephemeral-storage-request: '500Mi'
     image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9-debug
-    replicas: 1
     resources:
       limits:
         cpu: 500m
@@ -377,7 +377,7 @@ fluentbit-gcp:
           claimName: '{{ include "fluentbit-operated.fullname" $ }}-gcsfuse'
   pvcs:
     gcsfuse:
-      storage: 5Gi
+      storage: 1Gi
       storageClass: gcsfuse
       volumeName: '{{ include "fluentbit-operated.fullname" $ }}-gcsfuse'
       accessModes:
@@ -386,7 +386,7 @@ fluentbit-gcp:
     gcsfuse:
       accessModes:
         - ReadWriteMany
-      storage: 5Gi
+      storage: 1Gi
       storageClass: gcsfuse
       mountOptions:
         - implicit-dirs

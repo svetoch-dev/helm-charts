@@ -3,101 +3,20 @@
 {{- $app_nodeSelector := ternary .Values.nodeSelector .Values.global.nodeSelector ( hasKey .Values "nodeSelector") }}
 {{- $app_tolerations := ternary .Values.tolerations .Values.global.tolerations ( hasKey .Values "tolerations") }}
 {{- $app_affinity := ternary .Values.affinity .Values.global.affinity ( hasKey .Values "affinity") }}
-{{- if .Values.deploymentEnabled }}
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "common.fullname" . }}
-  labels:
-    {{- include "common.labels" . | nindent 4 }}
-spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
-  {{- if .Values.revisionHistoryLimit  }}
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
-  {{- end }}
-  selector:
-    matchLabels:
-      {{- include "common.selectorLabels" . | nindent 6 }}
-  template:
-    metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      labels:
-        {{- include "common.selectorLabels" . | nindent 8 }}
-    spec:
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      serviceAccountName: {{ include "common.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- range $name, $container := .Values.initContainers }}
-      initContainers:
-        - name: {{ $name }}
-          {{- with $container.command }}
-          command:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          image: "{{ tpl $container.image $ }}"
-          {{- include "common.volumeMounts" $ | nindent 10 }}
-          {{- include "common.env" $ | nindent 10}}
-      {{- end }}
-      containers:
-        - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: '{{ tpl (printf "%s:%s" $app_image_repo $app_image_tag) . }}'
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.command }}
-          command:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.args }}
-          args:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- include "common.env" . | nindent 10}}
-          {{- with .Values.ports }}
-          ports:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.livenessProbe }}
-          livenessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.readinessProbe }}
-          readinessProbe:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.resources }}
-          resources:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- include "common.volumeMounts" $ | nindent 10 }}
-      {{- with $app_nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with $app_affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with $app_tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- if .Values.pvcs }}
-      volumes:
-        {{- range $name, $pvc := .Values.pvcs }}
-        - name: {{ $name }}
-          persistentVolumeClaim:
-            claimName: {{ include "common.fullname" $ }}-{{ $name }}
-        {{- end }}
-      {{- end }}
-{{- end }}
+{{- $labels := include "common.labels" $ | fromYaml }}
+{{- $deployment := .Values }}
+{{- $deployment = set $deployment "initContainers" (include "common.initContainers" . | fromYaml).initContainers }}
+{{- $deployment = set $deployment "enabled" .Values.deploymentEnabled }}
+{{- $deployment = set $deployment "name" (include "common.fullname" . ) }}
+{{- $deployment = set $deployment "selectorLabels" (include "common.selectorLabels" . ) }}
+{{- $deployment = set $deployment "imagePullPolicy" .Values.image.pullPolicy }}
+{{- $deployment = set $deployment "image" (printf "%s:%s" $app_image_repo $app_image_tag )}}
+{{- $deployment = set $deployment "nodeSelector" $app_nodeSelector }}
+{{- $deployment = set $deployment "tolerations" $app_tolerations }}
+{{- $deployment = set $deployment "affinity" $app_affinity }}
+{{- $deployment = set $deployment "serviceAccountName" ( include "common.serviceAccountName" . ) }}
+{{- $deployment = set $deployment "containerName" .Chart.Name  }}
+{{- $deployment = set $deployment "env" (include "common.env" . | fromYaml).env }}
+{{- $deployment = set $deployment "volumeMounts" (include "common.volumeMounts" . | fromYaml).volumeMounts }}
+{{- $deployment = set $deployment "volumes" (include "common.volumes" . | fromYaml).volumes }}
+{{- include "core.deployment" (list $ $labels $deployment ) }}

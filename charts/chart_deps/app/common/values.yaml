@@ -165,3 +165,17 @@ serviceMonitor:
   endpoints:
     - targetPort: 9355
       path: /metrics
+
+secrets:
+#  test:
+#    labels:
+#      test: test
+#    annotations:
+#      test: test
+#    type: Opaque
+#    data:
+#      test: "123"
+#      test1: |
+#        some:
+#          yaml:
+#            - 123
