@@ -66,8 +66,10 @@ New features:
 * `chart_deps/app/common`:
   * pvc/pv definitions moved to `chart_deps/app/core`
   * setviceMonitor definition moved to `chart_deps/prometheus/lib`
+  * new secret definition
 * `chart_deps/app/core`:
   * helper functions `core.labels.constructor` `core.obj.enricher`
+  * new definitions pvc/pv/secret
  
 
 Enhancements:
