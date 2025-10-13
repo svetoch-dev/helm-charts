@@ -91,3 +91,27 @@ volumeMounts:
 {{- end }}
 {{- end }}
 
+{{- define "common.initContainers" }}
+{{- range $name, $container := .Values.initContainers }}
+initContainers:
+  - name: {{ $name }}
+    {{- with $container.command }}
+    command:
+      {{- toYaml . | nindent 12 }}
+    {{- end }}
+    image: "{{ tpl $container.image $ }}"
+    {{- include "common.volumeMounts" $ | nindent 10 }}
+    {{- include "common.env" $ | nindent 10}}
+{{- end }}
+{{- end }}
+
+{{- define "common.volumes" }}
+{{- if .Values.pvcs }}
+volumes:
+  {{- range $name, $pvc := .Values.pvcs }}
+  - name: {{ $name }}
+    persistentVolumeClaim:
+      claimName: {{ include "common.fullname" $ }}-{{ $name }}
+  {{- end }}
+{{- end }}
+{{- end }}
