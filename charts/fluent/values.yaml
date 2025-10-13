@@ -382,7 +382,7 @@ fluentbit-gcp:
     - name: config
       secret:
         defaultMode: 420
-        secretName: '{{ include "common.fullname"  $}}'
+        secretName: '{{ include "common.fullname"  $}}-config'
     - name: buffers
       persistentVolumeClaim:
         claimName: '{{ include "common.fullname" $ }}-buffers'
