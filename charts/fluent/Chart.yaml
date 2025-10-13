@@ -28,8 +28,8 @@ dependencies:
     version: 0.1.0
     alias: fluentbit
     condition: fluentbit.enabled
-  - name: common
-    repository: file://../chart_deps/app/common/
+  - name: fluentbit
+    repository: file://../chart_deps/fluent/fluentbit/fluentbit
     version: 0.1.0
     alias: fluentbit-gcp
     condition: fluentbit-gcp.enabled

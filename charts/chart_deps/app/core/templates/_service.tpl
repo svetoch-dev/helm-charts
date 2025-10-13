@@ -1,28 +1,29 @@
 {{- define "core.service" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 }}
-{{- $service := index . 2 }}
-{{- if $service.enabled }}
+{{- $obj := include "core.obj.enricher" (list $ $labels (index . 2)) | fromYaml }}
+{{- if $obj.enabled }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ tpl $service.name $ }}
+  name: {{ tpl $obj.name $ }}
   labels:
-{{- $labels | nindent 4 }}
+{{- include "core.labels.constructor" (list $ $labels $obj) | nindent 4 }}
+  namespace: "{{ $obj.namespace }}"
   annotations:
-  {{- tpl (toYaml $service.annotations) $ | nindent 4 }}
+  {{- tpl (toYaml $obj.annotations) $ | nindent 4 }}
 spec:
-  type: {{ $service.type }}
-  {{- with $service.ports }}
+  type: {{ $obj.type }}
+  {{- with $obj.ports }}
   ports:
   {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- if $service.externalTrafficPolicy }}
-  externalTrafficPolicy: {{ $service.externalTrafficPolicy }}
+  {{- if $obj.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ $obj.externalTrafficPolicy }}
   {{- end }}
   selector:
-    {{- tpl (toYaml $service.selectorLabels) $ | nindent 4 }} 
+    {{- tpl (toYaml $obj.selectorLabels) $ | nindent 4 }} 
 {{- end }}
 {{- end }}
 

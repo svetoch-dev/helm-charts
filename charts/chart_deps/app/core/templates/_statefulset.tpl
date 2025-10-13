@@ -28,9 +28,11 @@ spec:
   {{- if $obj.revisionHistoryLimit  }}
   revisionHistoryLimit: {{ $obj.revisionHistoryLimit }}
   {{- end }}
+  {{- with $obj.selectorLabels }}
   selector:
     matchLabels:
-      {{- tpl $obj.selectorLabels $ | nindent 6 }}
+      {{- tpl (toYaml .) $ | nindent 8 }}
+  {{- end }}
   {{ include "core.podtemplate" (list $ $obj) | nindent 2 | trim }}
 {{- end }}
 {{- end }}

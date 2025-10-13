@@ -309,10 +309,7 @@ fluentbit:
           - list
 
 fluentbit-gcp:
-  enabled: true
-  configs:
-    http_server: true
-    parsers_file: /fluent-bit/etc/parsers.conf
+  enabled: false
   inputs:
     control-plane:
       name: tail
@@ -333,102 +330,73 @@ fluentbit-gcp:
       match: 'kube.control-plane.*'
       format: json
 
-  deploymentEnabled: false
-  statefulsetEnabled: true
 
-  serviceAccount:
-    create: false
-    name: fluent
+  fluentbit:
+    serviceAccount:
+      create: false
+      name: fluent
 
-  volumeClaimTemplates:
-    buffers:
-      storage: 1Gi
+    volumeClaimTemplates:
+      buffers:
+        storage: 1Gi
 
-  persistentVolumeClaimRetentionPolicy:
-    whenDeleted: "Delete"
+    podAnnotations:
+      gke-gcsfuse/volumes: 'true'
+      gke-gcsfuse/ephemeral-storage-request: '500Mi'
 
-  podAnnotations:
-    gke-gcsfuse/volumes: 'true'
-    gke-gcsfuse/ephemeral-storage-request: '500Mi'
-  image:
-    repository: ghcr.io/fluent/fluent-operator/fluent-bit
-    tag: 4.0.9-debug
-  environment:
-    - name: NODE_NAME
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: spec.nodeName
-    - name: HOST_IP
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: status.hostIP
-  resources:
-    limits:
-      cpu: 500m
-      memory: 1200Mi
-    requests:
-      cpu: 10m
-      memory: 25Mi
+    image: "ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9-debug"
 
-  volumeMounts:
-    - mountPath: /fluent-bit/config
-      name: config
-      readOnly: true
-    - name: buffers
-      mountPath: /fluent-bit/buffers
-  volumes:
-    - name: config
-      secret:
-        defaultMode: 420
-        secretName: '{{ include "common.fullname"  $}}-config'
-    - name: buffers
-      persistentVolumeClaim:
-        claimName: '{{ include "common.fullname" $ }}-buffers'
-  pvcs:
-    gcsfuse:
-      mountPath: /var/log/k8s
-      storage: 1Gi
-      storageClass: gcsfuse
-      volumeName: '{{ include "common.fullname" $ }}-gcsfuse'
-      accessModes:
-        - ReadWriteMany
-  pvs:
-    gcsfuse:
-      accessModes:
-        - ReadWriteMany
-      storage: 1Gi
-      storageClass: gcsfuse
-      mountOptions:
-        - implicit-dirs
-        - uid=1000
-        - gid=1000
-      csi:
-        driver: gcsfuse.csi.storage.gke.io
-        volumeHandle: '{{printf "%s-logs-%s" .Values.global.bucket.prefix .Values.global.bucket.suffix }}'
-      claimRef:
-        name: '{{ include "common.fullname" $ }}-gcsfuse'
-        namespace: '{{ .Release.Namespace }}'
-  secrets:
-    config:
-      data:
-        parsers.conf: ""
-        parsers_multiline.conf: ""
-        fluent-bit.yaml: |
-          {{- with .Values.configs }}
-          service:
-          {{- tpl (toYaml . ) $ | nindent 2 }}
-          {{- end }}
-          pipeline:
-            inputs:
-            {{- range $name, $input := .Values.inputs }}
-            - {{ toYaml $input | nindent 4 | trim }}
-            {{- end }}
-            outputs:
-            {{- range $name, $output := .Values.outputs }}
-            - {{ toYaml $output | nindent 4 | trim }}
-            {{- end }}
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1200Mi
+      requests:
+        cpu: 10m
+        memory: 25Mi
+
+    volumeMounts:
+      - mountPath: /fluent-bit/config
+        name: config
+        readOnly: true
+      - name: buffers
+        mountPath: /fluent-bit/buffers
+      - name: gcsfuse
+        mountPath: /var/log/k8s
+    volumes:
+      - name: config
+        secret:
+          defaultMode: 420
+          secretName: '{{ include "fluentbit.fullname"  $}}-config'
+      - name: buffers
+        persistentVolumeClaim:
+          claimName: '{{ include "fluentbit.fullname" $ }}-buffers'
+      - name: gcsfuse
+        persistentVolumeClaim:
+          claimName: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
+
+    pvcs:
+      gcsfuse:
+        storage: 1Gi
+        storageClass: gcsfuse
+        volumeName: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
+        accessModes:
+          - ReadWriteMany
+    pvs:
+      gcsfuse:
+        accessModes:
+          - ReadWriteMany
+        storage: 1Gi
+        storageClass: gcsfuse
+        mountOptions:
+          - implicit-dirs
+          - uid=1000
+          - gid=1000
+        csi:
+          driver: gcsfuse.csi.storage.gke.io
+          volumeHandle: '{{printf "%s-logs-%s" .Values.global.bucket.prefix .Values.global.bucket.suffix }}'
+        claimRef:
+          name: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
+          namespace: '{{ .Release.Namespace }}'
 
 
 operator:

@@ -8,7 +8,7 @@
 {{- $deployment = set $deployment "initContainers" (include "common.initContainers" . | fromYaml).initContainers }}
 {{- $deployment = set $deployment "enabled" .Values.deploymentEnabled }}
 {{- $deployment = set $deployment "name" (include "common.fullname" . ) }}
-{{- $deployment = set $deployment "selectorLabels" (include "common.selectorLabels" . ) }}
+{{- $deployment = set $deployment "selectorLabels" (include "common.selectorLabels" . | fromYaml ) }}
 {{- $deployment = set $deployment "imagePullPolicy" .Values.image.pullPolicy }}
 {{- $deployment = set $deployment "image" (printf "%s:%s" $app_image_repo $app_image_tag )}}
 {{- $deployment = set $deployment "nodeSelector" $app_nodeSelector }}

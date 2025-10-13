@@ -8,7 +8,7 @@
 {{- $statefulset = set $statefulset "initContainers" (include "common.initContainers" . | fromYaml).initContainers }}
 {{- $statefulset = set $statefulset "enabled" .Values.statefulsetEnabled }}
 {{- $statefulset = set $statefulset "name" (include "common.fullname" . ) }}
-{{- $statefulset = set $statefulset "selectorLabels" (include "common.selectorLabels" . ) }}
+{{- $statefulset = set $statefulset "selectorLabels" (include "common.selectorLabels" . | fromYaml ) }}
 {{- $statefulset = set $statefulset "imagePullPolicy" .Values.image.pullPolicy }}
 {{- $statefulset = set $statefulset "image" (printf "%s:%s" $app_image_repo $app_image_tag )}}
 {{- $statefulset = set $statefulset "nodeSelector" $app_nodeSelector }}
