@@ -92,16 +92,16 @@ volumeMounts:
 {{- end }}
 
 {{- define "common.initContainers" }}
-{{- range $name, $container := .Values.initContainers }}
 initContainers:
+{{- range $name, $container := .Values.initContainers }}
   - name: {{ $name }}
     {{- with $container.command }}
     command:
-      {{- toYaml . | nindent 12 }}
+    {{- toYaml . | nindent 6 }}
     {{- end }}
-    image: "{{ tpl $container.image $ }}"
-    {{- include "common.volumeMounts" $ | nindent 10 }}
-    {{- include "common.env" $ | nindent 10}}
+    image: "{{ $container.image }}"
+    {{- include "common.volumeMounts" $ | nindent 4 }}
+    {{- include "common.env" $ | nindent 4 }}
 {{- end }}
 {{- end }}
 

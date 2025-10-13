@@ -37,9 +37,10 @@ spec:
       serviceAccountName: {{ tpl $obj.serviceAccountName $ }}
       securityContext:
         {{- toYaml $obj.podSecurityContext | nindent 8 }}
-      {{- range $name, $container := $obj.initContainers }}
+      {{- if $obj.initContainers }}
       initContainers:
-        - name: {{ $name }}
+      {{- range $name, $container := $obj.initContainers }}
+        - name: {{ $container.name }}
           {{- with $container.command }}
           command:
             {{- tpl (toYaml .) $ | nindent 12 }}
@@ -53,6 +54,7 @@ spec:
           env:
           {{-  tpl (toYaml .) $ | nindent 12}}
           {{- end }}
+      {{- end }}
       {{- end }}
       containers:
         - name: {{ $obj.containerName }}
