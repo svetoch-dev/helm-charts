@@ -1,3 +1,8 @@
+global:
+  image:
+    repository:
+    tag:
+
 fluentbit:
   enabled: false
   labels:
