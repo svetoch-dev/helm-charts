@@ -4,7 +4,7 @@
 {{- $app_tolerations := ternary .Values.tolerations .Values.global.tolerations ( hasKey .Values "tolerations") }}
 {{- $app_affinity := ternary .Values.affinity .Values.global.affinity ( hasKey .Values "affinity") }}
 {{- $labels := include "common.labels" $ | fromYaml }}
-{{- $deployment := .Values }}
+{{- $deployment := mustDeepCopy .Values }}
 {{- $deployment = set $deployment "initContainers" (include "common.initContainers" . | fromYaml).initContainers }}
 {{- $deployment = set $deployment "enabled" .Values.deploymentEnabled }}
 {{- $deployment = set $deployment "name" (include "common.fullname" . ) }}

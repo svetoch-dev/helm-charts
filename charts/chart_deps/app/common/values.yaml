@@ -17,7 +17,10 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-deploymentEnabled: true
+deploymentEnabled: false
+statefulsetEnabled: true
+
+volumeClaimTemplates: {}
 
 clusterRole:
   enabled: false
