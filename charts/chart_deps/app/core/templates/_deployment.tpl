@@ -58,7 +58,7 @@ spec:
         - name: {{ $obj.containerName }}
           securityContext:
             {{- toYaml $obj.securityContext | nindent 12 }}
-          image: '{{ $obj.image }}'
+          image: '{{ tpl $obj.image $ }}'
           imagePullPolicy: {{ $obj.imagePullPolicy }}
           {{- with $obj.command }}
           command:
