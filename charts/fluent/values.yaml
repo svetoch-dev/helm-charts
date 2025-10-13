@@ -310,25 +310,28 @@ fluentbit:
 
 fluentbit-gcp:
   enabled: true
+  configs:
+    http_server: true
+    parsers_file: /fluent-bit/etc/parsers.conf
   inputs:
     control-plane:
-      tail:
-        tag: kube.control-plane.*
-        path: "/var/log/k8s/kube-proxy/*.json"
-        readFromHead: true
-        parser: cri
-        memBufLimit: 100MB
-        skipLongLines: true
-        skipEmptyLines: true
-        db: /fluent-bit/buffers/k8s.db
-        dbSync: Normal
-        storageType: memory
+      name: tail
+      tag: kube.control-plane.*
+      path: "/var/log/k8s/kube-proxy/*/*/*/*.json"
+      read_from_head: true
+      parser: cri
+      mem_buf_limit: 100MB
+      skip_long_lines: true
+      skip_empty_lines: true
+      db: /fluent-bit/buffers/k8s.db
+      db.sync: Normal
+      storage.type: memory
 
   outputs:
     stdout:
+      name: stdout
       match: 'kube.control-plane.*'
-      stdout:
-        format: json
+      format: json
 
   deploymentEnabled: false
   statefulsetEnabled: true
@@ -407,6 +410,25 @@ fluentbit-gcp:
       claimRef:
         name: '{{ include "common.fullname" $ }}-gcsfuse'
         namespace: '{{ .Release.Namespace }}'
+  secrets:
+    config:
+      data:
+        parsers.conf: ""
+        parsers_multiline.conf: ""
+        fluent-bit.yaml: |
+          {{- with .Values.configs }}
+          service:
+          {{- tpl (toYaml . ) $ | nindent 2 }}
+          {{- end }}
+          pipeline:
+            inputs:
+            {{- range $name, $input := .Values.inputs }}
+            - {{ toYaml $input | nindent 4 | trim }}
+            {{- end }}
+            outputs:
+            {{- range $name, $output := .Values.outputs }}
+            - {{ toYaml $output | nindent 4 | trim }}
+            {{- end }}
 
 
 operator:

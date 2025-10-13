@@ -5,7 +5,7 @@
 {{- if $obj.enabled }}
 ---
 apiVersion: apps/v1
-kind: Statefulset
+kind: StatefulSet
 metadata:
   name: {{ $obj.name }}
   labels:
