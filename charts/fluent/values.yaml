@@ -322,7 +322,7 @@ fluentbit-gcp:
         memBufLimit: 100MB
         skipLongLines: true
         skipEmptyLines: true
-        db: /fluent-bit/tail/k8s.db
+        db: /buffers/fluentbit/log/k8s.db
         dbSync: Normal
         storageType: memory
 
