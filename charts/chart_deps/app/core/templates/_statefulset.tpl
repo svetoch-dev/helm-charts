@@ -20,7 +20,7 @@ spec:
   {{- if $obj.volumeClaimTemplates }}
   volumeClaimTemplates:
   {{- range $name, $pvcTemplate :=  $obj.volumeClaimTemplates }}
-  {{- $pvcTemplate = set $pvcTemplate "name" (printf "%s-%s" $obj.name $name ) }}
+  {{- $pvcTemplate = set $pvcTemplate "name" $name }}
   {{- $pvcTemplate = set $pvcTemplate "volumeClaimTampleate" true }}
   - {{ (include "core.pvc" (list $ $labels $pvcTemplate )) | nindent 4 | trim }} 
   {{- end }}

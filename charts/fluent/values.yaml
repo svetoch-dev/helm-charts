@@ -345,7 +345,7 @@ fluentbit-gcp:
       storage: 1Gi
 
   persistentVolumeClaimRetentionPolicy:
-    whenDelted: "Delete"
+    whenDeleted: "Delete"
 
   podAnnotations:
     gke-gcsfuse/volumes: 'true'
