@@ -1,0 +1,13 @@
+apiVersion: v2
+appVersion: "1.0"
+description: Chart for fluentbit deployed with core k8s resources
+name: fluentbit
+version: 0.1.0
+
+dependencies:
+  - name: core
+    version: 0.1.0
+    repository: file://../../../app/core
+  - name: prometheus-lib
+    version: 0.1.0
+    repository: file://../../../prometheus/lib

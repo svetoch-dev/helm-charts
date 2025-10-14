@@ -3,7 +3,9 @@
 {{- $labels := index . 1 }}
 {{- $obj := include "core.obj.enricher" (list $ $labels (index . 2)) | fromYaml }}
 {{- if $obj.enabled }}
+{{- if not $obj.volumeClaimTampleate }}
 ---
+{{- end }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

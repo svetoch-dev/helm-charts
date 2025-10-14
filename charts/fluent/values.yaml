@@ -1,7 +1,7 @@
 global:
   image:
-    repository: ghcr.io/fluent/fluent-operator/fluent-operator
-    tag: v3.4.0@sha256:5d6a3d048aaae3acfbb67269acc996b566d63ce2478ff16cf1f49f4cceb6b4ed
+    repository:
+    tag:
 
 fluentbit:
   enabled: false
@@ -310,57 +310,42 @@ fluentbit:
 
 fluentbit-gcp:
   enabled: false
-  labels:
-    fluentbit: "gcp"
-  clusterInputs:
+  inputs:
     control-plane:
-      tail:
-        tag: kube.control-plane.*
-        path: "/var/log/k8s/kube-proxy/*.json"
-        readFromHead: true
-        parser: cri
-        memBufLimit: 100MB
-        skipLongLines: true
-        skipEmptyLines: true
-        db: /buffers/fluentbit/log/k8s.db
-        dbSync: Normal
-        storageType: memory
+      name: tail
+      tag: kube.control-plane.*
+      path: "/var/log/k8s/kube-proxy/*/*/*/*.json"
+      read_from_head: true
+      parser: cri
+      mem_buf_limit: 100MB
+      skip_long_lines: true
+      skip_empty_lines: true
+      db: /fluent-bit/buffers/k8s.db
+      db.sync: Normal
+      storage.type: memory
 
-  clusterOutputs:
+  outputs:
     stdout:
+      name: stdout
       match: 'kube.control-plane.*'
-      stdout:
-        format: json
+      format: json
 
 
-  clusterConfig:
-    enabled: true
-    service:
-      parsersFile: /fluent-bit/etc/parsers.conf
-      httpServer: true
-    inputSelector:
-      matchLabels:
-        fluentbit: "gcp"
-    filterSelector:
-      matchLabels:
-        fluentbit: "gcp"
-    parserSelector:
-      matchLabels:
-        fluentbit: "gcp"
-    outputSelector:
-      matchLabels:
-        fluentbit: "gcp"
-    multilineParserSelector:
-      matchLabels:
-        fluentbit: "gcp"
+  fluentbit:
+    serviceAccount:
+      create: false
+      name: fluent
 
+    volumeClaimTemplates:
+      buffers:
+        storage: 1Gi
 
-  collector:
-    enabled: true
-    annotations:
+    podAnnotations:
       gke-gcsfuse/volumes: 'true'
       gke-gcsfuse/ephemeral-storage-request: '500Mi'
-    image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9-debug
+
+    image: "ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9-debug"
+
     resources:
       limits:
         cpu: 500m
@@ -368,40 +353,57 @@ fluentbit-gcp:
       requests:
         cpu: 10m
         memory: 25Mi
-    volumesMounts:
+
+    volumeMounts:
       - name: gcsfuse
         mountPath: /var/log/k8s
+      - mountPath: /fluent-bit/config
+        name: config
+        readOnly: true
+      - name: buffers
+        mountPath: /fluent-bit/buffers
     volumes:
       - name: gcsfuse
         persistentVolumeClaim:
-          claimName: '{{ include "fluentbit-operated.fullname" $ }}-gcsfuse'
-  pvcs:
-    gcsfuse:
-      storage: 1Gi
-      storageClass: gcsfuse
-      volumeName: '{{ include "fluentbit-operated.fullname" $ }}-gcsfuse'
-      accessModes:
-        - ReadWriteMany
-  pvs:
-    gcsfuse:
-      accessModes:
-        - ReadWriteMany
-      storage: 1Gi
-      storageClass: gcsfuse
-      mountOptions:
-        - implicit-dirs
-        - uid=1000
-        - gid=1000
-      csi:
-        driver: gcsfuse.csi.storage.gke.io
-        volumeHandle: '{{printf "%s-logs-%s" .Values.global.bucket.prefix .Values.global.bucket.suffix }}'
-      claimRef:
-        name: '{{ include "fluentbit-operated.fullname" $ }}-gcsfuse'
-        namespace: '{{ .Release.Namespace }}'
+          claimName: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
+      - name: config
+        secret:
+          defaultMode: 420
+          secretName: '{{ include "fluentbit.fullname"  $}}-config'
+      - name: buffers
+        persistentVolumeClaim:
+          claimName: '{{ include "fluentbit.fullname" $ }}-buffers'
+
+    pvcs:
+      gcsfuse:
+        storage: 1Gi
+        storageClass: gcsfuse
+        volumeName: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
+        accessModes:
+          - ReadWriteMany
+    pvs:
+      gcsfuse:
+        accessModes:
+          - ReadWriteMany
+        storage: 1Gi
+        storageClass: gcsfuse
+        mountOptions:
+          - implicit-dirs
+          - uid=1000
+          - gid=1000
+        csi:
+          driver: gcsfuse.csi.storage.gke.io
+          volumeHandle: '{{printf "%s-logs-%s" .Values.global.bucket.prefix .Values.global.bucket.suffix }}'
+        claimRef:
+          name: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
+          namespace: '{{ .Release.Namespace }}'
 
 
 operator:
   enabled: false
+  image:
+    repository: ghcr.io/fluent/fluent-operator/fluent-operator
+    tag: v3.4.0@sha256:5d6a3d048aaae3acfbb67269acc996b566d63ce2478ff16cf1f49f4cceb6b4ed
   service:
     enabled: false
   resources:

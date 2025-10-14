@@ -64,12 +64,15 @@ New features:
   * new alert `RabbitMQ_missing_master`
 * `chart_deps/prometheus/lib`: library chart with prometheus operator object definitions
 * `chart_deps/app/common`:
-  * pvc/pv definitions moved to `chart_deps/app/core`
+  * pvc/pv/deployment definitions moved to `chart_deps/app/core`
   * setviceMonitor definition moved to `chart_deps/prometheus/lib`
   * new secret definition
+  * mount not only pvcs
+  * statefulset creation
 * `chart_deps/app/core`:
   * helper functions `core.labels.constructor` `core.obj.enricher`
-  * new definitions pvc/pv/secret
+  * new definitions pvc/pv/secret/deployment/statefullset
+  * common `_podTemplate.tpl` definition
  
 
 Enhancements:

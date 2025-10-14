@@ -1,1 +1,2 @@
-{{- include "core.role" (list . (include "common.labels" .) .Values.role )}}
+{{- $labels := include "common.labels" $ | fromYaml }}
+{{- include "core.role" (list . $labels .Values.role )}}

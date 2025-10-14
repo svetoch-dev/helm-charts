@@ -1,0 +1,37 @@
+{{- $labels := include "fluentbit.labels" $ | fromYaml }}
+{{- $fluentbit := .Values.fluentbit }}
+
+{{- $serviceAccount := $fluentbit.serviceAccount }}
+{{- $serviceAccount = set $serviceAccount "name" (include "fluentbit.serviceAccountName" .) }}
+{{- $service := $fluentbit.service }}
+{{- $service := set $service "selectorLabels" (include "fluentbit.selectorLabels" . | fromYaml) }}
+{{- $serviceMonitor := $fluentbit.serviceMonitor }}
+{{- $serviceMonitor = set $serviceMonitor "jobLabel" (include "fluentbit.fullname" . ) }}
+{{- $serviceMonitor = set $serviceMonitor "selectorLabels" (include "fluentbit.selectorLabels" . ) }}
+{{- $serviceMonitor = set $serviceMonitor "name" (include "fluentbit.fullname" . ) }}
+{{- $fluentbit = set $fluentbit "serviceAccount" $serviceAccount }}
+{{- $fluentbit = set $fluentbit "service" $service }}
+{{- $fluentbit = set $fluentbit "serviceMonitor" $serviceMonitor }}
+{{- $fluentbit = set $fluentbit "enabled" true}}
+{{- $fluentbit = set $fluentbit "name" (include "fluentbit.fullname" . ) }}
+{{- $fluentbit = set $fluentbit "selectorLabels" $service.selectorLabels }}
+{{- $fluentbit = set $fluentbit "serviceAccountName" $serviceAccount.name }}
+{{- $fluentbit = set $fluentbit "containerName" .Chart.Name  }}
+
+{{- range $name, $pvc := $fluentbit.pvcs }}
+{{- $pvc = set $pvc "name" ( printf "%s-%s" (include "fluentbit.fullname" $ )  $name ) }}
+{{- include "core.pvc" (list $ $labels $pvc ) }}
+{{- end }}
+{{- range $name, $pv := $fluentbit.pvs }}
+{{- $pv = set $pv "name" ( printf "%s-%s" (include "fluentbit.fullname" $ )  $name ) }}
+{{- include "core.pv" (list $ $labels $pv ) }}
+{{- end }}
+
+{{- include "core.role" (list . $labels  $fluentbit.role )}}
+{{- include "core.clusterrole" (list . $labels  $fluentbit.clusterRole )}}
+{{- include "core.serviceAccount" (list . $labels $fluentbit.serviceAccount )}}
+{{- include "core.service" (list . $labels $service )}}
+{{- include "prometheus.serviceMonitor" (list $ $labels $fluentbit.serviceMonitor) }}
+{{- if .Values.statefulsetEnabled }}
+{{- include "core.statefulset" (list $ $labels $fluentbit ) }}
+{{- end }}
