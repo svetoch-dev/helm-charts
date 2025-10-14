@@ -8,7 +8,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   labels:
-{{- $obj := include "core.obj.enricher" (list $ $labels (index . 2)) | fromYaml }}
+{{- include "core.labels.constructor" (list $ $labels $obj) | nindent 4 }}
   name: {{ tpl $obj.name $ }} 
   namespace: "{{ $obj.namespace }}"
 rules:
@@ -20,7 +20,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
-{{- $obj := include "core.obj.enricher" (list $ $labels (index . 2)) | fromYaml }}
+{{- include "core.labels.constructor" (list $ $labels $obj) | nindent 4 }}
   name: {{ tpl $obj.name $ }} 
 roleRef:
   apiGroup: rbac.authorization.k8s.io
