@@ -308,14 +308,13 @@ fluentbit:
           - list
 
 fluentbit-gcp:
-  enabled: false
+  enabled: true
   inputs:
     control-plane:
       name: tail
       tag: kube.control-plane.*
       path: "/var/log/k8s/kube-proxy/*/*/*/*.json"
       read_from_head: true
-      parser: cri
       mem_buf_limit: 100MB
       skip_long_lines: true
       skip_empty_lines: true
