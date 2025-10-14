@@ -25,7 +25,7 @@ volumeClaimTemplates: {}
 volumes: {}
 volumeMounts: {}
 persistentVolumeClaimRetentionPolicy: {}
-#  whenDelted: "Delete"
+#  whenDeleted: "Delete"
 #  whenScaled: "Retain"
 
 clusterRole:
