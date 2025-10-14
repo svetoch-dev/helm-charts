@@ -58,7 +58,7 @@ pomerium:
 
 
 gen-secrets:
-  enabled: true
+  enabled: false
   deploymentEnabled: false
   service:
     enabled: false

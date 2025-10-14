@@ -22,7 +22,7 @@ template:
     {{- end }}
     {{- if $obj.podSecurityContext }}
     securityContext:
-    {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- tpl (toYaml $obj.podSecurityContext) $ | nindent 6 }}
     {{- else }}
     securityContext: {}
     {{- end }}
@@ -47,9 +47,11 @@ template:
     {{- end }}
     containers:
       - name: {{ $obj.containerName }}
-        {{- with $obj.securityContext }}
+        {{- if $obj.securityContext }}
         securityContext:
-        {{- tpl (toYaml .) $ | nindent 10 }}
+        {{- tpl (toYaml $obj.securityContext) $ | nindent 10 }}
+        {{- else }}
+        securityContext: {}
         {{- end }}
         image: '{{ tpl $obj.image $ }}'
         {{- if $obj.imagePullPolicy }}
