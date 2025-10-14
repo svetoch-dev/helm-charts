@@ -324,6 +324,7 @@ fluentbit-gcp:
   filters:
     - name: parser
       match: 'kube.control-plane.*'
+      key_name: log
       parser: json
   outputs:
     stdout:
