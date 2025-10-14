@@ -1,6 +1,7 @@
 {{- $labels := include "fluentbit.labels" $ | fromYaml }}
 {{- $fluentbit := .Values.fluentbit }}
 
+{{- if $fluentbit.enabled }}
 {{- $serviceAccount := $fluentbit.serviceAccount }}
 {{- $serviceAccount = set $serviceAccount "name" (include "fluentbit.serviceAccountName" .) }}
 {{- $service := $fluentbit.service }}
@@ -32,6 +33,7 @@
 {{- include "core.serviceAccount" (list . $labels $fluentbit.serviceAccount )}}
 {{- include "core.service" (list . $labels $service )}}
 {{- include "prometheus.serviceMonitor" (list $ $labels $fluentbit.serviceMonitor) }}
-{{- if .Values.statefulsetEnabled }}
+{{- if $fluentbit.statefulsetEnabled }}
 {{- include "core.statefulset" (list $ $labels $fluentbit ) }}
+{{- end }}
 {{- end }}

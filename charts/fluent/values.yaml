@@ -280,7 +280,6 @@ fluentbit:
 
   fluentbit:
     enabled: true
-    image: ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9
     positionDB:
       hostPath:
         path: /var/lib/fluent-bit/
@@ -323,15 +322,23 @@ fluentbit-gcp:
       db: /fluent-bit/buffers/k8s.db
       db.sync: Normal
       storage.type: memory
-
+  filters:
+    - name: parser
+      match: 'kube.control-plane.*'
+      parser: json
   outputs:
     stdout:
       name: stdout
       match: 'kube.control-plane.*'
       format: json
+  parsers:
+    json:
+      name: json
+      format: json
 
 
   fluentbit:
+    enabled: true
     serviceAccount:
       create: false
       name: fluent
@@ -343,8 +350,6 @@ fluentbit-gcp:
     podAnnotations:
       gke-gcsfuse/volumes: 'true'
       gke-gcsfuse/ephemeral-storage-request: '500Mi'
-
-    image: "ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9-debug"
 
     resources:
       limits:
