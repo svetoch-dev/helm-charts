@@ -308,7 +308,7 @@ fluentbit:
           - list
 
 fluentbit-gcp:
-  enabled: true
+  enabled: false
   inputs:
     control-plane:
       name: tail
