@@ -17,16 +17,21 @@ secrets:
         {{- tpl (toYaml . ) $ | nindent 2 }}
         {{- end }}
         pipeline:
-          {{- range $name, $input := .Values.inputs }}
+          {{- if .Values.inputs }}
           inputs:
+          {{- range $name, $input := .Values.inputs }}
           - {{ tpl (toYaml $input) $ | nindent 4 | trim }}
           {{- end }}
-          {{- range $filter := .Values.filters }}
+          {{- end }}
+          {{- if .Values.filters }}
           filters:
+          {{- range $filter := .Values.filters }}
           - {{ tpl (toYaml $filter) $ | nindent 4 | trim }}
           {{- end }}
-          {{- range $name, $output := .Values.outputs }}
+          {{- end }}
+          {{- if .Values.filters }}
           outputs:
+          {{- range $name, $output := .Values.outputs }}
           {{- if eq $output.name "loki" }}
           {{- $labels := list }}
           {{- range $label_name, $label_value := $output.labels }}
@@ -35,6 +40,7 @@ secrets:
           {{- $output := set $output "labels" (join "," $labels )}}
           {{- end }}
           - {{ tpl (toYaml $output) $ | nindent 4 | trim }}
+          {{- end }}
           {{- end }}
 
 

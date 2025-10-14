@@ -313,8 +313,7 @@ fluentbit-gcp:
     control-plane:
       name: tail
       tag: kube.control-plane.*
-      #path: "/var/log/k8s/container.googleapis.com/*/*/*/*/*.json"
-      path: "/var/log/k8s/container.googleapis.com/controller-manager/2025/10/09/21:00:00_21:59:59_S0.json"
+      path: "/var/log/k8s/container.googleapis.com/*/*/*/*/*.json"
       read_from_head: true
       mem_buf_limit: 100MB
       skip_long_lines: true
