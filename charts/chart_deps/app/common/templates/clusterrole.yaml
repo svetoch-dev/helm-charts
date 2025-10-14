@@ -1,1 +1,2 @@
-{{- include "core.clusterrole" (list . (include "common.labels" .) .Values.clusterRole )}}
+{{- $labels := include "common.labels" $ | fromYaml }}
+{{- include "core.clusterrole" (list . $labels  .Values.clusterRole )}}

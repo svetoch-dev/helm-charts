@@ -18,7 +18,11 @@ metadata:
 type: {{ $obj.type }}
 data:
 {{- range $dataKey, $dataStr := $obj.data }}
-  {{ $dataKey }}: {{ b64enc $dataStr }}
+  {{- if $dataStr }}
+  {{ $dataKey }}: {{ b64enc (tpl $dataStr $) }}
+  {{- else }}
+  {{ $dataKey }}: ""
+  {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

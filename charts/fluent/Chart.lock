@@ -5,8 +5,8 @@ dependencies:
 - name: fluentbit-operated
   repository: file://../chart_deps/fluent/fluentbit/fluentbit-operated/
   version: 0.1.0
-- name: fluentbit-operated
-  repository: file://../chart_deps/fluent/fluentbit/fluentbit-operated/
+- name: fluentbit
+  repository: file://../chart_deps/fluent/fluentbit/fluentbit-standalone
   version: 0.1.0
-digest: sha256:316ff060b9b25d2daeb0bb88ddb04f2588284a2fbd631ed96b07532525033b4b
-generated: "2025-10-06T13:35:10.085769487+03:00"
+digest: sha256:64b8c8bea1260f82d439e1037e26b72826b68e8c502afd1b2c1a25a51d9f2ad7
+generated: "2025-10-14T09:59:14.289115192+03:00"

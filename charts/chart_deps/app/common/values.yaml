@@ -18,6 +18,15 @@ nameOverride: ""
 fullnameOverride: ""
 
 deploymentEnabled: true
+statefulsetEnabled: false
+
+volumeClaimTemplates: {}
+
+volumes: {}
+volumeMounts: {}
+persistentVolumeClaimRetentionPolicy: {}
+#  whenDeleted: "Delete"
+#  whenScaled: "Retain"
 
 clusterRole:
   enabled: false
