@@ -336,6 +336,7 @@ fluentbit-gcp:
       host: "loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local"
       port: 3100
       labels:
+        env: "{{ .Values.global.env.name }}"
         app_kubernetes_io_instance: $resource["labels"]["component_name"]
         app_kubernetes_io_name: $resource["labels"]["component_name"]
         job: "fluentbit-control-plane"

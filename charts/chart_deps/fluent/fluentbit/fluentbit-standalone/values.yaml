@@ -19,15 +19,22 @@ secrets:
         pipeline:
           {{- range $name, $input := .Values.inputs }}
           inputs:
-          - {{ toYaml $input | nindent 4 | trim }}
+          - {{ tpl (toYaml $input) $ | nindent 4 | trim }}
           {{- end }}
           {{- range $filter := .Values.filters }}
           filters:
-          - {{ toYaml $filter | nindent 4 | trim }}
+          - {{ tpl (toYaml $filter) $ | nindent 4 | trim }}
           {{- end }}
           {{- range $name, $output := .Values.outputs }}
           outputs:
-          - {{ toYaml $output | nindent 4 | trim }}
+          {{- if eq $output.name "loki" }}
+          {{- $labels := list }}
+          {{- range $label_name, $label_value := $output.labels }}
+          {{- $labels = append $labels (printf "%s=%s" $label_name $label_value) }}
+          {{- end }}
+          {{- $output := set $output "labels" (join "," $labels )}}
+          {{- end }}
+          - {{ tpl (toYaml $output) $ | nindent 4 | trim }}
           {{- end }}
 
 
