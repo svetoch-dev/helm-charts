@@ -3,7 +3,6 @@ fullnameOverride: ""
 
 configs:
   http_server: true
-  parsers_file: /fluent-bit/etc/parsers.conf
 
 secrets:
   config:

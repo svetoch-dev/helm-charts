@@ -313,7 +313,7 @@ fluentbit-gcp:
     control-plane:
       name: tail
       tag: kube.control-plane.*
-      path: "/var/log/k8s/kube-proxy/*/*/*/*.json"
+      path: "/var/log/k8s/container.googleapis.com/scheduler/2025/10/14/11:00:00_11:59:59_S0.json"
       read_from_head: true
       mem_buf_limit: 100MB
       skip_long_lines: true
@@ -326,15 +326,28 @@ fluentbit-gcp:
       match: 'kube.control-plane.*'
       key_name: log
       parser: json
-  outputs:
-    stdout:
-      name: stdout
+    - name: modify
       match: 'kube.control-plane.*'
-      format: json
+      hard_rename: severity    level
+  outputs:
+    loki:
+      name: loki
+      match: "kube.control-plane.*"
+      host: "loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local"
+      port: 3100
+      labels:
+        app_kubernetes_io_instance: $resource["labels"]["component_name"]
+        app_kubernetes_io_name: $resource["labels"]["component_name"]
+        job: "fluentbit-control-plane"
+        level: $level
+        node: $labels["compute.googleapis.com/resource_name"]
+      remove_keys: insertId,labels,logName,receiveTimestamp,resource
   parsers:
     json:
       name: json
       format: json
+      time_key: timestamp
+      time_format: '%Y-%m-%dT%H:%M:%S.%fZ'
 
 
   fluentbit:
