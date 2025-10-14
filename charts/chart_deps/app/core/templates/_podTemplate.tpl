@@ -20,9 +20,11 @@ template:
     {{- if $obj.restartPolicy }}
     restartPolicy: {{ $obj.restartPolicy }}
     {{- end }}
-    {{- with $obj.podSecurityContext }}
+    {{- if $obj.podSecurityContext }}
     securityContext:
     {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- else }}
+    securityContext: {}
     {{- end }}
     {{- if $obj.initContainers }}
     initContainers:

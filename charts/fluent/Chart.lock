@@ -9,4 +9,4 @@ dependencies:
   repository: file://../chart_deps/fluent/fluentbit/fluentbit-standalone
   version: 0.1.0
 digest: sha256:64b8c8bea1260f82d439e1037e26b72826b68e8c502afd1b2c1a25a51d9f2ad7
-generated: "2025-10-14T09:35:55.219779536+03:00"
+generated: "2025-10-14T09:59:14.289115192+03:00"
