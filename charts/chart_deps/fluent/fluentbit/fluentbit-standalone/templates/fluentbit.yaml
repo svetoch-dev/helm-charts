@@ -18,7 +18,7 @@
 {{- $fluentbit = set $fluentbit "serviceAccountName" $serviceAccount.name }}
 {{- $fluentbit = set $fluentbit "containerName" .Chart.Name  }}
 
-{{- range $name, $pvc := $fluentbit.pvc }}
+{{- range $name, $pvc := $fluentbit.pvcs }}
 {{- $pvc = set $pvc "name" ( printf "%s-%s" (include "fluentbit.fullname" $ )  $name ) }}
 {{- include "core.pvc" (list $ $labels $pvc ) }}
 {{- end }}

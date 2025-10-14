@@ -309,7 +309,7 @@ fluentbit:
           - list
 
 fluentbit-gcp:
-  enabled: false
+  enabled: true
   inputs:
     control-plane:
       name: tail
@@ -355,14 +355,17 @@ fluentbit-gcp:
         memory: 25Mi
 
     volumeMounts:
+      - name: gcsfuse
+        mountPath: /var/log/k8s
       - mountPath: /fluent-bit/config
         name: config
         readOnly: true
       - name: buffers
         mountPath: /fluent-bit/buffers
-      - name: gcsfuse
-        mountPath: /var/log/k8s
     volumes:
+      - name: gcsfuse
+        persistentVolumeClaim:
+          claimName: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
       - name: config
         secret:
           defaultMode: 420
@@ -370,9 +373,6 @@ fluentbit-gcp:
       - name: buffers
         persistentVolumeClaim:
           claimName: '{{ include "fluentbit.fullname" $ }}-buffers'
-      - name: gcsfuse
-        persistentVolumeClaim:
-          claimName: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
 
     pvcs:
       gcsfuse:
