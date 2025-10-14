@@ -60,3 +60,24 @@ Create the name of the service account to use
 {{- default "default" .Values.fluentbit.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "fluentbit.volumes" -}}
+volumes:
+  - name: config
+    secret:
+      defaultMode: 420
+      secretName: '{{ include "fluentbit.fullname"  $}}-config'
+  {{- with .Values.fluentbit.volumes }}
+  {{- tpl (toYaml .) $ | nindent 2 }}
+  {{- end }}
+{{- end }}
+
+{{- define "fluentbit.volumeMounts" -}}
+volumeMounts:
+  - mountPath: /fluent-bit/config
+    name: config
+    readOnly: true
+  {{- with .Values.fluentbit.volumeMounts }}
+  {{- tpl (toYaml .) $ | nindent 2 }}
+  {{- end }}
+{{- end }}

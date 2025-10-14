@@ -308,7 +308,7 @@ fluentbit:
           - list
 
 fluentbit-gcp:
-  enabled: false
+  enabled: true
   inputs:
     control-plane:
       name: tail
@@ -375,7 +375,7 @@ fluentbit-gcp:
         method_name: $protoPayload['methodName']
         job: 'fluentbit-k8s-audit'
         level: $level
-      remove_keys: insertId,logName,operation,receiveTimestamp,resource, response['metadata']['managedFields']
+      remove_keys: insertId,logName,operation,receiveTimestamp,resource,response['metadata']['managedFields']
 
   parsers:
     json:
@@ -410,19 +410,12 @@ fluentbit-gcp:
     volumeMounts:
       - name: gcsfuse
         mountPath: /var/log/k8s
-      - mountPath: /fluent-bit/config
-        name: config
-        readOnly: true
       - name: buffers
         mountPath: /fluent-bit/buffers
     volumes:
       - name: gcsfuse
         persistentVolumeClaim:
           claimName: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
-      - name: config
-        secret:
-          defaultMode: 420
-          secretName: '{{ include "fluentbit.fullname"  $}}-config'
       - name: buffers
         persistentVolumeClaim:
           claimName: '{{ include "fluentbit.fullname" $ }}-buffers'
