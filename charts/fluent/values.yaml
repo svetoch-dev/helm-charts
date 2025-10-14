@@ -313,7 +313,8 @@ fluentbit-gcp:
     control-plane:
       name: tail
       tag: kube.control-plane.*
-      path: "/var/log/k8s/container.googleapis.com/controller-manager/2025/10/02/19:00:00_19:59:59_S0.json"
+      #path: "/var/log/k8s/container.googleapis.com/*/*/*/*/*.json"
+      path: "/var/log/k8s/container.googleapis.com/controller-manager/2025/10/09/21:00:00_21:59:59_S0.json"
       read_from_head: true
       mem_buf_limit: 100MB
       skip_long_lines: true
@@ -329,6 +330,16 @@ fluentbit-gcp:
     - name: modify
       match: 'kube.control-plane.*'
       hard_rename: severity    level
+    - name: lua
+      match: "*"
+      code: |
+        function level_lower_case(tag, timestamp, record)
+            if record["level"] then
+               record["level"] = string.lower(tostring(record["level"]))
+            end
+            return 1, timestamp, record
+        end
+      call: level_lower_case
   outputs:
     loki:
       name: loki
