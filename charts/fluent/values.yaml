@@ -315,19 +315,29 @@ fluentbit-gcp:
       tag: kube.control-plane.*
       path: "/var/log/k8s/container.googleapis.com/*/*/*/*/*.json"
       read_from_head: true
-      mem_buf_limit: 100MB
+      mem_buf_limit: 300MB
       skip_long_lines: true
       skip_empty_lines: true
       db: /fluent-bit/buffers/k8s.db
       db.sync: Normal
       storage.type: memory
+    audit:
+      name: tail
+      tag: kube.audit.*
+      path: "/var/log/k8s/cloudaudit.googleapis.com/*/*/*/*/*.json"
+      read_from_head: true
+      mem_buf_limit: 300MB
+      skip_empty_lines: true
+      db: /fluent-bit/buffers/audit.db
+      db.sync: Normal
+      storage.type: memory
   filters:
     - name: parser
-      match: 'kube.control-plane.*'
+      match: '*'
       key_name: log
       parser: json
     - name: modify
-      match: 'kube.control-plane.*'
+      match: '*'
       hard_rename: severity    level
     - name: lua
       match: "*"
@@ -340,7 +350,7 @@ fluentbit-gcp:
         end
       call: level_lower_case
   outputs:
-    loki:
+    control-plane:
       name: loki
       match: 'kube.control-plane.*'
       host: 'loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local'
@@ -353,6 +363,20 @@ fluentbit-gcp:
         level: $level
         node: $labels['compute.googleapis.com/resource_name']
       remove_keys: insertId,labels,logName,receiveTimestamp,resource
+    audit:
+      name: loki
+      match: 'kube.audit.*'
+      host: 'loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local'
+      port: 3100
+      labels:
+        env: '{{ .Values.global.env.name }}'
+        resource_name: $protoPayload['resourceName']
+        principal: $protoPayload['authenticationInfo']['principalEmail']
+        method_name: $protoPayload['methodName']
+        job: 'fluentbit-k8s-audit'
+        level: $level
+      remove_keys: insertId,logName,operation,receiveTimestamp,resource, response['metadata']['managedFields']
+
   parsers:
     json:
       name: json
