@@ -23,6 +23,12 @@ BrakingChanges:
 * `rabbitmq` uses official and updated images instead `bitnami`
 
 New features:
+* `environments`:
+  * new cloud attr
+* `environment`:
+  * move thanos int configs to values.yaml 
+  * thanos-external
+  * `chart_apps`:  chart attribute can now be templated
 * `fluent`: new chart for fluent operator + fluentbit
 * new chart for `Loki` Simple Scalable Deployment
 * `grafana`:
