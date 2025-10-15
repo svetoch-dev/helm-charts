@@ -313,7 +313,7 @@ fluentbit-gcp:
     control-plane:
       name: tail
       tag: kube.control-plane.*
-      path: "/var/log/k8s/container.googleapis.com/*/*/*/*/*.json"
+      path: "/var/log/k8s/container.googleapis.com/*/*/*/*/00:00*"
       read_from_head: true
       mem_buf_limit: 300MB
       skip_long_lines: true
@@ -324,7 +324,7 @@ fluentbit-gcp:
     audit:
       name: tail
       tag: kube.audit.*
-      path: "/var/log/k8s/cloudaudit.googleapis.com/*/*/*/*/*.json"
+      path: "/var/log/k8s/cloudaudit.googleapis.com/*/*/*/*/00:00*"
       read_from_head: true
       mem_buf_limit: 300MB
       skip_empty_lines: true
