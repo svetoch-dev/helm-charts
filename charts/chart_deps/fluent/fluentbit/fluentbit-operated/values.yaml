@@ -302,12 +302,12 @@ config:
 fluentbit:
   enabled: false
   fluentBitConfigName: '{{ include "fluentbit-operated.fullname" . }}'
-  image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9'
+  image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.1.1'
 
 collector:
   enabled: false
   fluentBitConfigName: '{{ include "fluentbit-operated.fullname" . }}'
-  image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9'
+  image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.1.1'
 
 
 pvs: {}

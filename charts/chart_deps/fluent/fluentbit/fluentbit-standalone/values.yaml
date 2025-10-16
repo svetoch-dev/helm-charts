@@ -50,7 +50,7 @@ fluentbit:
   replicaCount: 1
   revisionHistoryLimit: 2
 
-  image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.0.9-debug'
+  image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.1.1'
 
   imagePullPolicy: IfNotPresent
 
