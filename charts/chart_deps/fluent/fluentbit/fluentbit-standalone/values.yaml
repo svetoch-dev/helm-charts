@@ -1,37 +1,56 @@
 nameOverride: ""
 fullnameOverride: ""
-statefulsetEnabled: true
 
 configs:
   http_server: true
-  parsers_file: /fluent-bit/etc/parsers.conf
 
 secrets:
   config:
     data:
-      parsers.conf: ""
-      parsers_multiline.conf: ""
       fluent-bit.yaml: |
+        {{- range $name, $parser := .Values.parsers }}
+        parsers:
+        - {{ toYaml $parser | nindent 2 | trim }}
+        {{- end }}
         {{- with .Values.configs }}
         service:
         {{- tpl (toYaml . ) $ | nindent 2 }}
         {{- end }}
         pipeline:
-          {{- range $name, $input := .Values.inputs }}
+          {{- if .Values.inputs }}
           inputs:
-          - {{ toYaml $input | nindent 4 | trim }}
+          {{- range $name, $input := .Values.inputs }}
+          - {{ tpl (toYaml $input) $ | nindent 4 | trim }}
           {{- end }}
-          {{- range $name, $output := .Values.outputs }}
+          {{- end }}
+          {{- if .Values.filters }}
+          filters:
+          {{- range $filter := .Values.filters }}
+          - {{ tpl (toYaml $filter) $ | nindent 4 | trim }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.filters }}
           outputs:
-          - {{ toYaml $output | nindent 4 | trim }}
+          {{- range $name, $output := .Values.outputs }}
+          {{- if eq $output.name "loki" }}
+          {{- $labels := list }}
+          {{- range $label_name, $label_value := $output.labels }}
+          {{- $labels = append $labels (printf "%s=%s" $label_name $label_value) }}
+          {{- end }}
+          {{- $output := set $output "labels" (join "," $labels )}}
+          {{- end }}
+          - {{ tpl (toYaml $output) $ | nindent 4 | trim }}
+          {{- end }}
           {{- end }}
 
 
 fluentbit:
+  enabled: false
+  statefulsetEnabled: true
   replicaCount: 1
   revisionHistoryLimit: 2
 
-  image: 'ghcr.io/fluent/fluent-operator/fluent-bit:latest'
+  image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.1.1-debug'
 
   imagePullPolicy: IfNotPresent
 
