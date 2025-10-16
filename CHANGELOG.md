@@ -1,4 +1,4 @@
-# 10.0.0-alpha
+# 10.0.0
 
 BrakingChanges:
 * `chart_deps/postgres/postgres-cluster`:
