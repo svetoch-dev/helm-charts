@@ -14,6 +14,8 @@ global:
     domain:
       root: #example.com
       env: #int.example.com, dev.example.com, prd.example.com etc
+  cloud:
+    type: ""
   network:
     int_nat_gw:
   registry:

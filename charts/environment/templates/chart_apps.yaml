@@ -33,7 +33,7 @@ spec:
   sources:
   - repoURL: {{ $chart_app_obj.repo_url | default $.Values.repository.url }}
     {{- if $chart_app_obj.chart }}
-    path: {{ $chart_app_obj.chart }}
+    path: {{ tpl $chart_app_obj.chart $ }}
     {{- else }}
     path: {{ tpl (printf "%s/%s" $chart_path $chart_app_name) $ }}
     {{- end }}
@@ -74,7 +74,7 @@ spec:
   source:
     repoURL: {{ $chart_app_obj.repo_url | default $.Values.repository.url }}
     {{- if $chart_app_obj.chart }}
-    path: {{ $chart_app_obj.chart }}
+    path: {{ tpl $chart_app_obj.chart $ }}
     {{- else }}
     path: {{ tpl (printf "%s/%s" $chart_path $chart_app_name) $ }}
     {{- end }}

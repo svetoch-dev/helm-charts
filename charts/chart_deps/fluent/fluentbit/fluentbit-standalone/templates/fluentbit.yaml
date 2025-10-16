@@ -1,6 +1,7 @@
 {{- $labels := include "fluentbit.labels" $ | fromYaml }}
-{{- $fluentbit := .Values.fluentbit }}
+{{- $fluentbit := mustDeepCopy .Values.fluentbit }}
 
+{{- if $fluentbit.enabled }}
 {{- $serviceAccount := $fluentbit.serviceAccount }}
 {{- $serviceAccount = set $serviceAccount "name" (include "fluentbit.serviceAccountName" .) }}
 {{- $service := $fluentbit.service }}
@@ -17,6 +18,8 @@
 {{- $fluentbit = set $fluentbit "selectorLabels" $service.selectorLabels }}
 {{- $fluentbit = set $fluentbit "serviceAccountName" $serviceAccount.name }}
 {{- $fluentbit = set $fluentbit "containerName" .Chart.Name  }}
+{{- $fluentbit = set $fluentbit "volumes" (include "fluentbit.volumes" . | fromYaml ).volumes  }}
+{{- $fluentbit = set $fluentbit "volumeMounts" (include "fluentbit.volumeMounts" . | fromYaml ).volumeMounts  }}
 
 {{- range $name, $pvc := $fluentbit.pvcs }}
 {{- $pvc = set $pvc "name" ( printf "%s-%s" (include "fluentbit.fullname" $ )  $name ) }}
@@ -32,6 +35,7 @@
 {{- include "core.serviceAccount" (list . $labels $fluentbit.serviceAccount )}}
 {{- include "core.service" (list . $labels $service )}}
 {{- include "prometheus.serviceMonitor" (list $ $labels $fluentbit.serviceMonitor) }}
-{{- if .Values.statefulsetEnabled }}
+{{- if $fluentbit.statefulsetEnabled }}
 {{- include "core.statefulset" (list $ $labels $fluentbit ) }}
+{{- end }}
 {{- end }}

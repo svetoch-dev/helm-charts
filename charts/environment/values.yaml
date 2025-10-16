@@ -147,10 +147,37 @@ chart_apps:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
+      {{- if eq .Values.global.cloud.type "gcp" }}
+      fluentbit-gcp:
+        enabled: true
+      {{- end }}
   thanos:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
+      {{- if eq .Values.global.env.short_name "int" }}
+      thanos:
+        query:
+          stores:
+            - {{ printf "thanos-%s-storegateway:10901" .Values.global.env.name }}
+            - {{ printf "prometheus-%s-prometheus-main-thanos:8080" .Values.global.env.name }}
+            {{- if .Values.externalEnvs }}
+            - {{ printf "thanos-external-%s-query-grpc:10901" .Values.global.env.name }}
+            {{- end }}
+      {{- end }}
+  thanos-external:
+    enabled: false
+    chart: '{{ .Values.repository.paths.charts }}/thanos'
+    values: |
+      global: {{ .Values.global | toYaml | nindent 4 }}
+      thanos:
+        query:
+          stores:
+            {{- range $env_name, $env_obj := .Values.externalEnvs }}
+            - {{ printf "thanos.%s:443" $env_obj.domain }}
+            - {{ printf "thanos-store.%s:443" $env_obj.domain }}
+            {{- end }}
+
   loki:
     enabled: false
     values: |
