@@ -325,7 +325,7 @@ fluentbit-gcp:
       #Because we use gcsfuse to access files on buckets
       #everytime a pod restarts files in filesystem get
       #new inode numbers so offset db does not work between
-      db: /fluent-bit/buffers/k8s.db
+      db: /fluent-bit/k8s.db
       db.sync: Normal
       storage.type: memory
     audit:
@@ -341,7 +341,7 @@ fluentbit-gcp:
       #everytime a pod restarts files in filesystem get
       #new inode numbers so offset db does not work between
       #restarts
-      db: /fluent-bit/buffers/audit.db
+      db: /fluent-bit/audit.db
       db.sync: Normal
       storage.type: memory
   filters:
