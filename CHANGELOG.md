@@ -1,3 +1,18 @@
+# 10.0.1
+Fixes:
+* `charts/fluent`:
+  * `fluentbit-gcp`:
+    * fix issue with hanging fluentbit after pod restarts
+    * properly parse none milis timestamps
+    * increase buffer_max_size
+
+Enhancements:
+* `charts/fluent`:
+  * `fluentbit-main`:
+    * use lua plugins to set common log levels
+
+
+
 # 10.0.0
 
 BrakingChanges:

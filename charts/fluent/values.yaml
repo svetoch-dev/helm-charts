@@ -85,62 +85,34 @@ fluentbit:
     systemd:
       match: systemd.*
       filters:
-        - modify:
-            conditions:
-              - keyValueEquals:
-                  PRIORITY: "0"
-            rules:
-              - set:
-                  level: emerg
-        - modify:
-            conditions:
-              - keyValueEquals:
-                  PRIORITY: "1"
-            rules:
-              - set:
-                  level: alert
-        - modify:
-            conditions:
-              - keyValueEquals:
-                  PRIORITY: "2"
-            rules:
-              - set:
-                  level: crit
-        - modify:
-            conditions:
-              - keyValueEquals:
-                  PRIORITY: "3"
-            rules:
-              - set:
-                  level: error
-        - modify:
-            conditions:
-              - keyValueEquals:
-                  PRIORITY: "4"
-            rules:
-              - set:
-                  level: warn
-        - modify:
-            conditions:
-              - keyValueEquals:
-                  PRIORITY: "5"
-            rules:
-              - set:
-                  level: notice
-        - modify:
-            conditions:
-              - keyValueEquals:
-                  PRIORITY: "6"
-            rules:
-              - set:
-                  level: info
-        - modify:
-            conditions:
-              - keyValueEquals:
-                  PRIORITY: "7"
-            rules:
-              - set:
-                  level: debug
+        - lua:
+            code: |
+              function systemd_parse_priority(tag, timestamp, record)
+                  code = 0
+                  if record["PRIORITY"] then
+                      priority = tostring(record["PRIORITY"])
+                      if priority == "0" then
+                          record["level"] = "emerg"
+                      elseif priority == "1" then
+                          record["level"] = "alert"
+                      elseif priority == "2" then
+                          record["level"] = "crit"
+                      elseif priority == "3" then
+                          record["level"] = "error"
+                      elseif priority == "4" then
+                          record["level"] = "warn"
+                      elseif priority == "5" then
+                          record["level"] = "notice"
+                      elseif priority == "6" then
+                          record["level"] = "info"
+                      elseif priority == "7" then
+                          record["level"] = "debug"
+                      end
+                      code = 1
+                  end
+                  return code, timestamp, record
+              end
+            call: systemd_parse_priority
         - modify:
             rules:
               - remove: _SYSTEMD_INVOCATION_ID
@@ -174,42 +146,20 @@ fluentbit:
             kubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
             kubeTagPrefix: "kube.pods."
             regexParser: '{{ include "fluentbit-operated.fullname" $ }}-kube-pod-tag'
-        - modify:
-            conditions:
-              - keyValueEquals:
-                  level: "CRITICAL"
-            rules:
-              - set:
-                  level: crit
-        - modify:
-            conditions:
-              - keyValueEquals:
-                  level: "ERROR"
-            rules:
-              - set:
-                  level: error
-        - modify:
-            conditions:
-              - keyValueMatches:
-                  level: "WARN|warning"
-            rules:
-              - set:
-                  level: warn
-        - modify:
-            conditions:
-              - keyValueEquals:
-                  level: "INFO"
-            rules:
-              - set:
-                  level: info
-        - modify:
-            conditions:
-              - keyValueEquals:
-                  level: "DEBUG"
-            rules:
-              - set:
-                  level: debug
-
+        - lua:
+            code: |
+              function level_lower_case(tag, timestamp, record)
+                  code = 0
+                  if record["level"] then
+                      if record["level"] == "WARNING" then
+                          record["level"] = "warn"
+                      end
+                      record["level"] = string.lower(tostring(record["level"]))
+                      code = 1
+                  end
+                  return code, timestamp, record
+              end
+            call: level_lower_case
     fluentbit:
       match: 'kube.pods.fluent.{{ include "fluentbit-operated.fullname" $ }}*'
       ordinal: 0
@@ -316,9 +266,17 @@ fluentbit-gcp:
       path: "/var/log/k8s/container.googleapis.com/*/*/*/*/*"
       read_from_head: true
       mem_buf_limit: 300MB
-      skip_long_lines: true
+      buffer_max_size: 2MB
+      #Because at every pod restart we re read all files
+      #we need to ignore files older than loki max_chunk_age
+      #which is 2h
+      ignore_older: 2h
       skip_empty_lines: true
-      db: /fluent-bit/buffers/k8s.db
+      #Because we use gcsfuse to access files on buckets
+      #everytime a pod restarts files in filesystem get
+      #new inode ids so offset db does not work between
+      #pod restarts
+      db: /fluent-bit/k8s.db
       db.sync: Normal
       storage.type: memory
     audit:
@@ -327,8 +285,14 @@ fluentbit-gcp:
       path: "/var/log/k8s/cloudaudit.googleapis.com/*/*/*/*/*"
       read_from_head: true
       mem_buf_limit: 300MB
+      ignore_older: 2h
+      buffer_max_size: 2MB
       skip_empty_lines: true
-      db: /fluent-bit/buffers/audit.db
+      #Because we use gcsfuse to access files on buckets
+      #everytime a pod restarts files in filesystem get
+      #new inode numbers so offset db does not work between
+      #pod restarts
+      db: /fluent-bit/audit.db
       db.sync: Normal
       storage.type: memory
   filters:
@@ -342,11 +306,39 @@ fluentbit-gcp:
     - name: lua
       match: "*"
       code: |
-        function level_lower_case(tag, timestamp, record)
-            if record["level"] then
-               record["level"] = string.lower(tostring(record["level"]))
+        function non_ms_ts(tag, timestamp, record)
+            if record["timestamp"] then
+                local pattern = "^(%d%d%d%d)-(%d%d)-(%d%d)T(%d%d):(%d%d):(%d%d)Z$"
+                local Y, M, D, h, m, s = record["timestamp"]:match(pattern)
+                local new_timestamp = os.time(
+                    {
+                        year  = tonumber(Y),
+                        month = tonumber(M),
+                        day   = tonumber(D),
+                        hour  = tonumber(h),
+                        min   = tonumber(m),
+                        sec   = tonumber(s)
+                    }
+                )
+                return 1, new_timestamp, record
             end
-            return 1, timestamp, record
+
+            return 0, timestamp, record
+        end
+      call: non_ms_ts
+    - name: lua
+      match: "*"
+      code: |
+        function level_lower_case(tag, timestamp, record)
+            code = 0
+            if record["level"] then
+                if record["level"] == "WARNING" then
+                    record["level"] = "warn"
+                end
+                record["level"] = string.lower(tostring(record["level"]))
+                code = 1
+            end
+            return code, timestamp, record
         end
       call: level_lower_case
   outputs:
@@ -391,10 +383,6 @@ fluentbit-gcp:
       create: false
       name: fluent
 
-    volumeClaimTemplates:
-      buffers:
-        storage: 1Gi
-
     podAnnotations:
       gke-gcsfuse/volumes: 'true'
       gke-gcsfuse/ephemeral-storage-request: '500Mi'
@@ -410,15 +398,10 @@ fluentbit-gcp:
     volumeMounts:
       - name: gcsfuse
         mountPath: /var/log/k8s
-      - name: buffers
-        mountPath: /fluent-bit/buffers
     volumes:
       - name: gcsfuse
         persistentVolumeClaim:
           claimName: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
-      - name: buffers
-        persistentVolumeClaim:
-          claimName: '{{ include "fluentbit.fullname" $ }}-buffers'
 
     pvcs:
       gcsfuse:
