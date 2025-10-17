@@ -316,8 +316,15 @@ fluentbit-gcp:
       path: "/var/log/k8s/container.googleapis.com/*/*/*/*/*"
       read_from_head: true
       mem_buf_limit: 300MB
-      skip_long_lines: true
+      buffer_max_size: 2MB
+      #Because at every pod restart we re read all files
+      #we need to ignore files older than loki max_chunk_age
+      #which is 2h
+      ignore_older: 2h
       skip_empty_lines: true
+      #Because we use gcsfuse to access files on buckets
+      #everytime a pod restarts files in filesystem get
+      #new inode numbers so offset db does not work between
       db: /fluent-bit/buffers/k8s.db
       db.sync: Normal
       storage.type: memory
@@ -327,7 +334,13 @@ fluentbit-gcp:
       path: "/var/log/k8s/cloudaudit.googleapis.com/*/*/*/*/*"
       read_from_head: true
       mem_buf_limit: 300MB
+      ignore_older: 2h
+      buffer_max_size: 2MB
       skip_empty_lines: true
+      #Because we use gcsfuse to access files on buckets
+      #everytime a pod restarts files in filesystem get
+      #new inode numbers so offset db does not work between
+      #restarts
       db: /fluent-bit/buffers/audit.db
       db.sync: Normal
       storage.type: memory
@@ -391,10 +404,6 @@ fluentbit-gcp:
       create: false
       name: fluent
 
-    volumeClaimTemplates:
-      buffers:
-        storage: 1Gi
-
     podAnnotations:
       gke-gcsfuse/volumes: 'true'
       gke-gcsfuse/ephemeral-storage-request: '500Mi'
@@ -410,15 +419,10 @@ fluentbit-gcp:
     volumeMounts:
       - name: gcsfuse
         mountPath: /var/log/k8s
-      - name: buffers
-        mountPath: /fluent-bit/buffers
     volumes:
       - name: gcsfuse
         persistentVolumeClaim:
           claimName: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
-      - name: buffers
-        persistentVolumeClaim:
-          claimName: '{{ include "fluentbit.fullname" $ }}-buffers'
 
     pvcs:
       gcsfuse:
