@@ -267,10 +267,12 @@ fluentbit-gcp:
       read_from_head: true
       mem_buf_limit: 300MB
       buffer_max_size: 2MB
-      #Because at every pod restart we re read all files
-      #we need to ignore files older than loki max_chunk_age
-      #which is 2h
-      ignore_older: 2h
+      #Because gcp writes files in 1h batches and
+      #at every pod restart we re read all files
+      #and read them in parallel we need to read only the last
+      #created file in order to avoid 'entry too far behind'
+      #errors.
+      ignore_older: 50m
       skip_empty_lines: true
       #Because we use gcsfuse to access files on buckets
       #everytime a pod restarts files in filesystem get
@@ -285,12 +287,17 @@ fluentbit-gcp:
       path: "/var/log/k8s/cloudaudit.googleapis.com/*/*/*/*/*"
       read_from_head: true
       mem_buf_limit: 300MB
-      ignore_older: 2h
+      #Because gcp writes files in 1h batches and
+      #at every pod restart we re read all files
+      #and read them in parallel we need to read only the last
+      #created file in order to avoid 'entry too far behind'
+      #errors.
+      ignore_older: 50m
       buffer_max_size: 2MB
       skip_empty_lines: true
       #Because we use gcsfuse to access files on buckets
       #everytime a pod restarts files in filesystem get
-      #new inode numbers so offset db does not work between
+      #new inode ids so offset db does not work between
       #pod restarts
       db: /fluent-bit/audit.db
       db.sync: Normal
