@@ -152,10 +152,11 @@ fluentbit:
                   code = 0
                   if record["level"] then
                       level = tostring(record["level"])
-                      if level == "WARNING" or level == "warning" then
+                      level = string.lower(level)
+                      if level == "warning" then
                           level = "warn"
                       end
-                      record["level"] = string.lower(level)
+                      record["level"] = level
                       code = 1
                   end
                   return code, timestamp, record
