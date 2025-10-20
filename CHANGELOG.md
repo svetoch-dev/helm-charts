@@ -1,3 +1,15 @@
+# 10.0.2
+Fixes:
+* `charts/fluent`:
+  * `fluentbit-gcp`:
+    * reduce time for oldest processable file
+  * `fluentbit`:
+    * adjust `level_lower_case` lua func to handle lower case `warning`s
+
+Enhancements:
+* `charts/grafana`:
+  * enable infinite scrolling
+
 # 10.0.1
 Fixes:
 * `charts/fluent`:
@@ -10,8 +22,6 @@ Enhancements:
 * `charts/fluent`:
   * `fluentbit-main`:
     * use lua plugins to set common log levels
-
-
 
 # 10.0.0
 
