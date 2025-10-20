@@ -151,10 +151,11 @@ fluentbit:
               function level_lower_case(tag, timestamp, record)
                   code = 0
                   if record["level"] then
-                      if record["level"] == "WARNING" then
-                          record["level"] = "warn"
+                      level = tostring(record["level"])
+                      if level == "WARNING" or level == "warning" then
+                          level = "warn"
                       end
-                      record["level"] = string.lower(tostring(record["level"]))
+                      record["level"] = string.lower(level)
                       code = 1
                   end
                   return code, timestamp, record
