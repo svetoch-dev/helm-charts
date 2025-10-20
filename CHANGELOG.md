@@ -1,3 +1,7 @@
+# 10.0.3
+Fixes:
+* `charts/environment`: fix datasources for grafana if no external envs
+
 # 10.0.2
 Fixes:
 * `charts/fluent`:
