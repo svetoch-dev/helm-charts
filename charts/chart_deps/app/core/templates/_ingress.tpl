@@ -1,14 +1,13 @@
 {{- define "core.ingress" }}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 }}
-{{- $ingress := index . 2 }}
-{{- if $ingress.enabled -}}
-{{- $fullName := tpl $ingress.name $ -}}
-{{- $svcPort :=  $ingress.service.port -}}
-{{- $svcName := tpl $ingress.service.name $ -}}
-{{- if and $ingress.className (not (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion)) }}
-  {{- if not (hasKey $ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set $ingress.annotations "kubernetes.io/ingress.class" $ingress.className}}
+{{- $obj := include "core.obj.enricher" (list $ $labels (index . 2)) | fromYaml }}
+{{- if $obj.enabled -}}
+{{- $svcPort :=  $obj.service.port -}}
+{{- $svcName := tpl $obj.service.name $ -}}
+{{- if and $obj.className (not (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey $obj.annotations "kubernetes.io/obj.class") }}
+  {{- $_ := set $obj.annotations "kubernetes.io/obj.class" $obj.className}}
   {{- end }}
 {{- end }}
 ---
@@ -21,20 +20,21 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ tpl $obj.name $ }}
   labels:
-{{- $labels | nindent 4 }}
-  {{- with $ingress.annotations }}
+{{- include "core.labels.constructor" (list $ $labels $obj) | nindent 4 }}
+  namespace: "{{ $obj.namespace }}"
+  {{- with $obj.annotations }}
   annotations:
     {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and $ingress.className (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ tpl $ingress.className $}}
+  {{- if and $obj.className (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ tpl $obj.className $}}
   {{- end }}
-  {{- if $ingress.tls }}
+  {{- if $obj.tls }}
   tls:
-    {{- range $ingress.tls }}
+    {{- range $obj.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ tpl . $ | quote }}
@@ -43,7 +43,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range $ingress.hosts }}
+    {{- range $obj.hosts }}
     - host: {{ tpl .host $ | quote }}
       {{- $svcPort := or .servicePort $svcPort }}
       {{- $svcName := or .serviceName $svcName }}
