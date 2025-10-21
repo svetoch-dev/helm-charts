@@ -1,5 +1,5 @@
 {{- range $ingress_name, $ingress_obj := .Values.ingresses }}
 {{- $labels := include "argocd.labels" $ | fromYaml }}
 {{- $labels := set $labels "app.kubernetes.io/name" (printf "%s-%s" (get $labels "app.kubernetes.io/name") $ingress_name )}}
-{{- include "core.ingress" (list $ (toYaml $labels) $ingress_obj )}}
+{{- include "core.ingress" (list $ $labels $ingress_obj )}}
 {{- end }}
