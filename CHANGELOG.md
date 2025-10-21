@@ -1,3 +1,10 @@
+# 10.1.0
+Enhancements:
+* `charts/chart_deps/app/core`: core.ingress use same input types and implementation as other templates
+
+Features:
+* `charts/chart_deps/fluent/fluentbit/fluentbit-standalone`: ingress
+
 # 10.0.3
 Fixes:
 * `charts/environment`: fix datasources for grafana if no external envs
