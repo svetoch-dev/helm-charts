@@ -1,3 +1,7 @@
+# 10.1.1
+Enhancements:
+* `charts/grafana`: service dashboard add konghq latency pannel
+
 # 10.1.0
 Enhancements:
 * `charts/chart_deps/app/core`: core.ingress use same input types and implementation as other templates
