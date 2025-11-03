@@ -1,3 +1,9 @@
+# 10.1.2
+Enhancements:
+* `charts/kong`: tune `proxy_buffer` nginx params
+* `charts/grafana`:  services dashboard -> kong -> upstream latency pannels
+ 
+
 # 10.1.1
 Enhancements:
 * `charts/grafana`: service dashboard add konghq latency pannel
