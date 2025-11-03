@@ -55,7 +55,7 @@ kong:
   env:
     admin_listen: "127.0.0.1:8444 http2 ssl"
     database: "off"
-    nginx_worker_processes: "auto"
+    nginx_worker_processes: "1"
     headers: "latency_tokens,X-Kong-Upstream-Status"
     nginx_upstream_keepalive_timeout: "302s"
     nginx_upstream_keepalive_requests: "1000"
