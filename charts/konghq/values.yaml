@@ -80,6 +80,7 @@ kong:
       ''"request_length": "$request_length", ''
       ''"content_length": "$content_length", ''
       ''"connection_requests": "$connection_requests", ''
+      ''"connection_time": "$connection_time", ''
       ''"status": "$status", ''
       ''"body_bytes_sent": "$body_bytes_sent", ''
       ''"http_referer": "$http_referer", ''
@@ -87,6 +88,7 @@ kong:
       ''"http_x_forwarded_for": "$http_x_forwarded_for", ''
       ''"request_time": "$request_time", ''
       ''"upstream_response_time": "$upstream_response_time", ''
+      ''"upstream_connect_time": "$upstream_connect_time", ''
       ''"upstream_addr": "$upstream_addr" }'''
   proxy:
     externalTrafficPolicy: Local
