@@ -18,6 +18,3 @@ dependencies:
     repository: file://../chart_deps/app/common/
     alias: pgadmin
     condition: pgadmin.enabled
-  - name: core
-    version: 0.1.0
-    repository: file://../../../app/core
