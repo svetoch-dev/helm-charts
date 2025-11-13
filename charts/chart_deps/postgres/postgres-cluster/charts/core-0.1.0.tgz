@@ -1,0 +1,18 @@
+" tar.vim version v32
+" Browsing tarfile /home/stadmin/github/svetoch/helm-charts/charts/chart_deps/postgres/postgres-cluster/charts/core-0.1.0.tgz
+" Select a file with cursor and press ENTER
+
+core/Chart.yaml
+core/templates/_clusterrole.tpl
+core/templates/_deployment.tpl
+core/templates/_helpers.tpl
+core/templates/_ingress.tpl
+core/templates/_job.tpl
+core/templates/_podTemplate.tpl
+core/templates/_pv.tpl
+core/templates/_pvc.tpl
+core/templates/_role.tpl
+core/templates/_sa.tpl
+core/templates/_secret.tpl
+core/templates/_service.tpl
+core/templates/_statefulset.tpl
