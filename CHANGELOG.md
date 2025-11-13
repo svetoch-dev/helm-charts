@@ -1,3 +1,9 @@
+# 10.1.4
+Enhancements:
+* `postgres`
+  * ability to set `additionalVolumes`
+  * ability to set `volumeMounts` for `sidecars`
+
 # 10.1.3
 Enhancements:
 * `charts/grafana`: service dashboard - average latency pannels + show container iops/throughput for all disks

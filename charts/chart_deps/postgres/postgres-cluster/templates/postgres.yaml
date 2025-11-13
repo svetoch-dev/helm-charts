@@ -59,6 +59,10 @@ spec:
   volume:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
+  {{- with .Values.additionalVolumes }}
+  additionalVolumes:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
   enableShmVolume: {{ .Values.enableShmVolume | default true }}
   {{- with .Values.podAnnotations }}
   podAnnotations:
@@ -96,6 +100,10 @@ spec:
     {{- end }}
     {{- with $sObj.resources }}
     resources:
+    {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
+    {{- with $sObj.volumeMounts }}
+    volumeMounts:
     {{- tpl (toYaml .) $ | nindent 6 }}
     {{- end }}
     env:
