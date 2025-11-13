@@ -56,7 +56,6 @@ kong:
     admin_listen: "127.0.0.1:8444 http2 ssl"
     database: "off"
     nginx_worker_processes: "1"
-    nginx_main_worker_processes: "1"
     headers: "latency_tokens,X-Kong-Upstream-Status"
     nginx_upstream_keepalive_timeout: "302s"
     nginx_upstream_keepalive_requests: "1000"
@@ -65,6 +64,8 @@ kong:
     nginx_proxy_client_header_timeout: "302s"
     nginx_proxy_proxy_send_timeout: "302s"
     nginx_proxy_proxy_read_timeout: "302s"
+    nginx_proxy_proxy_buffer_size: "128k"
+    nginx_proxy_proxy_buffers: "4 256k"
     anonymous_reports: "off"
     admin_access_log: /dev/null
     admin_gui_access_log: /dev/stdout
@@ -79,6 +80,7 @@ kong:
       ''"request_length": "$request_length", ''
       ''"content_length": "$content_length", ''
       ''"connection_requests": "$connection_requests", ''
+      ''"connection_time": "$connection_time", ''
       ''"status": "$status", ''
       ''"body_bytes_sent": "$body_bytes_sent", ''
       ''"http_referer": "$http_referer", ''
@@ -86,6 +88,7 @@ kong:
       ''"http_x_forwarded_for": "$http_x_forwarded_for", ''
       ''"request_time": "$request_time", ''
       ''"upstream_response_time": "$upstream_response_time", ''
+      ''"upstream_connect_time": "$upstream_connect_time", ''
       ''"upstream_addr": "$upstream_addr" }'''
   proxy:
     externalTrafficPolicy: Local
@@ -96,7 +99,7 @@ kong:
   ingressController:
     ingressClass: konghq
     args:
-      - '--log-format=json'
+    - '--log-format=json'
     resources:
       limits:
         cpu: 500m

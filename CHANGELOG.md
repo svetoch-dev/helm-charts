@@ -1,4 +1,55 @@
-# 10.0.0-alpha
+# 10.1.3
+Enhancements:
+* `charts/grafana`: service dashboard - average latency pannels + show container iops/throughput for all disks
+* `charts/konghq`: upstream_connect_time + connection_time in logs
+
+
+# 10.1.2
+Enhancements:
+* `charts/kong`: tune `proxy_buffer` nginx params
+* `charts/grafana`:  services dashboard -> kong -> upstream latency pannels
+
+# 10.1.1
+Enhancements:
+* `charts/grafana`: service dashboard add konghq latency pannel
+
+# 10.1.0
+Enhancements:
+* `charts/chart_deps/app/core`: core.ingress use same input types and implementation as other templates
+
+Features:
+* `charts/chart_deps/fluent/fluentbit/fluentbit-standalone`: ingress
+
+# 10.0.3
+Fixes:
+* `charts/environment`: fix datasources for grafana if no external envs
+
+# 10.0.2
+Fixes:
+* `charts/fluent`:
+  * `fluentbit-gcp`:
+    * reduce time for oldest processable file
+  * `fluentbit`:
+    * adjust `level_lower_case` lua func to handle lower case `warning`s
+
+Enhancements:
+* `charts/grafana`:
+  * enable infinite scrolling
+
+# 10.0.1
+Fixes:
+* `charts/fluent`:
+  * `fluentbit-gcp`:
+    * fix issue with hanging fluentbit after pod restarts
+    * properly parse none milis timestamps
+    * increase buffer_max_size
+
+Enhancements:
+* `charts/fluent`:
+  * `fluentbit-main`:
+    * use lua plugins to set common log levels
+
+# 10.0.0
 
 BrakingChanges:
 * `chart_deps/postgres/postgres-cluster`:
@@ -23,6 +74,12 @@ BrakingChanges:
 * `rabbitmq` uses official and updated images instead `bitnami`
 
 New features:
+* `environments`:
+  * new cloud attr
+* `environment`:
+  * move thanos int configs to values.yaml 
+  * thanos-external
+  * `chart_apps`:  chart attribute can now be templated
 * `fluent`: new chart for fluent operator + fluentbit
 * new chart for `Loki` Simple Scalable Deployment
 * `grafana`:

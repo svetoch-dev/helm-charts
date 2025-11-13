@@ -1,1 +1,1 @@
-{{- include "core.ingress" (list . (include "common.labels" .) .Values.ingress )}}
+{{- include "core.ingress" (list . (include "common.labels" . | fromYaml) .Values.ingress )}}
