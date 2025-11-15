@@ -59,7 +59,7 @@ spec:
   volume:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with .Values.additionalVolumes }}
+  {{- with "postgres-cluster.additionlVolumes" }}
   additionalVolumes:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
