@@ -1,13 +1,11 @@
 {{- $additionalVolumes := include "postgres-cluster.additionalVolumes" . | fromYamlArray}}
+{{- $fluentbitSidecars := include "postgres-cluster.fluentbitSidecars" . | fromYaml}}
 {{- $defaultSidecars := include "postgres-cluster.defaultSidecars" . | fromYaml }}
 {{/*
 If sidecar has the same key as the default sidecar or fluentbit sidecar
 its attrs override the attrs of the default one
 */}}
-{{- if .Values.fluentbit.enabled }}
-{{- $sidecars := merge .Values.sidecars $defaultSidecars .Values.fluentbit.sidecar }}
-{{- end }}
-#{{- $sidecars := merge .Values.sidecars $defaultSidecars }}
+{{- $sidecars := merge .Values.sidecars $defaultSidecars $fluentbitSidecars }}
 {{/*
 We need to use sortAlpha here so that sidecars will appear
 in predictable order. Also sortAlpha cant be used with 'values'
