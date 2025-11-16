@@ -1,12 +1,13 @@
 {{- $additionalVolumes := include "postgres-cluster.additionalVolumes" . | fromYamlArray}}
 {{- $defaultSidecars := include "postgres-cluster.defaultSidecars" . | fromYaml }}
 {{/*
-If sidecar has the same key as the default sidecar
+If sidecar has the same key as the default sidecar or fluentbit sidecar
 its attrs override the attrs of the default one
 */}}
-{{- $sidecars := merge .Values.sidecars $defaultSidecars }}
 {{- if .Values.fluentbit.enabled }}
-{{- $sidecars := merge .Values.fluentbit.sidecar $sidecars }}
+{{- $sidecars := merge .Values.sidecars $defaultSidecars .Values.fluentbit.sidecar }}
+{{- else }}
+{{- $sidecars := merge .Values.sidecars $defaultSidecars }}
 {{- end }}
 {{/*
 We need to use sortAlpha here so that sidecars will appear
