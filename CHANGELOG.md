@@ -3,8 +3,10 @@ Enhancements:
 * `postgres`
   * ability to set `additionalVolumes`
   * ability to set `volumeMounts` for `sidecars`
-  * add `fluent-bit` sidecar to stream postgres logs
   * change `log_rotation_age` to `1h`
+
+New features:
+  * add `fluent-bit` sidecar to stream `postgres` logs 
 
 # 10.1.3
 Enhancements:
