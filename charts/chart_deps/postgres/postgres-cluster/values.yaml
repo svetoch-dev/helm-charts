@@ -91,7 +91,7 @@ fluentbit:
       skip_long_lines: true
       refresh_interval: 10
       mem_buf_limit: 300MB
-      ignore_older: 24h
+      ignore_older: 30m
       skip_empty_lines: true
       db: /fluent-bit/pg.db
       storage.type: memory
