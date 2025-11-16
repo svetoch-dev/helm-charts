@@ -1,4 +1,4 @@
-{{- $additionlVolumes := include "postgres-cluster.additionlVolumes" . | fromYaml}}
+{{- $additionalVolumes := include "postgres-cluster.additionalVolumes" . | fromYaml}}
 {{- $defaultSidecars := include "postgres-cluster.defaultSidecars" . | fromYaml }}
 {{/*
 If sidecar has the same key as the default sidecar
@@ -60,7 +60,7 @@ spec:
   volume:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with $additionlVolumes }}
+  {{- with $additionalVolumes }}
   additionalVolumes:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
