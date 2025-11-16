@@ -45,7 +45,7 @@ fluentbit:
     - fluent-bit
     volumeSource:
       secret:
-        secretName:  printf "%s-%s" (include 'postgres-cluster.fullname' -fluentbit-config)
+        secretName: '{{ include "postgres-cluster.fullname" $}}-fluentbit-config'
     mountPath: /fluent-bit/config
   sidecars:
     fluentbit:
