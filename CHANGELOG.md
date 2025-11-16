@@ -3,12 +3,13 @@ Enhancements:
 * `postgres`
   * ability to set `additionalVolumes`
   * ability to set `volumeMounts` for `sidecars`
+  * add `fluent-bit` sidecar to stream postgres logs
+  * change `log_rotation_age` to `1h`
 
 # 10.1.3
 Enhancements:
 * `charts/grafana`: service dashboard - average latency pannels + show container iops/throughput for all disks
 * `charts/konghq`: upstream_connect_time + connection_time in logs
-
 
 # 10.1.2
 Enhancements:
