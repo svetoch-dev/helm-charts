@@ -5,6 +5,9 @@ If sidecar has the same key as the default sidecar
 its attrs override the attrs of the default one
 */}}
 {{- $sidecars := merge .Values.sidecars $defaultSidecars }}
+{{- if .Values.fluentbit.enabled }}
+{{- $sidecars := merge .Values.fluentbit.sidecar $sidecars }}
+{{- end }}
 {{/*
 We need to use sortAlpha here so that sidecars will appear
 in predictable order. Also sortAlpha cant be used with 'values'
