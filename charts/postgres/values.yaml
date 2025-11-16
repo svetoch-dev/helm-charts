@@ -105,6 +105,8 @@ postgres-main:
     enabled: true
     prometheusSelector:
       prometheus: main
+  fluentbit:
+    enabled: true
 #######################
 # Configuration example
 # for 2 dbs
