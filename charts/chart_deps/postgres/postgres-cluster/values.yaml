@@ -143,7 +143,7 @@ fluentbit:
       labels:
         env: '{{ .Values.global.env.name }}'
         app_kubernetes_io_instance: '{{ .Release.Name }}'
-        app_kubernetes_io_name: ${APP_K8S_IO_NAME}
+        app_kubernetes_io_name: {{ template "name" . }}
         app_kubernetes_io_version: ${APP_K8S_IO_VERSION}
         container: 'postgres'
         job: 'fluentbit-postgres'
