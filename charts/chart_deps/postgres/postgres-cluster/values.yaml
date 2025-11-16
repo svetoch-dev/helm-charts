@@ -63,11 +63,6 @@ fluentbit:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-        PG_SPILO_ROLE:
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.labels['spilo-role']
         APP_K8S_IO_NAME:
           valueFrom:
             fieldRef:
@@ -140,7 +135,6 @@ fluentbit:
         namespace: ${POD_NAMESPACE}
         node: ${NODE_NAME}
         pod: ${HOSTNAME}
-        spilo_role: ${PG_SPILO_ROLE}
         stream: 'file'
 
 secrets:
