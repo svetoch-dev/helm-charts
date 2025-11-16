@@ -10,7 +10,9 @@ postgresql:
     #improving performance on ssd disks
     random_page_cost: '1.1'
     effective_io_concurrency: '200'
-    log_destination: "jsonlog"
+    log_destination: 'jsonlog'
+    log_rotation_age: '1h'
+    log_filename: 'postgresql-%H.log'
 env: {}
 volume: {}
 podAnnotations: {}
