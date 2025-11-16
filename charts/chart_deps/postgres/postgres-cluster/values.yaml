@@ -58,30 +58,30 @@ fluentbit:
         cpu: 10m
         memory: 25Mi
     env:
-    - name: NODE_NAME
-      valueFrom:
-        fieldRef:
-          fieldPath: spec.nodeName
-    - name: PG_SPILO_ROLE
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: metadata.labels['spilo-role']
-    - name: APP_K8S_IO_NAME
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: metadata.labels['app.kubernetes.io/name']
-    - name: APP_K8S_IO_INSTANCE
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: metadata.labels['app.kubernetes.io/instance']
-    - name: APP_K8S_IO_VERSION
-      valueFrom:
-        fieldRef:
-          apiVersion: v1
-          fieldPath: metadata.labels['app.kubernetes.io/version']
+      NODE_NAME:
+        valueFrom:
+          fieldRef:
+            fieldPath: spec.nodeName
+      PG_SPILO_ROLE:
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.labels['spilo-role']
+      APP_K8S_IO_NAME:
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.labels['app.kubernetes.io/name']
+      APP_K8S_IO_INSTANCE:
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.labels['app.kubernetes.io/instance']
+      APP_K8S_IO_VERSION:
+        valueFrom:
+          fieldRef:
+            apiVersion: v1
+            fieldPath: metadata.labels['app.kubernetes.io/version']
   inputs:
     postgres:
       name: tail
