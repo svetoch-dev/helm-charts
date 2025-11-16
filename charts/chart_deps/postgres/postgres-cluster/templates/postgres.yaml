@@ -1,4 +1,4 @@
-{{- $additionalVolumes := include "postgres-cluster.additionalVolumes" . | fromYaml}}
+{{- $additionalVolumes := include "postgres-cluster.additionalVolumes" . | fromYamlArray}}
 {{- $defaultSidecars := include "postgres-cluster.defaultSidecars" . | fromYaml }}
 {{/*
 If sidecar has the same key as the default sidecar
