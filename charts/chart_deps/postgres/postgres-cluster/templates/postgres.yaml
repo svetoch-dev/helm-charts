@@ -6,9 +6,8 @@ its attrs override the attrs of the default one
 */}}
 {{- if .Values.fluentbit.enabled }}
 {{- $sidecars := merge .Values.sidecars $defaultSidecars .Values.fluentbit.sidecar }}
-{{- else }}
-{{- $sidecars := merge .Values.sidecars $defaultSidecars }}
 {{- end }}
+#{{- $sidecars := merge .Values.sidecars $defaultSidecars }}
 {{/*
 We need to use sortAlpha here so that sidecars will appear
 in predictable order. Also sortAlpha cant be used with 'values'
