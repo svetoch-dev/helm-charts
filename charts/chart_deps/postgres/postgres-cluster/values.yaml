@@ -48,40 +48,41 @@ fluentbit:
         secretName: '{{ .Release.Name }}-fluentbit-config'
     mountPath: /fluent-bit/config
   sidecar:
-    name: 'fluent-bit'
-    image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.1.1-debug'
-    resources:
-      limits:
-        cpu: 500m
-        memory: 500Mi
-      requests:
-        cpu: 10m
-        memory: 25Mi
-    env:
-      NODE_NAME:
-        valueFrom:
-          fieldRef:
-            fieldPath: spec.nodeName
-      PG_SPILO_ROLE:
-        valueFrom:
-          fieldRef:
-            apiVersion: v1
-            fieldPath: metadata.labels['spilo-role']
-      APP_K8S_IO_NAME:
-        valueFrom:
-          fieldRef:
-            apiVersion: v1
-            fieldPath: metadata.labels['app.kubernetes.io/name']
-      APP_K8S_IO_INSTANCE:
-        valueFrom:
-          fieldRef:
-            apiVersion: v1
-            fieldPath: metadata.labels['app.kubernetes.io/instance']
-      APP_K8S_IO_VERSION:
-        valueFrom:
-          fieldRef:
-            apiVersion: v1
-            fieldPath: metadata.labels['app.kubernetes.io/version']
+    fluentbit:
+      name: 'fluent-bit'
+      image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.1.1-debug'
+      resources:
+        limits:
+          cpu: 500m
+          memory: 500Mi
+        requests:
+          cpu: 10m
+          memory: 25Mi
+      env:
+        NODE_NAME:
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        PG_SPILO_ROLE:
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.labels['spilo-role']
+        APP_K8S_IO_NAME:
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.labels['app.kubernetes.io/name']
+        APP_K8S_IO_INSTANCE:
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.labels['app.kubernetes.io/instance']
+        APP_K8S_IO_VERSION:
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.labels['app.kubernetes.io/version']
   inputs:
     postgres:
       name: tail
