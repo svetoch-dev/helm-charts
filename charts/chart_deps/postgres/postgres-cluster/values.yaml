@@ -128,13 +128,13 @@ fluentbit:
       labels:
         env: '{{ .Values.global.env.name }}'
         app_kubernetes_io_instance: '{{ .Release.Name }}'
-        app_kubernetes_io_name: ${APP_K8S_IO_NAME}
+        app_kubernetes_io_name: '${APP_K8S_IO_NAME}'
         container: 'postgres'
         job: 'fluentbit-postgres'
-        level: $level
-        namespace: ${POD_NAMESPACE}
-        node: ${NODE_NAME}
-        pod: ${HOSTNAME}
+        level: '$level'
+        namespace: '${POD_NAMESPACE}'
+        node: '${NODE_NAME}'
+        pod: '${HOSTNAME}'
         stream: 'file'
 
 secrets:
