@@ -2,6 +2,7 @@
 Enhancements:
 * `postgres`:
   * change `log_rotation_age` to `1h`
+  * change `log_filename` to `postgresql-%u-%H.log` (from `postgresql-%u.log`)
 
 New features:
 * `postgres`:
