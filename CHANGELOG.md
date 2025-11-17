@@ -1,12 +1,14 @@
 # 10.1.4
 Enhancements:
-* `postgres`
-  * ability to set `additionalVolumes`
-  * ability to set `volumeMounts` for `sidecars`
+* `postgres`:
   * change `log_rotation_age` to `1h`
 
 New features:
-  * add `fluent-bit` sidecar to stream `postgres` logs 
+* `postgres`:
+  * add `fluent-bit` sidecar to stream logs
+  * ability to set `additionalVolumes`
+  * ability to set `volumeMounts` for `sidecars`
+  * use `charts/chart_deps/app/core` for creating `secret`
 
 # 10.1.3
 Enhancements:
