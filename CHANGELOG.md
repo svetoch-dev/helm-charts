@@ -1,7 +1,7 @@
 # 10.1.4
 Enhancements:
 * `postgres`:
-  * set `BACKUP_NUM_TO_RETAIN` to `5` days
+  * forced set `BACKUP_NUM_TO_RETAIN` to `5` days
 
 New features:
 * `postgres`:
