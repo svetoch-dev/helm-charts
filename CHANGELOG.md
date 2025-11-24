@@ -3,8 +3,6 @@ Enhancements:
 * `charts/grafana`:
   * loki datastore timeouts increase
   * grafana pomerium timeout increase
-* `charts/konghq`:
-  * anonymous reports off
 
 # 10.1.3
 Enhancements:
