@@ -1,4 +1,4 @@
-{{ define "fluentbit.secretTemplate" }}
+{{- define "fluentbit.secretTemplate" -}}
 {{- $ := index . 0 }}
 {{- $obj := index . 1 }}
 secret: |
