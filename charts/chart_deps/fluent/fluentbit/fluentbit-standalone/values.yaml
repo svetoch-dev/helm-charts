@@ -1,7 +1,7 @@
 nameOverride: ""
 fullnameOverride: ""
 
-service:
+configs:
   http_server: true
 
 parsers: {}
