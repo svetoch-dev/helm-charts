@@ -4,23 +4,23 @@
 secret: |
   {{- range $name, $parser := $obj.parsers }}
   parsers:
-  - {{ toYaml $parser | nindent 2 | trim }}
+  - {{ toYaml $parser | nindent 4 | trim }}
   {{- end }}
   {{- with $obj.service }}
   service:
-  {{- tpl (toYaml . ) $ | nindent 2 }}
+  {{- tpl (toYaml . ) $ | nindent 4 }}
   {{- end }}
   pipeline:
     {{- if $obj.inputs }}
     inputs:
     {{- range $name, $input := $obj.inputs }}
-    - {{ tpl (toYaml $input) $ | nindent 4 | trim }}
+    - {{ tpl (toYaml $input) $ | nindent 6 | trim }}
     {{- end }}
     {{- end }}
     {{- if $obj.filters }}
     filters:
     {{- range $filter := $obj.filters }}
-    - {{ tpl (toYaml $filter) $ | nindent 4 | trim }}
+    - {{ tpl (toYaml $filter) $ | nindent 6 | trim }}
     {{- end }}
     {{- end }}
     {{- if $obj.outputs }}
@@ -33,7 +33,7 @@ secret: |
     {{- end }}
     {{- $output := set $output "labels" (join "," $labels )}}
     {{- end }}
-    - {{ tpl (toYaml $output) $ | nindent 4 | trim }}
+    - {{ tpl (toYaml $output) $ | nindent 6 | trim }}
     {{- end }}
     {{- end }}
 {{- end }}
