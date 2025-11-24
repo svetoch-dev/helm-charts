@@ -1,8 +1,8 @@
 {{- define "fluentbit.secretTemplate" -}}
 {{- $ := index . 0 }}
 {{- $obj := index . 1 }}
-{{- range $name, $parser := $obj.parsers }}
 secret: |
+  {{- range $name, $parser := $obj.parsers }}
   parsers:
   - {{ toYaml $parser | nindent 2 | trim }}
   {{- end }}
