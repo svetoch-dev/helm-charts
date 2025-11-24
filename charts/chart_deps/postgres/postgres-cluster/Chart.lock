@@ -1,6 +1,6 @@
 dependencies:
-- name: core
-  repository: file://../../app/core
+- name: fluentbit-lib
+  repository: file://../../fluent/fluentbit/lib/
   version: 0.1.0
-digest: sha256:3f3ccc6d25698c7438c01002e73645e46387f68b6c3643a0050d71e0c0c450db
-generated: "2025-11-13T13:42:13.668763483Z"
+digest: sha256:8d91cea6e6ae693611ea0bcf8def785cebf59ebe93cab6f1e8c6bfb5a66b880e
+generated: "2025-11-24T07:09:14.677031167Z"
