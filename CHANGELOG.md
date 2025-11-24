@@ -1,3 +1,15 @@
+# 10.2.0
+Enhancements:
+* `postgres`:
+  * forced set `BACKUP_NUM_TO_RETAIN` to `5` days
+
+New features:
+* `postgres`:
+  * add `fluent-bit` sidecar to stream logs
+  * ability to set `additionalVolumes`
+  * ability to set `volumeMounts` for `sidecars`
+* `fluentbit secret` is created using `fluentbit-lib`
+
 # 10.1.4
 Enhancements:
 * `charts/grafana`:

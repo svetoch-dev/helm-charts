@@ -127,3 +127,22 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 {{- end }}
 {{- end }}
+
+{{- define "postgres-cluster.fluentbitSidecars" -}}
+  {{- if .Values.fluentbit.enabled }}
+  {{- with .Values.fluentbit.sidecars }}
+  {{- tpl (toYaml .) $ | nindent 2 }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- define "postgres-cluster.additionalVolumes" -}}
+  {{- if .Values.fluentbit.enabled }}
+  {{- with .Values.fluentbit.additionalVolumes }}
+  {{- tpl (toYaml .) $ | nindent 2 }}
+  {{- end }}
+  {{- end }}
+  {{- with .Values.additionalVolumes }}
+  {{- tpl (toYaml .) $ | nindent 2 }}
+  {{- end }}
+{{- end }}

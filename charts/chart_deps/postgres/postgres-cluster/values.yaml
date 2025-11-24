@@ -10,7 +10,7 @@ postgresql:
     #improving performance on ssd disks
     random_page_cost: '1.1'
     effective_io_concurrency: '200'
-    log_destination: "jsonlog"
+    log_destination: 'jsonlog'
 env: {}
 volume: {}
 podAnnotations: {}
@@ -34,3 +34,104 @@ podMonitor:
   prometheusSelector: {}
   podTargetLabels: []
   podMetricsEndpoints: {}
+
+fluentbit:
+  enabled: false
+  additionalVolumes:
+  - name: fluent-bit-config
+    targetContainers:
+    - fluent-bit
+    volumeSource:
+      secret:
+        secretName: '{{ include "postgres-cluster.fullname" $}}-fluentbit-config'
+    mountPath: /fluent-bit/config
+  sidecars:
+    fluentbit:
+      name: 'fluent-bit'
+      image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.1.1-debug'
+      resources:
+        limits:
+          cpu: 500m
+          memory: 500Mi
+        requests:
+          cpu: 10m
+          memory: 25Mi
+      env:
+        POD_NODE_NAME:
+          valueFrom:
+            fieldRef:
+              # You can't remove apiVersion! otherwise, the cluster will restart every half hour. We don't know why.
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        APP_K8S_IO_NAME:
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.labels['app.kubernetes.io/name']
+  inputs:
+    postgres:
+      name: tail
+      tag: kube.postgres.*
+      path: '/home/postgres/pgdata/pgroot/pg_log/*.json'
+      read_from_head: true
+      skip_long_lines: true
+      refresh_interval: 10
+      mem_buf_limit: 300MB
+      skip_empty_lines: true
+      db: '/home/postgres/pgdata/pgroot/pg_log/postgres.db'
+      storage.type: memory
+      static_batch_size: 150M
+  filters:
+  - name: parser
+    match: '*'
+    key_name: log
+    parser: json
+  - name: modify
+    match: '*'
+    hard_rename:
+    - error_severity level
+    - ps session_state
+  - name: lua
+    match: "*"
+    code: |
+      function level_lower_case(tag, timestamp, record)
+          code = 0
+          if record["level"] then
+              if record["level"] == "WARNING" then
+                  record["level"] = "warn"
+              end
+              if record["level"] == "LOG" then
+                  record["level"] = "info"
+              end
+              if string.match(record["level"], "DEBUG") then
+                  record["level"] = "debug"
+              end
+              record["level"] = string.lower(tostring(record["level"]))
+              code = 1
+          end
+          return code, timestamp, record
+      end
+    call: level_lower_case
+  parsers:
+    json:
+      name: json
+      format: json
+      time_key: timestamp
+      time_format: '%Y-%m-%d %H:%M:%S.%L %Z'
+  outputs:
+    stdout:
+      name: loki
+      match: 'kube.postgres.*'
+      host: 'loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local'
+      port: 3100
+      labels:
+        env: '{{ .Values.global.env.name }}'
+        app_kubernetes_io_instance: '{{ .Release.Name }}'
+        app_kubernetes_io_name: '${APP_K8S_IO_NAME}'
+        container: 'postgres'
+        job: 'fluentbit-postgres'
+        level: '$level'
+        namespace: '${POD_NAMESPACE}'
+        node: '${POD_NODE_NAME}'
+        pod: '${HOSTNAME}'
+        stream: 'file'

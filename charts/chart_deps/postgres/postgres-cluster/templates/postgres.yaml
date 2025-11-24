@@ -1,9 +1,11 @@
+{{- $additionalVolumes := include "postgres-cluster.additionalVolumes" . | fromYamlArray}}
+{{- $fluentbitSidecars := include "postgres-cluster.fluentbitSidecars" . | fromYaml}}
 {{- $defaultSidecars := include "postgres-cluster.defaultSidecars" . | fromYaml }}
 {{/*
-If sidecar has the same key as the default sidecar
+If sidecar has the same key as the default sidecar or fluentbit sidecar
 its attrs override the attrs of the default one
 */}}
-{{- $sidecars := merge .Values.sidecars $defaultSidecars }}
+{{- $sidecars := merge .Values.sidecars $defaultSidecars $fluentbitSidecars }}
 {{/*
 We need to use sortAlpha here so that sidecars will appear
 in predictable order. Also sortAlpha cant be used with 'values'
@@ -59,6 +61,10 @@ spec:
   volume:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
+  {{- with $additionalVolumes }}
+  additionalVolumes:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
   enableShmVolume: {{ .Values.enableShmVolume | default true }}
   {{- with .Values.podAnnotations }}
   podAnnotations:
@@ -96,6 +102,10 @@ spec:
     {{- end }}
     {{- with $sObj.resources }}
     resources:
+    {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
+    {{- with $sObj.volumeMounts }}
+    volumeMounts:
     {{- tpl (toYaml .) $ | nindent 6 }}
     {{- end }}
     env:
