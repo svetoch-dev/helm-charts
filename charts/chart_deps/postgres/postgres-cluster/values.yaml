@@ -60,6 +60,7 @@ fluentbit:
         POD_NODE_NAME:
           valueFrom:
             fieldRef:
+              # You can't remove apiVersion! otherwise, the cluster will restart every half hour. We don't know why.
               apiVersion: v1
               fieldPath: spec.nodeName
         APP_K8S_IO_NAME:
