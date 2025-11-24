@@ -16,5 +16,5 @@ metadata:
   name: {{ tpl $obj.name $ }}
   namespace: "{{ $.Release.Namespace }}"
 data:
-  fluent-bit.yaml: {{ b64enc (tpl $dataStr $) }}
+  fluent-bit.yaml: {{ b64enc (tpl $dataStr.secret $) }}
 {{- end }}
