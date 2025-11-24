@@ -14,7 +14,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   name: {{ tpl $obj.name $ }}
-  namespace: "{{ $.Release.Namespace }}"
+  namespace: "{{ $obj.namespace | default $.Release.Namespace }}"
 data:
   fluent-bit.yaml: {{ b64enc (tpl $dataStr.secret $) }}
 {{- end }}
