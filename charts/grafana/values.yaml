@@ -9,7 +9,7 @@ ingresses:
     annotations:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
       ingress.pomerium.io/allow_websockets: 'true'
-      ingress.pomerium.io/timeout: '60s'
+      ingress.pomerium.io/timeout: '300s'
       ingress.pomerium.io/pass_identity_headers: 'true'
       ingress.pomerium.io/policy: |
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
