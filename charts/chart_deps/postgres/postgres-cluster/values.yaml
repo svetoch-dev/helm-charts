@@ -134,38 +134,3 @@ fluentbit:
         node: '${POD_NODE_NAME}'
         pod: '${HOSTNAME}'
         stream: 'file'
-
-secrets:
-  fluentbit-config:
-    data:
-      fluent-bit.yaml: |
-        {{- range $name, $parser := .Values.fluentbit.parsers }}
-        parsers:
-        - {{ toYaml $parser | nindent 2 | trim }}
-        {{- end }}
-        pipeline:
-          {{- if .Values.fluentbit.inputs }}
-          inputs:
-          {{- range $name, $input := .Values.fluentbit.inputs }}
-          - {{ tpl (toYaml $input) $ | nindent 4 | trim }}
-          {{- end }}
-          {{- end }}
-          {{- if .Values.fluentbit.filters }}
-          filters:
-          {{- range $filter := .Values.fluentbit.filters }}
-          - {{ tpl (toYaml $filter) $ | nindent 4 | trim }}
-          {{- end }}
-          {{- end }}
-          {{- if .Values.fluentbit.filters }}
-          outputs:
-          {{- range $name, $output := .Values.fluentbit.outputs }}
-          {{- if eq $output.name "loki" }}
-          {{- $labels := list }}
-          {{- range $label_name, $label_value := $output.labels }}
-          {{- $labels = append $labels (printf "%s=%s" $label_name $label_value) }}
-          {{- end }}
-          {{- $output := set $output "labels" (join "," $labels )}}
-          {{- end }}
-          - {{ tpl (toYaml $output) $ | nindent 4 | trim }}
-          {{- end }}
-          {{- end }}

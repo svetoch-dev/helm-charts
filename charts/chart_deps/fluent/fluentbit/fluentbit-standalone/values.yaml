@@ -4,45 +4,10 @@ fullnameOverride: ""
 configs:
   http_server: true
 
-secrets:
-  config:
-    data:
-      fluent-bit.yaml: |
-        {{- range $name, $parser := .Values.parsers }}
-        parsers:
-        - {{ toYaml $parser | nindent 2 | trim }}
-        {{- end }}
-        {{- with .Values.configs }}
-        service:
-        {{- tpl (toYaml . ) $ | nindent 2 }}
-        {{- end }}
-        pipeline:
-          {{- if .Values.inputs }}
-          inputs:
-          {{- range $name, $input := .Values.inputs }}
-          - {{ tpl (toYaml $input) $ | nindent 4 | trim }}
-          {{- end }}
-          {{- end }}
-          {{- if .Values.filters }}
-          filters:
-          {{- range $filter := .Values.filters }}
-          - {{ tpl (toYaml $filter) $ | nindent 4 | trim }}
-          {{- end }}
-          {{- end }}
-          {{- if .Values.filters }}
-          outputs:
-          {{- range $name, $output := .Values.outputs }}
-          {{- if eq $output.name "loki" }}
-          {{- $labels := list }}
-          {{- range $label_name, $label_value := $output.labels }}
-          {{- $labels = append $labels (printf "%s=%s" $label_name $label_value) }}
-          {{- end }}
-          {{- $output := set $output "labels" (join "," $labels )}}
-          {{- end }}
-          - {{ tpl (toYaml $output) $ | nindent 4 | trim }}
-          {{- end }}
-          {{- end }}
-
+parsers: {}
+inputs: {}
+filters: []
+outputs: {}
 
 fluentbit:
   enabled: false
