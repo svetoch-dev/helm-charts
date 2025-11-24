@@ -1,8 +1,13 @@
+# 10.1.4
+Enhancements:
+* `charts/grafana`:
+  * loki datastore timeouts increase
+  * grafana pomerium timeout increase
+
 # 10.1.3
 Enhancements:
 * `charts/grafana`: service dashboard - average latency pannels + show container iops/throughput for all disks
 * `charts/konghq`: upstream_connect_time + connection_time in logs
-
 
 # 10.1.2
 Enhancements:
