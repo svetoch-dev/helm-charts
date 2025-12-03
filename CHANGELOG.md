@@ -1,6 +1,7 @@
 # 10.2.1
 Enchancements:
 * set `loki` resources limits
+* set 3Gb memory limit for `thanos storegateway`
 
 # 10.2.0
 Enhancements:
