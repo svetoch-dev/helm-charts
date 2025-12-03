@@ -1,3 +1,7 @@
+# 10.2.1
+Enchancements:
+* set `loki` resources limits
+
 # 10.2.0
 Enhancements:
 * `postgres`:
