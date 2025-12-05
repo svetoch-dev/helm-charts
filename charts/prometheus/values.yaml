@@ -324,6 +324,7 @@ operator:
   prometheusOperator:
     enabled: false
     ## Create Endpoints objects for kubelet targets.
+    #### we will turn this off in the next release ###
     kubeletEndpointsEnabled: true
     ## Create EndpointSlice objects for kubelet targets.
     kubeletEndpointSliceEnabled: true
