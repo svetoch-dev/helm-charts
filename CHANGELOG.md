@@ -1,3 +1,17 @@
+# 10.2.2
+Enhancements:
+* `Prometheus`:
+  * use `EndpointSlice` for default
+  * delete deprecated `no_follow_redirects` in `blackbox-exporter`
+  
+Fixes:
+* `Prometheus`:
+  * alert `Container_too_many_restarts` many-to-many matching not allowed: matching labels must be unique on one side
+
+New features:
+* `Prometheus`:
+  * ability to set `serviceDiscoveryRole`
+
 # 10.2.1
 Enchancements:
 * set `loki` resources limits
