@@ -63,6 +63,9 @@ loki:
       retention_period: 1440h
     schemaConfig:
       configs: []
+    server:
+      grpc_server_max_recv_msg_size: 33554432 #32Mb
+      grpc_server_max_send_msg_size: 33554432 #32Mb
     storage:
       use_thanos_objstore: true
   gateway:
