@@ -3,6 +3,7 @@ Enhancements:
 * `Prometheus`:
   * use `EndpointSlice` for default
   * delete deprecated `no_follow_redirects` in `blackbox-exporter`
+  * refactor `prometheus-main` resources limits
   
 Fixes:
 * `Prometheus`:
