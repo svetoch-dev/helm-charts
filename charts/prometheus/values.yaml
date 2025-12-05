@@ -323,6 +323,10 @@ operator:
 
   prometheusOperator:
     enabled: false
+    ## Create Endpoints objects for kubelet targets.
+    kubeletEndpointsEnabled: true
+    ## Create EndpointSlice objects for kubelet targets.
+    kubeletEndpointSliceEnabled: true
     logFormat: json
     admissionWebhooks:
       enabled: false
