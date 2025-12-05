@@ -279,5 +279,7 @@ prometheus:
 
     enableAdminAPI: false
 
+    serviceDiscoveryRole: "EndpointSlice"
+
     tsdb:
       outOfOrderTimeWindow: 0s
