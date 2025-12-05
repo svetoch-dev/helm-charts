@@ -102,7 +102,7 @@ thanos:
         memory: 50Mi
       limits:
         cpu: 1000m
-        memory: 1Gi
+        memory: 3Gi
     service:
       annotations:
         konghq.com/protocol: grpc
