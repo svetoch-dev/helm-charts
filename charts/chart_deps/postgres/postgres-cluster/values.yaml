@@ -46,6 +46,7 @@ fluentbit:
         secretName: '{{ include "postgres-cluster.fullname" $}}-fluentbit-config'
     mountPath: /fluent-bit/config
   sidecars:
+  # All fields must be filled in carefully. pod manifests in kind: postgresql must fully comply with pod manifests in kind: Pod (for example, apiVersion: v1 in variables should not be skipped)
     fluentbit:
       name: 'fluent-bit'
       image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.1.1-debug'
@@ -60,7 +61,6 @@ fluentbit:
         POD_NODE_NAME:
           valueFrom:
             fieldRef:
-              # You can't remove apiVersion! otherwise, the cluster will restart every half hour. We don't know why.
               apiVersion: v1
               fieldPath: spec.nodeName
         APP_K8S_IO_NAME:
