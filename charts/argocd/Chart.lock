@@ -1,7 +1,7 @@
 dependencies:
 - name: argo-cd
   repository: https://argoproj.github.io/argo-helm
-  version: 7.8.28
+  version: 7.9.0
 - name: certificates
   repository: file://../chart_deps/security/certificates
   version: 0.1.0
@@ -14,5 +14,5 @@ dependencies:
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:bfc6f6447d03f5df2339d93548893aa3003be2f8d789edba42430fb03cee9c4b
-generated: "2025-12-08T20:30:37.286908429Z"
+digest: sha256:693dfb75439af36a1287c924065edd21c40d419f0afe804ba05abbe07335099e
+generated: "2025-12-08T21:13:01.438190824Z"
