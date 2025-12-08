@@ -323,6 +323,11 @@ operator:
 
   prometheusOperator:
     enabled: false
+    ## Create Endpoints objects for kubelet targets.
+    #### we will turn this off in the next release ###
+    kubeletEndpointsEnabled: true
+    ## Create EndpointSlice objects for kubelet targets.
+    kubeletEndpointSliceEnabled: true
     logFormat: json
     admissionWebhooks:
       enabled: false
@@ -367,7 +372,7 @@ prometheus-blackbox-exporter:
           valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
           valid_status_codes: [200]
           method: GET
-          no_follow_redirects: true
+          follow_redirects: false
           fail_if_not_ssl: true
           headers:
             X-Healthcheck-Agent: "blackbox-exporter"
@@ -378,7 +383,7 @@ prometheus-blackbox-exporter:
           valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
           valid_status_codes: [301, 302]
           method: GET
-          no_follow_redirects: true
+          follow_redirects: false
           fail_if_not_ssl: false
           headers:
             X-Healthcheck-Agent: "blackbox-exporter"
@@ -722,7 +727,7 @@ prometheus-rules:
             for: "10m"
             keep_firing_for: "12m"
             description: "Container '{{ $labels.container }}' in pod '{{ $labels.pod }}' located in namespace '{{ $labels.namespace }}' too many restarts (>10 for 10m)"
-            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[5m]) * on (namespace, pod) group_left (label_app_kubernetes_io_name) kube_pod_labels > 10
+            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[5m]) * on (namespace, pod, uid) group_left (label_app_kubernetes_io_name) kube_pod_labels > 10
 
           # GCP
           To_many_gcp_logs:
