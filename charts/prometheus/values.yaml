@@ -484,7 +484,7 @@ prometheus-main:
           memory: 2Gi
         requests:
           cpu: 50m
-          memory: 600Mi
+          memory: 350Mi
 
       storage:
         volumeClaimTemplate:
