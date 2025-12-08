@@ -3,6 +3,8 @@ Enhancements:
 * `Prometheus`:
   * use `EndpointSlice` for default
   * delete deprecated `no_follow_redirects` in `blackbox-exporter`
+* `grafana`
+  * `services dashboard` total traffic pannels + counter for logs
   
 Fixes:
 * `Prometheus`:
