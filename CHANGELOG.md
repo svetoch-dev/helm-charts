@@ -1,3 +1,11 @@
+# 10.2.3
+Fixes:
+* `grafana`:
+  * `services dashboard`: fix datastore id issue
+
+Enhancements:
+* `loki`: tune performance parameters
+
 # 10.2.2
 Enhancements:
 * `Prometheus`:
