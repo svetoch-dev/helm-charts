@@ -50,6 +50,8 @@ loki:
     compactor:
       delete_request_store: ""
       retention_enabled: true
+    querier:
+      max_concurrent: 4
     limits_config:
       discover_log_levels: false
       discover_service_name: []
@@ -59,6 +61,8 @@ loki:
       max_label_names_per_series: 20
       per_stream_rate_limit: 15MB
       per_stream_rate_limit_burst: 30MB
+      max_query_length: 0s
+      split_queries_by_interval: 15m
       # logs retention = 60 days
       retention_period: 1440h
     schemaConfig:
