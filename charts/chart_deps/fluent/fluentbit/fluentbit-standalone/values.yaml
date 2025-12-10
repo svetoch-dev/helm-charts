@@ -23,8 +23,8 @@ fluentbit:
 
   volumeClaimTemplates: {}
 
-  volumes: {}
-  volumeMounts: {}
+  volumes: []
+  volumeMounts: []
 
   env:
     - name: NODE_NAME
