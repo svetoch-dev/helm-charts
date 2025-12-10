@@ -8,7 +8,7 @@ Enchancements:
 
 Fixes:
 * fixed default value type for `volumes` and `volumeMounts` in `fluentbit-standalone`
-* fixed default value type for `job.environment`, `job.environmentFromSecrets`, `volumes`, `volumeMounts` in `app/common`
+* fixed default value type for `job.environment`, `environment`, `volumes`, `volumeMounts` in `app/common`
 
 # 10.2.3
 Fixes:
