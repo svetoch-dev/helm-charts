@@ -68,10 +68,10 @@ gen-secrets:
     - gen-secrets
     - --secrets=$(POD_NAMESPACE)/bootstrap
     environment:
-    - name: POD_NAMESPACE
-      valueFrom:
-        fieldRef:
-          fieldPath: metadata.namespace
+      POD_NAMESPACE:
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.namespace
     podSecurityContext:
       fsGroup: 1000
       runAsNonRoot: true
