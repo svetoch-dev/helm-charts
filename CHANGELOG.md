@@ -1,3 +1,13 @@
+# 10...
+Enchancements:
+* chart updates:
+  * `gha-operator` 0.11.0 -> 0.13.0
+  * `gha-runner` 0.11.0 -> 0.13.0
+
+
+* crds updates:
+  * ``..
+
 # 10.3.0
 Enchancements:
 * `argocd`:
