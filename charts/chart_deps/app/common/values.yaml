@@ -50,7 +50,7 @@ job:
   command: []
   args: []
   resources: {}
-  environment: {}
+  environment: []
   environmentFromSecrets: {}
   nodeSelector: {}
   podSecurityContext: {}
