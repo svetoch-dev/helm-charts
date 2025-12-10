@@ -66,7 +66,7 @@ argocd:
     resources:
       limits:
         cpu: 500m
-        memory: 250Mi
+        memory: 350Mi
       requests:
         cpu: 50m
         memory: 70Mi
