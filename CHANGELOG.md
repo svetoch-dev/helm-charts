@@ -1,3 +1,12 @@
+# 10...
+Enchancements:
+* `argocd`:
+  * chart update 7.8.26 -> 9.1.7
+  * crds update v2.14.10 -> v3.2.1
+  * increase `server` memory limits 250Mi -> 350Mi
+* `gha-operator` crds update 0.11.0 -> 0.13.0
+
+
 # 10.2.3
 Fixes:
 * `grafana`:
