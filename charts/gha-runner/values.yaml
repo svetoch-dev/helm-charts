@@ -55,6 +55,8 @@ workflowConfigMap:
   name: workflow-pod
   metaLabels:
     argocd.argoproj.io/instance: "{{ .Release.Name }}"
+  metaAnnotations:
+    argocd.argoproj.io/instance: "{{ .Release.Name }}"
   spec:
     securityContext:
       fsGroup: 1001

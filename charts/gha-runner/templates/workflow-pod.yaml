@@ -14,6 +14,10 @@ data:
       labels:
         {{- tpl (toYaml .) $ | nindent 8 }}
       {{- end }}
+      {{- with .Values.workflowConfigMap.metaAnnotations }}
+      annotations:
+        {{- tpl (toYaml .) $ | nindent 8 }}
+      {{- end }}
     {{- with .Values.workflowConfigMap.spec }}
     spec:
       {{- toYaml . | nindent 6 }}
