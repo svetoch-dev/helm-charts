@@ -7,6 +7,7 @@ Enchancements:
 * image updates:
   * `external-dns` 0.18.0 -> 0.20.0
   * `fluent-bit` 4.1.1 -> 4.2.0
+* * `fluent-operator` 3.4.0 -> 3.5.0
 * crds updates:
   * `cert-manager` 1.17.4 -> 1.19.2
   * `external-dns` 0.18.0 -> 0.20.0
