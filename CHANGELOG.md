@@ -6,6 +6,7 @@ Enchancements:
   * `gha-runner` 0.11.0 -> 0.13.0
 * image updates:
   * `external-dns` 0.18.0 -> 0.20.0
+  * `fluent-bit` 4.1.1 -> 4.2.0
 * crds updates:
   * `cert-manager` 1.17.4 -> 1.19.2
   * `external-dns` 0.18.0 -> 0.20.0

@@ -49,7 +49,7 @@ fluentbit:
   # All fields must be filled in carefully. pod manifests in kind: postgresql must fully comply with pod manifests in kind: Pod (for example, apiVersion: v1 in variables should not be skipped)
     fluentbit:
       name: 'fluent-bit'
-      image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.1.1-debug'
+      image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.2.0-debug'
       resources:
         limits:
           cpu: 500m
