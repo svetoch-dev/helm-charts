@@ -21,6 +21,7 @@ Enchancements:
   * `grafana-operator` 5.19.0 -> 5.21.0
   * `konghq` 3.3.0 -> 3.5.0
   * `pomerium` 0.29.0 -> 0.31.3
+  * `prometheus-operator` 0.85.0 -> 0.87.1
 
 # 10.3.0
 Enchancements:
