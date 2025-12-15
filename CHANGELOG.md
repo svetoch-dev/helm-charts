@@ -5,6 +5,7 @@ Enchancements:
   * `cert-manager` 1.17.4 -> 1.19.2
   * `gha-operator` 0.11.0 -> 0.13.0
   * `gha-runner` 0.11.0 -> 0.13.0
+  * `kongqh` 2.48.0 -> 3.0.1
 * image updates:
   * `external-dns` 0.18.0 -> 0.20.0
   * `fluent-bit` 4.1.1 -> 4.2.0
@@ -14,6 +15,7 @@ Enchancements:
   * `cert-manager` 1.17.4 -> 1.19.2
   * `external-dns` 0.18.0 -> 0.20.0
   * `fluent-operator` 3.4.0 -> 3.5.0
+  * `kong` 3.3.0 -> 3.5.0
   * `pomerium` 0.29.0 -> 0.31.3
 
 # 10.3.0
