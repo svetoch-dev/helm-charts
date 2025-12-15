@@ -6,16 +6,19 @@ Enchancements:
   * `cert-manager` 1.17.4 -> 1.19.2
   * `gha-operator` 0.11.0 -> 0.13.0
   * `gha-runner` 0.11.0 -> 0.13.0
+  * `grafana` 5.19.0 -> 5.21.0
   * `kongqh` 2.48.0 -> 3.0.1
 * image updates:
   * `external-dns` 0.18.0 -> 0.20.0
   * `fluent-bit` 4.1.1 -> 4.2.0
   * `fluent-operator` 3.4.0 -> 3.5.0
+  * `grafana` 12.1.1 -> 12.3.0
   * `pomerium/ingress-controller` 0.29.4 -> 0.31.3
 * crds updates:
   * `cert-manager` 1.17.4 -> 1.19.2
   * `external-dns` 0.18.0 -> 0.20.0
   * `fluent-operator` 3.4.0 -> 3.5.0
+  * `grafana-operator` 5.19.0 -> 5.21.0
   * `konghq` 3.3.0 -> 3.5.0
   * `pomerium` 0.29.0 -> 0.31.3
 
