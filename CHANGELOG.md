@@ -1,6 +1,7 @@
 # 10...
 Enchancements:
 * set `metadata.annotations` to `gha-runner workflow-pod`
+* set `no-expose-internal-ipv6` for `external-dns`
 * chart updates:
   * `cert-manager` 1.17.4 -> 1.19.2
   * `gha-operator` 0.11.0 -> 0.13.0
