@@ -1,7 +1,5 @@
 external-dns:
   enabled: false
-  extraArgs:
-    no-expose-internal-ipv6:
   logFormat: json
   global:
     security:
