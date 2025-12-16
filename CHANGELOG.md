@@ -1,3 +1,8 @@
+# 10.3.1
+Enchancements:
+* `grafana`:
+  * `services dashboard`: proper throttled pannels
+
 # 10.3.0
 Enchancements:
 * `argocd`:
