@@ -1,3 +1,10 @@
+# 10.3.1
+Enchancements:
+* `grafana`:
+  * `services dashboard`: proper throttled pannels
+* `promtheus`: fix throttled alerts + increase node exporter limits
+* `chart_deps/rabbitmq/rabbitmq-cluster`: update default version to 4.2.2
+
 # 10.3.0
 Enchancements:
 * `argocd`:
