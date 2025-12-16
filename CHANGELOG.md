@@ -1,4 +1,4 @@
-# 10...
+# 10.4.0
 Enchancements:
 * set `metadata.annotations` to `gha-runner workflow-pod`
 * set `no-expose-internal-ipv6` for `external-dns`
@@ -8,6 +8,7 @@ Enchancements:
   * `gha-runner` 0.11.0 -> 0.13.0
   * `grafana` 5.19.0 -> 5.21.0
   * `kongqh` 2.48.0 -> 3.0.1
+  * `loki` 6.42.0 -> 6.49.0
   * `prometheus`:
     * `kube-prometheus-stack` 77.0.2 -> 80.4.1
     * `kube-state-metrics` 6.1.5 -> 7.0.0
@@ -15,11 +16,13 @@ Enchancements:
     * `prometheus-node-exporter` 4.47.3 -> 4.49.2
     * `stackdriver-exporter` 4.10.0 -> 4.12.2
 * image updates:
+  * `alertmanager` 0.28.1 -> 0.30.0
   * `external-dns` 0.18.0 -> 0.20.0
   * `fluent-bit` 4.1.1 -> 4.2.0
   * `fluent-operator` 3.4.0 -> 3.5.0
   * `grafana` 12.1.1 -> 12.3.0
   * `pomerium/ingress-controller` 0.29.4 -> 0.31.3
+  * `prometheus` 3.5.0 -> 3.8.1
 * crds updates:
   * `cert-manager` 1.17.4 -> 1.19.2
   * `external-dns` 0.18.0 -> 0.20.0
