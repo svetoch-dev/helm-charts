@@ -179,7 +179,7 @@ prometheus-node-exporter:
     enabled: false
   resources:
     limits:
-      cpu: 250m
+      cpu: 500m
       memory: 50Mi
     requests:
       cpu: 10m
@@ -758,8 +758,8 @@ prometheus-rules:
           High_cpu_throttling:
             enabled: false
             for: "1h"
-            description: "Container '{{ $labels.container }}' in pod '{{ $labels.pod }}' located in namespace '{{ $labels.namespace }}' throttled for >1h with throttle of '{{ humanizeDuration $value }}'"
-            expr: rate(container_cpu_cfs_throttled_seconds_total{container!~"postgres"}[5m]) > 0.2
+            description: "Container '{{ $labels.container }}' in pod '{{ $labels.pod }}' located in namespace '{{ $labels.namespace }}' throttled for >1h with throttle percent of {{ humanizePercentage $value }}"
+            expr: increase(container_cpu_cfs_throttled_seconds_total{container!="postgres"}[5m]) / increase(container_cpu_cfs_periods_total{container!="postgres"}[5m])*0.1 > 0.1
           High_memory_usage:
             enabled: false
             for: "30m"
@@ -767,9 +767,9 @@ prometheus-rules:
             expr: sum by (container, pod, namespace) (container_memory_working_set_bytes{container!="", namespace!="kube-system"}) / on (container, pod, namespace) max by (container, pod, namespace) (kube_pod_container_resource_limits{unit="byte"}) > 0.9
           High_postgres_container_cpu_throttling:
             enabled: false
-            for: "1h"
-            description: "Container '{{ $labels.container }}' in pod '{{ $labels.pod }}' located in namespace '{{ $labels.namespace }}' throttled for >1h with throttle of '{{ humanizeDuration $value }}'"
-            expr: rate(container_cpu_cfs_throttled_seconds_total{container="postgres"}[5m]) > 0.1
+            for: "10m"
+            description: "Container '{{ $labels.container }}' in pod '{{ $labels.pod }}' located in namespace '{{ $labels.namespace }}' throttled for >10m with throttle percent of {{ humanizePercentage $value }}"
+            expr: increase(container_cpu_cfs_throttled_seconds_total{container="postgres"}[5m]) / increase(container_cpu_cfs_periods_total{container="postgres"}[5m])*0.1 > 0.1
           OOM_killed_pods_(on_node):
             enabled: false
             for: "1m"
