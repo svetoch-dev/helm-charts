@@ -756,7 +756,7 @@ prometheus-rules:
             enabled: false
             for: "1h"
             description: "Container '{{ $labels.container }}' in pod '{{ $labels.pod }}' located in namespace '{{ $labels.namespace }}' throttled for >1h with throttle percent of {{ humanizePercentage $value }}"
-            expr: increase(container_cpu_cfs_throttled_seconds_total{containe!="postgres"}[5m]) / increase(container_cpu_cfs_periods_total{container!="postgres"}[5m])*0.1 > 0.1
+            expr: increase(container_cpu_cfs_throttled_seconds_total{container!="postgres"}[5m]) / increase(container_cpu_cfs_periods_total{container!="postgres"}[5m])*0.1 > 0.1
           High_memory_usage:
             enabled: false
             for: "30m"
