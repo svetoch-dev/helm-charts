@@ -32,6 +32,12 @@ Enchancements:
   * `pomerium` 0.29.0 -> 0.31.3
   * `prometheus-operator` 0.85.0 -> 0.87.1
 
+Fixes:
+* `Prometheus`:
+  * alert `Postgres_logical_backup_error` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `Container_too_many_restarts` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `Statefulset_not_ready` many-to-many matching not allowed: matching labels must be unique on one side
+
 # 10.3.1
 Enchancements:
 * `grafana`:
