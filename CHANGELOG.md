@@ -8,6 +8,12 @@ Enchancements:
   * `gha-runner` 0.11.0 -> 0.13.0
   * `grafana` 5.19.0 -> 5.21.0
   * `kongqh` 2.48.0 -> 3.0.1
+  * `prometheus`:
+    * `kube-prometheus-stack` 77.0.2 -> 80.4.1
+    * `kube-state-metrics` 6.1.5 -> 7.0.0
+    * `prometheus-blackbox-exporter` 11.3.1 -> 11.6.1
+    * `prometheus-node-exporter` 4.47.3 -> 4.49.2
+    * `stackdriver-exporter` 4.10.0 -> 4.12.2
 * image updates:
   * `external-dns` 0.18.0 -> 0.20.0
   * `fluent-bit` 4.1.1 -> 4.2.0
