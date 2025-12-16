@@ -730,7 +730,7 @@ prometheus-rules:
             for: "10m"
             keep_firing_for: "12m"
             description: "Container '{{ $labels.container }}' in pod '{{ $labels.pod }}' located in namespace '{{ $labels.namespace }}' too many restarts (>10 for 10m)"
-            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[5m]) * on (instance, namespace, pod) group_left (label_app_kubernetes_io_name) kube_pod_labels > 10
+            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[5m]) * on (instance, namespace, pod, uid) group_left (label_app_kubernetes_io_name) kube_pod_labels > 10
 
           # GCP
           To_many_gcp_logs:
