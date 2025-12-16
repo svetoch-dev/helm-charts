@@ -2,6 +2,7 @@
 Enchancements:
 * `grafana`:
   * `services dashboard`: proper throttled pannels
+* `promtheus`: fix throttled alerts + increase node exporter limits
 
 # 10.3.0
 Enchancements:
