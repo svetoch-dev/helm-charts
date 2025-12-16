@@ -46,39 +46,39 @@ dependencies:
     version: 0.1.0
     alias: alertmanager-main
     condition: alertmanager-main.enabled
-  #https://github.com/prometheus-community/helm-charts/tree/prometheus-postgres-exporter-7.1.1/charts/prometheus-postgres-exporter
+  #https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-postgres-exporter
   - name: prometheus-postgres-exporter
     repository: https://prometheus-community.github.io/helm-charts
-    version: 7.1.1
+    version: 7.3.0
     alias: prometheus-postgres-exporter
     condition: prometheus-postgres-exporter.enabled
-  #https://github.com/prometheus-community/helm-charts/tree/prometheus-blackbox-exporter-11.3.1/charts/prometheus-blackbox-exporter
+  #https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-blackbox-exporter
   - name: prometheus-blackbox-exporter
     repository: https://prometheus-community.github.io/helm-charts
-    version: 11.3.1
+    version: 11.6.1
     alias: prometheus-blackbox-exporter
     condition: prometheus-blackbox-exporter.enabled
-  #https://github.com/prometheus-community/helm-charts/tree/prometheus-node-exporter-4.47.3/charts/prometheus-node-exporter
+  #https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter
   - name: prometheus-node-exporter
     repository: https://prometheus-community.github.io/helm-charts
-    version: 4.47.3
+    version: 4.49.2
     alias: prometheus-node-exporter
     condition: prometheus-node-exporter.enabled
-  #https://github.com/prometheus-community/helm-charts/tree/kube-state-metrics-6.1.5/charts/kube-state-metrics
+  #https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics
   - name: kube-state-metrics
-    version: 6.1.5
+    version: 7.0.0
     repository: oci://ghcr.io/prometheus-community/charts
     condition: kube-state-metrics.enabled
-  #https://github.com/prometheus-community/helm-charts/tree/kube-prometheus-stack-77.0.2/charts/kube-prometheus-stack
+  #https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
   - name: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
-    version: 77.0.2
+    version: 80.4.1
     alias: operator
     condition: operator.enabled
-  #https://github.com/prometheus-community/helm-charts/tree/prometheus-stackdriver-exporter-4.10.0/charts/prometheus-stackdriver-exporter
+  #https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-stackdriver-exporter
   - name: prometheus-stackdriver-exporter
     repository: https://prometheus-community.github.io/helm-charts
-    version: 4.10.0
+    version: 4.12.2
     alias: prometheus-stackdriver-exporter
     condition: prometheus-stackdriver-exporter.enabled
   - name: core
