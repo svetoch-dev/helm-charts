@@ -10,14 +10,14 @@ ingresses:
       cert-manager.io/cluster-issuer: letsencrypt-konghq
       konghq.com/plugins: loki-read-ip-restriction
     hosts:
-      - host: "loki.{{ .Values.global.project.company.domain.env }}"
+      - host: "loki.{{ .Values.global.company.domain.env }}"
         paths:
           - path: /
             pathType: ImplementationSpecific
     tls:
       - secretName: loki-read-tls
         hosts:
-          - "loki.{{ .Values.global.project.company.domain.env }}"
+          - "loki.{{ .Values.global.company.domain.env }}"
 
 kong-plugins:
   enabled: false
@@ -28,7 +28,7 @@ kong-plugins:
         kubernetes.io/ingress.class: konghq
       config:
         allow:
-          - "{{ .Values.global.project.network.int_nat_gw }}"
+          - "{{ .Values.global.network.int_nat_gw }}"
 
 loki:
   enabled: false
