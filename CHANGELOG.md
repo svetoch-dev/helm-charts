@@ -1,5 +1,6 @@
 # 10.4.0
 Enchancements:
+* delete `loki-read` cpu limits
 * set `metadata.annotations` to `gha-runner workflow-pod`
 * set `no-expose-internal-ipv6` for `external-dns`
 * chart updates:
