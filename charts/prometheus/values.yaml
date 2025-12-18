@@ -228,7 +228,7 @@ kube-state-metrics:
     - cronjobs
     - daemonsets
     - deployments
-    # - endpoints
+    # - endpointslices
     # - horizontalpodautoscalers
     # - ingresses
     # - jobs
@@ -323,6 +323,9 @@ operator:
 
   prometheusOperator:
     enabled: false
+    # use old thanos image https://github.com/thanos-io/thanos/issues/8549
+    thanosImage:
+      tag: v0.39.2
     ## Create Endpoints objects for kubelet targets.
     #### we will turn this off in the next release ###
     kubeletEndpointsEnabled: true
@@ -634,7 +637,7 @@ prometheus-rules:
             enabled: false
             for: "15m"
             description: "StatefulSet '{{ $labels.statefulset }}' in namespace '{{ $labels.namespace }}' has not matched the expected number of replicas for >15 minutes"
-            expr: (kube_statefulset_status_replicas_ready != kube_statefulset_status_replicas) * on (namespace,statefulset) group_left (label_app_kubernetes_io_name) kube_statefulset_labels
+            expr: (kube_statefulset_status_replicas_ready != kube_statefulset_status_replicas) * on (instance, namespace,statefulset) group_left (label_app_kubernetes_io_name) kube_statefulset_labels
 
           # Kong (nginx)
           ErrorRateIncreasedFor_5XX:
@@ -727,7 +730,7 @@ prometheus-rules:
             for: "10m"
             keep_firing_for: "12m"
             description: "Container '{{ $labels.container }}' in pod '{{ $labels.pod }}' located in namespace '{{ $labels.namespace }}' too many restarts (>10 for 10m)"
-            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[5m]) * on (namespace, pod, uid) group_left (label_app_kubernetes_io_name) kube_pod_labels > 10
+            expr: increase(kube_pod_container_status_restarts_total{namespace!="kube-system"}[5m]) * on (instance, namespace, pod, uid) group_left (label_app_kubernetes_io_name) kube_pod_labels > 10
 
           # GCP
           To_many_gcp_logs:
@@ -742,7 +745,7 @@ prometheus-rules:
             enabled: false
             for: "2h"
             description: "Cronjob '{{ $labels.cronjob }}' failed"
-            expr: ((kube_cronjob_next_schedule_time - on(job, cronjob, namespace) kube_cronjob_status_last_successful_time)/3600) > 25
+            expr: ((kube_cronjob_next_schedule_time - on(instance, job, cronjob, namespace) kube_cronjob_status_last_successful_time)/3600) > 25
 
           # Redis
           Redis_disconnected_slaves:

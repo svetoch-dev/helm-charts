@@ -53,8 +53,8 @@ gha-runner:
 workflowConfigMap:
   enabled: false
   name: workflow-pod
-  metaLabels:
-    argocd.argoproj.io/instance: "{{ .Release.Name }}"
+  metaAnnotations:
+    argocd.argoproj.io/tracking-id: "{{ .Release.Name }}:/Pod:{{ .Release.Namespace }}/workflow-pod" 
   spec:
     securityContext:
       fsGroup: 1001

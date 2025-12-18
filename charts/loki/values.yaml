@@ -1,3 +1,5 @@
+global:
+  registry: null
 ingresses:
   loki-read:
     enabled: false
@@ -92,7 +94,6 @@ loki:
         cpu: 50m
         memory: 200Mi
       limits:
-        cpu: '3'
         memory: 6Gi
   backend:
     # -- Resource requests and limits for the backend

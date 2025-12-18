@@ -441,7 +441,7 @@ operator:
   enabled: false
   image:
     repository: ghcr.io/fluent/fluent-operator/fluent-operator
-    tag: v3.4.0@sha256:5d6a3d048aaae3acfbb67269acc996b566d63ce2478ff16cf1f49f4cceb6b4ed
+    tag: v3.5.0@sha256:a5ace7bc1a33d33dfbda2136ccddb6f95bb4165f5f91daadb8f2dd8230854aa1
   service:
     enabled: false
   resources:

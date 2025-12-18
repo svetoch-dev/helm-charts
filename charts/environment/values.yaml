@@ -145,6 +145,9 @@ chart_apps:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
+      operator:
+        prometheusOperator:
+          fullnameOverride: "prometheus-{{ .Values.global.env.name }}-operator"
   fluent:
     enabled: false
     values: |

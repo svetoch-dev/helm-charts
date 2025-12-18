@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-CRDS_VERSION="3.4.0"
+CRDS_VERSION="3.5.0"
 
 for file in `ls | grep -E 'fluentd.*yml|fluentd.*yaml'`
 do

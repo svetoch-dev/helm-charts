@@ -1,7 +1,7 @@
 global:
   image:
     repository: pomerium/ingress-controller
-    tag: v0.29.4@sha256:6a5b4a545ad39f0a9daa61afc0f80efb88d1e49499d02014504e17f7dc14c6f7
+    tag: v0.31.3@sha256:be03cd20bee9bb7fa0fb1dbdac46bd5e288e6bf3f67b4f44e8a58d3b61ad6f6d
 
 ingressClassName: '{{ .Values.global.ingress.class }}'
 
