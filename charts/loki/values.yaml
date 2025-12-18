@@ -1,3 +1,5 @@
+global:
+  registry: null
 ingresses:
   loki-read:
     enabled: false
