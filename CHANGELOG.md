@@ -6,7 +6,7 @@ Enchancements:
   * `cert-manager` 1.17.4 -> 1.19.2
   * `gha-operator` 0.11.0 -> 0.13.0
   * `gha-runner` 0.11.0 -> 0.13.0
-  * `grafana` 5.19.0 -> 5.21.0
+  * `grafana` 5.19.0 -> 5.21.3
   * `kongqh` 2.48.0 -> 3.0.1
   * `loki` 6.42.0 -> 6.49.0
   * `prometheus`:
@@ -20,14 +20,14 @@ Enchancements:
   * `external-dns` 0.18.0 -> 0.20.0
   * `fluent-bit` 4.1.1 -> 4.2.0
   * `fluent-operator` 3.4.0 -> 3.5.0
-  * `grafana` 12.1.1 -> 12.3.0
+  * `grafana` 12.1.1 -> 12.3.1
   * `pomerium/ingress-controller` 0.29.4 -> 0.31.3
   * `prometheus` 3.5.0 -> 3.8.1
 * crds updates:
   * `cert-manager` 1.17.4 -> 1.19.2
   * `external-dns` 0.18.0 -> 0.20.0
   * `fluent-operator` 3.4.0 -> 3.5.0
-  * `grafana-operator` 5.19.0 -> 5.21.0
+  * `grafana-operator` 5.19.0 -> 5.21.3
   * `konghq` 3.3.0 -> 3.5.0
   * `pomerium` 0.29.0 -> 0.31.3
   * `prometheus-operator` 0.85.0 -> 0.87.1
