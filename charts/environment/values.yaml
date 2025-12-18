@@ -183,25 +183,26 @@ chart_apps:
   loki:
     enabled: false
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
+      global: 
+        project: {{ .Values.global | toYaml | nindent 6 }}
       loki:
-        nameOverride: "loki-{{ .Values.global.env.name }}"
+        nameOverride: "loki-{{ .Values.global.project.env.name }}"
         loki:
           compactor:
-            delete_request_store: "{{ .Values.global.bucket.type }}"
+            delete_request_store: "{{ .Values.global.project.bucket.type }}"
           storage:
-            type: "{{ .Values.global.bucket.type }}"
+            type: "{{ .Values.global.project.bucket.type }}"
             bucketNames:
-              chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
-              ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
+              chunks: "{{ .Values.global.project.company.name }}-loki-{{ .Values.global.project.env.short_name }}"
+              ruler: "{{ .Values.global.project.company.name }}-loki-{{ .Values.global.project.env.short_name }}"
             object_store:
-              type: "{{ .Values.global.bucket.type }}"
+              type: "{{ .Values.global.project.bucket.type }}"
               gcs:
-                bucket_name: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
+                bucket_name: "{{ .Values.global.project.company.name }}-loki-{{ .Values.global.project.env.short_name }}"
           schemaConfig:
             configs:
               - from: 2025-05-01
-                object_store: "{{ .Values.global.bucket.type }}"
+                object_store: "{{ .Values.global.project.bucket.type }}"
                 store: tsdb
                 schema: v13
                 index:
