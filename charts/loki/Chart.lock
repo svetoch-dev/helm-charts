@@ -1,12 +1,12 @@
 dependencies:
 - name: loki
   repository: https://grafana.github.io/helm-charts
-  version: 6.46.0
+  version: 6.49.0
 - name: kong-plugins
   repository: file://../chart_deps/konghq/plugins
   version: 0.1.0
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:b8f414044a89cbd393ec2d86c9c3eb0993791253bd9e74aa7f92061e4d0a598f
-generated: "2025-12-18T08:06:55.593696765Z"
+digest: sha256:fc5ac381d2a561778c2c144ccfcff7634010c79ec0b620a7a46959a3474fc9e6
+generated: "2025-12-18T08:42:10.339756385Z"
