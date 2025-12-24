@@ -72,8 +72,8 @@ thanos:
         cpu: 10m
         memory: 50Mi
       limits:
-        cpu: 2000m
-        memory: 2Gi
+        cpu: '3'
+        memory: 4Gi
   queryFrontend:
     enabled: false
   bucketweb:
