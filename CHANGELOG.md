@@ -1,7 +1,6 @@
 # 10.4.1
 Enchancements:
 * change count of restarts in alert `Container_too_many_restarts` to 5 in 10m
-* increase cpu limits for `thanos query`
 
 Fixes:
 * `Prometheus`:
