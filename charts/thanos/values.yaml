@@ -72,7 +72,7 @@ thanos:
         cpu: 10m
         memory: 50Mi
       limits:
-        cpu: 2000m
+        cpu: '2'
         memory: 2Gi
   queryFrontend:
     enabled: false

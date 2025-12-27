@@ -1,3 +1,17 @@
+# 10.4.1
+Enchancements:
+* change count of restarts in alert `Container_too_many_restarts` to 5 in 10m
+
+Fixes:
+* `Prometheus`:
+  * alert `Container_too_many_restarts` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `Daemonset_not_ready` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `OOM_killed_pods` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `Pod_replicas_not_ready` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `Pods_waiting_state` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `Statefulset_not_ready` many-to-many matching not allowed: matching labels must be unique on one side
+
+
 # 10.4.0
 Enchancements:
 * delete `loki-read` cpu limits
