@@ -435,7 +435,10 @@ fluentbit-gcp:
         claimRef:
           name: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
           namespace: '{{ .Release.Namespace }}'
-
+    serviceMonitor:
+      enabled: true
+      prometheusSelector:
+        prometheus: main
 
 operator:
   enabled: false
