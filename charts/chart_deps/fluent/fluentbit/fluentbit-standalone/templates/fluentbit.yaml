@@ -8,7 +8,7 @@
 {{- $service := set $service "selectorLabels" (include "fluentbit.selectorLabels" . | fromYaml) }}
 {{- $serviceMonitor := $fluentbit.serviceMonitor }}
 {{- $serviceMonitor = set $serviceMonitor "jobLabel" (include "fluentbit.fullname" . ) }}
-{{- $serviceMonitor = set $serviceMonitor "selectorLabels" (include "fluentbit.selectorLabels" . ) }}
+{{- $serviceMonitor = set $serviceMonitor "selectorLabels" (include "fluentbit.selectorLabels" . | fromYaml) }}
 {{- $serviceMonitor = set $serviceMonitor "name" (include "fluentbit.fullname" . ) }}
 {{- $fluentbit = set $fluentbit "serviceAccount" $serviceAccount }}
 {{- $fluentbit = set $fluentbit "service" $service }}
