@@ -86,10 +86,10 @@ fluentbit:
     name: '{{ include "fluentbit.fullname" . }}'
     type: ClusterIP
     ports:
-      - port: 80
-        targetPort: http
+      - port: 2020
+        targetPort: 2020
         protocol: TCP
-        name: http
+        name: metrics
 
   resources: {}
 
