@@ -115,11 +115,10 @@ fluentbit:
   serviceMonitor:
     enabled: false
     prometheusSelector: {}
-  #    prometheus: test
     labels: {}
     targetLabels: []
     endpoints:
-      - targetPort: 9355
+      - targetPort: 2020
         path: /metrics
 
   ingress:
