@@ -35,8 +35,8 @@
 {{- include "core.serviceAccount" (list . $labels $fluentbit.serviceAccount )}}
 {{- include "core.service" (list . $labels $service )}}
 {{- include "core.ingress" (list . $labels $fluentbit.ingress )}}
-{{- include "prometheus.serviceMonitor" (list $ $labels $fluentbit.serviceMonitor) }}
 {{- if $fluentbit.statefulsetEnabled }}
 {{- include "core.statefulset" (list $ $labels $fluentbit ) }}
 {{- end }}
+{{- include "prometheus.serviceMonitor" (list $ $labels $fluentbit.serviceMonitor) }}
 {{- end }}
