@@ -118,7 +118,7 @@ fluentbit:
     labels: {}
     targetLabels: []
     endpoints:
-      - targetPort: 2020
+      - port: metrics
         path: /api/v2/metrics/prometheus
 
   ingress:
