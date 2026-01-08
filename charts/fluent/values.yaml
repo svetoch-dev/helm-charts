@@ -439,6 +439,9 @@ fluentbit-gcp:
       enabled: true
       prometheusSelector:
         prometheus: main
+    service:
+      enabled: true
+
 
 operator:
   enabled: false
