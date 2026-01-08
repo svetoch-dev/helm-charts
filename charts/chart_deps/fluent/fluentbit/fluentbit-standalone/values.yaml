@@ -82,7 +82,7 @@ fluentbit:
     # runAsUser: 1000
 
   service:
-    enabled: true
+    enabled: false
     name: '{{ include "fluentbit.fullname" . }}'
     type: ClusterIP
     ports:

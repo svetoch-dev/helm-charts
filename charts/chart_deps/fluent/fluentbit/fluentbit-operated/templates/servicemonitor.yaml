@@ -1,0 +1,4 @@
+{{- $serviceMonitor :=  .Values.serviceMonitor }}
+{{- $labels := include "fluentbit-operated.labels" $ | fromYaml }}
+{{- $serviceMonitor = set $serviceMonitor "name" ( include "fluentbit-operated.fullname" . ) }}
+{{- include "prometheus.serviceMonitor" (list $ $labels $serviceMonitor ) }}
