@@ -646,6 +646,13 @@ prometheus-rules:
             for: "10m"
             description: "KongHQ error rate is high for '{{ $labels.exported_service }}' service"
 
+          # Logs
+          No_output_bytes_processed:
+            enabled: false
+            for: 5m
+            description: "Fluent-bit pod {{ $labels.pod }} has not processed any output bytes for > 1h"
+            expr: sum by (pod) (rate(fluentbit_output_proc_bytes_total[60m])) == 0
+
           # Postgres
           Available_postgresql_connections_are_running_out:
             enabled: false
