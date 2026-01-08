@@ -8,7 +8,10 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-{{- include "prometheus.labels.constructor" (list $ $labels $obj) | nindent 4 }}
+  {{- if $obj.prometheusSelector }}
+  {{ tpl (toYaml $obj.prometheusSelector) . | nindent 4}}
+  {{- end }}
+  {{- include "prometheus.labels.constructor" (list $ $labels $obj) | nindent 4 }}
   name: {{ tpl $obj.name $ }}
 spec:
   {{- with $obj.endpoints }}
