@@ -64,7 +64,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
       name: {{ printf "metrics-%s" $dbName | trunc 15 }}
   resources:
     limits:
-      cpu: 200m
+      cpu: 400m
       memory: 50Mi
     requests:
       cpu: 10m
