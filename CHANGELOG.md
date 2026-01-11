@@ -1,7 +1,7 @@
 # 10.5.0
 New features:
 * add support `postgres podMonitor` to get `fluentbit-sidecar metrics`
-* add support `fluentbit-operated and fluentbit-standalone serviceMonitor` get `fluentbits metrics`
+* add support `fluentbit-operated and fluentbit-standalone serviceMonitor` to get `fluentbits metrics`
 * add `podMonitor` to prometheus lib
 * add new `fluentbit alerts`
 * add new `fluentbit panels` to grafana `system` dashboard
