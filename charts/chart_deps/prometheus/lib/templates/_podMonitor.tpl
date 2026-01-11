@@ -13,8 +13,8 @@ metadata:
   {{- end }}
   {{- include "prometheus.labels.constructor" (list $ $labels $obj) | nindent 4 }}
   name: {{ tpl $obj.name $ }}
-  {{- if obj.namespace }}
-  namespace: {{ obj.namespace }}
+  {{- if $obj.namespace }}
+  namespace: {{ $obj.namespace }}
   {{- end }}
 spec:
   {{- with $obj.podMetricsEndpoints }}
