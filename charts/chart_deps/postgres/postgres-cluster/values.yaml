@@ -47,7 +47,10 @@ fluentbit:
     mountPath: /fluent-bit/config
   configs:
     http_server: true
-  metricsPortName: metrics-fluentb
+  metricsEndpoints:
+    metrics_fluentb:
+      port: metrics-fluentb
+      path: /api/v2/metrics/prometheus
   sidecars:
   # All fields must be filled in carefully. pod manifests in kind: postgresql must fully comply with pod manifests in kind: Pod (for example, apiVersion: v1 in variables should not be skipped)
     fluentbit:

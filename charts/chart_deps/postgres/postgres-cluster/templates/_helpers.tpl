@@ -130,8 +130,9 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- define "postgres-cluster.fluentbitPodMetricsEndpoints" }}
 {{- if .Values.fluentbit.enabled }}
-metrics_fluentbit:
-  port: {{ .Values.fluentbit.metricsPortName }}
+{{- with .Values.fluentbit.metricsEndpoints }}
+{{- tpl (toYaml .) $ }}
+{{- end }}
 {{- end }}
 {{- end }}
 
