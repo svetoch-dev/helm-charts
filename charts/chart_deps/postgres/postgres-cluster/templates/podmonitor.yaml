@@ -4,8 +4,8 @@
 If podMetricsEndpoint has the same key as default podMetricsEndpoint
 its attrs override the attrs of default one
 */}}
-{{- $podMetricsEndpointsNoFlunt := merge .Values.podMonitor.podMetricsEndpoints $defaultPodMetricsEndpoints }}
-{{- $podMetricsEndpoints := merge $podMetricsEndpointsNoFlunt $fluentbitPodMetricsEndpoints }}
+{{- $podMetricsEndpointsNoFluent := merge .Values.podMonitor.podMetricsEndpoints $defaultPodMetricsEndpoints }}
+{{- $podMetricsEndpoints := merge $podMetricsEndpointsNoFluent $fluentbitPodMetricsEndpoints }}
 {{/*
 We need to use sortAlpha here so that podMetricsEndpoints will appear
 in predictable order. Also sortAlpha cant be used with 'values'
