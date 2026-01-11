@@ -167,10 +167,11 @@ args: []
 
 serviceMonitor:
   enabled: false
-  prometheusSelector:
+  prometheusSelector: {}
+#  prometheusSelector:
 #    prometheus: test
-  labels:
-  targetLabels:
+  labels: {}
+  targetLabels: []
   endpoints:
     - targetPort: 9355
       path: /metrics
