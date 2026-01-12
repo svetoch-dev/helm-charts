@@ -766,7 +766,7 @@ prometheus-rules:
             expr: rate(stackdriver_k_8_s_container_logging_googleapis_com_log_entry_count[10m])/5 > 1000
 
           # Logs
-           Fleuntbit_too_high_average_latency:
+          Fluentbit_too_high_average_latency:
             enabled: false
             for: 10m
             description: "Fluent-bit pipeline experiencing high latency, pod '{{ $labels.pod }}', input '{{ $labels.input }}', output '{{ $labels.output }}'"
