@@ -1,3 +1,107 @@
+# 10.4.1
+Enchancements:
+* change count of restarts in alert `Container_too_many_restarts` to 5 in 10m
+
+Fixes:
+* `Prometheus`:
+  * alert `Container_too_many_restarts` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `Daemonset_not_ready` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `OOM_killed_pods` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `Pod_replicas_not_ready` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `Pods_waiting_state` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `Statefulset_not_ready` many-to-many matching not allowed: matching labels must be unique on one side
+
+
+# 10.4.0
+Enchancements:
+* delete `loki-read` cpu limits
+* set `metadata.annotations` to `gha-runner workflow-pod`
+* set `no-expose-internal-ipv6` for `external-dns`
+* chart updates:
+  * `cert-manager` 1.17.4 -> 1.19.2
+  * `gha-operator` 0.11.0 -> 0.13.0
+  * `gha-runner` 0.11.0 -> 0.13.0
+  * `grafana` 5.19.0 -> 5.21.3
+  * `kongqh` 2.48.0 -> 3.0.1
+  * `loki` 6.42.0 -> 6.49.0
+  * `prometheus`:
+    * `kube-prometheus-stack` 77.0.2 -> 80.4.2
+    * `kube-state-metrics` 6.1.5 -> 7.0.0
+    * `prometheus-blackbox-exporter` 11.3.1 -> 11.6.1
+    * `prometheus-node-exporter` 4.47.3 -> 4.49.2
+    * `stackdriver-exporter` 4.10.0 -> 4.12.2
+* image updates:
+  * `alertmanager` 0.28.1 -> 0.30.0
+  * `external-dns` 0.18.0 -> 0.20.0
+  * `fluent-bit` 4.1.1 -> 4.2.0
+  * `fluent-operator` 3.4.0 -> 3.5.0
+  * `grafana` 12.1.1 -> 12.3.1
+  * `pomerium/ingress-controller` 0.29.4 -> 0.31.3
+  * `prometheus` 3.5.0 -> 3.8.1
+* crds updates:
+  * `cert-manager` 1.17.4 -> 1.19.2
+  * `external-dns` 0.18.0 -> 0.20.0
+  * `fluent-operator` 3.4.0 -> 3.5.0
+  * `grafana-operator` 5.19.0 -> 5.21.3
+  * `konghq` 3.3.0 -> 3.5.0
+  * `pomerium` 0.29.0 -> 0.31.3
+  * `prometheus-operator` 0.85.0 -> 0.87.1
+
+Fixes:
+* `Prometheus`:
+  * alert `Postgres_logical_backup_error` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `Container_too_many_restarts` many-to-many matching not allowed: matching labels must be unique on one side
+  * alert `Statefulset_not_ready` many-to-many matching not allowed: matching labels must be unique on one side
+  * use correct `prometheus-operator` name
+
+# 10.3.1
+Enchancements:
+* `grafana`:
+  * `services dashboard`: proper throttled pannels
+* `promtheus`: fix throttled alerts + increase node exporter limits
+* `chart_deps/rabbitmq/rabbitmq-cluster`: update default version to 4.2.2
+
+# 10.3.0
+Enchancements:
+* `argocd`:
+  * chart update 7.8.26 -> 9.1.7
+  * crds update v2.14.10 -> v3.2.1
+  * increase `server` memory limits 250Mi -> 350Mi
+* `gha-operator` crds update 0.11.0 -> 0.13.0
+
+Fixes:
+* fixed default value type for `volumes` and `volumeMounts` in `fluentbit-standalone`
+* fixed default value type for `job.environment`, `environment`, `volumes`, `volumeMounts` in `app/common`
+
+# 10.2.3
+Fixes:
+* `grafana`:
+  * `services dashboard`: fix datastore id issue
+
+Enhancements:
+* `loki`: tune performance parameters
+
+# 10.2.2
+Enhancements:
+* `Prometheus`:
+  * use `EndpointSlice` for default
+  * delete deprecated `no_follow_redirects` in `blackbox-exporter`
+* `grafana`
+  * `services dashboard` total traffic pannels + counter for logs
+  
+Fixes:
+* `Prometheus`:
+  * alert `Container_too_many_restarts` many-to-many matching not allowed: matching labels must be unique on one side
+
+New features:
+* `Prometheus`:
+  * ability to set `serviceDiscoveryRole`
+
+# 10.2.1
+Enchancements:
+* set `loki` resources limits
+* set 3Gb memory limit for `thanos storegateway`
+
 # 10.2.0
 Enhancements:
 * `postgres`:

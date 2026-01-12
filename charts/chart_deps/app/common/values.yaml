@@ -22,8 +22,8 @@ statefulsetEnabled: false
 
 volumeClaimTemplates: {}
 
-volumes: {}
-volumeMounts: {}
+volumes: []
+volumeMounts: []
 persistentVolumeClaimRetentionPolicy: {}
 #  whenDeleted: "Delete"
 #  whenScaled: "Retain"
@@ -50,7 +50,7 @@ job:
   command: []
   args: []
   resources: {}
-  environment: {}
+  environment: []
   environmentFromSecrets: {}
   nodeSelector: {}
   podSecurityContext: {}
@@ -76,7 +76,7 @@ pvcs: {}
 
 pvs: {}
 
-environment: {}
+environment: []
 
 initContainers: {}
 

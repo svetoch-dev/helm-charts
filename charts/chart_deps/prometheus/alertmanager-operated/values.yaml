@@ -65,11 +65,11 @@ alertmanager:
 
     alertmanagerConfigMatcherStrategy: {}
 
-    image: "quay.io/prometheus/alertmanager:v0.28.1"
+    image: "quay.io/prometheus/alertmanager:v0.30.0"
 
     imagePullPolicy: IfNotPresent
 
-    version: "v0.28.1"
+    version: "v0.30.0"
 
     imagePullSecrets: []
 

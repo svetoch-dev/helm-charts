@@ -10,4 +10,4 @@ inside this chart's directory. This will regenerate the `charts/fluentbit-*.tgz`
 > ⚠️ If this step is skipped, changes made to the `fluentbit-*` charts will **not** be reflected in this Helm chart.
 
 This manual step is required because Helm does **not yet support recursive dependency updates**.
-See: [helm/helm#11766](https://github.com/helm/helm/pull/11766)
+See: [helm/helm#30855](https://github.com/helm/helm/pull/30855)

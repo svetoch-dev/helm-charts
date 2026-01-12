@@ -294,6 +294,7 @@ spec:
   {{- end }}
   evaluationInterval: {{ .Values.prometheus.spec.evaluationInterval }}
   enableAdminAPI: {{ .Values.prometheus.spec.enableAdminAPI }}
+  serviceDiscoveryRole: {{ .Values.prometheus.spec.serviceDiscoveryRole }}
   {{- with .Values.prometheus.spec.tsdb }}
   tsdb:
   {{- tpl (toYaml .) $ | nindent 4 }}
