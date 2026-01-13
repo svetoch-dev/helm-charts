@@ -26,6 +26,9 @@ postgres-operator:
   configGeneral:
     enable_crd_registration: false
     docker_image: "{{ .Values.global.registry.url}}/spilo:v17.4-1"
+  configPostgresPodResources:
+    default_cpu_limit: "0"
+    min_cpu_limit: ""
   configMajorVersionUpgrade:
     major_version_upgrade_mode: "off"
     target_major_version: '17'
