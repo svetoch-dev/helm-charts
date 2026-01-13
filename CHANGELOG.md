@@ -10,6 +10,7 @@ Enchancements:
 * increase `pg-exporter` cpu limits 0.2 -> 0.4
 * delete cpu limits for `redis` in `argocd`
 * delete defaults cpu limits for `postgres` in `postgres-operator`
+* delete `postgres logical backup` cpu limits
 
 Fixes:
 * fix `serviceMonitor` labels in `prometheus/lib`

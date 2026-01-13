@@ -19,8 +19,7 @@ postgres-operator:
     logical_backup_s3_bucket: "{{ .Values.global.bucket.prefix }}-postgres-backup-{{ .Values.global.bucket.suffix }}"
     logical_backup_docker_image: "{{ .Values.global.registry.url}}/pg-logical-backup:v1.14.0-1"
   # resources for logical backup pod, if empty configPostgresPodResources will be used
-    logical_backup_cpu_limit: "2"
-    logical_backup_cpu_request: 200m
+    logical_backup_cpu_request: 300m
     logical_backup_memory_limit: 500Mi
     logical_backup_memory_request: 300Mi
   configGeneral:
