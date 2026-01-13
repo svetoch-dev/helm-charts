@@ -653,11 +653,11 @@ prometheus-rules:
             description: "Fluent-bit pod '{{ $labels.pod }}' has not processed any output bytes for > 10 minutes"
             expr: sum by (pod) (rate(fluentbit_output_proc_bytes_total{service!~".*-fluentbit-gcp$"}[10m])) == 0
 
-          Fluentbit_gcp_no_output_bytes_processed:
+          Fluentbit_cloud_no_output_bytes_processed:
             enabled: false
             for: 10m
             description: "Fluent-bit pod '{{ $labels.pod }}' has not processed any output bytes for > 70 minutes"
-            expr: sum by (pod) (rate(fluentbit_output_proc_bytes_total{service=~".*-fluentbit-gcp$"}[70m])) == 0
+            expr: sum by (pod) (rate(fluentbit_output_proc_bytes_total{service=~".*-fluentbit-(gcp|yc|aws)$"}[70m])) == 0
 
           Fluentbit_input_error:
             enabled: false
