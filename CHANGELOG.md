@@ -1,3 +1,11 @@
+# 11.0.0-alpha
+
+Enchancements:
+* `postgres-operator`:
+  * crds update 1.14.0 -> 1.15.1
+  * chart update 1.14.0 -> 1.15.1
+  * switch to using original `logical-backup` image
+
 # 10.5.0
 New features:
 * add support `postgres podMonitor` to get `fluentbit-sidecar metrics`
