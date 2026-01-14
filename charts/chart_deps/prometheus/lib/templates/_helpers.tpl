@@ -2,9 +2,6 @@
 {{- $ := index . 0 }}
 {{- $labels := index . 1 }}
 {{- $obj := index . 2 }}
-{{- if $obj.prometheusSelector }}
-{{- $labels = merge $labels $obj.prometheusSelector }}
-{{- end }}
 {{- if $obj.labels }}
 {{- $labels = merge $labels $obj.labels }}
 {{- end }}

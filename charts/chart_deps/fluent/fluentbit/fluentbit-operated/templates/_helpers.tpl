@@ -35,14 +35,21 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "fluentbit-operated.labels" -}}
-app.kubernetes.io/name: {{ include "fluentbit-operated.name" . }}
 helm.sh/chart: {{ include "fluentbit-operated.chart" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "fluentbit-operated.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
+
+{{/*
+Selector labels
+*/}}
+{{- define "fluentbit-operated.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "fluentbit-operated.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
 
 {{/*
 Service Selector labels

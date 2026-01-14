@@ -64,7 +64,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
       name: {{ printf "metrics-%s" $dbName | trunc 15 }}
   resources:
     limits:
-      cpu: 200m
+      cpu: 400m
       memory: 50Mi
     requests:
       cpu: 10m
@@ -124,6 +124,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}
       action: Replace
       regex: (.*)
       targetLabel: label_app_kubernetes_io_instance
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "postgres-cluster.fluentbitPodMetricsEndpoints" }}
+{{- if .Values.fluentbit.enabled }}
+{{- with .Values.fluentbit.metricsEndpoints }}
+{{- tpl (toYaml .) $ }}
 {{- end }}
 {{- end }}
 {{- end }}
