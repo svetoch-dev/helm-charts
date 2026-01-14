@@ -82,7 +82,7 @@ fluentbit:
     # runAsUser: 1000
 
   service:
-    enabled: true
+    enabled: false
     name: '{{ include "fluentbit.fullname" . }}'
     type: ClusterIP
     ports:
@@ -90,6 +90,10 @@ fluentbit:
         targetPort: http
         protocol: TCP
         name: http
+      - port: 2020
+        targetPort: 2020
+        protocol: TCP
+        name: metrics
 
   resources: {}
 
@@ -114,13 +118,13 @@ fluentbit:
 
   serviceMonitor:
     enabled: false
-    prometheusSelector:
-  #    prometheus: test
-    labels:
-    targetLabels:
+    prometheusSelector: {}
+    labels: {}
+    targetLabels: []
     endpoints:
-      - targetPort: 9355
-        path: /metrics
+      - port: metrics
+        path: /api/v2/metrics/prometheus
+
   ingress:
     enabled: false
     name: '{{ include "fluentbit.fullname" . }}'

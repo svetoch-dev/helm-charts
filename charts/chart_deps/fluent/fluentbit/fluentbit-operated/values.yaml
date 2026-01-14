@@ -313,3 +313,12 @@ collector:
 pvs: {}
 
 pvcs: {}
+
+serviceMonitor:
+  enabled: false
+  prometheusSelector: {}
+  labels: {}
+  targetLabels: []
+  endpoints:
+    - port: metrics
+      path: /api/v2/metrics/prometheus

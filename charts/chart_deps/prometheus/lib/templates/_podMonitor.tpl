@@ -1,11 +1,11 @@
-{{- define "prometheus.serviceMonitor" -}}
+{{- define "prometheus.podMonitor" -}}
 {{- $ := index . 0 }}
 {{- $labels := index . 1 }}
 {{- $obj := include "prometheus.obj.enricher" (list $ $labels (index . 2)) | fromYaml }}
 {{- if $obj.enabled }}
 ---
 apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
+kind: PodMonitor
 metadata:
   labels:
   {{- if $obj.prometheusSelector }}
@@ -17,8 +17,8 @@ metadata:
   namespace: {{ $obj.namespace }}
   {{- end }}
 spec:
-  {{- with $obj.endpoints }}
-  endpoints:
+  {{- with $obj.podMetricsEndpoints }}
+  podMetricsEndpoints:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- with $obj.jobLabel }}

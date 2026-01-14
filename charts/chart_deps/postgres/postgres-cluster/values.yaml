@@ -45,11 +45,20 @@ fluentbit:
       secret:
         secretName: '{{ include "postgres-cluster.fullname" $}}-fluentbit-config'
     mountPath: /fluent-bit/config
+  configs:
+    http_server: true
+  metricsEndpoints:
+    metrics_fluentb:
+      port: metrics-fluentb
+      path: /api/v2/metrics/prometheus
   sidecars:
   # All fields must be filled in carefully. pod manifests in kind: postgresql must fully comply with pod manifests in kind: Pod (for example, apiVersion: v1 in variables should not be skipped)
     fluentbit:
       name: 'fluent-bit'
       image: 'ghcr.io/fluent/fluent-operator/fluent-bit:4.2.0-debug'
+      ports:
+      - containerPort: 2020
+        name: metrics-fluentb
       resources:
         limits:
           cpu: 500m

@@ -1,3 +1,21 @@
+# 10.5.0
+New features:
+* add support `postgres podMonitor` to get `fluentbit-sidecar metrics`
+* add support `fluentbit-operated and fluentbit-standalone serviceMonitor` to get `fluentbits metrics`
+* add `podMonitor` to prometheus lib
+* add new `fluentbit alerts`
+* add new `fluentbit panels` to grafana `system` dashboard
+
+Enchancements:
+* increase `pg-exporter` cpu limits 0.2 -> 0.4
+* delete cpu limits for `redis` in `argocd`
+* delete defaults cpu limits for `postgres` in `postgres-operator`
+* delete `postgres logical backup` cpu limits
+
+Fixes:
+* fix `serviceMonitor` labels in `prometheus/lib`
+* fix `fluentbit` `selectorLabels`
+
 # 10.4.1
 Enchancements:
 * change count of restarts in alert `Container_too_many_restarts` to 5 in 10m
