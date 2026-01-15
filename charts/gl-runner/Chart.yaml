@@ -1,0 +1,11 @@
+apiVersion: v2
+name: gl-runner
+version: 0.1.0
+
+dependencies:
+  - name: gitlab-runner
+    version: 0.64.0
+    repository: https://charts.gitlab.io
+    alias: gitlab-runner
+    condition: gitlab-runner.enabled
+

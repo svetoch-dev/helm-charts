@@ -1,0 +1,38 @@
+gl-runner:
+  enabled: false
+  image:
+    registry: registry.gitlab.com
+    image: gitlab-org/gitlab-runner
+    # tag: alpine-v{{.Chart.AppVersion}}
+
+  gitlabUrl: "https://gitlab.com"
+  runnerToken: ""
+  concurrent: 10
+  logLevel: "warn"
+  logFormat: "json"
+  connectionMaxAge: "15m"
+  runners: 
+    executor: "kubernetes"
+    name: "gl-runner"
+    config: |
+      [[runners]]
+        [runners.kubernetes]
+          namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
+          image = "alpine"
+  resources: 
+  # limits:
+  #   memory: 256Mi
+  #   cpu: 200m
+  #   ephemeral-storage: 512Mi
+    requests:
+      memory: 128Mi
+      cpu: 100m
+      ephemeral-storage: 256Mi
+
+  nodeSelector:
+    gl-runner: "true"
+  tolerations: 
+    - key: gl-runner
+      operator: Equal
+      value: "true"
+      effect: NoSchedule
