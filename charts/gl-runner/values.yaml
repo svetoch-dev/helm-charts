@@ -27,10 +27,7 @@ gl-runner:
           service_account = "runner"
   
   resources: 
-  # limits:
-  #   memory: 256Mi
-  #   cpu: 200m
-  #   ephemeral-storage: 512Mi
+    limits: {}
     requests:
       memory: 128Mi
       cpu: 100m
@@ -51,7 +48,6 @@ gl-runner:
     name: "runner"
   rbac:
     create: true
-
     rules:
       - resources: ["events"]
         verbs: ["list", "watch"]
