@@ -89,6 +89,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
       value: "true"
     PG_EXPORTER_COLLECTOR_STAT_STATEMENTS:
       value: "true"
+    PG_EXPORTER_COLLECTOR_STAT_STATEMENTS_INCLUDE_QUERY:
+      value: "true"
+    PG_EXPORTER_COLLECTOR_STAT_STATEMENTS_QUERY_LENGTH:
+      value: "0"
     PG_EXPORTER_COLLECTOR_STATIO_USER_INDEXES:
       value: "true"
     PG_EXPORTER_COLLECTOR_STATIO_USER_TABLES:
