@@ -1,16 +1,21 @@
 gl-runner:
   enabled: false
+  namespace: gl-runner
   image:
     registry: registry.gitlab.com
     image: gitlab-org/gitlab-runner
     # tag: alpine-v{{.Chart.AppVersion}}
 
-  gitlabUrl: "https://gitlab.com"
+  gitlabUrl: "https://gitlab.com/"
+  #TODO: find a way to setting token from kubernetes secrets
   runnerToken: ""
+  
   concurrent: 10
   logLevel: "warn"
   logFormat: "json"
+  
   connectionMaxAge: "15m"
+  
   runners: 
     executor: "kubernetes"
     name: "gl-runner"
@@ -19,6 +24,8 @@ gl-runner:
         [runners.kubernetes]
           namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
           image = "alpine"
+          service_account = "runner"
+  
   resources: 
   # limits:
   #   memory: 256Mi
@@ -36,3 +43,32 @@ gl-runner:
       operator: Equal
       value: "true"
       effect: NoSchedule
+  podSecurityContext:
+    runAsUser: 100
+    fsGroup: 65533
+  
+  serviceAccount:
+    name: "runner"
+  rbac:
+    create: true
+
+    rules:
+      - resources: ["events"]
+        verbs: ["list", "watch"]
+      # - resources: ["namespaces"]
+      #   verbs: ["create", "delete"]
+      - resources: ["pods"]
+        verbs: ["create","delete","get"]
+      - apiGroups: [""]
+        resources: ["pods/attach","pods/exec"]
+        verbs: ["get","create","patch","delete"]
+      - apiGroups: [""]
+        resources: ["pods/log"]
+        verbs: ["get","list"]
+      - resources: ["secrets"]
+        verbs: ["create","delete","get","update"]
+      - resources: ["serviceaccounts"]
+        verbs: ["get"]
+      - resources: ["services"]
+        verbs: ["create","get"]
+
