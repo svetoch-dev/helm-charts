@@ -58,34 +58,34 @@ spec:
       openAPIV3Schema:
         type: object
         required:
-        - kind
-        - apiVersion
-        - spec
+          - kind
+          - apiVersion
+          - spec
         properties:
           kind:
             type: string
             enum:
-            - postgresql
+              - postgresql
           apiVersion:
             type: string
             enum:
-            - acid.zalan.do/v1
+              - acid.zalan.do/v1
           spec:
             type: object
             required:
-            - numberOfInstances
-            - teamId
-            - postgresql
-            - volume
+              - numberOfInstances
+              - teamId
+              - postgresql
+              - volume
             properties:
               additionalVolumes:
                 type: array
                 items:
                   type: object
                   required:
-                  - name
-                  - mountPath
-                  - volumeSource
+                    - name
+                    - mountPath
+                    - volumeSource
                   properties:
                     isSubPathExpr:
                       type: boolean
@@ -112,7 +112,7 @@ spec:
               clone:
                 type: object
                 required:
-                - cluster
+                  - cluster
                 properties:
                   cluster:
                     type: string
@@ -145,8 +145,8 @@ spec:
                   mode:
                     type: string
                     enum:
-                    - "session"
-                    - "transaction"
+                      - "session"
+                      - "transaction"
                   numberOfInstances:
                     type: integer
                     minimum: 1
@@ -278,7 +278,6 @@ spec:
                                     items:
                                       type: string
                         weight:
-                          format: int32
                           type: integer
                   requiredDuringSchedulingIgnoredDuringExecution:
                     type: object
@@ -370,16 +369,16 @@ spec:
               postgresql:
                 type: object
                 required:
-                - version
+                  - version
                 properties:
                   version:
                     type: string
                     enum:
-                    - "13"
-                    - "14"
-                    - "15"
-                    - "16"
-                    - "17"
+                      - "13"
+                      - "14"
+                      - "15"
+                      - "16"
+                      - "17"
                   parameters:
                     type: object
                     additionalProperties:
@@ -506,9 +505,9 @@ spec:
                 items:
                   type: object
                   required:
-                  - applicationId
-                  - database
-                  - tables
+                    - applicationId
+                    - database
+                    - tables
                   properties:
                     applicationId:
                       type: string
@@ -533,7 +532,7 @@ spec:
                       additionalProperties:
                         type: object
                         required:
-                        - eventType
+                          - eventType
                         properties:
                           eventType:
                             type: string
@@ -550,7 +549,7 @@ spec:
               tls:
                 type: object
                 required:
-                - secretName
+                  - secretName
                 properties:
                   secretName:
                     type: string
@@ -572,16 +571,16 @@ spec:
                     operator:
                       type: string
                       enum:
-                      - Equal
-                      - Exists
+                        - Equal
+                        - Exists
                     value:
                       type: string
                     effect:
                       type: string
                       enum:
-                      - NoExecute
-                      - NoSchedule
-                      - PreferNoSchedule
+                        - NoExecute
+                        - NoSchedule
+                        - PreferNoSchedule
                     tolerationSeconds:
                       type: integer
               useLoadBalancer:
@@ -641,7 +640,7 @@ spec:
               volume:
                 type: object
                 required:
-                - size
+                  - size
                 properties:
                   isSubPathExpr:
                     type: boolean
@@ -655,18 +654,18 @@ spec:
                         items:
                           type: object
                           required:
-                          - key
-                          - operator
+                            - key
+                            - operator
                           properties:
                             key:
                               type: string
                             operator:
                               type: string
                               enum:
-                              - DoesNotExist
-                              - Exists
-                              - In
-                              - NotIn
+                                - DoesNotExist
+                                - Exists
+                                - In
+                                - NotIn
                             values:
                               type: array
                               items:

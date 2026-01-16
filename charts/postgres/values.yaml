@@ -17,14 +17,15 @@ postgres-operator:
   configLogicalBackup:
     logical_backup_provider: "{{ .Values.global.bucket.type }}"
     logical_backup_s3_bucket: "{{ .Values.global.bucket.prefix }}-postgres-backup-{{ .Values.global.bucket.suffix }}"
-    logical_backup_docker_image: "{{ .Values.global.registry.url}}/pg-logical-backup:v1.14.0-1"
+    logical_backup_docker_image: "ghcr.io/zalando/postgres-operator/logical-backup:v1.15.1"
   # resources for logical backup pod, if empty configPostgresPodResources will be used
     logical_backup_cpu_request: 300m
     logical_backup_memory_limit: 500Mi
     logical_backup_memory_request: 300Mi
   configGeneral:
     enable_crd_registration: false
-    docker_image: "{{ .Values.global.registry.url}}/spilo:v17.4-1"
+    docker_image: "{{ .Values.global.registry.url}}/spilo:v17.4-p3-1"
+    kubernetes_use_configmaps: true
   configPostgresPodResources:
     default_cpu_limit: "0"
     min_cpu_limit: ""
