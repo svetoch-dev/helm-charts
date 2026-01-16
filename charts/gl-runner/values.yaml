@@ -7,8 +7,6 @@ gl-runner:
     # tag: alpine-v{{.Chart.AppVersion}}
 
   gitlabUrl: "https://gitlab.com/"
-  #TODO: find a way to setting token from kubernetes secrets
-  runnerToken: ""
   
   concurrent: 10
   logLevel: "warn"
@@ -25,7 +23,8 @@ gl-runner:
           namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
           image = "alpine"
           service_account = "runner"
-  
+    # secret must contain "runner-token" key with token value that starts with glrt-...
+    secret: runner
   resources: 
     limits: {}
     requests:
