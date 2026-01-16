@@ -7,6 +7,9 @@ BrakingChanges:
 3. Revert step 1, so all clusters are scaled out again.
 4. (Optional) Remove all the Endpoints the Postgres Operator has managed before. But they do not cause eny harm if you leave them.
 
+New features:
+* `postgres-exporter` get query along with queryid
+
 Enchancements:
 * `postgres-operator`:
   * crds update 1.14.0 -> 1.15.1
