@@ -1,6 +1,6 @@
 # 11.0.0-alpha
 BrakingChanges:
-* `postgres-operator` uses configmaps instead endpoints (`kubernetes_use_configmaps: true`)
+* `postgres-operator` uses configmaps instead endpoints (`kubernetes_use_configmaps: true`). See ![UPGRADING](UPGRADING.md)
 
 New features:
 * `postgres-exporter` get query along with queryid
