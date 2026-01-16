@@ -5,6 +5,7 @@ global:
 postgres-operator:
   enabled: false
   enableJsonLogging: true
+  kubernetes_use_configmaps: true
   resources:
     limits:
       cpu: 350m

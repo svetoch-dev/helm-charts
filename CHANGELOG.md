@@ -1,10 +1,19 @@
 # 11.0.0-alpha
+BrakingChanges:
+* `postgres-operator` uses configmaps instead endpoints (`kubernetes_use_configmaps: true`)
+  Migration:
+1. Scale in all your database clusters to only one primary pod. This can be achivied with the max_instances config option set to '1'. A config change requires an operator pod restart. Make sure every Postgres cluster is scaled in to one pod before proceeding.
+2. Change the operator config again and enable kubenertes_use_configmaps. Check if extra ConfigMaps ('-config' and '-failover') are created. It will also trigger a pod rotation and, since there's only the primary left, it will cause downtime.
+3. Revert step 1, so all clusters are scaled out again.
+4. (Optional) Remove all the Endpoints the Postgres Operator has managed before. But they do not cause eny harm if you leave them.
 
 Enchancements:
 * `postgres-operator`:
   * crds update 1.14.0 -> 1.15.1
   * chart update 1.14.0 -> 1.15.1
-  * switch to using original `logical-backup` image
+  * switch to using original `logical-backup` v1.15.1 image
+* `postgres-exporter` update 0.17.1 -> 0.18.1
+
 
 # 10.5.0
 New features:
