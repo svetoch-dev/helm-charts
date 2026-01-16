@@ -4,6 +4,7 @@ gl-runner:
   image:
     registry: registry.gitlab.com
     image: gitlab-org/gitlab-runner
+    # if you want to use non standart alpine image or other versions set up image tag
     # tag: alpine-v{{.Chart.AppVersion}}
 
   gitlabUrl: "https://gitlab.com/"
@@ -50,6 +51,7 @@ gl-runner:
     rules:
       - resources: ["events"]
         verbs: ["list", "watch"]
+      # if you want to use different namespases for pods add permissions for namespace create|delete
       # - resources: ["namespaces"]
       #   verbs: ["create", "delete"]
       - resources: ["pods"]
