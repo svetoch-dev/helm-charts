@@ -666,8 +666,8 @@ prometheus-rules:
           Fluentbit_output_error:
             enabled: false
             for: 5m
-            expr: sum by (pod,name) (rate(fluentbit_output_errors_total[5m]) / rate(fluentbit_output_proc_records_total[5m])) > 0.1
-            description: "High output error rate on {{ $labels.pod }}.{{ $labels.name }}"
+            expr: sum by (pod) (rate(fluentbit_output_errors_total[5m])) / sum by(pod) (rate(fluentbit_input_records_total[5m])) > 0.07
+            description: "High output error rate on {{ $labels.pod }}"
 
           # Postgres
           Available_postgresql_connections_are_running_out:
