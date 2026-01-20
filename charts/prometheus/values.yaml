@@ -666,8 +666,8 @@ prometheus-rules:
           Fluentbit_output_error:
             enabled: false
             for: 5m
-            expr: sum by (name) (rate(fluentbit_output_errors_total[5m])) > 0
-            description: "Output '{{ $labels.name }}' error"
+            expr: sum by (pod,name) (rate(fluentbit_output_errors_total[5m]) / rate(fluentbit_output_proc_records_total[5m])) > 0.1
+            description: "High output error rate on {{ $labels.pod }}.{{ $labels.name }}"
 
           # Postgres
           Available_postgresql_connections_are_running_out:
@@ -768,7 +768,10 @@ prometheus-rules:
             enabled: false
             for: 10m
             description: "Fluent-bit pipeline experiencing high latency, pod '{{ $labels.pod }}', input '{{ $labels.input }}', output '{{ $labels.output }}'"
-            expr: rate(fluentbit_output_latency_seconds_sum[5m]) / rate(fluentbit_output_latency_seconds_count[5m]) > 2
+            #We exclude cloud-based sources because they deliver logs to buckets
+            #at intervals much longer than seconds, so the latency measured
+            #here does not meaningfully impact user experience.
+            expr: rate(fluentbit_output_latency_seconds_sum{service!~".*-fluentbit-(gcp|yc|aws)$"}[5m]) / rate(fluentbit_output_latency_seconds_count{service!~".*-fluentbit-(gcp|yc|aws)$"}[5m]) > 2
 
           # Postgres
           Postgres_logical_backup_error:
