@@ -40,6 +40,10 @@ loki:
       - '-log.format=json'
   test:
     enabled: false
+  serviceMonitor:
+    enabled: true
+    labels:
+      prometheus: main
   lokiCanary:
     enabled: false
   serviceAccount:
