@@ -40,7 +40,7 @@ rabbitmq-cluster-operator:
     image:
       registry: docker.io
       repository: rabbitmqoperator/cluster-operator
-      tag: 2.16.1
+      tag: 2.19.0
     resources:
       limits:
         cpu: 100m
