@@ -3,10 +3,10 @@ dependencies:
   repository: file://../chart_deps/rabbitmq/rabbitmq-cluster/
   version: 0.1.0
 - name: rabbitmq-cluster-operator
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 4.4.34
+  repository: file://../chart_deps/rabbitmq/rabbitmq-cluster/
+  version: 0.1.0
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:ff2707692d564ac4b8ebcaa5142105b692440323bca504dc3ae61075522401c8
-generated: "2025-09-01T06:53:02.505983191Z"
+digest: sha256:e98a50f0359c27d1a358efdf39ff03433845534c638a2cffdac318da61b70aec
+generated: "2026-01-23T13:39:49.260816062Z"
