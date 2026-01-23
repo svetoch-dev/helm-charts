@@ -322,7 +322,7 @@ operator:
     enabled: false
 
   prometheusOperator:
-    enabled: false
+    enabled: true
     # use old thanos image https://github.com/thanos-io/thanos/issues/8549
     thanosImage:
       tag: v0.39.2
