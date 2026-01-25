@@ -14,10 +14,10 @@ gl-runner:
           namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
           image = "alpine"
           service_account = "runner"
-# cpu_request = "{{ default '1000m' .Values.runners.cpuRequest }}"
-# memory_request = "{{ default '1024Mi' .Values.runners.memoryRequest }}"
-# cpu_limit = "{{ default '' .Values.runners.cpuLimit}}"
-# memory_limit = "{{ default '' .Values.runners.memoryLimit}}"
+          cpu_request = "{{ default '1000m' .Values.runners.cpuRequest }}"
+          memory_request = "{{ default '1024Mi' .Values.runners.memoryRequest }}"
+          cpu_limit = "{{ default '' .Values.runners.cpuLimit}}"
+          memory_limit = "{{ default '' .Values.runners.memoryLimit}}"
 # secret must contain "runner-token" key with token value that starts with glrt-...
     secret: runner
   resources: 
