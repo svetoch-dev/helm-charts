@@ -3,7 +3,7 @@ gl-runner:
   gitlabUrl: "https://gitlab.com/"
 
   concurrent: 10
-  logLevel: "warn"
+  logLevel: "debug"
   logFormat: "json"
   
   runners: 
