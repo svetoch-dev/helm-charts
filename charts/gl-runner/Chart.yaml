@@ -3,6 +3,7 @@ name: gl-runner
 version: 0.1.0
 
 dependencies:
+  # https://gitlab.com/gitlab-org/charts/gitlab-runner/blob/main/values.yaml
   - name: gitlab-runner
     version: 0.84.2
     repository: https://charts.gitlab.io
