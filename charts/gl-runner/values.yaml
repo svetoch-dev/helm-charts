@@ -33,9 +33,6 @@ gl-runner:
       operator: Equal
       value: "true"
       effect: NoSchedule
-  envVars:
-  - name: CI_SERVER_URL
-    value: "https://gitlab.com/"
 
   serviceAccount:
     name: "runner"
