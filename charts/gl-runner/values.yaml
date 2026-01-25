@@ -7,8 +7,6 @@ gl-runner:
   logFormat: "json"
   
   runners: 
-    executor: "kubernetes"
-    name: "gl-runner"
     config: |
       [[runners]]
         url = "https://gitlab.com"
