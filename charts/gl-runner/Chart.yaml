@@ -7,6 +7,6 @@ dependencies:
   - name: gitlab-runner
     version: 0.85.0
     repository: https://charts.gitlab.io
-    alias: gitlab-runner
-    condition: gitlab-runner.enabled
+    alias: gl-runner
+    condition: gl-runner.enabled
 
