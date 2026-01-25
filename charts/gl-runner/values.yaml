@@ -9,7 +9,7 @@ gl-runner:
   runners: 
     config: |
       [[runners]]
-        url = "https://gitlab.com"
+        url = "https://gitlab.com/"
         [runners.kubernetes]
           namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
           image = "alpine"
@@ -36,7 +36,10 @@ gl-runner:
   podSecurityContext:
     runAsUser: 100
     fsGroup: 65533
-  
+  envVars:
+  - name: CI_SERVER_URL
+    value: "https://gitlab.com/"
+
   serviceAccount:
     name: "runner"
   rbac:
