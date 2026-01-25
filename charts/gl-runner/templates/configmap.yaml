@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "gitlab-runner.fullname" . }}
-  namespace: {{ default .Release.Namespace .Values.gl-runner.namespace | quote }}
+  namespace: {{ default .Release.Namespace .Values.namespace | quote }}
   labels:
     app: {{ include "gitlab-runner.fullname" . }}
     chart: {{ include "gitlab-runner.chart" . }}
@@ -13,7 +13,7 @@ data:
     #!/bin/bash
     set -e
 
-    export CONFIG_PATH_FOR_INIT="{{ ternary "/etc/gitlab-runner/" "/home/gitlab-runner/.gitlab-runner/" (and (hasKey .Values.gl-runner.podSecurityContext "runAsUser") (eq 0 (.Values.gl-runner.podSecurityContext.runAsUser | int64))) }}"
+    export CONFIG_PATH_FOR_INIT="{{ ternary "/etc/gitlab-runner/" "/home/gitlab-runner/.gitlab-runner/" (and (hasKey .Values.podSecurityContext "runAsUser") (eq 0 (.Values.podSecurityContext.runAsUser | int64))) }}"
     mkdir -p ${CONFIG_PATH_FOR_INIT}
     cp /configmaps/config.toml ${CONFIG_PATH_FOR_INIT}
 
@@ -76,27 +76,27 @@ data:
 
     # Start the runner
     exec /entrypoint run \
-    {{- if and .Values.gl-runner.runners.executor (ne "shell" ((.Values.gl-runner.runners.executor) | toString)) }}
+    {{- if and .Values.runners.executor (ne "shell" ((.Values.runners.executor) | toString)) }}
       --user=gitlab-runner \
     {{- end }}
       --working-directory=/home/gitlab-runner
 
   config.toml: |
-    shutdown_timeout = {{ .Values.gl-runner.shutdown_timeout }}
-    concurrent = {{ .Values.gl-runner.concurrent }}
-    check_interval = {{ .Values.gl-runner.checkInterval }}
-    log_level = {{ default "info" .Values.gl-runner.logLevel | quote }}
-    {{- if .Values.gl-runner.logFormat }}
-    log_format = {{ .Values.gl-runner.logFormat | quote }}
+    shutdown_timeout = {{ .Values.shutdown_timeout }}
+    concurrent = {{ .Values.concurrent }}
+    check_interval = {{ .Values.checkInterval }}
+    log_level = {{ default "info" .Values.logLevel | quote }}
+    {{- if .Values.logFormat }}
+    log_format = {{ .Values.logFormat | quote }}
     {{- end }}
-    {{- if .Values.gl-runner.metrics.enabled }}
-    listen_address = ":{{ .Values.gl-runner.metrics.port }}"
+    {{- if .Values.metrics.enabled }}
+    listen_address = ":{{ .Values.metrics.port }}"
     {{- end }}
-    {{- if .Values.gl-runner.sentryDsn }}
-    sentry_dsn = "{{ .Values.gl-runner.sentryDsn }}"
+    {{- if .Values.sentryDsn }}
+    sentry_dsn = "{{ .Values.sentryDsn }}"
     {{- end }}
-    {{- if .Values.gl-runner.connectionMaxAge }}
-    connection_max_age = "{{ .Values.gl-runner.connectionMaxAge }}"
+    {{- if .Values.connectionMaxAge }}
+    connection_max_age = "{{ .Values.connectionMaxAge }}"
     {{- end }}
     {{- if eq (include "gitlab-runner.isSessionServerAllowed" . ) "true" }}
     [session_server]
@@ -105,8 +105,8 @@ data:
       advertise_address = "SESSION_SERVER_ADDRESS:SESSION_SERVER_PORT"
     {{- end }}
 
-  {{ if .Values.gl-runner.runners.config }}
-  config.template.toml: {{ tpl .Values.gl-runner.runners.config $ | toYaml | indent 2 }}
+  {{ if .Values.runners.config }}
+  config.template.toml: {{ tpl .Values.runners.config $ | toYaml | indent 2 }}
   {{ end }}
 
   register-the-runner: |
@@ -122,8 +122,8 @@ data:
     MAX_REGISTER_ATTEMPTS=30
 
     # Reset/unset the not needed flags when an authentication token
-    RUN_UNTAGGED="{{ ternary "--run-untagged=true" "" (and (hasKey .Values.gl-runner.runners "runUntagged") .Values.gl-runner.runners.runUntagged) }}"
-    ACCESS_LEVEL="{{ ternary "--access-level=ref_protected" "" (and (hasKey .Values.gl-runner.runners "protected") .Values.gl-runner.runners.protected) }}"
+    RUN_UNTAGGED="{{ ternary "--run-untagged=true" "" (and (hasKey .Values.runners "runUntagged") .Values.runners.runUntagged) }}"
+    ACCESS_LEVEL="{{ ternary "--access-level=ref_protected" "" (and (hasKey .Values.runners "protected") .Values.runners.protected) }}"
 
     if [ -n "$CI_SERVER_TOKEN" ] && [ "${CI_SERVER_TOKEN#glrt-}" != "$CI_SERVER_TOKEN" ]; then
       RUN_UNTAGGED=""
@@ -135,18 +135,18 @@ data:
     for i in $(seq 1 "${MAX_REGISTER_ATTEMPTS}"); do
       echo "Registration attempt ${i} of ${MAX_REGISTER_ATTEMPTS}"
       /entrypoint register \
-        {{- if and (hasKey .Values.gl-runner.runners "name") .Values.gl-runner.runners.name }}
-        --name={{ .Values.gl-runner.runners.name | quote -}} \
+        {{- if and (hasKey .Values.runners "name") .Values.runners.name }}
+        --name={{ .Values.runners.name | quote -}} \
         {{- end }}
-        {{- if and (hasKey .Values.gl-runner.runners "maximumTimeout") .Values.gl-runner.runners.maximumTimeout }}
-        --maximum-timeout={{ .Values.gl-runner.runners.maximumTimeout | quote -}} \
+        {{- if and (hasKey .Values.runners "maximumTimeout") .Values.runners.maximumTimeout }}
+        --maximum-timeout={{ .Values.runners.maximumTimeout | quote -}} \
         {{- end }}
         ${RUN_UNTAGGED} \
         ${ACCESS_LEVEL} \
-        {{- if .Values.gl-runner.runners.config }}
+        {{- if .Values.runners.config }}
         --template-config /configmaps/config.template.toml \
-        {{- else if .Values.gl-runner.runners.configPath }}
-        --template-config {{ .Values.gl-runner.runners.configPath }} \
+        {{- else if .Values.runners.configPath }}
+        --template-config {{ .Values.runners.configPath }} \
         {{- end }}
         --non-interactive &
 
@@ -236,7 +236,7 @@ data:
   set-session-server-port: |
     #!/bin/bash
 
-    {{- if and (eq (include "gitlab-runner.server-session-service-type" .) "NodePort") (not .Values.gl-runner.sessionServer.nodePort)}}
+    {{- if and (eq (include "gitlab-runner.server-session-service-type" .) "NodePort") (not .Values.sessionServer.nodePort)}}
     APISERVER=https://${KUBERNETES_SERVICE_HOST:-kubernetes.default.svc}:${KUBERNETES_SERVICE_PORT:-443} \
       && SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount \
       && NAMESPACE=$(cat ${SERVICEACCOUNT}/namespace) \
@@ -262,8 +262,8 @@ data:
       fi
     done
 
-    {{- else if .Values.gl-runner.sessionServer.nodePort}}
-    sed -i -e "s/SESSION_SERVER_PORT/{{.Values.gl-runner.sessionServer.nodePort}}/g" ${CONFIG_PATH_FOR_INIT}/config.toml
+    {{- else if .Values.sessionServer.nodePort}}
+    sed -i -e "s/SESSION_SERVER_PORT/{{.Values.sessionServer.nodePort}}/g" ${CONFIG_PATH_FOR_INIT}/config.toml
 
     {{- else }}
     sed -i -e "s/SESSION_SERVER_PORT/{{include "gitlab-runner.server-session-external-port" .}}/g" ${CONFIG_PATH_FOR_INIT}/config.toml
@@ -273,6 +273,6 @@ data:
   {{ end }}
 
   pre-entrypoint-script: |
-{{ .Values.gl-runner.preEntrypointScript | default "" | indent 4 }}
+{{ .Values.preEntrypointScript | default "" | indent 4 }}
 
-{{ if not (empty .Values.gl-runner.configMaps) }}{{ toYaml .Values.gl-runner.configMaps | indent 2 }}{{ end }}
+{{ if not (empty .Values.configMaps) }}{{ toYaml .Values.configMaps | indent 2 }}{{ end }}
