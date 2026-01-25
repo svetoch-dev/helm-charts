@@ -11,6 +11,7 @@ gl-runner:
     name: "gl-runner"
     config: |
       [[runners]]
+        url = "https://gitlab.com"
         [runners.kubernetes]
           namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
           image = "alpine"
