@@ -23,8 +23,8 @@ gl-runner:
   resources: 
     limits: {}
     requests:
-      cpu: 1000m
-      memory: 1024Mi
+      cpu: 500m
+      memory: 512Mi
 
   nodeSelector:
     runner: "true"
