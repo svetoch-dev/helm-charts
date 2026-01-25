@@ -1,6 +1,6 @@
 apiVersion: v2
 name: gl-runner
-version: 0.2.2
+version: 0.2.4
 
 dependencies:
   # https://gitlab.com/gitlab-org/charts/gitlab-runner/blob/main/values.yaml
