@@ -38,7 +38,7 @@ Enchancemetns:
     * `messaging-topology-operator` 1.17.4 -> 1.18.2
 * `Pomerium`
   * add rules for `endpointslices` in clusterRole
-  * image update 0.31.3 -> 0.32.0
+  * image and crds update 0.31.3 -> 0.32.0
 
 
 # 10.5.0
