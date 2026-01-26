@@ -1,3 +1,18 @@
+# 11.0.0-alpha
+BrakingChanges:
+* `postgres-operator` uses configmaps instead endpoints (`kubernetes_use_configmaps: true`). See [UPGRADING](UPGRADING.md)
+
+New features:
+* `postgres-exporter` get query along with queryid
+
+Enchancements:
+* `postgres-operator`:
+  * crds update 1.14.0 -> 1.15.1
+  * chart update 1.14.0 -> 1.15.1
+  * switch to using original `logical-backup` v1.15.1 image
+* `postgres-exporter` update 0.17.1 -> 0.18.1
+
+
 # 10.6.0
 Enchancemetns:
 * `Prometheus`:

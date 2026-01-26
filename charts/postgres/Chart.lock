@@ -4,9 +4,9 @@ dependencies:
   version: 0.1.0
 - name: postgres-operator
   repository: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
-  version: 1.14.0
+  version: 1.15.1
 - name: common
   repository: file://../chart_deps/app/common/
   version: 0.1.0
-digest: sha256:72dfcdbfe5c69d48541e0fe830b28d0bc502f31614943a60e58549b5652b2d4c
-generated: "2025-04-02T20:29:57.358460782Z"
+digest: sha256:ff354767ed386b318144232b3c8403d2e7c8638754ef5e2d7af6a1c6f2546cb4
+generated: "2026-01-14T05:26:44.335038449Z"
