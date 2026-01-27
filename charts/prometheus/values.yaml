@@ -669,6 +669,15 @@ prometheus-rules:
             expr: sum by (pod) (rate(fluentbit_output_errors_total[5m])) / sum by(pod) (rate(fluentbit_input_records_total[5m])) > 0.07
             description: "High output error rate on {{ $labels.pod }}"
 
+          Loki_high_5xx_rate:
+            enabled: false
+            for: 10m
+            expr: |
+              sum(rate(loki_request_duration_seconds_count{status_code=~"5.."}[5m])) by (namespace, job, route)
+                /
+              sum(rate(loki_request_duration_seconds_count[5m])) by (namespace, job, route) > 0.1
+            description: "{{ $labels.job }} {{ $labels.route }} is experiencing {{ printf \"%.2f\" (mul $value 100) }}% errors."
+
           # Postgres
           Available_postgresql_connections_are_running_out:
             enabled: false
