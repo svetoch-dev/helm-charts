@@ -91,10 +91,10 @@ controller:
   enabled: false
   resources:
     limits:
-      cpu: 2
+      cpu: 1
       memory: 1Gi
     requests:
-      cpu: 300m
+      cpu: 50m
       memory: 200Mi
   additionalServices:
   - name: '{{ include "common.fullname" . }}-metrics'
