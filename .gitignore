@@ -5,4 +5,3 @@ charts/**/charts
 !charts/chart_deps/fluent/fluentbit/fluentbit-operated/charts
 !charts/chart_deps/fluent/fluentbit/fluentbit-standalone/charts
 !charts/chart_deps/postgres/postgres-cluster/charts
-!charts/chart_deps/rabbitmq/rabbitmq-cluster-operator/charts
