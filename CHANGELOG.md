@@ -40,6 +40,8 @@ Enchancemetns:
   * add rules for `endpointslices` in clusterRole
   * image and crds update 0.31.3 -> 0.32.0
   * set `cpu limits` 2 -> 1 and `cpu requests` 300m -> 50m
+* update `gha-operator` crds + chart 0.13.0 -> 0.13.1
+* update `gha-runner` chart 0.13.0 -> 0.13.1
 
 
 # 10.5.0
