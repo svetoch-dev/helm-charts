@@ -90,6 +90,9 @@ fluentbit:
       db: '/home/postgres/pgdata/pgroot/pg_log/postgres.db'
       storage.type: memory
       static_batch_size: 150M
+      rotate_wait: 30
+      buffer_chunk_size: 128k
+      buffer_max_size: 128k
   filters:
   - name: parser
     match: '*'
