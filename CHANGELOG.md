@@ -43,6 +43,7 @@ Enchancemetns:
 * update `gha-operator` crds + chart 0.13.0 -> 0.13.1
 * update `gha-runner` chart 0.13.0 -> 0.13.1
 * set more `buffer size` for `PG fluentbit-sidecar`
+* `Postgres` logs rotation 24h -> 1h
 
 
 # 10.5.0

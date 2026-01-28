@@ -11,6 +11,8 @@ postgresql:
     random_page_cost: '1.1'
     effective_io_concurrency: '200'
     log_destination: 'jsonlog'
+    log_rotation_age: '1h'
+    log_filename: 'postgresql-%H.log'
 env: {}
 volume: {}
 podAnnotations: {}
@@ -81,7 +83,7 @@ fluentbit:
     postgres:
       name: tail
       tag: kube.postgres.*
-      path: '/home/postgres/pgdata/pgroot/pg_log/*.json'
+      path: '/home/postgres/pgdata/pgroot/pg_log/postgresql-??.json'
       read_from_head: true
       skip_long_lines: true
       refresh_interval: 10
