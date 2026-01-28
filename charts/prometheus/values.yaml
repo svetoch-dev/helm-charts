@@ -675,7 +675,7 @@ prometheus-rules:
             expr: |
               sum(rate(loki_request_duration_seconds_count{status_code=~"5.."}[5m])) by (namespace, job, route)
                 /
-              sum(rate(loki_request_duration_seconds_count[5m])) by (namespace, job, route) < 0.1
+              sum(rate(loki_request_duration_seconds_count[5m])) by (namespace, job, route) > 0.1
             description: "{{ $labels.job }} {{ $labels.route }} is experiencing {{ humanizePercentage $value }} errors."
 
           # Postgres
