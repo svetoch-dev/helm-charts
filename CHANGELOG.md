@@ -19,6 +19,9 @@ New features:
   * `loki / *` pannels  in system dashboard
   * high api errors alert 
 
+Enchancements:
+* `loki` limits increase `max_query_series`
+
 Fixes:
 * Exclude bucket based fluentbit from fluentbit latency alert
 * Fluentbit to many errors alert
