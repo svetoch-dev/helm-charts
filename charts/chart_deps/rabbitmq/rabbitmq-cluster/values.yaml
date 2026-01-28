@@ -1,4 +1,4 @@
-image: docker.io/rabbitmq:4.2.2
+image: docker.io/rabbitmq:4.2.3
 fullnameOverride: ""
 nameOverride: ""
 prometheusSelector: {}

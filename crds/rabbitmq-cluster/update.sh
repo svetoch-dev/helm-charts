@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-CRDS_VERSION="4.4.34"
+CRDS_VERSION="4.4.37"
 
 for file in `ls | grep -E 'yml|yaml'`
 do

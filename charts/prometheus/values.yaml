@@ -322,13 +322,11 @@ operator:
     enabled: false
 
   prometheusOperator:
-    enabled: false
+    enabled: true
     # use old thanos image https://github.com/thanos-io/thanos/issues/8549
     thanosImage:
       tag: v0.39.2
-    ## Create Endpoints objects for kubelet targets.
-    #### we will turn this off in the next release ###
-    kubeletEndpointsEnabled: true
+    kubeletEndpointsEnabled: false
     ## Create EndpointSlice objects for kubelet targets.
     kubeletEndpointSliceEnabled: true
     logFormat: json

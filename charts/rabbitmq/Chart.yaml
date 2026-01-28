@@ -7,10 +7,10 @@ dependencies:
     repository: file://../chart_deps/rabbitmq/rabbitmq-cluster/
     alias: rabbitmq-main
     condition: rabbitmq-main.enabled
-  #https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq-cluster-operator
+  #https://github.com/bitnami/charts/tree/rabbitmq-cluster-operator/4.4.37/bitnami/rabbitmq-cluster-operator
   - name: rabbitmq-cluster-operator
-    version: 4.4.34
-    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 4.4.37
+    repository: file://../chart_deps/rabbitmq/rabbitmq-cluster-operator/
     alias: rabbitmq-cluster-operator
     condition: rabbitmq-cluster-operator.enabled
   - name: core
