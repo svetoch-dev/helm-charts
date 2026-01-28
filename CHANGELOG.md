@@ -1,3 +1,36 @@
+# 10.6.0
+Enchancemetns:
+* `Prometheus`:
+  * `disable` using `endpoints` for defaults (kubelet)
+  * set `operator.prometheusOperator.enable` = `true` for default
+  * chart updates:
+    * `kube-prometheus-stack` 80.4.2 -> 81.2.2
+    * `kube-state-metrics` 7.0.0 -> 7.1.0
+    * `prometheus-blackbox-exporter` 11.6.1 -> 11.7.0
+    * `prometheus-node-exporter` 4.49.2 -> 4.51.0
+    * `postgres-exporter` 7.3.0 -> 7.4.0
+  * image updates:
+    * `alertmanager` 0.30.0 -> 0.30.1
+    * `prometheus` 3.8.1 -> 3.9.1
+  * crds updates:
+    * `prometheus-operator` 0.87.1 -> 0.88.0
+* `Rabbitmq`
+  * move `rabbitmq-cluster-operator` bitnami chart to `chart_deps`
+  * chart and crds updates 4.4.34 -> 4.4.37
+  * images update:
+    * `default-user-credential-updater` 1.0.8 -> 1.0.10
+    * `cluster-operator` 2.16.1 -> 2.19.0
+    * `messaging-topology-operator` 1.17.4 -> 1.18.2
+* `Pomerium`
+  * add rules for `endpointslices` in clusterRole
+  * image and crds update 0.31.3 -> 0.32.0
+  * set `cpu limits` 2 -> 1 and `cpu requests` 300m -> 50m
+* update `gha-operator` crds + chart 0.13.0 -> 0.13.1
+* update `gha-runner` chart 0.13.0 -> 0.13.1
+* set more `buffer size` for `PG fluentbit-sidecar`
+* `Postgres` logs rotation 24h -> 1h
+
+
 # 10.5.0
 New features:
 * add support `postgres podMonitor` to get `fluentbit-sidecar metrics`
