@@ -20,7 +20,13 @@ New features:
   * high api errors alert 
 
 Enchancements:
-* `loki` limits increase `max_query_series`
+* `loki`
+  * limits increase `max_query_series`
+  * chart update 6.49.0 -> 6.51.0
+* `grafana`:
+  * operator chart update 5.21.3 -> 5.21.4
+  * grafana-main version update 12.3.1 ->  12.3.2
+
 
 Fixes:
 * Exclude bucket based fluentbit from fluentbit latency alert
