@@ -12,9 +12,28 @@ Enchancements:
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
+# 10.7.0
+New features:
+* `loki`: 
+  * collect all loki metrics
+  * `loki / *` pannels  in system dashboard
+  * high api errors alert 
+
+Enchancements:
+* `loki`
+  * limits increase `max_query_series`
+  * chart update 6.49.0 -> 6.51.0
+* `grafana`:
+  * operator chart update 5.21.3 -> 5.21.4
+  * grafana-main version update 12.3.1 ->  12.3.2
+
+
+Fixes:
+* Exclude bucket based fluentbit from fluentbit latency alert
+* Fluentbit to many errors alert
 
 # 10.6.0
-Enchancemetns:
+Enchancements:
 * `Prometheus`:
   * `disable` using `endpoints` for defaults (kubelet)
   * set `operator.prometheusOperator.enable` = `true` for default
