@@ -9,7 +9,7 @@ gl-runner:
   runners:
     nodeSelector: {}
     serviceAccount: "runner"
-    tolerations: []
+    nodeTolerations: {}
     config: |
       [[runners]]
         url = "https://gitlab.com/"
@@ -19,21 +19,21 @@ gl-runner:
           service_account = "{{ .Values.runners.serviceAccount }}"
           cpu_request = "{{ default "1000m" .Values.runners.cpuRequest }}"
           memory_request = "{{ default "1024Mi" .Values.runners.memoryRequest }}"
-        {{- with .Values.runners.nodeSelector }} 
+          
+          {{- with .Values.runners.nodeSelector }} 
           [runners.kubernetes.node_selector] 
             {{- range $k, $v := . }} 
             {{ $k }} = "{{ $v }}" 
             {{- end }} 
-        {{- end }}
-          {{- with .Values.runners.tolerations }} 
-          {{- range . }} 
-          [[runners.kubernetes.tolerations]] 
-            key = "{{ .key }}" 
-            operator = "{{ .operator }}" 
-            value = "{{ .value }}" 
-            effect = "{{ .effect }}" 
-          {{- end }} 
           {{- end }}
+
+          {{- with .Values.runners.nodeTolerations }}
+          [runners.kubernetes.node_tolerations]
+          {{- range $k, $v := . }}
+            {{ $k }} = "{{ $v }}"
+          {{- end }}
+          {{- end }}
+
     # secret must contain "runner-token" key with token value that starts with glrt-...
     secret: runner
   resources: 
@@ -49,9 +49,6 @@ gl-runner:
     #   operator: Equal
     #   value: "true"
     #   effect: NoSchedule
-  envVars: 
-    - name: FF_USE_ADVANCED_POD_SPEC_CONFIGURATION 
-      value: "true"
   serviceAccount:
     name: "runner"
   rbac:
