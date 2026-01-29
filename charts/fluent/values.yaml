@@ -398,6 +398,7 @@ fluentbit-gcp:
 
     podAnnotations:
       gke-gcsfuse/volumes: 'true'
+      gke-gcsfuse/ephemeral-storage-limit: '0'
       gke-gcsfuse/ephemeral-storage-request: '500Mi'
 
     resources:
@@ -433,12 +434,19 @@ fluentbit-gcp:
           - implicit-dirs
           - uid=1000
           - gid=1000
+          - file-cache:max-size-mb:-1
+          - file-cache:cache-file-for-range-read:true
+          - file-cache:enable-parallel-downloads:true
+          - read_ahead_kb=1024
         csi:
           driver: gcsfuse.csi.storage.gke.io
           volumeHandle: '{{printf "%s-logs-%s" .Values.global.bucket.prefix .Values.global.bucket.suffix }}'
+          volumeAttributes:
+            skipCSIBucketAccessCheck: "true"
         claimRef:
           name: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
           namespace: '{{ .Release.Namespace }}'
+
     serviceMonitor:
       enabled: true
       prometheusSelector:
