@@ -6,7 +6,8 @@ gl-runner:
   logLevel: "debug"
   logFormat: "json"
   
-  runners: 
+  runners:
+    nodeSelector: {}
     config: |
       [[runners]]
         url = "https://gitlab.com/"
@@ -16,21 +17,27 @@ gl-runner:
           service_account = "runner"
           cpu_request = "{{ default "1000m" .Values.runners.cpuRequest }}"
           memory_request = "{{ default "1024Mi" .Values.runners.memoryRequest }}"
-# secret must contain "runner-token" key with token value that starts with glrt-...
+        {{- with .Values.runners.nodeSelector }} 
+          [runners.kubernetes.node_selector] 
+            {{- range $k, $v := . }} 
+            {{ $k }} = "{{ $v }}" 
+            {{- end }} 
+        {{- end }}
+    # secret must contain "runner-token" key with token value that starts with glrt-...
     secret: runner
   resources: 
     limits: {}
     requests:
       cpu: 500m
       memory: 512Mi
-
-  nodeSelector:
-    runner: "true"
-  tolerations: 
-    - key: runner
-      operator: Equal
-      value: "true"
-      effect: NoSchedule
+  # key-value like runner: "true"
+  nodeSelector: {}
+  # list with tolerations parameters
+  tolerations: []
+    # - key: runner
+    #   operator: Equal
+    #   value: "true"
+    #   effect: NoSchedule
 
   serviceAccount:
     name: "runner"
