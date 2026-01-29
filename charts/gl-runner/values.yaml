@@ -6,6 +6,7 @@ gl-runner:
   logLevel: "debug"
   logFormat: "json"
   
+  # https://docs.gitlab.com/runner/executors/kubernetes/#how-the-runner-creates-kubernetes-pods
   runners:
     nodeSelector: {}
     serviceAccount: "runner"
