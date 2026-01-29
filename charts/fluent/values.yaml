@@ -403,10 +403,9 @@ fluentbit-gcp:
 
     resources:
       limits:
-        cpu: 500m
         memory: 1200Mi
       requests:
-        cpu: 10m
+        cpu: 100m
         memory: 25Mi
 
     volumeMounts:
@@ -434,7 +433,7 @@ fluentbit-gcp:
           - implicit-dirs
           - uid=1000
           - gid=1000
-          - file-cache:max-size-mb:-1
+          - file-cache:max-size-mb:2048
           - file-cache:cache-file-for-range-read:true
           - file-cache:enable-parallel-downloads:true
           - read_ahead_kb=1024
