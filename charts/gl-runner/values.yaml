@@ -9,6 +9,7 @@ gl-runner:
   runners:
     nodeSelector: {}
     serviceAccount: "runner"
+    tolerations: []
     config: |
       [[runners]]
         url = "https://gitlab.com/"
@@ -24,6 +25,15 @@ gl-runner:
             {{ $k }} = "{{ $v }}" 
             {{- end }} 
         {{- end }}
+          {{- with .Values.runners.tolerations }} 
+          {{- range . }} 
+          [[runners.kubernetes.tolerations]] 
+            key = "{{ .key }}" 
+            operator = "{{ .operator }}" 
+            value = "{{ .value }}" 
+            effect = "{{ .effect }}" 
+          {{- end }} 
+          {{- end }}
     # secret must contain "runner-token" key with token value that starts with glrt-...
     secret: runner
   resources: 
