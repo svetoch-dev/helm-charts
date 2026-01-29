@@ -30,7 +30,7 @@ gl-runner:
           {{- with .Values.runners.nodeTolerations }}
           [runners.kubernetes.node_tolerations]
           {{- range $k, $v := . }}
-            {{ $k }} = "{{ $v }}"
+            "{{ $k }}=true" = "{{ $v }}"
           {{- end }}
           {{- end }}
 
