@@ -49,7 +49,9 @@ gl-runner:
     #   operator: Equal
     #   value: "true"
     #   effect: NoSchedule
-
+  envVars: 
+    - name: FF_USE_ADVANCED_POD_SPEC_CONFIGURATION 
+      value: "true"
   serviceAccount:
     name: "runner"
   rbac:
