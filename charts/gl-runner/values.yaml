@@ -8,13 +8,14 @@ gl-runner:
   
   runners:
     nodeSelector: {}
+    serviceAccount: "runner"
     config: |
       [[runners]]
         url = "https://gitlab.com/"
         [runners.kubernetes]
           namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
           image = "alpine"
-          service_account = "runner"
+          service_account = "{{ .Values.runners.serviceAccount }}"
           cpu_request = "{{ default "1000m" .Values.runners.cpuRequest }}"
           memory_request = "{{ default "1024Mi" .Values.runners.memoryRequest }}"
         {{- with .Values.runners.nodeSelector }} 
