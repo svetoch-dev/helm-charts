@@ -210,3 +210,8 @@ chart_apps:
                 index:
                   prefix: index_
                   period: 24h
+
+  gl-runner:
+    enabled: false
+    values: |
+      global: {{ .Values.global | toYaml | nindent 4 }}

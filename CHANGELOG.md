@@ -12,6 +12,10 @@ Enchancements:
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
+# 10.8.0
+New features:
+* add helm chart for `gitlab runner`
+
 # 10.7.0
 New features:
 * `loki`: 
