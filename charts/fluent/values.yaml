@@ -277,8 +277,13 @@ fluentbit-gcp:
       #at every pod restart we re read all files
       #and read them in parallel we need to read only the last
       #created file in order to avoid 'entry too far behind'
-      #errors.
-      ignore_older: 50m
+      #errors. Also when pod restarts it will re read
+      #(db does not help here read comment below) all files
+      #that < than ignore_older which will lead to duplicated
+      #logs. So to reduce the probability of this happening
+      #we need to set ignore_older to a value bit more than
+      #processing time
+      ignore_older: 10m
       skip_empty_lines: true
       #Because we use gcsfuse to access files on buckets
       #everytime a pod restarts files in filesystem get
@@ -297,8 +302,13 @@ fluentbit-gcp:
       #at every pod restart we re read all files
       #and read them in parallel we need to read only the last
       #created file in order to avoid 'entry too far behind'
-      #errors.
-      ignore_older: 50m
+      #errors. Also when pod restarts it will re read
+      #(db does not help here read comment below) all files
+      #that < than ignore_older which will lead to duplicated
+      #logs. So to reduce the probability of this happening
+      #we need to set ignore_older to a value bit more than
+      #processing time
+      ignore_older: 10m
       buffer_max_size: 2MB
       skip_empty_lines: true
       #Because we use gcsfuse to access files on buckets
@@ -398,14 +408,14 @@ fluentbit-gcp:
 
     podAnnotations:
       gke-gcsfuse/volumes: 'true'
+      gke-gcsfuse/ephemeral-storage-limit: '0'
       gke-gcsfuse/ephemeral-storage-request: '500Mi'
 
     resources:
       limits:
-        cpu: 500m
         memory: 1200Mi
       requests:
-        cpu: 10m
+        cpu: 100m
         memory: 25Mi
 
     volumeMounts:
@@ -433,12 +443,19 @@ fluentbit-gcp:
           - implicit-dirs
           - uid=1000
           - gid=1000
+          - file-cache:max-size-mb:1024
+          - file-cache:cache-file-for-range-read:true
+          - file-cache:enable-parallel-downloads:true
+          - read_ahead_kb=1024
         csi:
           driver: gcsfuse.csi.storage.gke.io
           volumeHandle: '{{printf "%s-logs-%s" .Values.global.bucket.prefix .Values.global.bucket.suffix }}'
+          volumeAttributes:
+            skipCSIBucketAccessCheck: "true"
         claimRef:
           name: '{{ include "fluentbit.fullname" $ }}-gcsfuse'
           namespace: '{{ .Release.Namespace }}'
+
     serviceMonitor:
       enabled: true
       prometheusSelector:
