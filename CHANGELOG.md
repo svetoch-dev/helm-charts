@@ -5,12 +5,19 @@ BrakingChanges:
 New features:
 * `postgres-exporter` get query along with queryid
 
-Enchancements:
+Enhancements:
 * `postgres-operator`:
   * crds update 1.14.0 -> 1.15.1
   * chart update 1.14.0 -> 1.15.1
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
+
+# 10.8.1
+Enhancements:
+* `fluent-gcp`:
+  * file cache options
+  * performance improvement options
+  * reduce the ignore_older option to 10m
 
 # 10.8.0
 New features:
@@ -23,7 +30,7 @@ New features:
   * `loki / *` pannels  in system dashboard
   * high api errors alert 
 
-Enchancements:
+Enhancements:
 * `loki`
   * limits increase `max_query_series`
   * chart update 6.49.0 -> 6.51.0
@@ -37,7 +44,7 @@ Fixes:
 * Fluentbit to many errors alert
 
 # 10.6.0
-Enchancements:
+Enhancements:
 * `Prometheus`:
   * `disable` using `endpoints` for defaults (kubelet)
   * set `operator.prometheusOperator.enable` = `true` for default
@@ -77,7 +84,7 @@ New features:
 * add new `fluentbit alerts`
 * add new `fluentbit panels` to grafana `system` dashboard
 
-Enchancements:
+Enhancements:
 * increase `pg-exporter` cpu limits 0.2 -> 0.4
 * delete cpu limits for `redis` in `argocd`
 * delete defaults cpu limits for `postgres` in `postgres-operator`
@@ -88,7 +95,7 @@ Fixes:
 * fix `fluentbit` `selectorLabels`
 
 # 10.4.1
-Enchancements:
+Enhancements:
 * change count of restarts in alert `Container_too_many_restarts` to 5 in 10m
 
 Fixes:
@@ -102,7 +109,7 @@ Fixes:
 
 
 # 10.4.0
-Enchancements:
+Enhancements:
 * delete `loki-read` cpu limits
 * set `metadata.annotations` to `gha-runner workflow-pod`
 * set `no-expose-internal-ipv6` for `external-dns`
@@ -144,14 +151,14 @@ Fixes:
   * use correct `prometheus-operator` name
 
 # 10.3.1
-Enchancements:
+Enhancements:
 * `grafana`:
   * `services dashboard`: proper throttled pannels
 * `promtheus`: fix throttled alerts + increase node exporter limits
 * `chart_deps/rabbitmq/rabbitmq-cluster`: update default version to 4.2.2
 
 # 10.3.0
-Enchancements:
+Enhancements:
 * `argocd`:
   * chart update 7.8.26 -> 9.1.7
   * crds update v2.14.10 -> v3.2.1
@@ -187,7 +194,7 @@ New features:
   * ability to set `serviceDiscoveryRole`
 
 # 10.2.1
-Enchancements:
+Enhancements:
 * set `loki` resources limits
 * set 3Gb memory limit for `thanos storegateway`
 
@@ -583,7 +590,7 @@ Features:
       * `operator crds` 0.77.2 -> 0.81.0
       * `postgres-exporter` 5.3.0 -> 6.10.0
 
-Enchancements:
+Enhancements:
   * `chart_deps/konghq/plugins`: use templates in plugin names
   * `postgres-exporter` uses prometheus-community helm-charts
   * set default `prometheusSelector "prometheus: main"` in `postgres podMonitor` values
