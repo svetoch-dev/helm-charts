@@ -1,0 +1,79 @@
+gl-runner:
+  enabled: false
+  gitlabUrl: "https://gitlab.com/"
+
+  concurrent: 10
+  logLevel: "debug"
+  logFormat: "json"
+  
+  # https://docs.gitlab.com/runner/executors/kubernetes/#how-the-runner-creates-kubernetes-pods
+  runners:
+    nodeSelector: 
+      runner: "true"
+    nodeTolerations:
+      runner: "NoSchedule"
+    serviceAccount: "runner"
+    config: |
+      [[runners]]
+        url = "https://gitlab.com/"
+        [runners.kubernetes]
+          namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
+          image = "alpine"
+          service_account = "{{ .Values.runners.serviceAccount }}"
+          cpu_request = "{{ default "1000m" .Values.runners.cpuRequest }}"
+          memory_request = "{{ default "1024Mi" .Values.runners.memoryRequest }}"
+          
+          {{- with .Values.runners.nodeSelector }} 
+          [runners.kubernetes.node_selector] 
+            {{- range $nodeSelectorKey, $nodeSelectorValue := . }} 
+            {{ $nodeSelectorKey }} = "{{ $nodeSelectorValue }}" 
+            {{- end }} 
+          {{- end }}
+
+          {{- with .Values.runners.nodeTolerations }}
+          [runners.kubernetes.node_tolerations]
+          {{- range $nodeTolerationsKey, $nodeTolerationsValue := . }}
+            "{{ $nodeTolerationsKey }}=true" = "{{ $nodeTolerationsValue }}"
+          {{- end }}
+          {{- end }}
+
+    # secret must contain "runner-token" key with token value that starts with glrt-...
+    secret: runner
+  resources: 
+    limits: {}
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  # key-value like runner: "true"
+  nodeSelector: {}
+  # list with tolerations parameters
+  tolerations: []
+    # - key: runner
+    #   operator: Equal
+    #   value: "true"
+    #   effect: NoSchedule
+  serviceAccount:
+    name: "runner"
+  rbac:
+    create: true
+    rules:
+      - resources: ["events"]
+        verbs: ["list", "watch"]
+      # if you want to use different namespases for pods add permissions for namespace create|delete
+      # - resources: ["namespaces"]
+      #   verbs: ["create", "delete"]
+      - resources: ["pods"]
+        verbs: ["create","delete","get"]
+      - apiGroups: [""]
+        resources: ["pods/attach","pods/exec"]
+        verbs: ["get","create","patch","delete"]
+      - apiGroups: [""]
+        resources: ["pods/log"]
+        verbs: ["get","list"]
+      - resources: ["secrets"]
+        verbs: ["create","delete","get","update"]
+      - resources: ["serviceaccounts"]
+        verbs: ["get"]
+      - resources: ["services"]
+        verbs: ["create","get"]
+
