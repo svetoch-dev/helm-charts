@@ -25,15 +25,15 @@ gl-runner:
           
           {{- with .Values.runners.nodeSelector }} 
           [runners.kubernetes.node_selector] 
-            {{- range $k, $v := . }} 
-            {{ $k }} = "{{ $v }}" 
+            {{- range $nodeSelectorKey, $nodeSelectorValue := . }} 
+            {{ $nodeSelectorKey }} = "{{ $nodeSelectorValue }}" 
             {{- end }} 
           {{- end }}
 
           {{- with .Values.runners.nodeTolerations }}
           [runners.kubernetes.node_tolerations]
-          {{- range $k, $v := . }}
-            "{{ $k }}=true" = "{{ $v }}"
+          {{- range $nodeTolerationsKey, $nodeTolerationsValue := . }}
+            "{{ $nodeTolerationsKey }}=true" = "{{ $nodeTolerationsValue }}"
           {{- end }}
           {{- end }}
 
