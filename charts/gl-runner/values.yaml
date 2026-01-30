@@ -8,9 +8,11 @@ gl-runner:
   
   # https://docs.gitlab.com/runner/executors/kubernetes/#how-the-runner-creates-kubernetes-pods
   runners:
-    nodeSelector: {}
+    nodeSelector: 
+      runner: "true"
+    nodeTolerations:
+      runner: "NoSchedule"
     serviceAccount: "runner"
-    nodeTolerations: {}
     config: |
       [[runners]]
         url = "https://gitlab.com/"
