@@ -60,7 +60,7 @@ resources:
     cpu: 10m
     memory: 15Mi
   limits:
-    cpu: 100m
+    cpu: 300m
     memory: 50Mi
 {{- if .Values.auth.secretPath }}
 env:
@@ -83,7 +83,7 @@ resources:
     cpu: 10m
     memory: 15Mi
   limits:
-    cpu: 100m
+    cpu: 200m
     memory: 50Mi
 {{- end }}
 {{- end }}

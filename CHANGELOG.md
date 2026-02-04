@@ -16,6 +16,7 @@ Enhancements:
 # 10.8.2
 Fixes:
 * fix error of getting `logs` from `postgres` using `fluentbit-sidecar`
+* fix `redis/sentinel-exporters` throttling
 
 
 # 10.8.1
