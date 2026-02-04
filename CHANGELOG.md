@@ -12,6 +12,13 @@ Enhancements:
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
+
+# 10.8.2
+Fixes:
+* fix error of getting `logs` from `postgres` using `fluentbit-sidecar`
+* fix `redis/sentinel-exporters` throttling
+
+
 # 10.8.1
 Enhancements:
 * `fluent-gcp`:
