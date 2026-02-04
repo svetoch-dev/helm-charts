@@ -51,6 +51,7 @@ postgres-pod-envs:
   #Without this wal-e clone will not work due to this
   #https://github.com/zalando/spilo/blob/3.0-p1/postgres-appliance/scripts/restore_command.sh#L39
   CLONE_WALG_DOWNLOAD_CONCURRENCY: "2"
+  CRONTAB: "['0 4 * * 1 find /home/postgres/pgdata/pgroot/pg_log/ -type f -mtime +7 -delete']"
 
 pgadmin:
   enabled: false
