@@ -20,12 +20,12 @@ gl-runner:
     podLabels: 
       app.kubernetes.io/component: gl-runner-worker 
       app.kubernetes.io/instance: "{{ .Release.Name }}"
-    cache: {}
-      # type: gcs 
-      # shared: true
-      # maxUploadedArchiveSize = 0 
-      # gcs: 
-      #   bucketName: "cache-bucket-name"
+    cache:
+      type: gcs 
+      shared: true
+      maxUploadedArchiveSize: 0 
+      gcs: 
+        bucketName: ""
     config: |
       [[runners]]
         url = "https://gitlab.com/"
@@ -58,16 +58,16 @@ gl-runner:
           {{- end }}
 
           {{- with .Values.runners.cache }}
+          {{- if .gcs.bucketName }}
           [runners.cache]
             Type = "{{ .type }}"
             Shared = {{ .shared }}
             MaxUploadedArchiveSize = {{ .maxUploadedArchiveSize }}
 
-            {{- with .gcs }}
             [runners.cache.gcs]
-              BucketName = "{{ .bucketName }}"
-            {{- end }}
-        {{- end }}
+              BucketName = "{{ .gcs.bucketName }}"
+          {{- end }}
+          {{- end }}
 
     # secret must contain "runner-token" key with token value that starts with glrt-...
     secret: runner
