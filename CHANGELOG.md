@@ -13,7 +13,7 @@ Enhancements:
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
 
-# 10.8.2
+# 10.8.3
 Enhancements:
 * `gl-runner`:
   * added podLabels for manager and worker pods
