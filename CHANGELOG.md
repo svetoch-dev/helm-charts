@@ -14,6 +14,16 @@ Enhancements:
 
 
 # 10.8.2
+Enhancements:
+* `gl-runner`:
+  * added podLabels for manager and worker pods
+  * added possibility to set cache bucket for gl-runner worker pods
+Fixes:
+* `gl-runner`:
+  * fixed creating SA in helm chart. Setted to default serviceAccount.create to false for managing SA outside HELM
+
+
+# 10.8.2
 Fixes:
 * fix error of getting `logs` from `postgres` using `fluentbit-sidecar`
 * fix `redis/sentinel-exporters` throttling
