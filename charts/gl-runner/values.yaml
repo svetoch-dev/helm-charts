@@ -12,6 +12,7 @@ gl-runner:
   
   # https://docs.gitlab.com/runner/executors/kubernetes/#how-the-runner-creates-kubernetes-pods
   runners:
+    name: "k8s-dev-runner"
     nodeSelector: 
       runner: "true"
     nodeTolerations:
