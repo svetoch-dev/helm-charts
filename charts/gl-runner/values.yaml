@@ -61,7 +61,7 @@ gl-runner:
           {{- with .Values.runners.cache }}
           {{- if .enabled }}
           [runners.cache]
-            Type = "{{ tpl $.type $ }}"
+            Type = "{{ tpl .type $ }}"
             Shared = {{ .shared }}
             MaxUploadedArchiveSize = {{ .maxUploadedArchiveSize }}
           {{- if .gcs.bucketName }}
