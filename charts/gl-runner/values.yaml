@@ -12,7 +12,6 @@ gl-runner:
   
   # https://docs.gitlab.com/runner/executors/kubernetes/#how-the-runner-creates-kubernetes-pods
   runners:
-    name: "k8s-dev-runner"
     nodeSelector: 
       runner: "true"
     nodeTolerations:
@@ -30,7 +29,6 @@ gl-runner:
         bucketName: ""
     config: |
       [[runners]]
-        name = "k8s-dev-runner"
         url = "https://gitlab.com/"
         [runners.kubernetes]
           namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
