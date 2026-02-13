@@ -215,3 +215,8 @@ chart_apps:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
+  gl-runner-app:
+    enabled: false
+    chart: '{{ .Values.repository.paths.charts }}/gl-runner'
+    values: |
+      global: {{ .Values.global | toYaml | nindent 4 }}
