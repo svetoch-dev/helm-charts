@@ -5,6 +5,10 @@ gl-runner:
   concurrent: 10
   logLevel: "debug"
   logFormat: "json"
+
+  podLabels:
+    app.kubernetes.io/component: gl-runner-manager
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
   
   # https://docs.gitlab.com/runner/executors/kubernetes/#how-the-runner-creates-kubernetes-pods
   runners:
@@ -13,6 +17,16 @@ gl-runner:
     nodeTolerations:
       runner: "NoSchedule"
     serviceAccount: "runner"
+    podLabels: 
+      app.kubernetes.io/component: gl-runner-worker 
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+    cache:
+      enabled: false
+      type: "{{ .Values.global.bucket.type }}"
+      shared: true
+      maxUploadedArchiveSize: 0 
+      gcs: 
+        bucketName: ""
     config: |
       [[runners]]
         url = "https://gitlab.com/"
@@ -37,6 +51,26 @@ gl-runner:
           {{- end }}
           {{- end }}
 
+          {{- with .Values.runners.podLabels }}
+          [runners.kubernetes.pod_labels]
+            {{- range $podLabelKey, $podLabelValue := . }}
+            "{{ $podLabelKey }}" = "{{ tpl $podLabelValue $ }}"
+            {{- end }}
+          {{- end }}
+
+          {{- with .Values.runners.cache }}
+          {{- if .enabled }}
+          [runners.cache]
+            Type = "{{ tpl .type $ }}"
+            Shared = {{ .shared }}
+            MaxUploadedArchiveSize = {{ .maxUploadedArchiveSize }}
+          {{- if .gcs.bucketName }}
+            [runners.cache.gcs]
+              BucketName = "{{ .gcs.bucketName }}"
+          {{- end }}
+          {{- end }}
+          {{- end }}
+
     # secret must contain "runner-token" key with token value that starts with glrt-...
     secret: runner
   resources: 
@@ -53,6 +87,7 @@ gl-runner:
     #   value: "true"
     #   effect: NoSchedule
   serviceAccount:
+    create: "false"
     name: "runner"
   rbac:
     create: true
