@@ -54,14 +54,14 @@ gl-runner:
           {{- with .Values.runners.podLabels }}
           [runners.kubernetes.pod_labels]
             {{- range $podLabelKey, $podLabelValue := . }}
-            "{{ $podLabelKey }}" = "{{ $podLabelValue }}"
+            "{{ $podLabelKey }}" = "{{ tpl $podLabelValue $ }}"
             {{- end }}
           {{- end }}
 
           {{- with .Values.runners.cache }}
           {{- if .enabled }}
           [runners.cache]
-            Type = "{{ .type }}"
+            Type = "{{ tpl .type $ }}"
             Shared = {{ .shared }}
             MaxUploadedArchiveSize = {{ .maxUploadedArchiveSize }}
           {{- if .gcs.bucketName }}
