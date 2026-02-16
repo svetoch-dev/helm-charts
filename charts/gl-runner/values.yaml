@@ -20,7 +20,7 @@ gl-runner:
     podLabels: 
       app.kubernetes.io/component: gl-runner-worker 
       app.kubernetes.io/instance: "{{ .Release.Name }}"
-    cache:
+    runnerCache:
       enabled: false
       type: "{{ .Values.global.bucket.type }}"
       path: "cache"
@@ -59,13 +59,12 @@ gl-runner:
             {{- end }}
           {{- end }}
 
-          {{- with .Values.runners.cache }}
+          {{- with .Values.runners.runnerCache }}
           {{- if .enabled }}
           [runners.cache]
             Type = "{{ tpl .type $ }}"
-            Path = "{{ .path }}"
-            Shared = {{ .shared }}
             MaxUploadedArchiveSize = {{ .maxUploadedArchiveSize }}
+            Shared = {{ .shared }}
           {{- if eq $.Values.global.bucket.type "gcs" }}
             [runners.cache.gcs]
               BucketName = "{{ tpl .gcs.bucketName $ }}"
