@@ -66,7 +66,7 @@ gl-runner:
             Path = "{{ .path }}"
             Shared = {{ .shared }}
             MaxUploadedArchiveSize = {{ .maxUploadedArchiveSize }}
-          {{- if .Values.global.bucket.type == gcs }}
+          {{- if eq .Values.global.bucket.type "gcs" }}
             [runners.cache.gcs]
               BucketName = "{{ tpl .gcs.bucketName $ }}"
           {{- end }}
