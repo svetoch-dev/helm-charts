@@ -89,7 +89,8 @@ gl-runner:
     #   value: "true"
     #   effect: NoSchedule
   serviceAccount:
-    create: true
+    create: false
+    name: "runner"
   rbac:
     create: true
     rules:
