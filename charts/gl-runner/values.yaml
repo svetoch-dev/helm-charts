@@ -23,10 +23,11 @@ gl-runner:
     cache:
       enabled: false
       type: "{{ .Values.global.bucket.type }}"
+      path: "cache"
       shared: true
       maxUploadedArchiveSize: 0 
       gcs: 
-        bucketName: ""
+        bucketName: "{{ .Values.global.company.name }}-runners-cache-{{ .Values.global.env.short_name }}"
     config: |
       [[runners]]
         url = "https://gitlab.com/"
@@ -62,11 +63,12 @@ gl-runner:
           {{- if .enabled }}
           [runners.cache]
             Type = "{{ tpl .type $ }}"
+            Path = "{{ .path }}"
             Shared = {{ .shared }}
             MaxUploadedArchiveSize = {{ .maxUploadedArchiveSize }}
-          {{- if .gcs.bucketName }}
+          {{- if .Values.global.bucket.type == gcs }}
             [runners.cache.gcs]
-              BucketName = "{{ .gcs.bucketName }}"
+              BucketName = "{{ tpl .gcs.bucketName $ }}"
           {{- end }}
           {{- end }}
           {{- end }}
