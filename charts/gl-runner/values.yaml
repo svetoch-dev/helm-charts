@@ -1,18 +1,32 @@
 gl-runner:
   enabled: false
   gitlabUrl: "https://gitlab.com/"
-
   concurrent: 10
   logLevel: "debug"
   logFormat: "json"
-  
+  podLabels:
+    app.kubernetes.io/component: gl-runner-manager
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
   # https://docs.gitlab.com/runner/executors/kubernetes/#how-the-runner-creates-kubernetes-pods
   runners:
-    nodeSelector: 
+    # secret must contain "runner-token" key with token value that starts with glrt-...
+    secret: runner
+    serviceAccount: "runner"
+    nodeSelector:
       runner: "true"
     nodeTolerations:
       runner: "NoSchedule"
-    serviceAccount: "runner"
+    podLabels:
+      app.kubernetes.io/component: gl-runner-worker
+      app.kubernetes.io/instance: "{{ .Release.Name }}"
+    runnerCache:
+      enabled: false
+      type: "{{ .Values.global.bucket.type }}"
+      path: "cache"
+      shared: true
+      maxUploadedArchiveSize: 0
+      bucketName: "{{ .Values.global.company.name }}-runners-cache-{{ .Values.global.env.short_name }}"
+
     config: |
       [[runners]]
         url = "https://gitlab.com/"
@@ -22,24 +36,43 @@ gl-runner:
           service_account = "{{ .Values.runners.serviceAccount }}"
           cpu_request = "{{ default "1000m" .Values.runners.cpuRequest }}"
           memory_request = "{{ default "1024Mi" .Values.runners.memoryRequest }}"
-          
-          {{- with .Values.runners.nodeSelector }} 
-          [runners.kubernetes.node_selector] 
-            {{- range $nodeSelectorKey, $nodeSelectorValue := . }} 
-            {{ $nodeSelectorKey }} = "{{ $nodeSelectorValue }}" 
-            {{- end }} 
-          {{- end }}
 
-          {{- with .Values.runners.nodeTolerations }}
-          [runners.kubernetes.node_tolerations]
-          {{- range $nodeTolerationsKey, $nodeTolerationsValue := . }}
-            "{{ $nodeTolerationsKey }}=true" = "{{ $nodeTolerationsValue }}"
+        {{- with .Values.runners.nodeSelector }}
+        [runners.kubernetes.node_selector]
+          {{- range $nodeSelectorKey, $nodeSelectorValue := . }}
+          {{ $nodeSelectorKey }} = "{{ $nodeSelectorValue }}"
           {{- end }}
-          {{- end }}
+        {{- end }}
 
-    # secret must contain "runner-token" key with token value that starts with glrt-...
-    secret: runner
-  resources: 
+        {{- with .Values.runners.nodeTolerations }}
+        [runners.kubernetes.node_tolerations]
+        {{- range $nodeTolerationsKey, $nodeTolerationsValue := . }}
+          "{{ $nodeTolerationsKey }}=true" = "{{ $nodeTolerationsValue }}"
+        {{- end }}
+        {{- end }}
+
+        {{- with .Values.runners.podLabels }}
+        [runners.kubernetes.pod_labels]
+          {{- range $podLabelKey, $podLabelValue := . }}
+          "{{ $podLabelKey }}" = "{{ tpl $podLabelValue $ }}"
+          {{- end }}
+        {{- end }}
+
+        {{- with .Values.runners.runnerCache }}
+        {{- if .enabled }}
+        [runners.cache]
+          Type = "{{ tpl .type $ }}"
+          MaxUploadedArchiveSize = {{ .maxUploadedArchiveSize }}
+          Path = "{{ .path }}"
+          Shared = {{ .shared }}
+        {{- if eq $.Values.global.bucket.type "gcs" }}
+        [runners.cache.gcs]
+          BucketName = "{{ tpl .bucketName $ }}"
+        {{- end }}
+        {{- end }}
+        {{- end }}
+
+  resources:
     limits: {}
     requests:
       cpu: 500m
@@ -48,12 +81,11 @@ gl-runner:
   nodeSelector: {}
   # list with tolerations parameters
   tolerations: []
-    # - key: runner
-    #   operator: Equal
-    #   value: "true"
-    #   effect: NoSchedule
+  # service account for manager.
+  # If is using cache gcs should use SA with SATokenCreator AND storageObjectAdmin(for cache bucket) roles
   serviceAccount:
-    name: "runner"
+    create: true
+    name: ""
   rbac:
     create: true
     rules:
@@ -63,17 +95,16 @@ gl-runner:
       # - resources: ["namespaces"]
       #   verbs: ["create", "delete"]
       - resources: ["pods"]
-        verbs: ["create","delete","get"]
+        verbs: ["create", "delete", "get"]
       - apiGroups: [""]
-        resources: ["pods/attach","pods/exec"]
-        verbs: ["get","create","patch","delete"]
+        resources: ["pods/attach", "pods/exec"]
+        verbs: ["get", "create", "patch", "delete"]
       - apiGroups: [""]
         resources: ["pods/log"]
-        verbs: ["get","list"]
+        verbs: ["get", "list"]
       - resources: ["secrets"]
-        verbs: ["create","delete","get","update"]
+        verbs: ["create", "delete", "get", "update"]
       - resources: ["serviceaccounts"]
         verbs: ["get"]
       - resources: ["services"]
-        verbs: ["create","get"]
-
+        verbs: ["create", "get"]
