@@ -13,6 +13,18 @@ Enhancements:
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
 
+# 10.8.3
+Enhancements:
+* `gl-runner`:
+  * added podLabels for manager and worker pods
+  * added possibility to set cache bucket for gl-runner worker pods
+
+
+Fixes:
+* `gl-runner`:
+  * fixed creating SA in helm chart. Setted to default serviceAccount.create to true and name to empty line.
+
+
 # 10.8.2
 Fixes:
 * fix error of getting `logs` from `postgres` using `fluentbit-sidecar`
