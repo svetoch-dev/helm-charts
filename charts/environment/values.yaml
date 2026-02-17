@@ -215,4 +215,3 @@ chart_apps:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
-
