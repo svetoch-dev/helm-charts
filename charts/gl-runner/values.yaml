@@ -28,50 +28,51 @@ gl-runner:
       gcs:
         bucketName: "{{ .Values.global.company.name }}-runners-cache-{{ .Values.global.env.short_name }}"
 
-      config: |
-        [[runners]]
-          url = "https://gitlab.com/"
-          [runners.kubernetes]
-            namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
-            image = "alpine"
-            service_account = "{{ .Values.runners.serviceAccount }}"
-            cpu_request = "{{ default "1000m" .Values.runners.cpuRequest }}"
-            memory_request = "{{ default "1024Mi" .Values.runners.memoryRequest }}"
+    config: |
+      [[runners]]
+        url = "https://gitlab.com/"
+        [runners.kubernetes]
+          namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
+          image = "alpine"
+          service_account = "{{ .Values.runners.serviceAccount }}"
+          cpu_request = "{{ default "1000m" .Values.runners.cpuRequest }}"
+          memory_request = "{{ default "1024Mi" .Values.runners.memoryRequest }}"
 
-          {{- with .Values.runners.nodeSelector }}
-          [runners.kubernetes.node_selector]
-            {{- range $nodeSelectorKey, $nodeSelectorValue := . }}
-            {{ $nodeSelectorKey }} = "{{ $nodeSelectorValue }}"
-            {{- end }}
+        {{- with .Values.runners.nodeSelector }}
+        [runners.kubernetes.node_selector]
+          {{- range $nodeSelectorKey, $nodeSelectorValue := . }}
+          {{ $nodeSelectorKey }} = "{{ $nodeSelectorValue }}"
           {{- end }}
+        {{- end }}
 
-          {{- with .Values.runners.nodeTolerations }}
-          [runners.kubernetes.node_tolerations]
-          {{- range $nodeTolerationsKey, $nodeTolerationsValue := . }}
-            "{{ $nodeTolerationsKey }}=true" = "{{ $nodeTolerationsValue }}"
-          {{- end }}
-          {{- end }}
+        {{- with .Values.runners.nodeTolerations }}
+        [runners.kubernetes.node_tolerations]
+        {{- range $nodeTolerationsKey, $nodeTolerationsValue := . }}
+          "{{ $nodeTolerationsKey }}=true" = "{{ $nodeTolerationsValue }}"
+        {{- end }}
+        {{- end }}
 
-          {{- with .Values.runners.podLabels }}
-          [runners.kubernetes.pod_labels]
-            {{- range $podLabelKey, $podLabelValue := . }}
-            "{{ $podLabelKey }}" = "{{ tpl $podLabelValue $ }}"
-            {{- end }}
+        {{- with .Values.runners.podLabels }}
+        [runners.kubernetes.pod_labels]
+          {{- range $podLabelKey, $podLabelValue := . }}
+          "{{ $podLabelKey }}" = "{{ tpl $podLabelValue $ }}"
           {{- end }}
+        {{- end }}
 
-          {{- with .Values.runners.runnerCache }}
-          {{- if .enabled }}
-          [runners.cache]
-            Type = "{{ tpl .type $ }}"
-            MaxUploadedArchiveSize = {{ .maxUploadedArchiveSize }}
-            Path = "{{ .path }}"
-            Shared = {{ .shared }}
-          {{- if eq $.Values.global.bucket.type "gcs" }}
-          [runners.cache.gcs]
-            BucketName = "{{ tpl .gcs.bucketName $ }}"
-          {{- end }}
-          {{- end }}
-          {{- end }}
+        {{- with .Values.runners.runnerCache }}
+        {{- if .enabled }}
+        [runners.cache]
+          Type = "{{ tpl .type $ }}"
+          MaxUploadedArchiveSize = {{ .maxUploadedArchiveSize }}
+          Path = "{{ .path }}"
+          Shared = {{ .shared }}
+        {{- if eq $.Values.global.bucket.type "gcs" }}
+        [runners.cache.gcs]
+          BucketName = "{{ tpl .gcs.bucketName $ }}"
+        {{- end }}
+        {{- end }}
+        {{- end }}
+
   resources:
     limits: {}
     requests:
