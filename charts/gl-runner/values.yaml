@@ -1,35 +1,33 @@
 gl-runner:
   enabled: false
   gitlabUrl: "https://gitlab.com/"
-
   concurrent: 10
   logLevel: "debug"
   logFormat: "json"
-
   podLabels:
     app.kubernetes.io/component: gl-runner-manager
     app.kubernetes.io/instance: "{{ .Release.Name }}"
-  
   # https://docs.gitlab.com/runner/executors/kubernetes/#how-the-runner-creates-kubernetes-pods
   runners:
-    nodeSelector: 
+    nodeSelector:
       runner: "true"
     nodeTolerations:
       runner: "NoSchedule"
     serviceAccount: "runner"
-    podLabels: 
-      app.kubernetes.io/component: gl-runner-worker 
+    podLabels:
+      app.kubernetes.io/component: gl-runner-worker
       app.kubernetes.io/instance: "{{ .Release.Name }}"
     runnerCache:
       enabled: false
       type: "{{ .Values.global.bucket.type }}"
       path: "cache"
       shared: true
-      maxUploadedArchiveSize: 0 
-      gcs: 
+      maxUploadedArchiveSize: 0
+      gcs:
         bucketName: "{{ .Values.global.company.name }}-runners-cache-{{ .Values.global.env.short_name }}"
-    config: |
-      [[runners]]
+
+      config: |
+        [[runners]]
         url = "https://gitlab.com/"
         [runners.kubernetes]
           namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
@@ -37,12 +35,12 @@ gl-runner:
           service_account = "{{ .Values.runners.serviceAccount }}"
           cpu_request = "{{ default "1000m" .Values.runners.cpuRequest }}"
           memory_request = "{{ default "1024Mi" .Values.runners.memoryRequest }}"
-          
-          {{- with .Values.runners.nodeSelector }} 
-          [runners.kubernetes.node_selector] 
-            {{- range $nodeSelectorKey, $nodeSelectorValue := . }} 
-            {{ $nodeSelectorKey }} = "{{ $nodeSelectorValue }}" 
-            {{- end }} 
+
+          {{- with .Values.runners.nodeSelector }}
+          [runners.kubernetes.node_selector]
+            {{- range $nodeSelectorKey, $nodeSelectorValue := . }}
+            {{ $nodeSelectorKey }} = "{{ $nodeSelectorValue }}"
+            {{- end }}
           {{- end }}
 
           {{- with .Values.runners.nodeTolerations }}
@@ -75,7 +73,7 @@ gl-runner:
 
     # secret must contain "runner-token" key with token value that starts with glrt-...
     secret: runner
-  resources: 
+  resources:
     limits: {}
     requests:
       cpu: 500m
@@ -100,17 +98,16 @@ gl-runner:
       # - resources: ["namespaces"]
       #   verbs: ["create", "delete"]
       - resources: ["pods"]
-        verbs: ["create","delete","get"]
+        verbs: ["create", "delete", "get"]
       - apiGroups: [""]
-        resources: ["pods/attach","pods/exec"]
-        verbs: ["get","create","patch","delete"]
+        resources: ["pods/attach", "pods/exec"]
+        verbs: ["get", "create", "patch", "delete"]
       - apiGroups: [""]
         resources: ["pods/log"]
-        verbs: ["get","list"]
+        verbs: ["get", "list"]
       - resources: ["secrets"]
-        verbs: ["create","delete","get","update"]
+        verbs: ["create", "delete", "get", "update"]
       - resources: ["serviceaccounts"]
         verbs: ["get"]
       - resources: ["services"]
-        verbs: ["create","get"]
-
+        verbs: ["create", "get"]
