@@ -18,9 +18,11 @@ Enhancements:
 * `gl-runner`:
   * added podLabels for manager and worker pods
   * added possibility to set cache bucket for gl-runner worker pods
+
+
 Fixes:
 * `gl-runner`:
-  * fixed creating SA in helm chart. Setted to default serviceAccount.create to false for managing SA outside HELM
+  * fixed creating SA in helm chart. Setted to default serviceAccount.create to true and name to empty line.
 
 
 # 10.8.2

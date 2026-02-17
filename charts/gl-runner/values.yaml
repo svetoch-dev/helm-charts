@@ -9,11 +9,13 @@ gl-runner:
     app.kubernetes.io/instance: "{{ .Release.Name }}"
   # https://docs.gitlab.com/runner/executors/kubernetes/#how-the-runner-creates-kubernetes-pods
   runners:
+    # secret must contain "runner-token" key with token value that starts with glrt-...
+    secret: runner
+    serviceAccount: "runner"
     nodeSelector:
       runner: "true"
     nodeTolerations:
       runner: "NoSchedule"
-    serviceAccount: "runner"
     podLabels:
       app.kubernetes.io/component: gl-runner-worker
       app.kubernetes.io/instance: "{{ .Release.Name }}"
@@ -28,13 +30,13 @@ gl-runner:
 
       config: |
         [[runners]]
-        url = "https://gitlab.com/"
-        [runners.kubernetes]
-          namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
-          image = "alpine"
-          service_account = "{{ .Values.runners.serviceAccount }}"
-          cpu_request = "{{ default "1000m" .Values.runners.cpuRequest }}"
-          memory_request = "{{ default "1024Mi" .Values.runners.memoryRequest }}"
+          url = "https://gitlab.com/"
+          [runners.kubernetes]
+            namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
+            image = "alpine"
+            service_account = "{{ .Values.runners.serviceAccount }}"
+            cpu_request = "{{ default "1000m" .Values.runners.cpuRequest }}"
+            memory_request = "{{ default "1024Mi" .Values.runners.memoryRequest }}"
 
           {{- with .Values.runners.nodeSelector }}
           [runners.kubernetes.node_selector]
@@ -70,9 +72,6 @@ gl-runner:
           {{- end }}
           {{- end }}
           {{- end }}
-
-    # secret must contain "runner-token" key with token value that starts with glrt-...
-    secret: runner
   resources:
     limits: {}
     requests:
@@ -82,10 +81,8 @@ gl-runner:
   nodeSelector: {}
   # list with tolerations parameters
   tolerations: []
-    # - key: runner
-    #   operator: Equal
-    #   value: "true"
-    #   effect: NoSchedule
+  # service account for manager.
+  # If is using cache gcs should use SA with SATokenCreator AND storageObjectAdmin(for cache bucket) roles
   serviceAccount:
     create: true
     name: ""
