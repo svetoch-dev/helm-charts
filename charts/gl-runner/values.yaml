@@ -25,8 +25,7 @@ gl-runner:
       path: "cache"
       shared: true
       maxUploadedArchiveSize: 0
-      gcs:
-        bucketName: "{{ .Values.global.company.name }}-runners-cache-{{ .Values.global.env.short_name }}"
+      bucketName: "{{ .Values.global.company.name }}-runners-cache-{{ .Values.global.env.short_name }}"
 
     config: |
       [[runners]]
@@ -68,7 +67,7 @@ gl-runner:
           Shared = {{ .shared }}
         {{- if eq $.Values.global.bucket.type "gcs" }}
         [runners.cache.gcs]
-          BucketName = "{{ tpl .gcs.bucketName $ }}"
+          BucketName = "{{ tpl .bucketName $ }}"
         {{- end }}
         {{- end }}
         {{- end }}
