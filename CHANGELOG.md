@@ -12,6 +12,10 @@ Enhancements:
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
+# 10.8.4
+Fixes:
+* `gha-operator` Runner scale set listener pods failed to create session, fixed by downgrading the version of `gha-runner/gha-operator` 0.13.1 -> 0.13.0
+
 
 # 10.8.3
 Enhancements:
