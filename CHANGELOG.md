@@ -62,7 +62,6 @@ Enhancements:
   * operator chart update 5.21.3 -> 5.21.4
   * grafana-main version update 12.3.1 ->  12.3.2
 
-
 Fixes:
 * Exclude bucket based fluentbit from fluentbit latency alert
 * Fluentbit to many errors alert
