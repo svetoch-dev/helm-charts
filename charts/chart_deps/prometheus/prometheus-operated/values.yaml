@@ -295,3 +295,12 @@ prometheus:
 
     tsdb:
       outOfOrderTimeWindow: 0s
+
+
+secrets:
+  name: thanos
+  data:
+    objstore.yml: |
+      type: "{{ .Values.global.bucket.type | upper }}"
+      config:
+        bucket: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.short_name }}"
