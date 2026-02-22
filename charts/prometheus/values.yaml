@@ -352,13 +352,6 @@ operator:
         requests:
           cpu: 10m
           memory: 20Mi
-    prometheusSpec:
-      thanos:
-        objectStorageConfig:
-          secret:
-            type: "{{ .Values.global.bucket.type | upper }}"
-            config:
-              bucket: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.short_name }}"
 
 prometheus-blackbox-exporter:
   enabled: false
