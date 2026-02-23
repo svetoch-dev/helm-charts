@@ -436,21 +436,7 @@ prometheus-main:
 
   prometheus:
     spec:
-      logFormat: json
       enableAdminAPI: true
-      thanos:
-        image: quay.io/thanos/thanos:v0.39.2@sha256:1d022ef4b8eff056a0e3b7822f953d931c5704d068413f2d7ce5266aa96c9e80
-        version: v0.39.2
-        objectStorageConfig:
-          key: objstore.yml
-          name: thanos
-        resources:
-          limits:
-            cpu: 350m
-            memory: 150Mi
-          requests:
-            cpu: 10m
-            memory: 35Mi
 
       externalLabels:
         env: "{{ .Values.global.env.name }}"
@@ -470,8 +456,6 @@ prometheus-main:
       probeSelector:
         matchLabels:
           prometheus: main
-
-      retention: 8h
 
       alerting:
         alertmanagers:
