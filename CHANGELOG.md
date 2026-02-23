@@ -26,6 +26,9 @@ Enhancements:
 # 10.8.4
 Fixes:
 * `gha-operator` Runner scale set listener pods failed to create session, fixed by downgrading `gha-runner/gha-operator` 0.13.1 -> 0.13.0
+  * https://github.com/actions/actions-runner-controller/issues/4372
+  * https://github.com/actions/actions-runner-controller/issues/4346
+  * https://github.com/actions/actions-runner-controller/issues/4356
 
 
 # 10.8.3
