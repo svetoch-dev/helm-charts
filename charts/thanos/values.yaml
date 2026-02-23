@@ -52,6 +52,15 @@ kong-plugins:
         allow:
           - "{{ .Values.global.network.int_nat_gw }}"
 
+secrets:
+  thanos:
+    name: thanos
+    data:
+      objstore.yml: |
+        type: "{{ .Values.global.bucket.type | upper }}"
+        config:
+          bucket: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.short_name }}"
+
 thanos:
   enabled: false
   global:
@@ -61,7 +70,7 @@ thanos:
     registry: quay.io
     repository: thanos/thanos
     tag: v0.39.2
-  existingObjstoreSecret: "thanos"
+  existingObjstoreSecret: '{{ include "thanos.fullname" . }}-thanos'
   query:
     enabled: false
     logFormat: json

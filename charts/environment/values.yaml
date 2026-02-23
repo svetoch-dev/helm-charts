@@ -182,6 +182,9 @@ chart_apps:
             - {{ printf "thanos.%s:443" $env_obj.domain }}
             - {{ printf "thanos-store.%s:443" $env_obj.domain }}
             {{- end }}
+      secrets:
+        thanos:
+          enabled: false
 
   loki:
     enabled: false
