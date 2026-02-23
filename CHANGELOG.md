@@ -18,9 +18,9 @@ Enhancements:
 * `grafana`:
   * set limit for scale of `Throttled` panels on `services` dashboard to no more than 100%
   * image update `12.3.2` -> `12.3.3`
-* `prometheus-main`:
-  * move `thanos` definition to `chart_deps/prometheus/prometheus-operated`
-  * `thanos secret` resource is being created in `prometheus-operated`
+* `thanos`:
+  * move `thanos` definition in `prometheus-main` to `chart_deps/prometheus/prometheus-operated`
+  * `thanos secret` resource is being created in `prometheus-operated` and `thanos` charts
 
 
 # 10.8.4
