@@ -13,6 +13,16 @@ Enhancements:
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
 
+# 10.8.5
+Enhancements:
+* `grafana`:
+  * set limit for scale of `Throttled` panels on `services` dashboard to no more than 100%
+  * image update `12.3.2` -> `12.3.3`
+* `prometheus-main`:
+  * move `thanos` definition to `chart_deps/prometheus/prometheus-operated`
+  * `thanos secret` resource is being created in `prometheus-operated`
+
+
 # 10.8.4
 Fixes:
 * `gha-operator` Runner scale set listener pods failed to create session, fixed by downgrading `gha-runner/gha-operator` 0.13.1 -> 0.13.0
@@ -23,7 +33,6 @@ Enhancements:
 * `gl-runner`:
   * added podLabels for manager and worker pods
   * added possibility to set cache bucket for gl-runner worker pods
-
 
 Fixes:
 * `gl-runner`:
