@@ -63,14 +63,15 @@ Bash script that help connect to pod redis master (port 6379)
 ### Usage
 
 ```
-scripts/port_forward_redis_master.sh 6379
+scripts/port_forward_redis_master.sh namespace local_port_number
 ```
 
 #### description
 
 ```
-You can specify the local port number by passing it after the script name, if you do not specify a port, the default will be used 6379.
-The script checks for the presence of radis pods in using environment, determines which namespace they are in, determines which of the pods is master and which port is used. 
+You should set the namespace for the redis application, if the namespace is not set, the script will try to use the 'NAMESPACE' environment variable, if it is not set, a request will be issued to set the variable.
+You can specify the local port number by passing it after the namespace name, if you do not specify a port, the default will be used 6379.
+The script checks for the presence of redis pods in setted namespace, determines which of the pods is master and which port is used. 
 As a result, the script makes a forwarding of the user port 6379 to the pod and show redis password.
 if you plane to work from another local machine, then you need to uncomment the code --address='0.0.0.0'
 ```
@@ -79,11 +80,8 @@ if you plane to work from another local machine, then you need to uncomment the 
 
 ```
 $ scripts/port_forward_redis_master.sh
-$ scripts/port_forward_redis_master.sh 6379
-$ scripts/port_forward_redis_master.sh 6380
+$ scripts/port_forward_redis_master.sh apps 6379
+$ scripts/port_forward_redis_master.sh apps
 $ bash scripts/port_forward_redis_master.sh
 
 ```
-
-
-
