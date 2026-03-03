@@ -13,6 +13,11 @@ Enhancements:
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
 
+# 10.8.6
+Enhancements:
+* fixed script `port_forward_redis_master` for use by users with limited rights
+
+
 # 10.8.5
 Enhancements:
 * `grafana`:
