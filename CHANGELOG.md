@@ -12,12 +12,15 @@ Enhancements:
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
-
 # 10.9.0
 
 Features:
 * `chart_deps/grafana/serviceaccounts` new chart that creates grafana service accounts
 * `grafana` new main-mcp ingress for mcp servers usage
+
+# 10.8.7
+Enhancements:
+* improved logic of `lua script filter` for processing `postgres logs`
 
 # 10.8.6
 Enhancements:

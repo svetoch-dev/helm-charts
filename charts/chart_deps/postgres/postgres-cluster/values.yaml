@@ -112,21 +112,18 @@ fluentbit:
     match: "*"
     code: |
       function level_lower_case(tag, timestamp, record)
-          code = 0
-          if record["level"] then
-              if record["level"] == "WARNING" then
-                  record["level"] = "warn"
-              end
-              if record["level"] == "LOG" then
-                  record["level"] = "info"
-              end
-              if string.match(record["level"], "DEBUG") then
-                  record["level"] = "debug"
-              end
-              record["level"] = string.lower(tostring(record["level"]))
-              code = 1
+          local lvl = record["level"]
+          if not lvl then return 0, timestamp, record end
+          if lvl == "WARNING" then
+              record["level"] = "warn"
+          elseif lvl == "LOG" or lvl == "INFO" or lvl == "NOTICE"  then
+              record["level"] = "info"
+          elseif string.find(lvl, "DEBUG") then
+              record["level"] = "debug"
+          else
+              record["level"] = string.lower(tostring(lvl))
           end
-          return code, timestamp, record
+          return 1, timestamp, record
       end
     call: level_lower_case
   parsers:
