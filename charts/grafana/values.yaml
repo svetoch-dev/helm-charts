@@ -163,7 +163,7 @@ datasource:
 
 serviceaccount:
   enabled: false
-  serviceAccounts: {}
+  grafanaServiceAccounts: {}
 
 dashboard:
   enabled: false
