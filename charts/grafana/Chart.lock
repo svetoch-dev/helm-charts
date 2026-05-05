@@ -5,6 +5,9 @@ dependencies:
 - name: grafana-datasources
   repository: file://../chart_deps/grafana/datasources
   version: 0.1.0
+- name: grafana-serviceaccounts
+  repository: file://../chart_deps/grafana/serviceaccounts
+  version: 0.1.0
 - name: grafana-operated
   repository: file://../chart_deps/grafana/grafana-operated
   version: 0.1.0
@@ -17,5 +20,5 @@ dependencies:
 - name: fluentbit-operated
   repository: file://../chart_deps/fluent/fluentbit/fluentbit-operated/
   version: 0.1.0
-digest: sha256:3a8519882f99e5a9e208ef5f7a9ac4d175cfac449f3ee76923167ed8c7ab24ae
-generated: "2026-01-28T16:57:58.944648914+03:00"
+digest: sha256:222fd263d082f878afe15a15644dbb66d0ff29f34195fd5690335d99974fdf8e
+generated: "2026-05-05T12:35:09.817833058+03:00"

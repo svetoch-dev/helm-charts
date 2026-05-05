@@ -13,6 +13,12 @@ Enhancements:
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
 
+# 10.9.0
+
+Features:
+* `chart_deps/grafana/serviceaccounts` new chart that creates grafana service accounts
+* `grafana` new main-mcp ingress for mcp servers usage
+
 # 10.8.6
 Enhancements:
 * fixed script `port_forward_redis_master` for use by users with limited rights

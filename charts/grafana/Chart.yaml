@@ -13,6 +13,11 @@ dependencies:
     repository: file://../chart_deps/grafana/datasources
     alias: datasource
     condition: datasource.enabled
+  - name: grafana-serviceaccounts
+    version: 0.1.0
+    repository: file://../chart_deps/grafana/serviceaccounts
+    alias: serviceaccount
+    condition: serviceaccount.enabled
   - name: grafana-operated
     version: 0.1.0
     repository: file://../chart_deps/grafana/grafana-operated
