@@ -23,7 +23,7 @@ ingresses:
         hosts:
           - "gf.{{ .Values.global.company.domain.env }}"
   main-mcp:
-    enabled: true
+    enabled: false
     name: '{{ include "grafana.fullname" . }}-main-mcp'
     service:
       name: '{{ include "grafana.fullname" . }}-grafana-main-service'
