@@ -22,6 +22,28 @@ ingresses:
       - secretName: gf-tls
         hosts:
           - "gf.{{ .Values.global.company.domain.env }}"
+  main-mcp:
+    enabled: false
+    name: '{{ include "grafana.fullname" . }}-main-mcp'
+    service:
+      name: '{{ include "grafana.fullname" . }}-grafana-main-service'
+      port: 3000
+    className: "{{ .Values.global.ingress.class }}"
+    annotations:
+      cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+      ingress.pomerium.io/allow_websockets: 'true'
+      ingress.pomerium.io/timeout: '300s'
+      ingress.pomerium.io/allow_public_unauthenticated_access: 'true'
+    hosts:
+      - host: "gf-mcp.{{ .Values.global.company.domain.env }}"
+        paths:
+          - path: /api
+            pathType: Prefix
+    tls:
+      - secretName: gf-mcp-tls
+        hosts:
+          - "gf-mcp.{{ .Values.global.company.domain.env }}"
+
 
 fluentbit-filters:
   enabled: false
@@ -138,6 +160,10 @@ datasource:
         jsonData:
           manageAlerts: 'false'
           timeout: 300
+
+serviceaccount:
+  enabled: false
+  grafanaServiceAccounts: {}
 
 dashboard:
   enabled: false
