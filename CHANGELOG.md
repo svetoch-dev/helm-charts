@@ -15,7 +15,7 @@ Enhancements:
 # 10.10.0
 
 Features:
-* `charts/chart_deps/grafana/grafana-operated/` set grafana container resources via `.Values.resources` + README.md
+* `charts/chart_deps/grafana/grafana-operated/` use `core.podtemplate` to set common pod attributes (resources,volumes etc)
 
 # 10.9.0
 

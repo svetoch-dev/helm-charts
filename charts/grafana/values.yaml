@@ -104,32 +104,25 @@ grafana-main:
     requests:
       cpu: 50m
       memory: 100Mi
-  deployment:
-    spec:
-      template:
-        metadata:
-          labels:
-            app.kubernetes.io/instance: grafana-{{ .Values.global.env.name }}
-        spec:
-          containers:
-            - name: grafana
-              env:
-                - name: GF_AUTH_SIGNOUT_REDIRECT_URL
-                  value: 'https://gf.{{ .Values.global.company.domain.env }}/.pomerium/sign_out'
-                - name: GF_AUTH_JWT_ENABLED
-                  value: 'true'
-                - name: GF_AUTH_JWT_HEADER_NAME
-                  value: 'X-Pomerium-Jwt-Assertion'
-                - name: GF_AUTH_JWT_EMAIL_CLAIM
-                  value: email
-                - name: GF_AUTH_JWT_USERNAME_CLAIM
-                  value: email
-                - name: GF_AUTH_JWT_JWK_SET_URL
-                  value: 'https://authn.{{ .Values.global.company.domain.env }}/.well-known/pomerium/jwks.json'
-                - name: GF_AUTH_JWT_CACHE_TTL
-                  value: 60m
-                - name: GF_AUTH_JWT_AUTO_SIGN_UP
-                  value: 'true'
+  environment:
+    - name: GF_AUTH_SIGNOUT_REDIRECT_URL
+      value: 'https://gf.{{ .Values.global.company.domain.env }}/.pomerium/sign_out'
+    - name: GF_AUTH_JWT_ENABLED
+      value: 'true'
+    - name: GF_AUTH_JWT_HEADER_NAME
+      value: 'X-Pomerium-Jwt-Assertion'
+    - name: GF_AUTH_JWT_EMAIL_CLAIM
+      value: email
+    - name: GF_AUTH_JWT_USERNAME_CLAIM
+      value: email
+    - name: GF_AUTH_JWT_JWK_SET_URL
+      value: 'https://authn.{{ .Values.global.company.domain.env }}/.well-known/pomerium/jwks.json'
+    - name: GF_AUTH_JWT_CACHE_TTL
+      value: 60m
+    - name: GF_AUTH_JWT_AUTO_SIGN_UP
+      value: 'true'
+  labels:
+    app.kubernetes.io/instance: grafana-{{ .Values.global.env.name }}
 
 
 datasource:
