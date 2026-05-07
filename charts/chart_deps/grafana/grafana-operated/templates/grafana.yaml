@@ -1,9 +1,34 @@
+---
+{{- if .Values.resources }}
+  {{- $no_grafana_container := true }}
+  {{- $containers := dig "spec" "template" "spec" "containers" list .Values.deployment }}
+  {{- if gt (len $containers) 0 }}
+    {{- range $container := $containers }}
+      {{- if eq $container.name "grafana" }}
+        {{- $_ := set $container "resources" $.Values.resources  }}
+        {{- $no_grafana_container = false }}
+      {{- end }}
+    {{- end }}
+    {{- if $no_grafana_container }}
+      {{/* Get only first container from "grafana-operated.grafana.container" */}}
+
+      {{- $grafana_container := index (include "grafana-operated.grafana.container" . | fromYaml).spec.template.spec.containers 0 }}
+      {{- $containers = append $containers $grafana_container }}
+      {{- $_ := set .Values.deployment.spec.template.spec "containers" $containers }}
+    {{- end }}
+  {{- else }}
+    {{/* If no containers found just merge it with original .Values.deployment */}}
+    {{- $_ := merge .Values.deployment (include "grafana-operated.grafana.container" . | fromYaml) }}
+  {{- end }}
+{{- end }}
 apiVersion: grafana.integreatly.org/v1beta1
 kind: Grafana
 metadata:
   labels:
-{{- include "grafana-operated.labels" . | nindent 4 -}}
-{{- toYaml .Values.selector | nindent 4 }}
+{{- include "grafana-operated.labels" . | nindent 4 }}
+{{- with .Values.selector }}
+{{- toYaml . | nindent 4 }}
+{{- end }}
   name: {{ include "grafana-operated.fullname" . }}
 spec:
   {{- if .Values.version }}

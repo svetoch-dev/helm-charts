@@ -43,3 +43,18 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
+
+{{/*
+Grafana container definition. Used when grafana container is not set
+*/}}
+{{- define "grafana-operated.grafana.container" -}}
+spec:
+  template:
+    spec:
+      containers:
+        - name: grafana
+          {{- with .Values.resources }}
+          resources:
+          {{-  tpl (toYaml .) $ | nindent 16 }}
+          {{- end }}
+{{- end -}}

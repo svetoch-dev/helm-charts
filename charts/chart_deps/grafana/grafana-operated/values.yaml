@@ -6,6 +6,8 @@ config: {}
 
 deployment: {}
 
+resources: {}
+
 external: {}
 
 ingress: {}

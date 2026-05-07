@@ -12,6 +12,11 @@ Enhancements:
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
+# 10.10.0
+
+Features:
+* `charts/chart_deps/grafana/grafana-operated/` set grafana container resources via `.Values.resources` + README.md
+
 # 10.9.0
 
 Features:
