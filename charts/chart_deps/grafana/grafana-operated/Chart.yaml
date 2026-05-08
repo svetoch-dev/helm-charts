@@ -3,3 +3,7 @@ appVersion: "1.0"
 description: Chart for configuring and installing grafana instances using grafana operator
 name: grafana-operated
 version: 0.1.0
+dependencies:
+  - name: core
+    version: 0.1.0
+    repository: file://../../app/core/

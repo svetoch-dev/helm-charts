@@ -8,3 +8,4 @@ charts/**/charts
 !charts/chart_deps/postgres/postgres-cluster/charts
 !charts/chart_deps/rabbitmq/rabbitmq-cluster-operator/charts
 !charts/chart_deps/prometheus/prometheus-operated/charts
+!charts/chart_deps/grafana/grafana-operated/charts
