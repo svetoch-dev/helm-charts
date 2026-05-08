@@ -1,10 +1,52 @@
 selector: {}
 
+labels: {}
+
 client: {}
 
 config: {}
 
 deployment: {}
+
+podAnnotations: {}
+
+imagePullSecrets: []
+
+serviceAccountName: ""
+
+restartPolicy: ""
+
+podSecurityContext: {}
+
+initContainers: {}
+
+securityContext: {}
+
+imagePullPolicy: IfNotPresent
+
+command: []
+
+args: []
+
+resources: {}
+
+environment: []
+
+ports: []
+
+livenessProbe: {}
+
+readinessProbe: {}
+
+volumeMounts: []
+
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
+
+volumes: []
 
 external: {}
 

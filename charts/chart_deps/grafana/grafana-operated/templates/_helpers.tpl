@@ -43,3 +43,44 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
+
+{{/*
+Grafana container definition. Used when grafana container is not set
+*/}}
+{{- define "grafana-operated.pod" -}}
+{{- $values := mustDeepCopy .Values }}
+{{- $values = set $values "containerName" "grafana" }}
+{{- $values = set $values "env" .Values.environment }}
+{{- $values = set $values "selectorLabels" .Values.labels }}
+{{/*
+Set mandatory values for core.podtemplate
+*/}}
+{{- if not .Values.serviceAccountName }}
+{{- $values = set $values "serviceAccountName" "remove_me" }}
+{{- end }}
+{{- $values = set $values "image" "remove_me" }}
+{{- $pod_template := include "core.podtemplate" (list . $values) | fromYaml }}
+{{/*
+By default core.podtemplate sets securityContext to {} if its not set
+we need to avoid this in Grafana crd
+*/}}
+{{- if not .Values.podSecurityContext }}
+{{- $_ := unset $pod_template.template.spec "securityContext" }}
+{{- end }}
+{{- if not .Values.serviceAccountName }}
+{{- $_ := unset $pod_template.template.spec "serviceAccountName" }}
+{{- end }}
+{{- if and (not .Values.podAnnotations) (not .Values.labels) }}
+{{- $_ := unset $pod_template.template "metadata" }}
+{{- end }}
+{{- $container := index $pod_template.template.spec.containers 0 }}
+{{/*
+We dont need image because we set it via version attribute
+*/}}
+{{- $_ := unset $container "image" }}
+{{- if not .Values.securityContext }}
+{{- $_ := unset $container "securityContext" }}
+{{- end }}
+spec:
+{{- toYaml $pod_template | nindent 2 }}
+{{- end -}}
