@@ -91,7 +91,6 @@ thanos:
     enabled: false
     extraFlags:
       - --delete-delay=48h
-      - --shipper.upload-compacted=4
     logFormat: json
     persistence:
       size: 15Gi
