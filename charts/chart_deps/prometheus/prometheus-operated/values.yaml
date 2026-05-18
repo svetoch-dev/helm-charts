@@ -112,9 +112,9 @@ prometheus:
 
     paused: false
 
-    image: "quay.io/prometheus/prometheus:v3.9.1"
+    image: "quay.io/prometheus/prometheus:v3.11.3@sha256:c0b857aead0d5793aa566adb8f49a9983d6f6031652098759d521a330cfa050f"
 
-    version: "v3.9.1"
+    version: "v3.11.3"
 
     imagePullPolicy: IfNotPresent
 
@@ -269,9 +269,8 @@ prometheus:
     remoteRead: []
 
     thanos:
-      blockSize: 2h
-      image: quay.io/thanos/thanos:v0.39.2@sha256:1d022ef4b8eff056a0e3b7822f953d931c5704d068413f2d7ce5266aa96c9e80
-      version: v0.39.2
+      image: quay.io/thanos/thanos:v0.41.0@sha256:cf3e9b292e4302ad4a4955b56379703aea39516607d382a57604a3d003c35d10
+      version: v0.41.0
       objectStorageConfig:
         name: '{{ include "prometheus-operated.fullname" . }}-thanos'
         key: objstore.yml
