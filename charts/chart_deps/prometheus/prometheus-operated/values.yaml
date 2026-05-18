@@ -280,7 +280,7 @@ prometheus:
           cpu: 350m
           memory: 150Mi
         requests:
-          cpu: 50m
+          cpu: 10m
           memory: 35Mi
 
     queryLogFile:
