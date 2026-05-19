@@ -661,6 +661,13 @@ prometheus-rules:
               sum(rate(loki_request_duration_seconds_count[5m])) by (namespace, job, route) > 0.1
             description: "{{ $labels.job }} {{ $labels.route }} is experiencing {{ humanizePercentage $value }} errors."
 
+          # Metrics
+          ThanosCompactorHalted:
+            enabled: false
+            for: 5m
+            expr: thanos_compact_halted == 1
+            description: "Thanos Compactor '{{ $labels.job }}' halted."
+
           # Postgres
           Available_postgresql_connections_are_running_out:
             enabled: false
