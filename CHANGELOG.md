@@ -12,6 +12,29 @@ Enhancements:
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
+# 10.11.0
+
+Enhancements:
+* `Prometheus`:
+  * chart updates:
+    * `kube-prometheus-stack` 81.2.2 -> 85.2.0
+    * `kube-state-metrics` 7.1.0 -> 7.3.0
+    * `prometheus-blackbox-exporter` 11.7.0 -> 11.10.0
+    * `prometheus-node-exporter` 4.51.0 -> 4.55.0
+    * `postgres-exporter` 7.4.0 -> 8.0.0
+  * image updates:
+    * `alertmanager` 0.30.1 -> 0.32.1
+    * `prometheus` 3.9.1 -> 3.11.3
+    * `thanos-sidecar` 0.39.2 -> 0.41.0
+  * crds updates:
+    * `prometheus-operator` 0.88.0 -> 0.91.0
+  * new alert `ThanosCompactorHalted`
+* `Thanos`:
+  * image update 0.39.2 -> 0.41.0
+  * enable `serviceMonitor`
+  * set extraFlas `delete-delay=48h`
+  * set `retentionResolution1h` 10y -> 90d
+
 # 10.10.0
 
 Features:
