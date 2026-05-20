@@ -108,7 +108,7 @@ thanos:
         cpu: 1500m
         memory: 1Gi
     retentionResolutionRaw: 30d
-    retentionResolution5m: 30d
+    retentionResolution5m: 60d
     retentionResolution1h: 90d
     serviceAccount:
       create: false
