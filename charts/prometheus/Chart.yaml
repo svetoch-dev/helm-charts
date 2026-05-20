@@ -72,7 +72,7 @@ dependencies:
   #https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
   - name: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
-    version: 85.1.3
+    version: 85.2.0
     alias: operator
     condition: operator.enabled
   #https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-stackdriver-exporter
