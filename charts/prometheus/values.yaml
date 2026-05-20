@@ -661,13 +661,6 @@ prometheus-rules:
               sum(rate(loki_request_duration_seconds_count[5m])) by (namespace, job, route) > 0.1
             description: "{{ $labels.job }} {{ $labels.route }} is experiencing {{ humanizePercentage $value }} errors."
 
-          # Metrics
-          ThanosCompactorHalted:
-            enabled: false
-            for: 5m
-            expr: thanos_compact_halted == 1
-            description: "Thanos Compactor '{{ $labels.job }}' halted."
-
           # Postgres
           Available_postgresql_connections_are_running_out:
             enabled: false
@@ -771,6 +764,13 @@ prometheus-rules:
             #at intervals much longer than seconds, so the latency measured
             #here does not meaningfully impact user experience.
             expr: rate(fluentbit_output_latency_seconds_sum{service!~".*-fluentbit-(gcp|yc|aws)$"}[5m]) / rate(fluentbit_output_latency_seconds_count{service!~".*-fluentbit-(gcp|yc|aws)$"}[5m]) > 2
+
+          # Metrics
+          ThanosCompactorHalted:
+            enabled: false
+            for: 5m
+            expr: thanos_compact_halted == 1
+            description: "Thanos Compactor '{{ $labels.job }}' halted."
 
           # Postgres
           Postgres_logical_backup_error:
