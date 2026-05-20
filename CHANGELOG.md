@@ -34,6 +34,7 @@ Enhancements:
   * enable `serviceMonitor`
   * set extraFlas `delete-delay=48h`
   * set `retentionResolution1h` 10y -> 90d
+  * set `retentionResolution5m` 30d -> 60d
 
 # 10.10.0
 
