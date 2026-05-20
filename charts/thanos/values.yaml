@@ -69,8 +69,14 @@ thanos:
   image:
     registry: quay.io
     repository: thanos/thanos
-    tag: v0.39.2
+    tag: v0.41.0
   existingObjstoreSecret: '{{ include "thanos.fullname" . }}-thanos'
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      labels:
+        prometheus: main
   query:
     enabled: false
     logFormat: json
@@ -89,6 +95,8 @@ thanos:
     enabled: false
   compactor:
     enabled: false
+    extraFlags:
+      - --delete-delay=48h
     logFormat: json
     persistence:
       size: 15Gi
@@ -99,6 +107,9 @@ thanos:
       limits:
         cpu: 1500m
         memory: 1Gi
+    retentionResolutionRaw: 30d
+    retentionResolution5m: 60d
+    retentionResolution1h: 90d
     serviceAccount:
       create: false
       name: thanos
@@ -123,8 +134,6 @@ thanos:
   recieve:
     enabled: false
   receiveDistributor:
-    enabled: false
-  metrics:
     enabled: false
   volumePermissions:
     enabled: false
