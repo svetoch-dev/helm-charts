@@ -217,7 +217,7 @@ kube-state-metrics:
       cpu: 10m
       memory: 20Mi
   image:
-    tag: v2.16.0
+    tag: v2.18.0
   serviceAccount:
     automountServiceAccountToken: false
   extraArgs:
@@ -323,9 +323,8 @@ operator:
 
   prometheusOperator:
     enabled: true
-    # use old thanos image https://github.com/thanos-io/thanos/issues/8549
     thanosImage:
-      tag: v0.39.2
+      tag: v0.41.0
     kubeletEndpointsEnabled: false
     ## Create EndpointSlice objects for kubelet targets.
     kubeletEndpointSliceEnabled: true
@@ -765,6 +764,13 @@ prometheus-rules:
             #at intervals much longer than seconds, so the latency measured
             #here does not meaningfully impact user experience.
             expr: rate(fluentbit_output_latency_seconds_sum{service!~".*-fluentbit-(gcp|yc|aws)$"}[5m]) / rate(fluentbit_output_latency_seconds_count{service!~".*-fluentbit-(gcp|yc|aws)$"}[5m]) > 2
+
+          # Metrics
+          ThanosCompactorHalted:
+            enabled: false
+            for: 5m
+            expr: thanos_compact_halted == 1
+            description: "Thanos Compactor '{{ $labels.job }}' halted."
 
           # Postgres
           Postgres_logical_backup_error:
