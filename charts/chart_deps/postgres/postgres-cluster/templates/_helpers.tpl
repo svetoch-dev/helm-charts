@@ -65,7 +65,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   resources:
     limits:
       cpu: 400m
-      memory: 50Mi
+      memory: 200Mi
     requests:
       cpu: 10m
       memory: 15Mi
