@@ -1,0 +1,22 @@
+redis-operator:
+  enabled: false
+  resources:
+    requests:
+      cpu: 10m
+      memory: 20Mi
+  issuer:
+    create: false
+  certmanager:
+    enabled: false
+
+redis-sentinel:
+  enabled: false
+  redisSentinel:
+    name: ""
+    #tag: v7.0.15
+  ServiceMonitor:
+    enabled: true
+    extraLabels:
+      prometheus: main
+  redisExporter:
+    enabled: true

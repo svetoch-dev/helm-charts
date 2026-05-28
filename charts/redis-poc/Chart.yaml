@@ -1,0 +1,15 @@
+apiVersion: v2
+name: redis-poc
+version: 0.1.0
+dependencies:
+  #https://github.com/OT-CONTAINER-KIT/redis-operator/tree/main/charts/redis-operator
+  - name: redis-operator
+    version: 0.24.0
+    alias: redis-operator
+    condition: redis-operator.enabled
+    repository: https://ot-container-kit.github.io/helm-charts
+  - name: redis-sentinel
+    version: 0.16.12
+    repository: https://ot-container-kit.github.io/helm-charts
+    alias: redis-sentinel
+    condition: redis-sentinel.enabled
