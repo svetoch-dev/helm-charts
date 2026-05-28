@@ -29,7 +29,7 @@ redis-replication:
     #tag: v7.0.15
     resources: {}
   externalService:
-    enabled: true
+    enabled: false
   serviceMonitor:
     enabled: true
     extraLabels:
