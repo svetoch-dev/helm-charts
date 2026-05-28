@@ -12,6 +12,11 @@ Enhancements:
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
+# 10.11.1
+
+Enhancements:
+* increased `postgres exporter` memory limit 50Mi -> 200Mi
+
 # 10.11.0
 
 Enhancements:
