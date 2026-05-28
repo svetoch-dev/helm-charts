@@ -13,3 +13,8 @@ dependencies:
     repository: https://ot-container-kit.github.io/helm-charts
     alias: redis-sentinel
     condition: redis-sentinel.enabled
+  - name: redis-replication
+    version: 0.17.0
+    repository: https://ot-container-kit.github.io/helm-charts
+    alias: redis-replication
+    condition: redis-replication.enabled

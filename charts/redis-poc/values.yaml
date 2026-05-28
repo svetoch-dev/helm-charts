@@ -14,9 +14,27 @@ redis-sentinel:
   redisSentinel:
     name: ""
     #tag: v7.0.15
-  ServiceMonitor:
+  serviceMonitor:
     enabled: true
     extraLabels:
       prometheus: main
   redisExporter:
     enabled: true
+
+redis-replication:
+  enabled: false
+  redisReplication:
+    name: ""
+    clusterSize: 3
+    #tag: v7.0.15
+    resources: {}
+  externalService:
+    enabled: true
+  serviceMonitor:
+    enabled: true
+    extraLabels:
+      prometheus: main
+  redisExporter:
+    enabled: true
+  sentinel:
+    enabled: false
