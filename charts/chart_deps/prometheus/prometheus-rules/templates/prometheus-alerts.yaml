@@ -12,7 +12,7 @@ metadata:
     {{- toYaml $alert.selector | nindent 4 }}
 spec:
   groups:
-  {{- if .AbsentMetricCritical.enabled }}
+  {{- if and .AbsentMetricCritical .AbsentMetricCritical.enabled }}
     - name: AbsentMetricCritical
       {{- if .AbsentMetricCritical.interval }}
       interval: {{ .AbsentMetricCritical.interval }}
@@ -39,7 +39,7 @@ spec:
       {{- end }}
       {{- end }}
   {{- end -}}
-  {{- if .CriticalMetric.enabled }}
+  {{- if and .CriticalMetric .CriticalMetric.enabled }}
     - name: CriticalMetric
     {{- if .CriticalMetric.interval }}
       interval: {{ .CriticalMetric.interval }}
@@ -67,7 +67,7 @@ spec:
       {{- end }}
       {{- end }}
   {{- end }}
-  {{- if .WarningMetric.enabled }}
+  {{- if and .WarningMetric .WarningMetric.enabled }}
     - name: WarningMetric
     {{- if .WarningMetric.interval }}
       interval: {{ .WarningMetric.interval }}
