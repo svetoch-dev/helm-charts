@@ -153,3 +153,19 @@ kong:
     # namespace: monitoring
     labels:
       prometheus: main
+
+prometheus-rules:
+  enabled: false
+  PrometheusAlerts:
+    kong:
+      env: '{{ .Values.global.env.short_name }}'
+      team: sre
+      selector:
+        prometheus: main
+      AbsentMetricCritical:
+        enabled: false
+        rules:
+          kong_http_requests_total:
+            enabled: false
+            source: "kong proxy"
+            query: '{namespace="{{ $.Release.Namespace }}", service=~"{{ $.Release.Name }}.*"}'
