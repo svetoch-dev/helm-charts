@@ -170,4 +170,4 @@ prometheus-rules:
           probe_success:
             enabled: false
             source: "argocd probes"
-            query: '{namespace="{{ $.Release.Namespace }}", ingress="{{ include "argocd.fullname" . }}-srv"}'
+            query: '{namespace="{{ $.Release.Namespace }}", ingress=~"{{ $.Release.Name }}.*$"}'
