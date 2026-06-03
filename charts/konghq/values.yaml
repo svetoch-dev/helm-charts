@@ -168,4 +168,4 @@ prometheus-rules:
           kong_http_requests_total:
             enabled: false
             source: "kong proxy"
-            query: '{namespace="{{ $.Release.Namespace }}", service=~"{{ $.Release.Name }}.*"}'
+            query: '{namespace="{{ $.Release.Namespace }}", job=~"{{ $.Release.Name }}.*$"}'

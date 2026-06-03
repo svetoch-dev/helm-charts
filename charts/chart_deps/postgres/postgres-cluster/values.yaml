@@ -164,4 +164,4 @@ prometheus-rules:
           pg_up:
             enabled: false
             source: "postgres-exporter"
-            query: '{namespace="{{ $.Release.Namespace }}"}'
+            query: '{namespace="{{ $.Release.Namespace }}", job=~"{{ $.Release.Namespace }}/{{ .Release.Name }}.*$"}'
