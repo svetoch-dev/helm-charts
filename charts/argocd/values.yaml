@@ -160,7 +160,7 @@ prometheus-rules:
   enabled: false
   PrometheusAlerts:
     argocd:
-      env: "{{ .Values.global.env.short_name }}"
+      env: '{{ .Values.global.env.short_name }}'
       team: sre
       selector:
         prometheus: main
@@ -169,5 +169,5 @@ prometheus-rules:
         rules:
           probe_success:
             enabled: false
-            source: "prometheus-blackbox-exporter"
+            source: "argocd probes"
             query: '{namespace="{{ $.Release.Namespace }}"}'
