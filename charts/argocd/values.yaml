@@ -155,3 +155,19 @@ probes:
                 app.kubernetes.io/name: 'argocd-server'
             namespaceSelector:
               any: true
+
+prometheus-rules:
+  enabled: false
+  PrometheusAlerts:
+    argocd:
+      env: "{{ .Values.global.env.short_name }}"
+      team: sre
+      selector:
+        prometheus: main
+      AbsentMetricCritical:
+        enabled: false
+        rules:
+          probe_success:
+            enabled: false
+            source: "prometheus-blackbox-exporter"
+            query: '{namespace="{{ $.Release.Namespace }}"}'
