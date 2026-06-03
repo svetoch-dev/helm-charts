@@ -35,7 +35,7 @@ spec:
             summary: |
               Critical metrics is Absent {{ $name }} {{ $absentMetricRuleName }}
             description: |
-              There are no metric {{ $absentMetricRuleName }}{{ $query }} from {{ $source }} in {{ $name }}.
+              There are no metric {{ $absentMetricRuleName }}{{ $query }} from {{ $source }} in '{{ $name }}' alert.
               Check the source {{ $source }} instance and scrape process
       {{- end }}
       {{- end }}
