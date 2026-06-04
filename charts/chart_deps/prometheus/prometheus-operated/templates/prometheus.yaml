@@ -260,6 +260,8 @@ spec:
   {{- with .Values.prometheus.spec.ruleNamespaceSelector }}
   ruleNamespaceSelector:
   {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- else }}
+  ruleNamespaceSelector: {}
   {{- end }}
   {{- with .Values.prometheus.spec.query }}
   query:

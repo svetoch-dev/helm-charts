@@ -149,3 +149,19 @@ fluentbit:
         node: '${POD_NODE_NAME}'
         pod: '${HOSTNAME}'
         stream: 'file'
+
+prometheus-rules:
+  enabled: false
+  PrometheusAlerts:
+    postgres:
+      env: '{{ .Values.global.env.short_name }}'
+      team: sre
+      selector:
+        prometheus: main
+      AbsentMetricCritical:
+        enabled: false
+        rules:
+          pg_up:
+            enabled: false
+            source: "postgres-exporter"
+            query: '{namespace="{{ $.Release.Namespace }}", job=~"{{ $.Release.Namespace }}/{{ .Release.Name }}.*$"}'

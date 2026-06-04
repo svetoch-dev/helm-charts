@@ -12,7 +12,7 @@ metadata:
     {{- toYaml $alert.selector | nindent 4 }}
 spec:
   groups:
-  {{- if .AbsentMetricCritical.enabled }}
+  {{- if and .AbsentMetricCritical .AbsentMetricCritical.enabled }}
     - name: AbsentMetricCritical
       {{- if .AbsentMetricCritical.interval }}
       interval: {{ .AbsentMetricCritical.interval }}
@@ -20,8 +20,9 @@ spec:
       rules:
       {{- range $absentMetricRuleName, $absentMetricRule := .AbsentMetricCritical.rules }}
       {{- if $absentMetricRule.enabled }}
-      {{- $query := ($absentMetricRule.query | default "{}") }}
+      {{- $query := tpl ($absentMetricRule.query | default "{}") $ }}
       {{- $tm := ($absentMetricRule.for | default "10m") }}
+      {{- $source := tpl ($absentMetricRule.source | default $name) $ }}
         - alert: absent_{{$absentMetricRuleName}}
           expr: absent({{$absentMetricRuleName}}{{$query}})
           for: {{ $tm }}
@@ -34,12 +35,12 @@ spec:
             summary: |
               Critical metrics is Absent {{ $name }} {{ $absentMetricRuleName }}
             description: |
-              There are no metric {{ $absentMetricRuleName }}{{ $query }} from {{ $absentMetricRule.source }} in {{ $name }}.
-              Check the source {{ $absentMetricRule.source }} instance and scrape process
+              There are no metric {{ $absentMetricRuleName }}{{ $query }} from {{ $source }} in '{{ $name }}' alert.
+              Check the source {{ $source }} instance and scrape process
       {{- end }}
       {{- end }}
   {{- end -}}
-  {{- if .CriticalMetric.enabled }}
+  {{- if and .CriticalMetric .CriticalMetric.enabled }}
     - name: CriticalMetric
     {{- if .CriticalMetric.interval }}
       interval: {{ .CriticalMetric.interval }}
@@ -67,7 +68,7 @@ spec:
       {{- end }}
       {{- end }}
   {{- end }}
-  {{- if .WarningMetric.enabled }}
+  {{- if and .WarningMetric .WarningMetric.enabled }}
     - name: WarningMetric
     {{- if .WarningMetric.interval }}
       interval: {{ .WarningMetric.interval }}

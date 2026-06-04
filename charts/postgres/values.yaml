@@ -114,6 +114,15 @@ postgres-main:
       prometheus: main
   fluentbit:
     enabled: true
+  prometheus-rules:
+    enabled: true
+    PrometheusAlerts:
+      postgres:
+        AbsentMetricCritical:
+          enabled: true
+          rules:
+            pg_up:
+              enabled: true
 #######################
 # Configuration example
 # for 2 dbs
