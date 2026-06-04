@@ -2,5 +2,8 @@ dependencies:
 - name: fluentbit-lib
   repository: file://../../fluent/fluentbit/lib
   version: 0.1.0
-digest: sha256:15244fe797acd752072ecd507d8c412b3c6b2460771a3670a3c61b0dfcf870b3
-generated: "2025-11-24T07:56:01.327202293Z"
+- name: prometheus-rules
+  repository: file://../../prometheus/prometheus-rules
+  version: 0.1.0
+digest: sha256:62a9969443b512c38ddb4d10223098cb766b3f435538844a2844f48a1d51e24a
+generated: "2026-06-03T12:47:46.063719244Z"

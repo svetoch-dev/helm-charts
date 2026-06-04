@@ -545,7 +545,6 @@ prometheus-stackdriver-exporter:
 
 prometheus-rules:
   enabled: false
-  PrometheusRules: {}
   PrometheusAlerts:
     prometheus-main:
       env: "{{ .Values.global.env.short_name }}"
