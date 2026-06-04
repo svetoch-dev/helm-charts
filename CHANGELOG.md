@@ -12,6 +12,26 @@ Enhancements:
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
+# 10.12.0
+
+New features:
+* `argocd`:
+  * add subchart `prometheus-rules`
+  * create default `AbsentMetricCritical alert` `probe_success`
+* `konghq`:
+  * add subchart `prometheus-rules`
+  * create default `AbsentMetricCritical alert` `kong_http_requests_total`
+* `postgres-cluster`:
+  * add subchart `prometheus-rules`
+  * create default `AbsentMetricCritical alert` `pg_up`
+
+Enhancements:
+* `Prometheus`:
+  * use `tpl` in prometheus-alerts template for `AbsentMetricCritical` `query` and `source`
+  * add check for availability variables `..*Metric.*` before checking `..*Metric.*.enabled`
+  * add `ruleNamespaceSelector: {}` for default to prometheus template
+  * delete duplicated `PrometheusRules: {}` for prometheus values
+
 # 10.11.1
 
 Enhancements:
