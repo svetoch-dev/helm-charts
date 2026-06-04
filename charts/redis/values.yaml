@@ -23,13 +23,20 @@ redis-sentinel:
     resources:
       requests:
         cpu: 50m
-        memory: 10Mi
+        memory: 15Mi
       limits:
         memory: 500Mi
   redisExporter:
     enabled: true
     image: quay.io/opstree/redis-exporter
     tag: "v1.83.0"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 15Mi
+      limits:
+        cpu: 300m
+        memory: 100Mi
   serviceMonitor:
     enabled: true
     extraLabels:
@@ -49,7 +56,7 @@ redis-replication:
     resources:
       requests:
         cpu: 50m
-        memory: 10Mi
+        memory: 15Mi
       limits:
         memory: 500Mi
   externalService:
@@ -58,6 +65,13 @@ redis-replication:
     enabled: true
     image: quay.io/opstree/redis-exporter
     tag: "v1.83.0"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 15Mi
+      limits:
+        cpu: 300m
+        memory: 100Mi
   sentinel:
     enabled: false
   serviceMonitor:
