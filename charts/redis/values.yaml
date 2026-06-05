@@ -45,6 +45,9 @@ redis-sentinel:
     redisReplicationName: ""
     quorum: '2'
     redisPort: '6379'
+  redisReplicationPassword:
+    secretName: ""
+    secretKey: "password"
 
 redis-replication:
   enabled: false
@@ -53,6 +56,9 @@ redis-replication:
     clusterSize: 3
     image: quay.io/opstree/redis
     tag: v8.6.1
+    redisSecret:
+      secretName: ""
+      secretKey: "password"
     resources:
       requests:
         cpu: 50m
