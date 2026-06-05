@@ -7,8 +7,8 @@ dependencies:
   - name: redis-operator
     version: 0.24.0
     alias: redis-operator
-    condition: redis-operator.enabled
     repository: https://ot-container-kit.github.io/helm-charts
+    condition: redis-operator.enabled
   - name: redis-sentinel
     version: 0.16.12
     repository: https://ot-container-kit.github.io/helm-charts
