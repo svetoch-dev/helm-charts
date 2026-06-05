@@ -5,10 +5,7 @@ dependencies:
 - name: certificates
   repository: file://../chart_deps/security/certificates
   version: 0.1.0
-- name: redis-replication
-  repository: file://../redis
-  version: 0.1.0
-- name: redis-sentinel
+- name: redis
   repository: file://../redis
   version: 0.1.0
 - name: probes
@@ -20,5 +17,5 @@ dependencies:
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:42276734c6e87ef34293d10736c3c96bec77340e793af91018c0027507a4a4fc
-generated: "2026-06-05T07:52:56.793234287Z"
+digest: sha256:8cc681d0b86bc0fd265346249ed41b15c739a825473c0a1b8139766a08885254
+generated: "2026-06-05T12:44:25.833580543Z"
