@@ -1,7 +1,5 @@
 redis-operator:
   enabled: false
-  redisOperator:
-    name: ""
   resources:
     requests:
       cpu: 20m
