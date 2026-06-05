@@ -105,36 +105,17 @@ certificates:
 
 redis:
   enabled: false
-  redisServiceMonitor:
-    enabled: true
-    prometheusSelector:
-      prometheus: main
-  sentinelServiceMonitor:
-    enabled: true
-    prometheusSelector:
-      prometheus: main
-  auth:
-    secretPath: argocd-redis
-  sentinel:
-    replicas: 3
-    resources:
-      requests:
-        cpu: 10m
-        memory: 10Mi
-      limits:
-        memory: 200Mi
-    exporter:
-      enabled: true
-  redis:
-    replicas: 3
-    resources:
-      requests:
-        cpu: 50m
-        memory: 10Mi
-      limits:
-        memory: 250Mi
-    exporter:
-      enabled: true
+  redisReplication:
+    redisSecret:
+      secretName: "argocd-redis"
+      secretKey: "redis-password"
+redis-sentinel:
+  enabled: false
+  redisReplicationPassword:
+    secretName: "argocd-redis"
+    secretKey: "redis-password"
+  redisSentinelConfig:
+    redisReplicationName: ""
 
 probes:
   enabled: false

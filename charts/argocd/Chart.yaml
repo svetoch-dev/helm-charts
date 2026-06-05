@@ -13,11 +13,16 @@ dependencies:
     repository: file://../chart_deps/security/certificates
     alias: certificates
     condition: certificates.enabled
-  - name: redis-operated
+  - name: redis-replication
     version: 0.1.0
-    repository: file://../chart_deps/redis/redis-operated
+    repository: file://../redis
     alias: redis
     condition: redis.enabled
+  - name: redis-sentinel
+    version: 0.1.0
+    repository: file://../redis
+    alias: redis-sentinel
+    condition: redis-sentinel.enabled
   - name: probes
     version: 0.1.0
     repository: file://../chart_deps/prometheus/probes
