@@ -142,7 +142,7 @@ chart_apps:
           port: 6379
           existingSecret: "argocd-redis"
       redis:
-        redis-repliaction:
+        redis-replication:
           redisReplication:
             name: "argocd-{{ .Values.global.env.name }}-redis-cluster"
         redis-sentinel:
