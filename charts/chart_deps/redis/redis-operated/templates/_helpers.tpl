@@ -41,6 +41,7 @@ helm.sh/chart: {{ include "redis-operated.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/component: middleware
 {{- end -}}
 
 {{/*
@@ -58,3 +59,40 @@ Service Selector labels
 app.kubernetes.io/name: {{ .Release.Name }}-{{ include "redis-operated.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/* Define common annotations */}}
+{{- define "common.annotations" -}}
+{{- if .Values.annotations }}
+{{ toYaml .Values.annotations }}
+{{- end }}
+{{- end -}}
+
+
+{{/* Generate init container properties */}}
+{{- define "initContainer.properties" -}}
+{{- with .Values.initContainer }}
+{{- if .enabled }}
+enabled: {{ .enabled }}
+image: {{ .image }}
+{{- if .imagePullPolicy }}
+imagePullPolicy: {{ .imagePullPolicy }}
+{{- end }}
+{{- if .resources }}
+resources:
+  {{ toYaml .resources | nindent 2 }}
+{{- end }}
+{{- if .env }}
+env:
+{{ toYaml .env | nindent 2 }}
+{{- end }}
+{{- if .command }}
+command:
+{{ toYaml .command | nindent 2 }}
+{{- end }}
+{{- if .args }}
+args:
+{{ toYaml .args | nindent 2 }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end -}}
