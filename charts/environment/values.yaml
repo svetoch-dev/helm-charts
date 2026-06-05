@@ -138,9 +138,15 @@ chart_apps:
           emails: []
       argocd:
         externalRedis:
-          host: redis-{{ .Values.global.env.name }}-replica-master
+          host: argocd-{{ .Values.global.env.name }}-redis-cluster-master
           port: 6379
           existingSecret: "argocd-redis"
+      redis:
+        redisReplication:
+          name: "argocd-{{ .Values.global.env.name }}-redis-cluster"
+      redis-sentinel:
+        redisSentinelConfig:
+          redisReplicationName: "argocd-{{ .Values.global.env.name }}-redis-cluster"
   prometheus:
     enabled: false
     values: |
