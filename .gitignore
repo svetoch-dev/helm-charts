@@ -2,6 +2,7 @@
 #Mr Alex test files
 123*
 charts/**/charts
+!charts/redis/charts
 !charts/chart_deps/app/common/charts
 !charts/chart_deps/fluent/fluentbit/fluentbit-operated/charts
 !charts/chart_deps/fluent/fluentbit/fluentbit-standalone/charts
