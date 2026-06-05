@@ -105,17 +105,17 @@ certificates:
 
 redis:
   enabled: false
-  redisReplication:
-    redisSecret:
+  redis-replication:
+    enabled: true
+    redisReplication:
+      redisSecret:
+        secretName: "argocd-redis"
+        secretKey: "redis-password"
+  redis-sentinel:
+    enabled: true
+    redisReplicationPassword:
       secretName: "argocd-redis"
       secretKey: "redis-password"
-redis-sentinel:
-  enabled: false
-  redisReplicationPassword:
-    secretName: "argocd-redis"
-    secretKey: "redis-password"
-  redisSentinelConfig:
-    redisReplicationName: ""
 
 probes:
   enabled: false
