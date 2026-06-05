@@ -146,6 +146,8 @@ chart_apps:
           redisReplication:
             name: "argocd-{{ .Values.global.env.name }}-redis-cluster"
         redis-sentinel:
+          redisSentinel:
+            name: "argocd-{{ .Values.global.env.name }}-redis-sentinel"
           redisSentinelConfig:
             redisReplicationName: "argocd-{{ .Values.global.env.name }}-redis-cluster"
   prometheus:
