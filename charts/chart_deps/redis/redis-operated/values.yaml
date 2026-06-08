@@ -4,7 +4,7 @@ redis:
   tag: v8.6.1
   imagePullPolicy: IfNotPresent
   imagePullSecrets: []
-  serviceType: ""
+  serviceType: ClusterIP
   loadBalancer: {}
   redisSecret:
     secretName: redis
@@ -86,7 +86,7 @@ redis:
         cpu: 10m
         memory: 15Mi
   monitor:
-    enabled: false
+    enabled: true
     prometheusSelector:
       prometheus: main
     endpoints:
@@ -105,7 +105,7 @@ sentinel:
   tag: v8.6.1
   imagePullPolicy: IfNotPresent
   imagePullSecrets: []
-  serviceType: ""
+  serviceType: ClusterIP
   loadBalancer: {}
   redisReplicationPassword:
     secretName: "redis"
@@ -183,7 +183,7 @@ sentinel:
         cpu: 10m
         memory: 15Mi
   monitor:
-    enabled: false
+    enabled: true
     prometheusSelector:
       prometheus: main
     endpoints:
