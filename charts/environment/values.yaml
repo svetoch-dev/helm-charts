@@ -139,17 +139,6 @@ chart_apps:
       argocd:
         externalRedis:
           host: argocd-{{ .Values.global.env.name }}-redis-cluster-master
-          port: 6379
-          existingSecret: "argocd-redis"
-      redis:
-        redis-replication:
-          redisReplication:
-            name: "argocd-{{ .Values.global.env.name }}-redis-cluster"
-        redis-sentinel:
-          redisSentinel:
-            name: "argocd-{{ .Values.global.env.name }}-redis-sentinel"
-          redisSentinelConfig:
-            redisReplicationName: "argocd-{{ .Values.global.env.name }}-redis-cluster"
   prometheus:
     enabled: false
     values: |

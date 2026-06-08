@@ -5,8 +5,8 @@ dependencies:
 - name: certificates
   repository: file://../chart_deps/security/certificates
   version: 0.1.0
-- name: redis
-  repository: file://../redis
+- name: redis-operated
+  repository: file://../chart_deps/redis/redis-operated
   version: 0.1.0
 - name: probes
   repository: file://../chart_deps/prometheus/probes
@@ -17,5 +17,5 @@ dependencies:
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:8cc681d0b86bc0fd265346249ed41b15c739a825473c0a1b8139766a08885254
-generated: "2026-06-05T14:55:13.284714615Z"
+digest: sha256:7b389af146eb727caad67ae31a027cbde992627eb06a6882cb8127abac906dad
+generated: "2026-06-07T21:31:52.539673536Z"

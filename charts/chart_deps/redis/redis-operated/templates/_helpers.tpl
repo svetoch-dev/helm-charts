@@ -25,6 +25,20 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
+Redis replication resource name.
+*/}}
+{{- define "redis-operated.clusterName" -}}
+{{- printf "%s-cluster" (include "redis-operated.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Redis sentinel resource name.
+*/}}
+{{- define "redis-operated.sentinelName" -}}
+{{- printf "%s-sentinel" (include "redis-operated.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "redis-operated.chart" -}}
@@ -52,14 +66,6 @@ app.kubernetes.io/name: {{ include "redis-operated.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{/*
-Service Selector labels
-*/}}
-{{- define "redos-operated.serviceSelectorLabels" -}}
-app.kubernetes.io/name: {{ .Release.Name }}-{{ include "redis-operated.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
 {{/* Define common annotations */}}
 {{- define "common.annotations" -}}
 {{- if .Values.annotations }}
@@ -67,6 +73,16 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 {{- end -}}
 
+{{/* Validate service type and return the value. */}}
+{{- define "redis-operated.validateServiceType" -}}
+{{- $allowedServiceTypes := list "ClusterIP" "NodePort" "LoadBalancer" -}}
+{{- $serviceType := .serviceType | default "ClusterIP" -}}
+{{- if has $serviceType $allowedServiceTypes -}}
+{{- $serviceType -}}
+{{- else -}}
+{{- fail (printf "%s serviceType must be one of ClusterIP, NodePort, LoadBalancer; got: %s" .name $serviceType) -}}
+{{- end -}}
+{{- end -}}
 
 {{/* Generate init container properties */}}
 {{- define "initContainer.properties" -}}

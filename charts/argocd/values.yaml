@@ -39,6 +39,10 @@ argocd:
     params:
       server.insecure: true
 
+  externalRedis:
+    port: 6379
+    existingSecret: "argocd-redis"
+
   redis:
     enabled: false
 
@@ -105,17 +109,15 @@ certificates:
 
 redis:
   enabled: false
-  redis-replication:
-    enabled: true
-    redisReplication:
-      redisSecret:
-        secretName: "argocd-redis"
-        secretKey: "redis-password"
-  redis-sentinel:
-    enabled: true
-    redisReplicationPassword:
+  redis:
+    redisSecret:
       secretName: "argocd-redis"
       secretKey: "redis-password"
+  sentinel:
+    redisSentinelConfig:
+      redisReplicationPassword:
+        secretName: "argocd-redis"
+        secretKey: "redis-password"
 
 probes:
   enabled: false
