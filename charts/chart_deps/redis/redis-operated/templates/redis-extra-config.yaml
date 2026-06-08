@@ -1,0 +1,4 @@
+{{- $labels := include "redis-operated.labels" $ | fromYaml }}
+{{- $redis := .Values.redis | default dict }}
+{{- $redisExternalConfig := deepCopy ($redis.externalConfig | default dict) }}
+{{- include "core.configMap" (list $ $labels $redisExternalConfig) }}

@@ -53,6 +53,14 @@ redis:
     enabled: false
     minAvailable: 1
     maxUnavailable: null
+  externalConfig:
+    enabled: false
+    name: '{{ include "redis-operated.clusterName" . }}-ext-config'
+    data:
+      redis-additional.conf: |
+        tcp-keepalive 400
+        slowlog-max-len 158
+        stream-node-max-bytes 2048
   initContainer:
     enabled: false
     image: ""
@@ -132,10 +140,12 @@ sentinel:
     maxUnavailable: null
   externalConfig:
     enabled: false
-    data: |
-      tcp-keepalive 400
-      slowlog-max-len 158
-      stream-node-max-bytes 2048
+    name: '{{ include "redis-operated.sentinelName" . }}-ext-config'
+    data:
+      redis-sentinel-additional.conf: |
+        tcp-keepalive 400
+        slowlog-max-len 158
+        stream-node-max-bytes 2048
   initContainer:
     enabled: false
     image: ""
