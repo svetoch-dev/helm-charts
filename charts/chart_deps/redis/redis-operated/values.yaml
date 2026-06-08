@@ -192,5 +192,6 @@ sentinel:
         scrapeTimeout: 10s
     selectorLabels:
       app: '{{ include "redis-operated.sentinelName" . }}-sentinel'
+      app.kubernetes.io/component: metrics
       redis_setup_type: sentinel
       role: sentinel
