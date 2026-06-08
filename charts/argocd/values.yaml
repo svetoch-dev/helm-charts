@@ -114,14 +114,14 @@ redis:
       secretName: "argocd-redis"
       secretKey: "redis-password"
     monitor:
-      enabled: false
+      enabled: true
   sentinel:
     redisSentinelConfig:
       redisReplicationPassword:
         secretName: "argocd-redis"
         secretKey: "redis-password"
     monitor:
-      enabled: false
+      enabled: true
 
 probes:
   enabled: false
