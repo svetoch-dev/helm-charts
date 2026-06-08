@@ -104,7 +104,7 @@ sentinel:
   tag: v8.6.1
   imagePullPolicy: IfNotPresent
   imagePullSecrets: []
-  redisSecret:
+  redisReplicationPassword:
     secretName: "redis"
     secretKey: "password"
   resources:
