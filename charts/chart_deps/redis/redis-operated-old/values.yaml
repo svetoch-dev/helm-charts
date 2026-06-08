@@ -1,0 +1,35 @@
+sentinel:
+  exporter:
+    enabled: false
+    args:
+      - '--log-format=json'
+redis:
+  exporter:
+    enabled: false
+    args:
+      - '--log-format=json'
+auth: {}
+bootstrapNode: {}
+labelWhitelist: {}
+redis-podmonitor:
+  enabled: false
+sentinel-podmonitor:
+  enabled: false
+
+redisServiceMonitor:
+  enabled: false
+  prometheusSelector: {}
+  labels: {}
+  targetLabels: []
+  endpoints:
+    - port: http-metrics
+      path: /metrics
+
+sentinelServiceMonitor:
+  enabled: false
+  prometheusSelector: {}
+  labels: {}
+  targetLabels: []
+  endpoints:
+    - targetPort: 9355
+      path: /metrics
