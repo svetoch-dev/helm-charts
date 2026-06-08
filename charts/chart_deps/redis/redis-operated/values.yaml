@@ -5,6 +5,7 @@ redis:
   imagePullPolicy: IfNotPresent
   imagePullSecrets: []
   serviceType: ClusterIP
+  loadBalancer: {}
   redisSecret:
     secretName: redis
     secretKey: password
@@ -104,6 +105,8 @@ sentinel:
   tag: v8.6.1
   imagePullPolicy: IfNotPresent
   imagePullSecrets: []
+  serviceType: ClusterIP
+  loadBalancer: {}
   redisReplicationPassword:
     secretName: "redis"
     secretKey: "password"
@@ -188,6 +191,6 @@ sentinel:
         port: redis-exporter
         scrapeTimeout: 10s
     selectorLabels:
-      app: '{{ include "redis-operated.sentinelName" . }}'
+      app: '{{ include "redis-operated.sentinelName" . }}-sentinel'
       redis_setup_type: sentinel
       role: sentinel
