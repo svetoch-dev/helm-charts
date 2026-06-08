@@ -78,6 +78,9 @@ redis:
     image: quay.io/opstree/redis-exporter
     tag: v1.83.0
     imagePullPolicy: IfNotPresent
+    env:
+      - name: REDIS_EXPORTER_LOG_FORMAT
+        value: json
     resources:
       limits:
         cpu: 300m
@@ -175,6 +178,9 @@ sentinel:
     image: quay.io/opstree/redis-exporter
     tag: v1.83.0
     imagePullPolicy: IfNotPresent
+    env:
+      - name: REDIS_EXPORTER_LOG_FORMAT
+        value: json
     resources:
       limits:
         cpu: 300m
