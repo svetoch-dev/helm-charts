@@ -1,5 +1,8 @@
 redis-operator:
   enabled: false
+  redisOperator:
+    imageTag: v0.25.0
+    initContainerImageTag: v0.25.0
   resources:
     requests:
       cpu: 20m
@@ -11,74 +14,21 @@ redis-operator:
     create: false
   certmanager:
     enabled: false
-
-redis-sentinel:
-  enabled: false
-  redisSentinel:
-    name: ""
-    image: quay.io/opstree/redis-sentinel
-    tag: v8.6.1
-    resources:
-      requests:
-        cpu: 50m
-        memory: 15Mi
-      limits:
-        memory: 500Mi
-  redisExporter:
+  podMonitor:
     enabled: true
-    image: quay.io/opstree/redis-exporter
-    tag: "v1.83.0"
-    resources:
-      requests:
-        cpu: 10m
-        memory: 15Mi
-      limits:
-        cpu: 300m
-        memory: 100Mi
-  serviceMonitor:
-    enabled: true
-    extraLabels:
+    name: '{{ .Release.Name }}-redis-operator'
+    prometheusSelector:
       prometheus: main
-  redisSentinelConfig:
-    redisReplicationName: ""
-    quorum: '2'
-    redisPort: '6379'
-  redisReplicationPassword:
-    secretName: ""
-    secretKey: "password"
+    podMetricsEndpoints:
+      - interval: 30s
+        port: metrics
+        scrapeTimeout: 10s
+    selectorLabels:
+      name: redis-operator
 
-redis-replication:
+redis-operated:
   enabled: false
-  redisReplication:
-    name: ""
-    clusterSize: 3
-    image: quay.io/opstree/redis
-    tag: v8.6.1
-    redisSecret:
-      secretName: ""
-      secretKey: "password"
-    resources:
-      requests:
-        cpu: 50m
-        memory: 15Mi
-      limits:
-        memory: 500Mi
-  externalService:
-    enabled: false
-  redisExporter:
+  redis:
     enabled: true
-    image: quay.io/opstree/redis-exporter
-    tag: "v1.83.0"
-    resources:
-      requests:
-        cpu: 10m
-        memory: 15Mi
-      limits:
-        cpu: 300m
-        memory: 100Mi
   sentinel:
-    enabled: false
-  serviceMonitor:
     enabled: true
-    extraLabels:
-      prometheus: main

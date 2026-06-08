@@ -36,8 +36,8 @@ spec:
     matchLabels:
     {{- tpl (toYaml .) $ | nindent 6 }}
   {{- end }}
-  {{- with $obj.targetLabels}}
-  targetLabels:
+  {{- with ($obj.podTargetLabels | default $obj.targetLabels) }}
+  podTargetLabels:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
 {{- end }}

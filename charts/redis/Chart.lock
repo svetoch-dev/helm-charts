@@ -2,11 +2,11 @@ dependencies:
 - name: redis-operator
   repository: https://ot-container-kit.github.io/helm-charts
   version: 0.24.0
-- name: redis-sentinel
-  repository: https://ot-container-kit.github.io/helm-charts
-  version: 0.16.12
-- name: redis-replication
-  repository: https://ot-container-kit.github.io/helm-charts
-  version: 0.17.0
-digest: sha256:6d719cc1ac6676a808d841c553fd9aac3952f135986a2dd38647c541a8c156cb
-generated: "2026-05-28T12:51:20.564623657Z"
+- name: redis-operated
+  repository: file://../chart_deps/redis/redis-operated
+  version: 0.1.0
+- name: prometheus-lib
+  repository: file://../chart_deps/prometheus/lib
+  version: 0.1.0
+digest: sha256:68285de2f81bacdcec9ef92d029be88f80a64bee40dbc996bd153727a4a23b29
+generated: "2026-06-08T06:42:20.435116093Z"
