@@ -19,7 +19,6 @@ Enhancements:
 Fixed
 * `prometheus podMonitor` fix `targetLabels` field
 
-
 # 10.12.0
 
 New features:

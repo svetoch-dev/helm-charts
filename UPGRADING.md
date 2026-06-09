@@ -20,3 +20,134 @@ To reduce impact during the migration one can also do the following steps:
 * Stop writes on the source cluster and promote the standby cluster. Downtime depends mostly on the deployment time of your app to point to the new database cluster.
 
 ## Redis
+Redis was migrated from the Spotahome Redis Operator to the Opstree Redis Operator.
+This migration replaces the operator, CRDs, Redis custom resources, and generated
+Redis Services. Treat it as a Redis cluster replacement unless the application has a
+tested data migration path.
+
+1. Decide how Redis data will be handled before changing operators or CRDs.
+
+If Redis is used only as cache, document that cache loss is acceptable for the
+application. If Redis data must be preserved, create a backup or export from the old
+cluster before stopping the old operator or switching applications. For example, use
+an application-specific export, `redis-cli --rdb`, or another tested Redis migration
+procedure.
+
+2. Check that new Redis resources do not conflict with existing Spotahome resources.
+   Render the downstream chart before applying it:
+
+```bash
+helm dependency update <chart>
+helm template <release-name> <chart> -n <namespace>
+```
+
+Expected main Opstree operator resources in the operator namespace:
+
+* `Deployment/redis-operator`
+* `ServiceAccount/redis-operator`
+* `ClusterRole/redis-operator`
+* `ClusterRoleBinding/redis-operator`
+* `PodMonitor/<operator-release-name>-redis-operator`
+
+Expected main Opstree Redis resources in the application namespace:
+
+* `RedisReplication/<release-name>-redis-cluster`
+* `RedisSentinel/<release-name>-redis-sentinel`
+* `StatefulSet/<release-name>-redis-cluster`
+* `StatefulSet/<release-name>-redis-sentinel-sentinel`
+* `Pod/<release-name>-redis-cluster-0..N`
+* `Pod/<release-name>-redis-sentinel-sentinel-0..N`
+* `ServiceMonitor/<release-name>-redis-cluster`
+* `ServiceMonitor/<release-name>-redis-sentinel`
+
+Expected main Opstree Services created by the operator:
+
+* `Service/<release-name>-redis-cluster`
+* `Service/<release-name>-redis-cluster-additional`
+* `Service/<release-name>-redis-cluster-headless`
+* `Service/<release-name>-redis-cluster-master`
+* `Service/<release-name>-redis-cluster-metrics`
+* `Service/<release-name>-redis-cluster-replica`
+* `Service/<release-name>-redis-sentinel-sentinel`
+* `Service/<release-name>-redis-sentinel-sentinel-additional`
+* `Service/<release-name>-redis-sentinel-sentinel-headless`
+* `Service/<release-name>-redis-sentinel-sentinel-metrics`
+
+Applications that connect directly to Redis should use the Redis master Service:
+
+* `Service/<release-name>-redis-cluster-master`
+
+Old Spotahome resources usually have different prefixes, for example `rfr-*`,
+`rfs-*`, and `rfrm-*`. If any old and new resource names overlap in the target
+namespace, stop and override the new chart names before applying.
+
+3. Replace Redis Operator CRDs.
+
+Install the Opstree Redis Operator CRDs before applying new Redis resources.
+Do not delete the old Spotahome CRDs before old Spotahome Redis resources are
+removed. Kubernetes needs the old CRDs to manage and delete existing old custom
+resources cleanly.
+
+4. Remove the old Spotahome Redis Operator and deploy the new Opstree Redis
+   Operator.
+
+Stop the old operator first, then install and sync the new operator chart. Verify
+that the new operator pod is running before creating Redis custom resources.
+
+5. Create the new Redis clusters.
+
+Enable the new Redis chart in downstream values and keep only overrides that differ
+from this chart's defaults. Do not copy old Spotahome values such as:
+
+```yaml
+redis:
+  auth:
+    secretPath: redis
+  redisServiceMonitor: {}
+  sentinelServiceMonitor: {}
+```
+
+Create `RedisSentinel` only after `RedisReplication` is created and healthy. The
+sentinel resource references the replication resource by name, so applying both at
+the same time can fail or reconcile incorrectly if the replication cluster is not
+ready yet.
+
+After sync, verify that the new `RedisReplication`, `RedisSentinel`, Redis pods, and
+Redis Services are created and healthy.
+
+6. Migrate data and switch applications to the new Redis clusters.
+
+There is no automatic migration from Spotahome Redis to Opstree Redis in this chart.
+Choose one of these paths per application:
+
+* If Redis is used only as cache, accept cache loss and switch the application to
+  the new Redis master Service.
+* If Redis data must be preserved, migrate it explicitly before switching traffic,
+  for example with an application-specific export/import, `redis-cli --rdb`, or a
+  controlled key copy process.
+
+Applications that connect directly to Redis should use:
+
+* `REDIS_HOST=<release-name>-redis-cluster-master`
+* `REDIS_PORT=6379`
+* `REDIS_PASSWORD` from the Redis password Secret
+
+Applications that use Sentinel must be pointed to the new Opstree Sentinel Service.
+Do not point `REDIS_SENTINEL_HOST` to the Redis master Service.
+
+The Sentinel Service name is based on the Redis sentinel name:
+
+* `Service/<release-name>-redis-sentinel-sentinel`
+
+Typical Sentinel client settings:
+
+* `REDIS_SENTINEL_HOST=<release-name>-redis-sentinel-sentinel`
+* `REDIS_SENTINEL_PORT=26379`
+* `REDIS_SENTINEL_NAME=mymaster`
+* `REDIS_SENTINEL_PASSWORD` from the Redis password Secret
+
+7. Remove old Redis resources manually.
+
+After applications are switched and verified, delete the old Spotahome Redis custom
+resources and generated objects. Then delete the old Spotahome CRDs manually when no
+old Redis resources remain.
