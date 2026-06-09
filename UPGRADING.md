@@ -1,4 +1,5 @@
 # Upgrade to v11
+## Postgres
 Important note on deprecated K8s Endpoints
 We swithced `Postgres-operator` `kubernetes_use_configmaps` to `True`. For clusters with replicas you cannot easily switch from using Endpoints to ConfigMaps without risking a split-brain scenario because Patroni would read DCS-related facts from both these resources at the same time during a rotation. There are two possible migration paths:
 
@@ -17,3 +18,5 @@ To reduce impact during the migration one can also do the following steps:
 * Set up a second Postgres Operator (+ CONTROLLER_ID specified) running with ConfigMaps
 * Create standby clusters to all Postgres resources (or one by one). The standbys would then be managed by the second operator using the annotation with the corresponding controller ID. Ideally, also copy all secrets of the source cluster beforehand to avoid connection issues later (see docs).
 * Stop writes on the source cluster and promote the standby cluster. Downtime depends mostly on the deployment time of your app to point to the new database cluster.
+
+## Redis
