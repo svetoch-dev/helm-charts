@@ -1,9 +1,11 @@
 # 11.0.0-alpha
-BrakingChanges:
-* `postgres-operator` uses configmaps instead endpoints (`kubernetes_use_configmaps: true`). See [UPGRADING](UPGRADING.md)
+BrakingChanges. See [UPGRADING](UPGRADING.md):
+* `postgres-operator` uses configmaps instead endpoints (`kubernetes_use_configmaps: true`)
+* crds and charts uses `ot-container-kit/redis-operator + redis` instead of `Spotahome`
 
 New features:
 * `postgres-exporter` get query along with queryid
+* `app/core` can template `configMap`
 
 Enhancements:
 * `postgres-operator`:
@@ -11,6 +13,12 @@ Enhancements:
   * chart update 1.14.0 -> 1.15.1
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
+* move argocd `redis port and existingSecret` from `env` to `argocd chart`
+* delete non-working `AbsentMetricCritical alerts`
+
+Fixed
+* `prometheus podMonitor` fix `targetLabels` field
+
 
 # 10.12.0
 
