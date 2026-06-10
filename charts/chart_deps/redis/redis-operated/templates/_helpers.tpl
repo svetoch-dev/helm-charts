@@ -76,32 +76,3 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- fail (printf "%s serviceType must be one of ClusterIP, NodePort, LoadBalancer; got: %s" .name $serviceType) -}}
 {{- end -}}
 {{- end -}}
-
-{{/* Generate init container properties */}}
-{{- define "initContainer.properties" -}}
-{{- with .Values.initContainer }}
-{{- if .enabled }}
-enabled: {{ .enabled }}
-image: {{ .image }}
-{{- if .imagePullPolicy }}
-imagePullPolicy: {{ .imagePullPolicy }}
-{{- end }}
-{{- if .resources }}
-resources:
-  {{ toYaml .resources | nindent 2 }}
-{{- end }}
-{{- if .env }}
-env:
-{{ toYaml .env | nindent 2 }}
-{{- end }}
-{{- if .command }}
-command:
-{{ toYaml .command | nindent 2 }}
-{{- end }}
-{{- if .args }}
-args:
-{{ toYaml .args | nindent 2 }}
-{{- end }}
-{{- end }}
-{{- end }}
-{{- end -}}
