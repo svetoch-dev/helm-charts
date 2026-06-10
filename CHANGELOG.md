@@ -6,19 +6,28 @@ BrakingChanges. See [UPGRADING](UPGRADING.md):
 New features:
 * `postgres-exporter` get query along with queryid
 * `app/core` can template `configMap`
+* `app/core` can template `MutatingWebhookConfiguration`
+* `redis` adds self-managed `chart_deps/redis/redis-operator` chart for Opstree Redis Operator
 
 Enhancements:
 * `app/core`:
+  * support `tpl` for `Deployment.metadata.name`
   * add `strategy` support to `Deployment` template
   * avoid mutating shared labels while merging object labels
   * use `serviceAccount.namespace` with `Release.Namespace` fallback in `ClusterRoleBinding`
+  * support separate `clusterRoleLabels` and `clusterRoleBindingLabels`
+  * support `podLabels` and `automountServiceAccountToken` in pod templates
+  * support `automountServiceAccountToken` in `ServiceAccount`
+  * support optional service annotations and `tpl` in service ports
 * `certificates` supports `tpl` in `Certificate.spec.secretName`
 * `postgres-operator`:
   * crds update 1.14.0 -> 1.15.1
   * chart update 1.14.0 -> 1.15.1
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
-* move argocd `redis port and existingSecret` from `env` to `argocd chart`
+* `argocd`:
+  * move Redis `port` and `existingSecret` from `env` to `argocd` chart values
+  * point external Redis host to the new Opstree Redis master service
 * delete non-working `AbsentMetricCritical alerts`
 * `redis` image update 6.2.6 -> 8.6.1
 
