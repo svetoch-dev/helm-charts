@@ -28,14 +28,14 @@ redis:
   securityContext: {}
   priorityClassName: ""
   nodeSelector: {}
-  storageSpec:
-    volumeClaimTemplate:
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
+  storageSpec: {}
+    #volumeClaimTemplate:
+    #  spec:
+    #    accessModes:
+    #      - ReadWriteOnce
+    #    resources:
+    #      requests:
+    #        storage: 1Gi
   affinity: {}
   tolerations: []
   topologySpreadConstraints: []
