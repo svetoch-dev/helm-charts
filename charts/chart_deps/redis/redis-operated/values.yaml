@@ -111,7 +111,7 @@ sentinel:
   serviceType: ClusterIP
   loadBalancer: {}
   redisReplicationPassword:
-    secretName: "redis"
+    #secretName: "redis"
     secretKey: "password"
   resources:
     limits:
