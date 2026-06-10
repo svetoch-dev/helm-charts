@@ -15,7 +15,6 @@ Enhancements:
   * add `strategy` support to `Deployment` template
   * avoid mutating shared labels while merging object labels
   * use `serviceAccount.namespace` with `Release.Namespace` fallback in `ClusterRoleBinding`
-  * support separate `clusterRoleLabels` and `clusterRoleBindingLabels`
   * support `podLabels` and `automountServiceAccountToken` in pod templates
   * support `automountServiceAccountToken` in `ServiceAccount`
   * support optional service annotations and `tpl` in service ports

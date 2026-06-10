@@ -102,7 +102,7 @@ serviceAccount:
 clusterRole:
   enabled: true
   name: '{{ include "redis-operator.fullname" . }}'
-  clusterRoleLabels:
+  labels:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
   serviceAccount:
     name: '{{ include "redis-operator.fullname" . }}'
