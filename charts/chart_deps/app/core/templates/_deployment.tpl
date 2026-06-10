@@ -23,6 +23,10 @@ spec:
     matchLabels:
       {{- tpl (toYaml .) $ | nindent 8 }}
   {{- end }}
+  {{- with $obj.strategy }}
+  strategy:
+    {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
   {{ include "core.podtemplate" (list $ $obj) | nindent 2 | trim }}
 {{- end }}
 {{- end }}

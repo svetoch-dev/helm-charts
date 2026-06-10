@@ -14,6 +14,11 @@ operator:
   replicaCount: 1
   autoscaling:
     enabled: false
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
