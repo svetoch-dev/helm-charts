@@ -1,4 +1,6 @@
-{{- $serviceMonitor :=  deepCopy (.Values.sentinel.monitor | default dict) }}
+{{- $sentinel := .Values.sentinel | default dict }}
+{{- if $sentinel.enabled }}
+{{- $serviceMonitor :=  deepCopy ($sentinel.monitor | default dict) }}
 {{- $labels := include "redis-operated.labels" $ | fromYaml }}
 {{- if not (hasKey $serviceMonitor "name") }}
 {{- $serviceMonitor = set $serviceMonitor "name" (include "redis-operated.sentinelName" . ) }}
@@ -7,3 +9,4 @@
 {{- $serviceMonitor = set $serviceMonitor "jobLabel" (include "redis-operated.sentinelName" . ) }}
 {{- end }}
 {{- include "prometheus.serviceMonitor" (list $ $labels $serviceMonitor ) }}
+{{- end }}

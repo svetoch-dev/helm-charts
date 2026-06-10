@@ -1,4 +1,5 @@
 redis:
+  enabled: true
   clusterSize: 3
   image: quay.io/opstree/redis
   tag: v8.6.1
@@ -103,6 +104,7 @@ redis:
       role: replication
 
 sentinel:
+  enabled: true
   clusterSize: 3
   image: quay.io/opstree/redis-sentinel
   tag: v8.6.1

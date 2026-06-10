@@ -1,5 +1,6 @@
 ---
 {{- $sentinel := .Values.sentinel | default dict }}
+{{- if $sentinel.enabled }}
 {{- $sentinelConfig := $sentinel.redisSentinelConfig | default dict }}
 {{- $replicationPassword := $sentinelConfig.redisReplicationPassword | default dict }}
 {{- $sentinelRedisSecret := $sentinel.redisSecret | default dict }}
@@ -164,3 +165,4 @@ spec:
   {{- if $sentinel.env }}
   env: {{ toYaml $sentinel.env | nindent 4 }}
   {{- end }}
+{{- end }}

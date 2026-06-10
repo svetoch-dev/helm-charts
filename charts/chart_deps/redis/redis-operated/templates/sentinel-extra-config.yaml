@@ -1,4 +1,6 @@
 {{- $labels := include "redis-operated.labels" $ | fromYaml }}
 {{- $sentinel := .Values.sentinel | default dict }}
+{{- if $sentinel.enabled }}
 {{- $sentinelExternalConfig := deepCopy ($sentinel.externalConfig | default dict) }}
 {{- include "core.configMap" (list $ $labels $sentinelExternalConfig) }}
+{{- end }}

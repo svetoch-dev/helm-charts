@@ -1,5 +1,6 @@
 ---
 {{- $redis := .Values.redis | default dict }}
+{{- if $redis.enabled }}
 {{- $redisExporter := $redis.exporter | default dict }}
 {{- $externalConfig := $redis.externalConfig | default dict }}
 {{- $tls := $redis.TLS | default dict }}
@@ -199,3 +200,4 @@ spec:
     additionalSentinelConfig: {{ $sentinel.additionalSentinelConfig | quote }}
     {{- end }}
   {{- end }}
+{{- end }}
