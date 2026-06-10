@@ -1,6 +1,6 @@
 {{- define "core.labels.constructor" -}}
 {{- $ := index . 0 }}
-{{- $labels := index . 1 }}
+{{- $labels := deepCopy (index . 1) }}
 {{- $obj := index . 2 }}
 {{- if $obj.labels }}
 {{- $labels = merge $labels $obj.labels }}

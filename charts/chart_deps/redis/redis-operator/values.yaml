@@ -14,7 +14,6 @@ operator:
   replicaCount: 1
   autoscaling:
     enabled: false
-  strategy: {}
   podAnnotations: {}
   podLabels: {}
   podSecurityContext: {}
@@ -98,6 +97,8 @@ serviceAccount:
 clusterRole:
   enabled: true
   name: '{{ include "redis-operator.fullname" . }}'
+  clusterRoleLabels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
   serviceAccount:
     name: '{{ include "redis-operator.fullname" . }}'
   rules:

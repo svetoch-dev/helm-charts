@@ -38,7 +38,8 @@ helm.sh/chart: {{ include "redis-operator.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-app.kubernetes.io/component: operator
+app.kubernetes.io/component: redis-operator
+app.kubernetes.io/part-of: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
