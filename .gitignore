@@ -2,12 +2,12 @@
 #Mr Alex test files
 123*
 charts/**/charts
-!charts/redis/charts
 !charts/chart_deps/app/common/charts
 !charts/chart_deps/fluent/fluentbit/fluentbit-operated/charts
 !charts/chart_deps/fluent/fluentbit/fluentbit-standalone/charts
 !charts/chart_deps/postgres/postgres-cluster/charts
 !charts/chart_deps/rabbitmq/rabbitmq-cluster-operator/charts
 !charts/chart_deps/redis/redis-operated/charts
+!charts/chart_deps/redis/redis-operator/charts
 !charts/chart_deps/prometheus/prometheus-operated/charts
 !charts/chart_deps/grafana/grafana-operated/charts

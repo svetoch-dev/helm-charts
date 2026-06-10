@@ -7,7 +7,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $obj.name }}
+  name: {{ tpl $obj.name $ }}
   labels:
 {{- include "core.labels.constructor" (list $ $labels $obj) | nindent 4 }}
   namespace: "{{ $obj.namespace }}"

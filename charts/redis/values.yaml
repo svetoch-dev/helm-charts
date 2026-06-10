@@ -1,30 +1,7 @@
 redis-operator:
   enabled: false
-  redisOperator:
-    imageTag: v0.25.0
-    initContainerImageTag: v0.25.0
-  resources:
-    requests:
-      cpu: 20m
-      memory: 30Mi
-    limits:
-      cpu: 350m
-      memory: 300Mi
-  issuer:
-    create: false
-  certmanager:
-    enabled: false
   podMonitor:
     enabled: true
-    name: '{{ .Release.Name }}-redis-operator'
-    prometheusSelector:
-      prometheus: main
-    podMetricsEndpoints:
-      - interval: 30s
-        port: metrics
-        scrapeTimeout: 10s
-    selectorLabels:
-      name: redis-operator
 
 redis-operated:
   enabled: false

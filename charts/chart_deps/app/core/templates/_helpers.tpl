@@ -21,5 +21,8 @@
 {{- if eq (hasKey $obj "enabled") false }}
 {{- $obj = set $obj "enabled" true }}
 {{- end }}
+{{- if and (hasKey $obj "annotations") (or (eq (toYaml $obj.annotations) "null") (eq (toYaml $obj.annotations) "null\n")) }}
+{{- $_ := unset $obj "annotations" }}
+{{- end }}
 {{- toYaml $obj }} 
 {{- end }}

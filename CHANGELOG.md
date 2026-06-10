@@ -15,6 +15,7 @@ Enhancements:
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 * move argocd `redis port and existingSecret` from `env` to `argocd chart`
 * delete non-working `AbsentMetricCritical alerts`
+* `redis` image update 6.2.6 -> 8.6.1
 
 Fixed
 * `prometheus podMonitor` fix `targetLabels` field

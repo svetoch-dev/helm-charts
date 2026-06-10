@@ -1,0 +1,19 @@
+apiVersion: v2
+name: redis-operator
+version: 0.1.0
+appVersion: 0.25.0
+description: Chart for configuring and installing redis operator
+
+# https://github.com/OT-CONTAINER-KIT/redis-operator
+dependencies:
+  - name: core
+    version: 0.1.0
+    repository: file://../../app/core
+  - name: prometheus-lib
+    version: 0.1.0
+    repository: file://../../prometheus/lib
+  - name: certificates
+    version: 0.1.0
+    repository: file://../../security/certificates
+    alias: certificates
+    condition: certificates.enabled

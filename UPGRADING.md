@@ -43,10 +43,10 @@ helm template <release-name> <chart> -n <namespace>
 
 Expected main Opstree operator resources in the operator namespace:
 
-* `Deployment/redis-operator`
-* `ServiceAccount/redis-operator`
-* `ClusterRole/redis-operator`
-* `ClusterRoleBinding/redis-operator`
+* `Deployment/<operator-release-name>-redis-operator`
+* `ServiceAccount/<operator-release-name>-redis-operator`
+* `ClusterRole/<operator-release-name>-redis-operator`
+* `ClusterRoleBinding/<operator-release-name>-redis-operator`
 * `PodMonitor/<operator-release-name>-redis-operator`
 
 Expected main Opstree Redis resources in the application namespace:

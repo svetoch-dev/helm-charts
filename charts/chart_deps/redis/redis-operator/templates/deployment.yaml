@@ -1,0 +1,8 @@
+{{- $labels := include "redis-operator.labels" . | fromYaml }}
+{{- $deployment := tpl (toYaml .Values.operator) . | fromYaml }}
+{{- $deployment = set $deployment "selectorLabels" (include "redis-operator.selectorLabels" . | fromYaml) }}
+{{- $deployment = set $deployment "image" (include "redis-operator.image" .) }}
+{{- $deployment = set $deployment "ports" (include "redis-operator.ports" . | fromYamlArray) }}
+{{- $deployment = set $deployment "volumeMounts" (include "redis-operator.volumeMounts" . | fromYamlArray) }}
+{{- $deployment = set $deployment "volumes" (include "redis-operator.volumes" . | fromYamlArray) }}
+{{- include "core.deployment" (list $ $labels $deployment) }}
