@@ -19,10 +19,12 @@ metadata:
   labels: {{- include "redis-operated.labels" . | nindent 4 }}
   {{- if or .Values.annotations $sentinel.recreateStatefulSetOnUpdateInvalid }}
   annotations:
-    {{- include "common.annotations" . | nindent 4 }}
-    {{ if $sentinel.recreateStatefulSetOnUpdateInvalid }}
+    {{- with .Values.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- if $sentinel.recreateStatefulSetOnUpdateInvalid }}
     redis.opstreelabs.in/recreate-statefulset: "true"
-    {{ end }}
+    {{- end }}
   {{- end }}
 spec:
   clusterSize: {{ $sentinel.clusterSize }}

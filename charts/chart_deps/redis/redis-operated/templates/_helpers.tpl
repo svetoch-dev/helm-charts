@@ -66,13 +66,6 @@ app.kubernetes.io/name: {{ include "redis-operated.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{/* Define common annotations */}}
-{{- define "common.annotations" -}}
-{{- if .Values.annotations }}
-{{ toYaml .Values.annotations }}
-{{- end }}
-{{- end -}}
-
 {{/* Validate service type and return the value. */}}
 {{- define "redis-operated.validateServiceType" -}}
 {{- $allowedServiceTypes := list "ClusterIP" "NodePort" "LoadBalancer" -}}
