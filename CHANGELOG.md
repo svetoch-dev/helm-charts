@@ -8,6 +8,11 @@ New features:
 * `app/core` can template `configMap`
 
 Enhancements:
+* `app/core`:
+  * add `strategy` support to `Deployment` template
+  * avoid mutating shared labels while merging object labels
+  * use `serviceAccount.namespace` with `Release.Namespace` fallback in `ClusterRoleBinding`
+* `certificates` supports `tpl` in `Certificate.spec.secretName`
 * `postgres-operator`:
   * crds update 1.14.0 -> 1.15.1
   * chart update 1.14.0 -> 1.15.1
@@ -18,7 +23,8 @@ Enhancements:
 * `redis` image update 6.2.6 -> 8.6.1
 
 Fixed
-* `prometheus podMonitor` fix `targetLabels` field
+* `prometheus-operated` fix `thanosServiceMonitor` values key typo
+* `prometheus podMonitor` render `podTargetLabels` instead of invalid `targetLabels`
 
 # 10.12.0
 

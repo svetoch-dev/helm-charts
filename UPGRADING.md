@@ -41,41 +41,84 @@ helm dependency update <chart>
 helm template <release-name> <chart> -n <namespace>
 ```
 
+Use these placeholders when checking rendered names:
+
+* `<operator-release>` is the Helm release that installs the Redis Operator chart,
+  for example `redis-gcp-int`.
+* `<app-release>` is the Helm release that installs Redis as an application
+  dependency, for example `argocd-gcp-int`.
+* The downstream dependency should use the `redis-operated` chart with alias
+  `redis`. With that alias, Redis resource names use `<app-release>-redis-*`.
+  If the chart is rendered directly without alias, names use
+  `<release-name>-redis-operated-*` instead.
+
 Expected main Opstree operator resources in the operator namespace:
 
-* `Deployment/<operator-release-name>-redis-operator`
-* `ServiceAccount/<operator-release-name>-redis-operator`
-* `ClusterRole/<operator-release-name>-redis-operator`
-* `ClusterRoleBinding/<operator-release-name>-redis-operator`
-* `PodMonitor/<operator-release-name>-redis-operator`
+* `Deployment/<operator-release>-redis-operator`
+* `ServiceAccount/<operator-release>-redis-operator`
+* `ClusterRole/<operator-release>-redis-operator`
+* `ClusterRoleBinding/<operator-release>-redis-operator`
+* `PodMonitor/<operator-release>-redis-operator`
+
+For example, with operator release `redis-gcp-int`:
+
+* `Deployment/redis-gcp-int-redis-operator`
+* `ServiceAccount/redis-gcp-int-redis-operator`
+* `ClusterRole/redis-gcp-int-redis-operator`
+* `ClusterRoleBinding/redis-gcp-int-redis-operator`
+* `PodMonitor/redis-gcp-int-redis-operator`
 
 Expected main Opstree Redis resources in the application namespace:
 
-* `RedisReplication/<release-name>-redis-cluster`
-* `RedisSentinel/<release-name>-redis-sentinel`
-* `StatefulSet/<release-name>-redis-cluster`
-* `StatefulSet/<release-name>-redis-sentinel-sentinel`
-* `Pod/<release-name>-redis-cluster-0..N`
-* `Pod/<release-name>-redis-sentinel-sentinel-0..N`
-* `ServiceMonitor/<release-name>-redis-cluster`
-* `ServiceMonitor/<release-name>-redis-sentinel`
+* `RedisReplication/<app-release>-redis-cluster`
+* `RedisSentinel/<app-release>-redis-sentinel`
+* `StatefulSet/<app-release>-redis-cluster`
+* `StatefulSet/<app-release>-redis-sentinel-sentinel`
+* `Pod/<app-release>-redis-cluster-0..N`
+* `Pod/<app-release>-redis-sentinel-sentinel-0..N`
+* `ServiceMonitor/<app-release>-redis-cluster`
+* `ServiceMonitor/<app-release>-redis-sentinel`
+
+For example, with application release `argocd-gcp-int`:
+
+* `RedisReplication/argocd-gcp-int-redis-cluster`
+* `RedisSentinel/argocd-gcp-int-redis-sentinel`
+* `StatefulSet/argocd-gcp-int-redis-cluster`
+* `StatefulSet/argocd-gcp-int-redis-sentinel-sentinel`
+* `Pod/argocd-gcp-int-redis-cluster-0..N`
+* `Pod/argocd-gcp-int-redis-sentinel-sentinel-0..N`
+* `ServiceMonitor/argocd-gcp-int-redis-cluster`
+* `ServiceMonitor/argocd-gcp-int-redis-sentinel`
 
 Expected main Opstree Services created by the operator:
 
-* `Service/<release-name>-redis-cluster`
-* `Service/<release-name>-redis-cluster-additional`
-* `Service/<release-name>-redis-cluster-headless`
-* `Service/<release-name>-redis-cluster-master`
-* `Service/<release-name>-redis-cluster-metrics`
-* `Service/<release-name>-redis-cluster-replica`
-* `Service/<release-name>-redis-sentinel-sentinel`
-* `Service/<release-name>-redis-sentinel-sentinel-additional`
-* `Service/<release-name>-redis-sentinel-sentinel-headless`
-* `Service/<release-name>-redis-sentinel-sentinel-metrics`
+* `Service/<app-release>-redis-cluster`
+* `Service/<app-release>-redis-cluster-additional`
+* `Service/<app-release>-redis-cluster-headless`
+* `Service/<app-release>-redis-cluster-master`
+* `Service/<app-release>-redis-cluster-metrics`
+* `Service/<app-release>-redis-cluster-replica`
+* `Service/<app-release>-redis-sentinel-sentinel`
+* `Service/<app-release>-redis-sentinel-sentinel-additional`
+* `Service/<app-release>-redis-sentinel-sentinel-headless`
+* `Service/<app-release>-redis-sentinel-sentinel-metrics`
+
+For example, with application release `argocd-gcp-int`:
+
+* `Service/argocd-gcp-int-redis-cluster`
+* `Service/argocd-gcp-int-redis-cluster-additional`
+* `Service/argocd-gcp-int-redis-cluster-headless`
+* `Service/argocd-gcp-int-redis-cluster-master`
+* `Service/argocd-gcp-int-redis-cluster-metrics`
+* `Service/argocd-gcp-int-redis-cluster-replica`
+* `Service/argocd-gcp-int-redis-sentinel-sentinel`
+* `Service/argocd-gcp-int-redis-sentinel-sentinel-additional`
+* `Service/argocd-gcp-int-redis-sentinel-sentinel-headless`
+* `Service/argocd-gcp-int-redis-sentinel-sentinel-metrics`
 
 Applications that connect directly to Redis should use the Redis master Service:
 
-* `Service/<release-name>-redis-cluster-master`
+* `Service/<app-release>-redis-cluster-master`
 
 Old Spotahome resources usually have different prefixes, for example `rfr-*`,
 `rfs-*`, and `rfrm-*`. If any old and new resource names overlap in the target
@@ -128,7 +171,7 @@ Choose one of these paths per application:
 
 Applications that connect directly to Redis should use:
 
-* `REDIS_HOST=<release-name>-redis-cluster-master`
+* `REDIS_HOST=<app-release>-redis-cluster-master`
 * `REDIS_PORT=6379`
 * `REDIS_PASSWORD` from the Redis password Secret
 
@@ -137,11 +180,11 @@ Do not point `REDIS_SENTINEL_HOST` to the Redis master Service.
 
 The Sentinel Service name is based on the Redis sentinel name:
 
-* `Service/<release-name>-redis-sentinel-sentinel`
+* `Service/<app-release>-redis-sentinel-sentinel`
 
 Typical Sentinel client settings:
 
-* `REDIS_SENTINEL_HOST=<release-name>-redis-sentinel-sentinel`
+* `REDIS_SENTINEL_HOST=<app-release>-redis-sentinel-sentinel`
 * `REDIS_SENTINEL_PORT=26379`
 * `REDIS_SENTINEL_NAME=mymaster`
 * `REDIS_SENTINEL_PASSWORD` from the Redis password Secret
