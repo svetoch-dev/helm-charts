@@ -7,7 +7,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $obj.name }}
+  name: {{ tpl $obj.name $ }}
   labels:
 {{- include "core.labels.constructor" (list $ $labels $obj) | nindent 4 }}
   namespace: "{{ $obj.namespace }}"
@@ -22,6 +22,10 @@ spec:
   selector:
     matchLabels:
       {{- tpl (toYaml .) $ | nindent 8 }}
+  {{- end }}
+  {{- with $obj.strategy }}
+  strategy:
+    {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{ include "core.podtemplate" (list $ $obj) | nindent 2 | trim }}
 {{- end }}

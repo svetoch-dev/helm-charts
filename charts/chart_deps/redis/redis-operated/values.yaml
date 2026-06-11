@@ -1,35 +1,206 @@
-sentinel:
-  exporter:
-    enabled: false
-    args:
-      - '--log-format=json'
 redis:
-  exporter:
+  enabled: true
+  clusterSize: 3
+  image: quay.io/opstree/redis
+  tag: v8.6.1
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
+  serviceType: ClusterIP
+  loadBalancer: {}
+  redisSecret:
+    #secretName: redis
+    secretKey: password
+  resources:
+    limits:
+      memory: 500Mi
+    requests:
+      cpu: 50m
+      memory: 15Mi
+  ignoreAnnotations: []
+  minReadySeconds: 0
+  recreateStatefulSetOnUpdateInvalid: false
+  maxMemoryPercentOfLimit: 0
+  persistentVolumeClaimRetentionPolicy: {}
+  livenessProbe: {}
+  readinessProbe: {}
+  podSecurityContext:
+    fsGroup: 1000
+    runAsUser: 1000
+  securityContext: {}
+  priorityClassName: ""
+  nodeSelector: {}
+  storageSpec: {}
+    #volumeClaimTemplate:
+    #  spec:
+    #    accessModes:
+    #      - ReadWriteOnce
+    #    resources:
+    #      requests:
+    #        storage: 1Gi
+  affinity: {}
+  tolerations: []
+  topologySpreadConstraints: []
+  TLS:
+    ca: ca.crt
+    cert: tls.crt
+    key: tls.key
+    secret:
+      secretName: ""
+  acl:
+    secret:
+      secretName: ""
+  env: []
+  serviceAccountName: ""
+  pdb:
     enabled: false
-    args:
-      - '--log-format=json'
-auth: {}
-bootstrapNode: {}
-labelWhitelist: {}
-redis-podmonitor:
-  enabled: false
-sentinel-podmonitor:
-  enabled: false
+    minAvailable: 1
+    maxUnavailable: null
+  externalConfig:
+    enabled: false
+    name: '{{ include "redis-operated.clusterName" . }}-ext-config'
+    data:
+      redis-additional.conf: |
+        tcp-keepalive 400
+        slowlog-max-len 158
+        stream-node-max-bytes 2048
+  initContainer:
+    enabled: false
+    image: ""
+    imagePullPolicy: IfNotPresent
+    resources: {}
+    env: []
+    command: []
+    args: []
+  sidecars: []
+  sentinel:
+    enabled: false
+  exporter:
+    enabled: true
+    image: quay.io/opstree/redis-exporter
+    tag: v1.83.0
+    imagePullPolicy: IfNotPresent
+    env:
+      - name: REDIS_EXPORTER_LOG_FORMAT
+        value: json
+    resources:
+      limits:
+        cpu: 300m
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 15Mi
+  monitor:
+    enabled: true
+    prometheusSelector:
+      prometheus: main
+    endpoints:
+      - interval: 30s
+        port: redis-exporter
+        scrapeTimeout: 10s
+    selectorLabels:
+      app: '{{ include "redis-operated.clusterName" . }}'
+      app.kubernetes.io/component: metrics
+      redis_setup_type: replication
+      role: replication
 
-redisServiceMonitor:
-  enabled: false
-  prometheusSelector: {}
-  labels: {}
-  targetLabels: []
-  endpoints:
-  - port: http-metrics
-    path: /metrics
-
-sentinelServiceMonitor:
-  enabled: false
-  prometheusSelector: {}
-  labels: {}
-  targetLabels: []
-  endpoints:
-  - targetPort: 9355
-    path: /metrics
+sentinel:
+  enabled: true
+  clusterSize: 3
+  image: quay.io/opstree/redis-sentinel
+  tag: v8.6.1
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
+  serviceType: ClusterIP
+  loadBalancer: {}
+  redisSentinelConfig:
+    redisReplicationPassword:
+      #secretName: "redis"
+      secretKey: "password"
+  resources:
+    limits:
+      memory: 500Mi
+    requests:
+      cpu: 50m
+      memory: 15Mi
+  ignoreAnnotations: []
+  minReadySeconds: 0
+  recreateStatefulSetOnUpdateInvalid: false
+  persistentVolumeClaimRetentionPolicy: {}
+  podSecurityContext:
+    fsGroup: 1000
+    runAsUser: 1000
+  securityContext: {}
+  priorityClassName: ""
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  topologySpreadConstraints: []
+  TLS:
+    ca: ca.crt
+    cert: tls.crt
+    key: tls.key
+    secret:
+      secretName: ""
+  env: []
+  serviceAccountName: ""
+  pdb:
+    enabled: false
+    minAvailable: 1
+    maxUnavailable: null
+  externalConfig:
+    enabled: false
+    name: '{{ include "redis-operated.sentinelName" . }}-ext-config'
+    data:
+      redis-sentinel-additional.conf: |
+        tcp-keepalive 400
+        slowlog-max-len 158
+        stream-node-max-bytes 2048
+  initContainer:
+    enabled: false
+    image: ""
+    imagePullPolicy: IfNotPresent
+    resources: {}
+    env: []
+    command: []
+    args: []
+  sidecars: []
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 1
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 1
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  exporter:
+    enabled: true
+    image: quay.io/opstree/redis-exporter
+    tag: v1.83.0
+    imagePullPolicy: IfNotPresent
+    env:
+      - name: REDIS_EXPORTER_LOG_FORMAT
+        value: json
+    resources:
+      limits:
+        cpu: 300m
+        memory: 100Mi
+      requests:
+        cpu: 10m
+        memory: 15Mi
+  monitor:
+    enabled: true
+    prometheusSelector:
+      prometheus: main
+    endpoints:
+      - interval: 30s
+        port: redis-exporter
+        scrapeTimeout: 10s
+    selectorLabels:
+      app: '{{ include "redis-operated.sentinelName" . }}-sentinel'
+      app.kubernetes.io/component: metrics
+      redis_setup_type: sentinel
+      role: sentinel

@@ -1,0 +1,2 @@
+{{- $labels := include "redis-operator.labels" . | fromYaml }}
+{{- include "core.clusterrole" (list $ $labels .Values.clusterRole) }}
