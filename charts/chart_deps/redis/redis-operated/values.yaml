@@ -8,7 +8,7 @@ redis:
   serviceType: ClusterIP
   loadBalancer: {}
   redisSecret:
-    secretName: redis
+    #secretName: redis
     secretKey: password
   resources:
     limits:
