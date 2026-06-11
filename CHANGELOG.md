@@ -39,7 +39,6 @@ Fixed
 New features:
 * add common `crds.revision` with default=master to `environment`
 
-
 # 10.12.0
 
 New features:
