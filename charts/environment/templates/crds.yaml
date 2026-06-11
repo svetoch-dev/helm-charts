@@ -34,7 +34,7 @@ spec:
     {{- toYaml . | nindent 6 }}
     {{- end }}
     repoURL: {{ $.Values.repository.url }}
-    targetRevision: {{ $operator_obj.revision | default $.Values.repository.revision }}
+    targetRevision: {{ $operator_obj.revision | default $.Values.crds.revision | default $.Values.repository.revision }}
   {{- end }}
   {{- end }}
   {{- with .syncPolicy }}

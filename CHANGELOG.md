@@ -12,6 +12,11 @@ Enhancements:
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
 
+# 10.12.1
+
+New features:
+* add common `crds.revision` with default=master to `environment`
+
 # 10.12.0
 
 New features:
