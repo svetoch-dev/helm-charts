@@ -39,6 +39,10 @@ argocd:
     params:
       server.insecure: true
 
+  externalRedis:
+    port: 6379
+    existingSecret: "argocd-redis"
+
   redis:
     enabled: false
 
@@ -105,36 +109,15 @@ certificates:
 
 redis:
   enabled: false
-  redisServiceMonitor:
-    enabled: true
-    prometheusSelector:
-      prometheus: main
-  sentinelServiceMonitor:
-    enabled: true
-    prometheusSelector:
-      prometheus: main
-  auth:
-    secretPath: argocd-redis
-  sentinel:
-    replicas: 3
-    resources:
-      requests:
-        cpu: 10m
-        memory: 10Mi
-      limits:
-        memory: 200Mi
-    exporter:
-      enabled: true
   redis:
-    replicas: 3
-    resources:
-      requests:
-        cpu: 50m
-        memory: 10Mi
-      limits:
-        memory: 250Mi
-    exporter:
-      enabled: true
+    redisSecret:
+      secretName: "argocd-redis"
+      secretKey: "redis-password"
+  sentinel:
+    redisSentinelConfig:
+      redisReplicationPassword:
+        secretName: "argocd-redis"
+        secretKey: "redis-password"
 
 probes:
   enabled: false

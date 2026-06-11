@@ -1,0 +1,293 @@
+nameOverride: ""
+fullnameOverride: ""
+
+operator:
+  enabled: true
+  name: '{{ include "redis-operator.fullname" . }}'
+  containerName: redis-operator
+  serviceAccountName: '{{ include "redis-operator.fullname" . }}'
+  image: quay.io/opstree/redis-operator
+  tag: v0.25.0
+  initContainerImageTag: v0.25.0
+  imagePullPolicy: Always
+  imagePullSecrets: []
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  podAnnotations: {}
+  podLabels: {}
+  podSecurityContext: {}
+  securityContext: {}
+  resources:
+    requests:
+      cpu: 20m
+      memory: 30Mi
+    limits:
+      cpu: 350m
+      memory: 300Mi
+  command:
+    - /operator
+    - manager
+  args:
+    - --leader-elect
+    - '--metrics-bind-address={{ .Values.operator.metrics.bindAddress }}'
+    - '--kube-client-timeout={{ .Values.manager.config.kubeClientTimeout }}'
+  serviceDNSDomain: cluster.local
+  env:
+    - name: INIT_CONTAINER_IMAGE
+      value: '{{ include "redis-operator.initContainerImage" . }}'
+    - name: ENABLE_WEBHOOKS
+      value: '{{ .Values.webhook.enabled }}'
+    - name: SERVICE_DNS_DOMAIN
+      value: '{{ .Values.operator.serviceDNSDomain }}'
+    - name: FEATURE_GATES
+      value: '{{ include "redis-operator.featureGates" . }}'
+  ports:
+    - containerPort: 8081
+      name: probe
+      protocol: TCP
+    - containerPort: 8080
+      name: metrics
+      protocol: TCP
+  pprofPorts:
+    - containerPort: 6060
+      name: pprof
+      protocol: TCP
+  webhookPorts:
+    - containerPort: 9443
+      name: webhook-server
+      protocol: TCP
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: probe
+  readinessProbe:
+    httpGet:
+      path: /readyz
+      port: probe
+  volumeMounts: []
+  volumes: []
+  webhookVolumeMounts:
+    - mountPath: /tmp/k8s-webhook-server/serving-certs
+      name: cert
+      readOnly: true
+  webhookVolumes:
+    - name: cert
+      secret:
+        defaultMode: 420
+        secretName: '{{ include "redis-operator.fullname" . }}-webhook-server-cert'
+  automountServiceAccountToken: true
+  pprof:
+    enabled: false
+    bindAddress: ":6060"
+  metrics:
+    enabled: true
+    bindAddress: ":8080"
+  nodeSelector: {}
+  affinity: {}
+  tolerations: []
+  priorityClassName: ""
+
+serviceAccount:
+  create: true
+  name: '{{ include "redis-operator.fullname" . }}'
+  annotations: {}
+  automountServiceAccountToken: true
+
+clusterRole:
+  enabled: true
+  name: '{{ include "redis-operator.fullname" . }}'
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-admin: "true"
+  serviceAccount:
+    name: '{{ include "redis-operator.fullname" . }}'
+  rules:
+    - apiGroups:
+        - redis.redis.opstreelabs.in
+      resources:
+        - rediss
+        - redisclusters
+        - redisreplications
+        - redis
+        - rediscluster
+        - redissentinel
+        - redissentinels
+        - redisreplication
+      verbs:
+        - create
+        - delete
+        - get
+        - list
+        - patch
+        - update
+        - watch
+    - nonResourceURLs:
+        - "*"
+      verbs:
+        - get
+    - apiGroups:
+        - apiextensions.k8s.io
+      resources:
+        - customresourcedefinitions
+      verbs:
+        - get
+        - list
+        - watch
+    - apiGroups:
+        - redis.redis.opstreelabs.in
+      resources:
+        - redis/finalizers
+        - rediscluster/finalizers
+        - redisclusters/finalizers
+        - redissentinel/finalizers
+        - redissentinels/finalizers
+        - redisreplication/finalizers
+        - redisreplications/finalizers
+      verbs:
+        - update
+    - apiGroups:
+        - redis.redis.opstreelabs.in
+      resources:
+        - redis/status
+        - rediscluster/status
+        - redisclusters/status
+        - redissentinel/status
+        - redissentinels/status
+        - redisreplication/status
+        - redisreplications/status
+      verbs:
+        - get
+        - patch
+        - update
+    - apiGroups:
+        - ""
+      resources:
+        - secrets
+        - pods/exec
+        - pods
+        - services
+        - configmaps
+        - events
+        - persistentvolumeclaims
+        - namespaces
+      verbs:
+        - create
+        - delete
+        - get
+        - list
+        - patch
+        - update
+        - watch
+    - apiGroups:
+        - apps
+      resources:
+        - statefulsets
+      verbs:
+        - create
+        - delete
+        - get
+        - list
+        - patch
+        - update
+        - watch
+    - apiGroups:
+        - coordination.k8s.io
+      resources:
+        - leases
+      verbs:
+        - create
+        - delete
+        - get
+        - list
+        - patch
+        - update
+        - watch
+    - apiGroups:
+        - policy
+      resources:
+        - poddisruptionbudgets
+      verbs:
+        - create
+        - delete
+        - get
+        - list
+        - patch
+        - update
+        - watch
+
+webhook:
+  enabled: false
+  service:
+    name: '{{ include "redis-operator.fullname" . }}-webhook'
+    type: ClusterIP
+    ports:
+      - port: 443
+        protocol: TCP
+        targetPort: 9443
+  name: '{{ include "redis-operator.fullname" . }}-mutating-webhook-configuration'
+  annotations:
+    cert-manager.io/inject-ca-from: '{{ .Release.Namespace }}/{{ include "redis-operator.fullname" . }}-serving-cert'
+  webhooks:
+    - admissionReviewVersions:
+        - v1
+      clientConfig:
+        service:
+          name: '{{ include "redis-operator.fullname" . }}-webhook'
+          path: /mutate-core-v1-pod
+      failurePolicy: Fail
+      name: ot-mutate-pod.opstree.com
+      rules:
+        - apiGroups:
+            - ""
+          apiVersions:
+            - v1
+          operations:
+            - CREATE
+          resources:
+            - pods
+      sideEffects: None
+      objectSelector:
+        matchExpressions:
+          - key: redis_setup_type
+            operator: Exists
+
+certificates:
+  enabled: false
+  issuers:
+    redis-operator-webhook:
+      enabled: true
+      name: '{{ .Release.Name }}-redis-operator-selfsigned'
+      selfSigned: true
+  certs:
+    redis-operator-webhook:
+      enabled: true
+      name: '{{ .Release.Name }}-redis-operator-serving-cert'
+      secretName: '{{ .Release.Name }}-redis-operator-webhook-server-cert'
+      dnsNames:
+        - '{{ .Release.Name }}-redis-operator-webhook.{{ .Release.Namespace }}.svc'
+        - '{{ .Release.Name }}-redis-operator-webhook.{{ .Release.Namespace }}.svc.cluster.local'
+      issuerRef:
+        name: '{{ .Release.Name }}-redis-operator-selfsigned'
+        kind: Issuer
+
+featureGates:
+  GenerateConfigInInitContainer: false
+
+manager:
+  config:
+    kubeClientTimeout: 60s
+
+podMonitor:
+  enabled: true
+  name: '{{ include "redis-operator.fullname" . }}'
+  prometheusSelector:
+    prometheus: main
+  podMetricsEndpoints:
+    - interval: 30s
+      port: metrics
+      scrapeTimeout: 10s

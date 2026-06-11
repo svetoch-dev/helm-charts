@@ -25,6 +25,20 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
+Redis replication resource name.
+*/}}
+{{- define "redis-operated.clusterName" -}}
+{{- printf "%s-cluster" (include "redis-operated.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Redis sentinel resource name.
+*/}}
+{{- define "redis-operated.sentinelName" -}}
+{{- printf "%s-sentinel" (include "redis-operated.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "redis-operated.chart" -}}
@@ -35,55 +49,30 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "redis-operated.labels" -}}
-app.kubernetes.io/name: {{ include "redis-operated.name" . }}
 helm.sh/chart: {{ include "redis-operated.chart" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+{{ include "redis-operated.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.kubernetes.io/component: middleware
 {{- end -}}
 
 {{/*
-Service Selector labels
+Selector labels
 */}}
-{{- define "redis-operated.serviceSelectorLabels" -}}
-app.kubernetes.io/name: {{ .Release.Name }}-{{ include "redis-operated.name" . }}
+{{- define "redis-operated.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "redis-operated.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{- define "redis-operated.redisExporterDefaults" -}}
-{{- if .Values.redis.exporter.enabled }}
-image: oliver006/redis_exporter:v1.73.0@sha256:1a8f5e48b2af0fb02d182be3ddd623e7e39881b6464bdb5bf843b1f6d45ed050
-resources:
-  requests:
-    cpu: 10m
-    memory: 15Mi
-  limits:
-    cpu: 300m
-    memory: 50Mi
-{{- if .Values.auth.secretPath }}
-env:
-- name: REDIS_USER
-  value: default
-- name: REDIS_PASSWORD
-  valueFrom:
-    secretKeyRef:
-      key: password
-      name: {{ .Values.auth.secretPath }}
-{{- end }}
-{{- end }}
-{{- end }}
-
-{{- define "sentinel-operated.sentinelExporterDefaults" -}}
-{{- if .Values.sentinel.exporter.enabled }}
-image: leominov/redis_sentinel_exporter:1.7.1@sha256:812e617d2201d0ee8ba51d60b9fe9590a46bed84abc95746f554e1ca04e5478a
-resources:
-  requests:
-    cpu: 10m
-    memory: 15Mi
-  limits:
-    cpu: 200m
-    memory: 50Mi
-{{- end }}
-{{- end }}
+{{/* Validate service type and return the value. */}}
+{{- define "redis-operated.validateServiceType" -}}
+{{- $allowedServiceTypes := list "ClusterIP" "NodePort" "LoadBalancer" -}}
+{{- $serviceType := .serviceType | default "ClusterIP" -}}
+{{- if has $serviceType $allowedServiceTypes -}}
+{{- $serviceType -}}
+{{- else -}}
+{{- fail (printf "%s serviceType must be one of ClusterIP, NodePort, LoadBalancer; got: %s" .name $serviceType) -}}
+{{- end -}}
+{{- end -}}

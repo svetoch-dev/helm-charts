@@ -1,39 +1,205 @@
-{{- $redisExporterDefaults := include "redis-operated.redisExporterDefaults" . | fromYaml }}
-{{- $redisExporter := merge .Values.redis.exporter $redisExporterDefaults }}
-{{- $redis := .Values.redis }}
-{{- $redis := unset $redis "exporter" }}
-{{- $redis := set $redis "exporter" $redisExporter }}
-{{- $sentinelExporterDefaults := include "sentinel-operated.sentinelExporterDefaults" . | fromYaml }}
-{{- $sentinelExporter := merge .Values.sentinel.exporter $sentinelExporterDefaults }}
-{{- $sentinel := .Values.sentinel }}
-{{- $sentinel := unset $sentinel "exporter" }}
-{{- $sentinel := set $sentinel "exporter" $sentinelExporter }}
 ---
-apiVersion: databases.spotahome.com/v1
-kind: RedisFailover
+{{- $redis := .Values.redis | default dict }}
+{{- if $redis.enabled }}
+{{- $redisExporter := $redis.exporter | default dict }}
+{{- $externalConfig := $redis.externalConfig | default dict }}
+{{- $tls := $redis.TLS | default dict }}
+{{- $tlsSecret := $tls.secret | default dict }}
+{{- $acl := $redis.acl | default dict }}
+{{- $aclSecret := $acl.secret | default dict }}
+{{- $pdb := $redis.pdb | default dict }}
+{{- $sentinel := $redis.sentinel | default dict }}
+{{- $initContainer := $redis.initContainer | default dict }}
+{{- $redisReplicationName := $redis.name | default (include "redis-operated.clusterName" .) }}
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: RedisReplication
 metadata:
-  name: {{ include "redis-operated.fullname" . }}
-  labels:
-{{- include "redis-operated.labels" . | nindent 4 }}
+  name: {{ $redisReplicationName }}
+  namespace: {{ .Release.Namespace }}
+  labels: {{- include "redis-operated.labels" . | nindent 4 }}
+  {{- if or .Values.annotations $redis.recreateStatefulSetOnUpdateInvalid }}
+  annotations:
+    {{- with .Values.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- if $redis.recreateStatefulSetOnUpdateInvalid }}
+    redis.opstreelabs.in/recreate-statefulset: "true"
+    {{- end }}
+  {{- end }}
 spec:
-  {{- with $sentinel }}
-  sentinel:
-  {{- tpl (toYaml .) $ | nindent 4 }}
+  clusterSize: {{ $redis.clusterSize }}  
+  kubernetesConfig:
+    image: "{{ $redis.image }}:{{ $redis.tag }}"
+    imagePullPolicy: "{{ $redis.imagePullPolicy }}"
+    {{- if $redis.imagePullSecrets }}
+    imagePullSecrets: {{ toYaml $redis.imagePullSecrets | nindent 4 }}
+    {{- end }}
+    {{- if $redis.serviceType }}
+    service:
+      serviceType: {{ include "redis-operated.validateServiceType" (dict "serviceType" $redis.serviceType "name" $redisReplicationName) }}
+    {{- end }}
+    {{- if $redis.resources}}
+    resources: {{ toYaml $redis.resources | nindent 6 }}
+    {{- end }}
+    {{- if and $redis.redisSecret.secretName $redis.redisSecret.secretKey }}
+    redisSecret:
+      name: {{ $redis.redisSecret.secretName | quote }}
+      key: {{ $redis.redisSecret.secretKey | quote }}
+    {{- end }}
+    {{- if $redis.ignoreAnnotations}}
+    ignoreAnnotations: {{ toYaml $redis.ignoreAnnotations | nindent 6 }}
+    {{- end }}
+    {{- if $redis.minReadySeconds }}
+    minReadySeconds: {{ $redis.minReadySeconds}}
+    {{- end }}
+    {{- if $redis.persistentVolumeClaimRetentionPolicy }}
+    persistentVolumeClaimRetentionPolicy: {{ toYaml $redis.persistentVolumeClaimRetentionPolicy | nindent 6 }}
+    {{- end }}
+  {{- if $redis.livenessProbe }}
+  livenessProbe: {{ toYaml $redis.livenessProbe | nindent 4 }}
   {{- end }}
-  {{- with $redis }}
-  redis:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with .Values.auth }}
-  auth:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with .Values.bootstrapNode }}
-  bootstrapNode:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
-  {{- with .Values.labelWhitelist }}
-  labelWhitelist:
-  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- if $redis.readinessProbe }}
+  readinessProbe: {{ toYaml $redis.readinessProbe | nindent 4 }}
   {{- end }}
 
+  redisExporter:
+    enabled: {{ $redisExporter.enabled }}
+    image: "{{ $redisExporter.image }}:{{ $redisExporter.tag }}"
+    imagePullPolicy: "{{ $redisExporter.imagePullPolicy }}"
+    {{- if $redisExporter.resources}}
+    resources: {{ toYaml $redisExporter.resources | nindent 6 }}
+    {{- end }}  
+    {{- if $redisExporter.env }}
+    env: {{ toYaml $redisExporter.env | nindent 6 }}
+    {{- end }}
+    {{- if $redisExporter.securityContext}}
+    securityContext: {{ toYaml $redisExporter.securityContext | nindent 6 }}
+    {{- end }}
+  
+  {{- if or $externalConfig.enabled (and $redis.maxMemoryPercentOfLimit (gt (int $redis.maxMemoryPercentOfLimit) 0)) }}
+  redisConfig:
+    {{- if $externalConfig.enabled }}
+    additionalRedisConfig: "{{ $redisReplicationName }}-ext-config"
+    {{- end }}
+    {{- if and $redis.maxMemoryPercentOfLimit (gt (int $redis.maxMemoryPercentOfLimit) 0) }}
+    maxMemoryPercentOfLimit: {{ $redis.maxMemoryPercentOfLimit }}
+    {{- end }}
+  {{- end }}
+  {{- if $redis.storageSpec }}
+  storage: {{ toYaml $redis.storageSpec | nindent 4 }}
+  {{- end }}
+  {{- if $redis.nodeSelector }}
+  nodeSelector: {{ toYaml $redis.nodeSelector | nindent 4 }}
+  {{- end }}
+  {{- if $redis.podSecurityContext }}
+  podSecurityContext: {{ toYaml $redis.podSecurityContext | nindent 4 }}
+  {{- end }}
+  {{- if $redis.securityContext }}
+  securityContext: {{ toYaml $redis.securityContext | nindent 4 }}
+  {{- end }}
+  {{- if and $redis.priorityClassName (ne $redis.priorityClassName "") }}
+  priorityClassName: "{{ $redis.priorityClassName }}"
+  {{- end }}
+  {{- if $redis.affinity }}
+  affinity: {{ toYaml $redis.affinity | nindent 4 }}
+  {{- end }}
+  {{- if $redis.tolerations }}
+  tolerations: {{ toYaml $redis.tolerations | nindent 4 }}
+  {{- end }}
+  {{- if $redis.topologySpreadConstraints }}
+  topologySpreadConstraints: {{ toYaml $redis.topologySpreadConstraints | nindent 4 }}
+  {{- end }}
+  {{- if and $tls.ca $tls.cert $tls.key $tlsSecret.secretName }}
+  TLS:
+    ca: {{ $tls.ca | quote }}
+    cert: {{ $tls.cert | quote }}
+    key: {{ $tls.key | quote }}
+    secret:
+      secretName: {{ $tlsSecret.secretName | quote }}
+  {{- end }}
+  {{- if or (and $acl.secret (ne $aclSecret.secretName "")) $acl.persistentVolumeClaim }}
+  acl:
+    {{- if and $acl.secret (ne $aclSecret.secretName "") }}
+    secret:
+      secretName: {{ $aclSecret.secretName | quote }}
+    {{- end }}
+    {{- if $acl.persistentVolumeClaim }}
+    persistentVolumeClaim: {{ $acl.persistentVolumeClaim | quote }}
+    {{- end }}
+  {{- end }}
+  {{- if and $initContainer.enabled (ne $initContainer.image "") }}
+  initContainer:
+    enabled: {{ $initContainer.enabled }}
+    image: {{ $initContainer.image }}
+    {{- if $initContainer.imagePullPolicy }}
+    imagePullPolicy: {{ $initContainer.imagePullPolicy }}
+    {{- end }}
+    {{- if $initContainer.resources }}
+    resources:
+      {{- toYaml $initContainer.resources | nindent 6 }}
+    {{- end }}
+    {{- if $initContainer.env }}
+    env:
+      {{- toYaml $initContainer.env | nindent 6 }}
+    {{- end }}
+    {{- if $initContainer.command }}
+    command:
+      {{- toYaml $initContainer.command | nindent 6 }}
+    {{- end }}
+    {{- if $initContainer.args }}
+    args:
+      {{- toYaml $initContainer.args | nindent 6 }}
+    {{- end }}
+  {{- end }}
+  {{- if $redis.sidecars }}
+  sidecars: {{ toYaml $redis.sidecars | nindent 4 }}
+  {{- end }}
+  {{- if and $redis.serviceAccountName (ne $redis.serviceAccountName "") }}
+  serviceAccountName: "{{ $redis.serviceAccountName }}"
+  {{- end }}
+  {{- if $redis.env }}
+  env: {{ toYaml $redis.env | nindent 4 }}
+  {{- end }}
+  {{- if $pdb.enabled }}
+  pdb:
+    enabled: {{ $pdb.enabled }}
+    minAvailable: {{ $pdb.minAvailable }}
+    maxUnavailable: {{ $pdb.maxUnavailable }}
+  {{- end }}
+  {{- if $sentinel.enabled }}
+  sentinel:
+    image: "{{ $sentinel.image }}:{{ $sentinel.tag }}"
+    imagePullPolicy: "{{ $sentinel.imagePullPolicy }}"
+    size: {{ $sentinel.size }}
+    {{- if $sentinel.resources }}
+    resources: {{ toYaml $sentinel.resources | nindent 6 }}
+    {{- end }}
+    {{- if $sentinel.ignoreAnnotations }}
+    ignoreAnnotations: {{ toYaml $sentinel.ignoreAnnotations | nindent 6 }}
+    {{- end }}
+    {{- if $sentinel.minReadySeconds }}
+    minReadySeconds: {{ $sentinel.minReadySeconds }}
+    {{- end }}
+    {{- if $sentinel.persistentVolumeClaimRetentionPolicy }}
+    persistentVolumeClaimRetentionPolicy: {{ toYaml $sentinel.persistentVolumeClaimRetentionPolicy | nindent 6 }}
+    {{- end }}
+    {{- if $sentinel.parallelSyncs }}
+    parallelSyncs: {{ $sentinel.parallelSyncs | quote }}
+    {{- end }}
+    {{- if $sentinel.failoverTimeout }}
+    failoverTimeout: {{ $sentinel.failoverTimeout | quote }}
+    {{- end }}
+    {{- if $sentinel.downAfterMilliseconds }}
+    downAfterMilliseconds: {{ $sentinel.downAfterMilliseconds | quote }}
+    {{- end }}
+    {{- if $sentinel.resolveHostnames }}
+    resolveHostnames: {{ $sentinel.resolveHostnames | quote }}
+    {{- end }}
+    {{- if $sentinel.announceHostnames }}
+    announceHostnames: {{ $sentinel.announceHostnames | quote }}
+    {{- end }}
+    {{- if $sentinel.additionalSentinelConfig }}
+    additionalSentinelConfig: {{ $sentinel.additionalSentinelConfig | quote }}
+    {{- end }}
+  {{- end }}
+{{- end }}

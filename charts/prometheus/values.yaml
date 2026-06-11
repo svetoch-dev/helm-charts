@@ -554,23 +554,6 @@ prometheus-rules:
 
       AbsentMetricCritical:
         enabled: false
-        rules:
-          kong_http_requests_total:
-            enabled: false
-            source: "kong exporter"
-          pg_stat_activity_count:
-            enabled: false
-            source: "prometheus-portgres-exporter"
-          pg_stat_database_xact_commit:
-            query: "{datname!~'^(postgres|template[0-9]*|default|cloudsqladmin|unknown)$'}"
-            enabled: false
-            source: "prometheus-portgres-exporter"
-          pg_up:
-            enabled: false
-            source: "prometheus-portgres-exporter"
-          probe_success:
-            enabled: false
-            source: "prometheus-blackbox-exporter"
 
       CriticalMetric:
         enabled: false

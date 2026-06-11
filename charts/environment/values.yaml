@@ -138,9 +138,7 @@ chart_apps:
           emails: []
       argocd:
         externalRedis:
-          host: rfrm-argocd-{{ .Values.global.env.name }}-redis
-          port: 6379
-          existingSecret: "argocd-redis"
+          host: argocd-{{ .Values.global.env.name }}-redis-cluster-master
   prometheus:
     enabled: false
     values: |

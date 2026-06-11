@@ -45,7 +45,7 @@ servicemonitor:
   #  - port: http
   #    path: /metrics
 
-thanosSericeMonitor:
+thanosServiceMonitor:
   enabled: false
   prometheusSelector: {}
   labels: {}
