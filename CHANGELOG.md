@@ -34,6 +34,12 @@ Fixed
 * `prometheus-operated` fix `thanosServiceMonitor` values key typo
 * `prometheus podMonitor` render `podTargetLabels` instead of invalid `targetLabels`
 
+# 10.12.1
+
+New features:
+* add common `crds.revision` with default=master to `environment`
+
+
 # 10.12.0
 
 New features:
