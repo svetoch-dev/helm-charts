@@ -112,9 +112,10 @@ sentinel:
   imagePullSecrets: []
   serviceType: ClusterIP
   loadBalancer: {}
-  redisReplicationPassword:
-    #secretName: "redis"
-    secretKey: "password"
+  redisSentinelConfig:
+    redisReplicationPassword:
+      #secretName: "redis"
+      secretKey: "password"
   resources:
     limits:
       memory: 500Mi
