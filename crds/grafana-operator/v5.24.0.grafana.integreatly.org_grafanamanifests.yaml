@@ -3,20 +3,23 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.19.0
-  name: grafanaalertrulegroups.grafana.integreatly.org
+    controller-gen.kubebuilder.io/version: v0.21.0
+  name: grafanamanifests.grafana.integreatly.org
 spec:
   group: grafana.integreatly.org
   names:
     categories:
     - grafana-operator
-    kind: GrafanaAlertRuleGroup
-    listKind: GrafanaAlertRuleGroupList
-    plural: grafanaalertrulegroups
-    singular: grafanaalertrulegroup
+    kind: GrafanaManifest
+    listKind: GrafanaManifestList
+    plural: grafanamanifests
+    singular: grafanamanifest
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
+    - jsonPath: .spec.template.kind
+      name: Kind
+      type: string
     - format: date-time
       jsonPath: .status.lastResync
       name: Last resync
@@ -27,8 +30,7 @@ spec:
     name: v1beta1
     schema:
       openAPIV3Schema:
-        description: GrafanaAlertRuleGroup is the Schema for the grafanaalertrulegroups
-          API
+        description: GrafanaManifest is the Schema for the grafana manifests
         properties:
           apiVersion:
             description: |-
@@ -48,34 +50,13 @@ spec:
           metadata:
             type: object
           spec:
-            description: GrafanaAlertRuleGroupSpec defines the desired state of GrafanaAlertRuleGroup
+            description: GrafanaManifestSpec defines the desired state of a GrafanaManifest
             properties:
               allowCrossNamespaceImport:
                 default: false
                 description: Allow the Operator to match this resource with Grafanas
                   outside the current namespace
                 type: boolean
-              editable:
-                description: Whether to enable or disable editing of the alert rule
-                  group in Grafana UI
-                type: boolean
-                x-kubernetes-validations:
-                - message: Value is immutable
-                  rule: self == oldSelf
-              folderRef:
-                description: Match GrafanaFolders CRs to infer the uid
-                type: string
-                x-kubernetes-validations:
-                - message: Value is immutable
-                  rule: self == oldSelf
-              folderUID:
-                description: |-
-                  UID of the folder containing this rule group
-                  Overrides the FolderSelector
-                type: string
-                x-kubernetes-validations:
-                - message: Value is immutable
-                  rule: self == oldSelf
               instanceSelector:
                 description: Selects Grafana instances for import
                 properties:
@@ -125,181 +106,161 @@ spec:
                 x-kubernetes-validations:
                 - message: spec.instanceSelector is immutable
                   rule: self == oldSelf
-              interval:
-                format: duration
-                pattern: ^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$
-                type: string
-              name:
-                description: Name of the alert rule group. If not specified, the resource
-                  name will be used.
-                type: string
+              patch:
+                properties:
+                  env:
+                    items:
+                      properties:
+                        name:
+                          type: string
+                        valueFrom:
+                          properties:
+                            configMapKeyRef:
+                              description: Selects a key of a ConfigMap.
+                              properties:
+                                key:
+                                  description: The key to select.
+                                  type: string
+                                name:
+                                  default: ""
+                                  description: |-
+                                    Name of the referent.
+                                    This field is effectively required, but due to backwards compatibility is
+                                    allowed to be empty. Instances of this type with an empty value here are
+                                    almost certainly wrong.
+                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  type: string
+                                optional:
+                                  description: Specify whether the ConfigMap or its
+                                    key must be defined
+                                  type: boolean
+                              required:
+                              - key
+                              type: object
+                              x-kubernetes-map-type: atomic
+                            grafanaRef:
+                              description: ObjectFieldSelector selects an APIVersioned
+                                field of an object.
+                              properties:
+                                apiVersion:
+                                  description: Version of the schema the FieldPath
+                                    is written in terms of, defaults to "v1".
+                                  type: string
+                                fieldPath:
+                                  description: Path of the field to select in the
+                                    specified API version.
+                                  type: string
+                              required:
+                              - fieldPath
+                              type: object
+                              x-kubernetes-map-type: atomic
+                            secretKeyRef:
+                              description: Selects a key of a Secret.
+                              properties:
+                                key:
+                                  description: The key of the secret to select from.  Must
+                                    be a valid secret key.
+                                  type: string
+                                name:
+                                  default: ""
+                                  description: |-
+                                    Name of the referent.
+                                    This field is effectively required, but due to backwards compatibility is
+                                    allowed to be empty. Instances of this type with an empty value here are
+                                    almost certainly wrong.
+                                    More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                                  type: string
+                                optional:
+                                  description: Specify whether the Secret or its key
+                                    must be defined
+                                  type: boolean
+                              required:
+                              - key
+                              type: object
+                              x-kubernetes-map-type: atomic
+                          type: object
+                      required:
+                      - name
+                      - valueFrom
+                      type: object
+                    type: array
+                  scripts:
+                    items:
+                      type: string
+                    type: array
+                required:
+                - scripts
+                type: object
               resyncPeriod:
                 description: How often the resource is synced, defaults to 10m0s if
                   not set
                 pattern: ^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$
                 type: string
-              rules:
-                items:
-                  description: AlertRule defines a specific rule to be evaluated.
-                    It is based on the upstream model with some k8s specific type
-                    mappings
-                  properties:
-                    annotations:
-                      additionalProperties:
-                        type: string
-                      type: object
-                    condition:
-                      type: string
-                    data:
-                      items:
-                        properties:
-                          datasourceUid:
-                            description: Grafana data source unique identifier; it
-                              should be '__expr__' for a Server Side Expression operation.
-                            type: string
-                          model:
-                            description: JSON is the raw JSON query and includes the
-                              above properties as well as custom properties.
-                            x-kubernetes-preserve-unknown-fields: true
-                          queryType:
-                            description: |-
-                              QueryType is an optional identifier for the type of query.
-                              It can be used to distinguish different types of queries.
-                            type: string
-                          refId:
-                            description: RefID is the unique identifier of the query,
-                              set by the frontend call.
-                            type: string
-                          relativeTimeRange:
-                            description: relative time range
-                            properties:
-                              from:
-                                description: from
-                                format: int64
-                                type: integer
-                              to:
-                                description: to
-                                format: int64
-                                type: integer
-                            type: object
-                        type: object
-                      type: array
-                    execErrState:
-                      enum:
-                      - OK
-                      - Alerting
-                      - Error
-                      - KeepLast
-                      type: string
-                    for:
-                      default: 0s
-                      pattern: ^([0-9]+(\.[0-9]+)?(s|m|h|d|w))+$
-                      type: string
-                    isPaused:
-                      type: boolean
-                    keepFiringFor:
-                      format: duration
-                      pattern: ^([0-9]+(\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$
-                      type: string
-                    labels:
-                      additionalProperties:
-                        type: string
-                      type: object
-                    missingSeriesEvalsToResolve:
-                      description: The number of missing series evaluations that must
-                        occur before the rule is considered to be resolved.
-                      format: int64
-                      type: integer
-                    noDataState:
-                      enum:
-                      - Alerting
-                      - NoData
-                      - OK
-                      - KeepLast
-                      type: string
-                    notificationSettings:
-                      properties:
-                        group_by:
-                          items:
-                            type: string
-                          type: array
-                        group_interval:
-                          type: string
-                        group_wait:
-                          type: string
-                        mute_time_intervals:
-                          items:
-                            type: string
-                          type: array
-                        receiver:
-                          type: string
-                        repeat_interval:
-                          type: string
-                      required:
-                      - receiver
-                      type: object
-                    record:
-                      properties:
-                        from:
-                          type: string
-                        metric:
-                          type: string
-                      required:
-                      - from
-                      - metric
-                      type: object
-                    title:
-                      example: Always firing
-                      maxLength: 190
-                      minLength: 1
-                      type: string
-                    uid:
-                      description: UID of the alert rule. Can be any string consisting
-                        of alphanumeric characters, - and _ with a maximum length
-                        of 40
-                      maxLength: 40
-                      pattern: ^[a-zA-Z0-9-_]+$
-                      type: string
-                  required:
-                  - condition
-                  - data
-                  - execErrState
-                  - for
-                  - noDataState
-                  - title
-                  - uid
-                  type: object
-                minItems: 1
-                type: array
               suspend:
                 description: Suspend pauses synchronizing attempts and tells the operator
                   to ignore changes
                 type: boolean
+              template:
+                properties:
+                  apiVersion:
+                    description: APIVersion defines the versioned schema of this representation
+                      of an object.
+                    type: string
+                  kind:
+                    description: Kind is a string value representing the REST resource
+                      this object represents.
+                    type: string
+                    x-kubernetes-validations:
+                    - message: Value is immutable
+                      rule: self == oldSelf
+                  metadata:
+                    description: |-
+                      RequiredObjectMeta contains only a [subset of the fields included in k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#objectmeta-v1-meta).
+                      It requires `name` to be set
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      labels:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      name:
+                        type: string
+                        x-kubernetes-validations:
+                        - message: Value is immutable
+                          rule: self == oldSelf
+                      namespace:
+                        type: string
+                        x-kubernetes-validations:
+                        - message: Value is immutable
+                          rule: self == oldSelf
+                    required:
+                    - name
+                    type: object
+                    x-kubernetes-validations:
+                    - message: namespace is immutable
+                      rule: ((!has(oldSelf.__namespace__) && !has(self.__namespace__))
+                        || (has(oldSelf.__namespace__) && has(self.__namespace__)))
+                  spec:
+                    x-kubernetes-preserve-unknown-fields: true
+                required:
+                - apiVersion
+                - kind
+                - metadata
+                type: object
             required:
             - instanceSelector
-            - interval
-            - rules
+            - template
             type: object
             x-kubernetes-validations:
-            - message: Only one of FolderUID or FolderRef can be set and one must
-                be defined
-              rule: (has(self.folderUID) && !(has(self.folderRef))) || (has(self.folderRef)
-                && !(has(self.folderUID)))
-            - message: spec.editable is immutable
-              rule: ((!has(oldSelf.editable) && !has(self.editable)) || (has(oldSelf.editable)
-                && has(self.editable)))
-            - message: spec.folderUID is immutable
-              rule: ((!has(oldSelf.folderUID) && !has(self.folderUID)) || (has(oldSelf.folderUID)
-                && has(self.folderUID)))
-            - message: spec.folderRef is immutable
-              rule: ((!has(oldSelf.folderRef) && !has(self.folderRef)) || (has(oldSelf.folderRef)
-                && has(self.folderRef)))
             - message: disabling spec.allowCrossNamespaceImport requires a recreate
                 to ensure desired state
               rule: '!oldSelf.allowCrossNamespaceImport || (oldSelf.allowCrossNamespaceImport
                 && self.allowCrossNamespaceImport)'
           status:
-            description: The most recent observed state of a Grafana resource
+            description: GrafanaManifestStatus defines the observed state of GrafanaManifest
             properties:
               conditions:
                 description: Results when synchronizing resource with Grafana instances

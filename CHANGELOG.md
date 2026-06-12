@@ -30,11 +30,13 @@ Enhancements:
   * point external Redis host to the new Opstree Redis master service
 * delete non-working `AbsentMetricCritical alerts`
 * `redis` image update 6.2.6 -> 8.6.1
-* `grafana` panels:
-  * `Redis`:
+* `grafana`:
+  * `crds + chart` update 5.21.4 -> 5.24.0
+  * `image` update 12.3.3 -> 12.4.4
+  * `Redis` panel:
     * `Number of masters` shows current `master pod` name
     * enable `legend` on `Hits / Misses per Sec`
-  * `Postgres`:
+  * `Postgres` panel:
     * `Top 5 tables by update` shows >0.1 rows/s instead of >0.5
     * `Top 5 tables by Heap-Only Tuples (HOT) update` shows >0.1 rows/s instead of >0.5
     * `Top 5 tables by not Heap-Only Tuples (HOT) update` shows >0.1 rows/s instead of >0.5

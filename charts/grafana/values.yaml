@@ -73,7 +73,7 @@ grafana-operator:
 
 grafana-main:
   enabled: false
-  version: "12.3.3"
+  version: "12.4.4"
   selector:
     grafana: main
   config:
