@@ -4,6 +4,19 @@
 {{- $chart_path := ternary $.Values.repository.paths.app_charts $.Values.repository.paths.charts (eq $chart_app_obj.app true) }}
 {{- $env_path := ternary $.Values.repository.paths.env_from_app_charts $.Values.repository.paths.env_from_charts (eq $chart_app_obj.app true) }}
 {{- $globals_path := ternary $.Values.repository.paths.globals_from_app_charts $.Values.repository.paths.globals_from_charts (eq $chart_app_obj.app true) }}
+{{- $chart_override := "" }}
+{{- with $chart_app_obj.chart }}
+{{- $chart_override = tpl . $ }}
+{{- end }}
+{{- $is_gha_runner := or (eq $chart_app_name "gha-runner") (eq $chart_override "gha-runner") (hasSuffix "/gha-runner" $chart_override) }}
+{{- $values_object := dict }}
+{{- if $is_gha_runner }}
+{{- $tracking_id := printf "%s:argoproj.io/Application:argocd/%s" $app_name $app_name }}
+{{- $values_object = dict "gha-runner" (dict "resourceMeta" (dict "autoscalingListener" (dict "annotations" (dict "argocd.argoproj.io/tracking-id" $tracking_id))) "listenerTemplate" (dict "metadata" (dict "annotations" (dict "argocd.argoproj.io/tracking-id" $tracking_id)))) }}
+{{- end }}
+{{- with $chart_app_obj.valuesObject }}
+{{- $values_object = mergeOverwrite $values_object (tpl (toYaml .) $ | fromYaml) }}
+{{- end }}
 {{- if $chart_app_obj.enabled -}}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -60,9 +73,9 @@ spec:
       parameters:
     {{- tpl (toYaml .) $ | nindent 8 }}
     {{- end }}
-    {{- with $chart_app_obj.valuesObject }}
+    {{- with $values_object }}
       valuesObject:
-    {{- tpl (toYaml .) $ | nindent 8 }}
+    {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- if $chart_app_obj.values }}
       values: {{ tpl (toYaml $chart_app_obj.values) $ | nindent 8 }}
@@ -101,9 +114,9 @@ spec:
       parameters:
     {{- tpl (toYaml .) $ | nindent 8 }}
     {{- end }}
-    {{- with $chart_app_obj.valuesObject }}
+    {{- with $values_object }}
       valuesObject:
-    {{- tpl (toYaml .) $ | nindent 8 }}
+    {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- if $chart_app_obj.values }}
       values: {{ tpl (toYaml $chart_app_obj.values) $ | nindent 8 }}
