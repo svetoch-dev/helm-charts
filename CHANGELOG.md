@@ -9,6 +9,7 @@ New features:
 * `app/core` can template `MutatingWebhookConfiguration`
 * `redis` adds self-managed `chart_deps/redis/redis-operator` chart for Opstree Redis Operator
 * new `postgres` panel `Matching querie_IDs to queries` shows real sql requests
+* new alert `RedisSentinel_master_down` to check the condition of `RedisSentinel`
 
 Enhancements:
 * `app/core`:
