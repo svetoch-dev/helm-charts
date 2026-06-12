@@ -56,7 +56,6 @@ Fixed
     * `Table disk block reads per second ` shows only master pod info
     * `DB Commits per second` shows only master pod info
 
-
 # 10.12.1
 
 New features:
