@@ -8,6 +8,7 @@ New features:
 * `app/core` can template `configMap`
 * `app/core` can template `MutatingWebhookConfiguration`
 * `redis` adds self-managed `chart_deps/redis/redis-operator` chart for Opstree Redis Operator
+* new `postgres` panel `Matching querie_IDs to queries` shows real sql requests
 
 Enhancements:
 * `app/core`:
@@ -29,10 +30,30 @@ Enhancements:
   * point external Redis host to the new Opstree Redis master service
 * delete non-working `AbsentMetricCritical alerts`
 * `redis` image update 6.2.6 -> 8.6.1
+* `grafana` panels:
+  * `Redis`:
+    * `Number of masters` shows current `master pod` name
+    * enable `legend` on `Hits / Misses per Sec`
+  * `Postgres`:
+    * `Top 5 tables by update` shows >0.1 rows/s instead of >0.5
+    * `Top 5 tables by Heap-Only Tuples (HOT) update` shows >0.1 rows/s instead of >0.5
+    * `Top 5 tables by not Heap-Only Tuples (HOT) update` shows >0.1 rows/s instead of >0.5
+    * `Top 5 transactions by duration` shows >5ms instead of >100ms
 
 Fixed
 * `prometheus-operated` fix `thanosServiceMonitor` values key typo
-* `prometheus podMonitor` render `podTargetLabels` instead of invalid `targetLabels`
+* `prometheus/lib` `podMonitor` render `podTargetLabels` instead of invalid `targetLabels`
+* `grafana` panels:
+  * `Redis` `Expired/Evicted Keys` show `expired, instance label` correctly
+  * `Redis sentinel`:
+    * `Clients connected to sentinel` has been fixed for new `exporter`
+    * `Clients connected to sentinel` shows only to sentinel connections
+    * `Sentinel masters` has been fixed for new `exporter`
+  * `Postgres`:
+    * `Size of tables` has been fixed for new `exporter`
+    * `Table disk block reads per second ` shows only master pod info
+    * `DB Commits per second` shows only master pod info
+
 
 # 10.12.1
 
