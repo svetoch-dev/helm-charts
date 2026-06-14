@@ -6,7 +6,13 @@ gha-runner:
     namespace: gha-operator
     name: "gha-operator"
   containerMode:
-    type: "kubernetes-novolume"
+    #type: "kubernetes-novolume"
+    type: "kubernetes"
+    kubernetesModeWorkVolumeClaim:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 2Gi
   listenerTemplate:
     spec:
       containers:
@@ -37,6 +43,15 @@ gha-runner:
           env:
             - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
               value: "false"
+            - name: ACTIONS_RUNNER_CONTAINER_HOOK_TEMPLATE
+              value: /home/runner/templates/workflow-pod.yaml
+          volumeMounts:
+            - mountPath: /home/runner/templates
+              name: templates
+      volumes:
+        - name: templates
+          configMap:
+            name: workflow-pod
 workflowConfigMap:
   enabled: false
   name: workflow-pod
