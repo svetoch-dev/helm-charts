@@ -42,6 +42,9 @@ gha-runner:
             requests:
               cpu: 30m
               memory: 240Mi
+            limits:
+              cpu: 300m
+              memory: 500Mi
           env:
             - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
               value: 'false'
@@ -68,3 +71,9 @@ workflowConfigMap:
           requests:
             cpu: '1'
             memory: 4Gi
+    initContainers:
+      - name: "$fs-init"
+        resources:
+          request:
+            cpu: 10m
+            memory: 5Mi
