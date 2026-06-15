@@ -78,6 +78,18 @@ chart_apps:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
+      gha-runner:
+        listenerTemplate:
+          metadata:
+            annotations:
+              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:argoproj.io/Application:argocd/gha-runner-{{ .Values.global.env.name }}
+        resourceMeta:
+          autoscalingListener:
+            annotations:
+              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:argoproj.io/Application:argocd/gha-runner-{{ .Values.global.env.name }}
+          autoscalingRunnerSet:
+            annotations:
+              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:actions.github.com/AutoscalingRunnerSet:gha-runner/gha-runner-{{ .Values.global.env.name }}
   gha-operator:
     enabled: false
     values: |
