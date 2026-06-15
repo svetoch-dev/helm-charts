@@ -72,8 +72,8 @@ workflowConfigMap:
             cpu: '1'
             memory: 4Gi
     initContainers:
-      - name: "$fs-init"
+      - name: "fs-init"
         resources:
-          request:
+          requests:
             cpu: 10m
             memory: 5Mi
