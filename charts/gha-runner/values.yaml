@@ -63,7 +63,7 @@ workflowConfigMap:
     securityContext:
       fsGroup: 1001
     containers:
-      - name: job
+      - name: "$job"
         resources:
           requests:
             cpu: "1"
