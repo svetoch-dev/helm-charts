@@ -4,14 +4,6 @@
 {{- $chart_path := ternary $.Values.repository.paths.app_charts $.Values.repository.paths.charts (eq $chart_app_obj.app true) }}
 {{- $env_path := ternary $.Values.repository.paths.env_from_app_charts $.Values.repository.paths.env_from_charts (eq $chart_app_obj.app true) }}
 {{- $globals_path := ternary $.Values.repository.paths.globals_from_app_charts $.Values.repository.paths.globals_from_charts (eq $chart_app_obj.app true) }}
-{{- $chart_override := "" }}
-{{- with $chart_app_obj.chart }}
-{{- $chart_override = tpl . $ }}
-{{- end }}
-{{- $values_object := dict }}
-{{- with $chart_app_obj.valuesObject }}
-{{- $values_object = mergeOverwrite $values_object (tpl (toYaml .) $ | fromYaml) }}
-{{- end }}
 {{- if $chart_app_obj.enabled -}}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -68,9 +60,9 @@ spec:
       parameters:
     {{- tpl (toYaml .) $ | nindent 8 }}
     {{- end }}
-    {{- with $values_object }}
+    {{- with $chart_app_obj.valuesObject }}
       valuesObject:
-    {{- toYaml . | nindent 8 }}
+    {{- tpl (toYaml .) $ | nindent 8 }}
     {{- end }}
     {{- if $chart_app_obj.values }}
       values: {{ tpl (toYaml $chart_app_obj.values) $ | nindent 8 }}
@@ -109,9 +101,9 @@ spec:
       parameters:
     {{- tpl (toYaml .) $ | nindent 8 }}
     {{- end }}
-    {{- with $values_object }}
+    {{- with $chart_app_obj.valuesObject }}
       valuesObject:
-    {{- toYaml . | nindent 8 }}
+    {{- tpl (toYaml .) $ | nindent 8 }}
     {{- end }}
     {{- if $chart_app_obj.values }}
       values: {{ tpl (toYaml $chart_app_obj.values) $ | nindent 8 }}
