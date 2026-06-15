@@ -7,11 +7,6 @@ gha-runner:
     name: "gha-operator"
   containerMode:
     type: "kubernetes-novolume"
-    kubernetesModeWorkVolumeClaim:
-      accessModes: ["ReadWriteOnce"]
-      resources:
-        requests:
-          storage: 2Gi
   listenerTemplate:
     spec:
       containers:
