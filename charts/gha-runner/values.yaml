@@ -6,8 +6,7 @@ gha-runner:
     namespace: gha-operator
     name: "gha-operator"
   containerMode:
-    #type: "kubernetes-novolume"
-    type: "kubernetes"
+    type: "kubernetes-novolume"
     kubernetesModeWorkVolumeClaim:
       accessModes: ["ReadWriteOnce"]
       resources:
