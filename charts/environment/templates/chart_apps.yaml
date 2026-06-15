@@ -8,12 +8,7 @@
 {{- with $chart_app_obj.chart }}
 {{- $chart_override = tpl . $ }}
 {{- end }}
-{{- $is_gha_runner := or (eq $chart_app_name "gha-runner") (eq $chart_override "gha-runner") (hasSuffix "/gha-runner" $chart_override) }}
 {{- $values_object := dict }}
-{{- if $is_gha_runner }}
-{{- $tracking_id := printf "%s:argoproj.io/Application:argocd/%s" $app_name $app_name }}
-{{- $values_object = dict "gha-runner" (dict "resourceMeta" (dict "autoscalingListener" (dict "annotations" (dict "argocd.argoproj.io/tracking-id" $tracking_id))) "listenerTemplate" (dict "metadata" (dict "annotations" (dict "argocd.argoproj.io/tracking-id" $tracking_id)))) }}
-{{- end }}
 {{- with $chart_app_obj.valuesObject }}
 {{- $values_object = mergeOverwrite $values_object (tpl (toYaml .) $ | fromYaml) }}
 {{- end }}
