@@ -1,5 +1,6 @@
 gha-runner:
   enabled: false
+  githubConfigSecret: github
   kubernetesModeServiceAccount:
   controllerServiceAccount:
     namespace: gha-operator
