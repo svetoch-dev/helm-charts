@@ -82,11 +82,11 @@ chart_apps:
         listenerTemplate:
           metadata:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:actions.github.com/Pod:gha-operator/gha-runner-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:actions.github.com/Pod:gha-runnerr/gha-runner-{{ .Values.global.env.name }}
         resourceMeta:
           autoscalingListener:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:actions.github.com/AutoscalingListener:gha-operator/gha-runner-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:actions.github.com/AutoscalingListener:gha-runner/gha-runner-{{ .Values.global.env.name }}
   gha-runner-app:
     enabled: false
     chart: argocd/charts/infra/charts/gha-runner
@@ -99,11 +99,11 @@ chart_apps:
         listenerTemplate:
           metadata:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.name }}:actions.github.com/Pod:gha-operator/gha-runner-app-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.name }}:actions.github.com/Pod:gha-runner-app/gha-runner-app-{{ .Values.global.env.name }}
         resourceMeta:
           autoscalingListener:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.name }}:actions.github.com/AutoscalingListener:gha-operator/gha-runner-app-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.name }}:actions.github.com/AutoscalingListener:gha-runner-app/gha-runner-app-{{ .Values.global.env.name }}
   gha-operator:
     enabled: false
     values: |
