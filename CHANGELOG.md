@@ -57,6 +57,31 @@ Fixes
     * `Table disk block reads per second ` shows only master pod info
     * `DB Commits per second` shows only master pod info
 
+# 10.13.0
+
+New features:
+* new app `gha-runner-app` and `gl-runner-app` in `charts/environment`
+
+Enchancements:
+* `gha-operator`:
+  * `crds` update 0.13.1 -> 0.14.2
+  * `chart` update 0.13.0 -> 0.14.2
+* `gha-runner`:
+  * `chart` update 0.13.0 -> 0.14.2
+  * use `kubernetes-novolume` mode instead of `kubernetes`
+  * delete `gha-runner storage`
+  * set default `githubConfigSecret` = github
+  * add `runner` pod `resources requests/limits`
+  * add `workflow` pod `resources requests`
+  * add default `serviceAccountName` for `workflow` pods
+  * `workflowConfigMap` is enabled when `gha-runner.enabled` = true
+* set default `secret and serviceAccount` for `gl-runner-app` runner pod
+
+Fixes:
+* `gha-runner/gha-runner-app`:
+  * delete hardcode `runnerScaleSetName`, for correct names template
+  * set default `argocd.argoproj.io/tracking-id` in `autoscalingListener` and `pod/listener` for correct tracking in argocd
+
 # 10.12.1
 
 New features:
