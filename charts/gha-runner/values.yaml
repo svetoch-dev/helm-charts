@@ -1,17 +1,12 @@
 gha-runner:
   enabled: false
-  runnerScaleSetName: "infra-runner"
+  githubConfigSecret: github
   kubernetesModeServiceAccount:
   controllerServiceAccount:
     namespace: gha-operator
     name: "gha-operator"
   containerMode:
-    type: "kubernetes"
-    kubernetesModeWorkVolumeClaim:
-      accessModes: ["ReadWriteOnce"]
-      resources:
-        requests:
-          storage: 2Gi
+    type: "kubernetes-novolume"
   listenerTemplate:
     spec:
       containers:
@@ -38,11 +33,18 @@ gha-runner:
         - name: runner
           image: ghcr.io/actions/actions-runner:latest
           command: ["/home/runner/run.sh"]
+          resources:
+            requests:
+              cpu: 30m
+              memory: 240Mi
+            limits:
+              cpu: 300m
+              memory: 500Mi
           env:
+            - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
+              value: 'false'
             - name: ACTIONS_RUNNER_CONTAINER_HOOK_TEMPLATE
               value: /home/runner/templates/workflow-pod.yaml
-            - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
-              value: "false"
           volumeMounts:
             - mountPath: /home/runner/templates
               name: templates
@@ -51,10 +53,16 @@ gha-runner:
           configMap:
             name: workflow-pod
 workflowConfigMap:
-  enabled: false
   name: workflow-pod
   metaAnnotations:
-    argocd.argoproj.io/tracking-id: "{{ .Release.Name }}:/Pod:{{ .Release.Namespace }}/workflow-pod" 
+    argocd.argoproj.io/tracking-id: "{{ .Release.Name }}:/Pod:{{ .Release.Namespace }}/workflow-pod"
   spec:
+    serviceAccountName: runner
     securityContext:
       fsGroup: 1001
+    containers:
+      - name: "$job"
+        resources:
+          requests:
+            cpu: '1'
+            memory: 4Gi
