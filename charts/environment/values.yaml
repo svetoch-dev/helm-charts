@@ -89,7 +89,7 @@ chart_apps:
               argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:actions.github.com/AutoscalingListener:gha-runner/gha-runner-{{ .Values.global.env.name }}
   gha-runner-app:
     enabled: false
-    chart: argocd/charts/infra/charts/gha-runner
+    chart: "{{ .Values.repository.paths.charts }}/gha-runner"
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
       workflowConfigMap:
@@ -245,7 +245,7 @@ chart_apps:
       global: {{ .Values.global | toYaml | nindent 4 }}
   gl-runner-app:
     enabled: false
-    chart: argocd/charts/infra/charts/gl-runner
+    chart: "{{ .Values.repository.paths.charts }}/gl-runner"
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
       gl-runner:
