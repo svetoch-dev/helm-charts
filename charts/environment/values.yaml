@@ -92,10 +92,10 @@ chart_apps:
     chart: argocd/charts/infra/charts/gha-runner
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
+      workflowConfigMap:
+        spec:
+          serviceAccountName: runner-app
       gha-runner:
-        workflowConfigMap:
-          spec:
-            serviceAccountName: runner-app
         listenerTemplate:
           metadata:
             annotations:
