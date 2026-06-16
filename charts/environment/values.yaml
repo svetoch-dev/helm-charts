@@ -93,6 +93,9 @@ chart_apps:
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
       gha-runner:
+        workflowConfigMap:
+          spec:
+            serviceAccountName: runner-app
         listenerTemplate:
           metadata:
             annotations:
