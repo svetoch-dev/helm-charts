@@ -82,7 +82,7 @@ chart_apps:
         listenerTemplate:
           metadata:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:actions.github.com/Pod:gha-runnerr/gha-runner-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:actions.github.com/Pod:gha-runner/gha-runner-{{ .Values.global.env.name }}
         resourceMeta:
           autoscalingListener:
             annotations:
