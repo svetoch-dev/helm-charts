@@ -248,3 +248,7 @@ chart_apps:
     chart: argocd/charts/infra/charts/gl-runner
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}
+      gl-runner:
+        runners:
+          secret: "runner-app"
+          serviceAccount: "runner-app"

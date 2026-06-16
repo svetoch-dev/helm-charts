@@ -75,6 +75,7 @@ Enchancements:
   * add `workflow` pod `resources requests`
   * add default `serviceAccountName` for `workflow` pods
   * `workflowConfigMap` is enabled when `gha-runner.enabled` = true
+* set default `secret and serviceAccount` for `gl-runner-app` runner pod
 
 Fixes:
 * `gha-runner/gha-runner-app`:
