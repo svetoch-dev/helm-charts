@@ -1,5 +1,16 @@
 {{- range $env_name, $env_obj := .Values.envs -}}
 {{- if $env_obj.enabled -}}
+{{- $structuredEnvName := required (printf "envs.%s.name is required" $env_name) $env_obj.name -}}
+{{- $shortName := required (printf "envs.%s.short_name is required" $env_name) $env_obj.short_name -}}
+{{- $registryUrl := required (printf "envs.%s.registry.url is required" $env_name) (dig "registry" "url" "" $env_obj) -}}
+{{- $dnsRoot := $.Values.global.company.domain.root -}}
+{{- $dnsDomain := printf "%s.%s" $shortName $.Values.global.company.domain.root -}}
+{{- if $env_obj.dns -}}
+{{- $dnsRoot = $env_obj.dns.root | default $dnsRoot -}}
+{{- $dnsDomain = $env_obj.dns.domain | default $dnsDomain | trimSuffix "." -}}
+{{- end -}}
+{{- $cloud := required (printf "envs.%s.cloud is required" $env_name) $env_obj.cloud -}}
+{{- $server := required (printf "envs.%s.kubernetes.server is required" $env_name) (dig "kubernetes" "server" "" $env_obj) -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -34,13 +45,69 @@ spec:
       parameters:
     {{- tpl (toYaml .) $ | nindent 8 }}
     {{- end }}
-    {{- with $env_obj.valuesObject }}
       valuesObject:
-    {{- tpl (toYaml .) $ | nindent 8 }}
-    {{- end }}
-    {{- if $env_obj.values }}
-      values: {{ tpl (toYaml $env_obj.values) $ | nindent 8 }}
-    {{- end }}
+        global:
+          company:
+            name: {{ $.Values.global.company.name }}
+            teams:
+            {{- toYaml $.Values.global.company.teams | nindent 14 }}
+            domain:
+              root: {{ $dnsRoot }}
+              env: {{ $dnsDomain }}
+          network:
+            int_nat_gw: {{ $.Values.global.network.int_nat_gw }}
+          bucket:
+            type: {{ $.Values.global.bucket.type }}
+            prefix: {{ $.Values.global.company.name }}
+            suffix: {{ $shortName }}
+          env:
+            name: {{ $structuredEnvName }}
+            enabled: {{ $env_obj.enabled }}
+            server: {{ $server }}
+            short_name: {{ $shortName }}
+            {{- with $env_obj.long_name }}
+            long_name: {{ . }}
+            {{- end }}
+            {{- with $env_obj.type }}
+            type: {{ . }}
+            {{- end }}
+            registry:
+              url: {{ $registryUrl }}
+              {{- with $env_obj.registry.type }}
+              type: {{ . }}
+              {{- end }}
+              containers:
+              pip:
+            {{- with $env_obj.users }}
+            users:
+            {{- toYaml . | nindent 14 }}
+            {{- end }}
+            {{- with $env_obj.apps }}
+            apps:
+            {{- toYaml . | nindent 14 }}
+            {{- end }}
+            dns:
+              root: {{ $dnsRoot }}
+              domain: {{ $dnsDomain }}
+              {{- with $env_obj.dns.type }}
+              type: {{ . }}
+              {{- end }}
+            kubernetes:
+            {{- toYaml $env_obj.kubernetes | nindent 14 }}
+            {{- with $env_obj.tf_backend }}
+            tf_backend:
+            {{- toYaml . | nindent 14 }}
+            {{- end }}
+            cloud:
+            {{- toYaml $cloud | nindent 14 }}
+          alerts:
+          {{- toYaml $.Values.global.alerts | nindent 12 }}
+        repository:
+          url: {{ $.Values.repository.url }}
+        {{- with $env_obj.externalEnvs }}
+        externalEnvs:
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
   {{- with $env_obj.syncPolicy }}
   syncPolicy:
   {{- toYaml . | nindent 4 }}
