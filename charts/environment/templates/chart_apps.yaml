@@ -4,6 +4,10 @@
 {{- $chart_path := ternary $.Values.repository.paths.app_charts $.Values.repository.paths.charts (eq $chart_app_obj.app true) }}
 {{- $env_path := ternary $.Values.repository.paths.env_from_app_charts $.Values.repository.paths.env_from_charts (eq $chart_app_obj.app true) }}
 {{- $globals_path := ternary $.Values.repository.paths.globals_from_app_charts $.Values.repository.paths.globals_from_charts (eq $chart_app_obj.app true) }}
+{{- $globalValues := mustDeepCopy $.Values.global }}
+{{- with $chart_app_obj.globalValues }}
+{{- $globalValues = mergeOverwrite $globalValues (tpl (toYaml .) $ | fromYaml) }}
+{{- end }}
 {{- if $chart_app_obj.enabled -}}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -64,8 +68,11 @@ spec:
       valuesObject:
     {{- tpl (toYaml .) $ | nindent 8 }}
     {{- end }}
-    {{- if $chart_app_obj.values }}
-      values: {{ tpl (toYaml $chart_app_obj.values) $ | nindent 8 }}
+      values: |
+        global:
+        {{- toYaml $globalValues | nindent 10 }}
+    {{- with $chart_app_obj.values }}
+    {{- tpl . $ | nindent 8 }}
     {{- end }}
     {{- with $chart_app_obj.values_sources }}
     {{- toYaml . | nindent 2 }}
@@ -105,8 +112,11 @@ spec:
       valuesObject:
     {{- tpl (toYaml .) $ | nindent 8 }}
     {{- end }}
-    {{- if $chart_app_obj.values }}
-      values: {{ tpl (toYaml $chart_app_obj.values) $ | nindent 8 }}
+      values: |
+        global:
+        {{- toYaml $globalValues | nindent 10 }}
+    {{- with $chart_app_obj.values }}
+    {{- tpl . $ | nindent 8 }}
     {{- end }}
   {{- end }}
   {{- with $chart_app_obj.syncPolicy }}

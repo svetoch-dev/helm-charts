@@ -24,7 +24,7 @@ postgres-operator:
     logical_backup_memory_request: 300Mi
   configGeneral:
     enable_crd_registration: false
-    docker_image: "{{ .Values.global.registry.url}}/spilo:v17.4-p3-1"
+    docker_image: "{{ .Values.global.env.registry.url}}/spilo:v17.4-p3-1"
     kubernetes_use_configmaps: true
   configPostgresPodResources:
     default_cpu_limit: "0"

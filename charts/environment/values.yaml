@@ -61,23 +61,17 @@ crds:
 chart_apps:
   rabbitmq:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-        access:
-          teams: ["admin", "dev"]
-          emails: []
+    globalValues:
+      access:
+        teams: ["admin", "dev"]
+        emails: []
   redis:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
   external-dns:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
   gha-runner:
     enabled: false
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       gha-runner:
         listenerTemplate:
           metadata:
@@ -91,7 +85,6 @@ chart_apps:
     enabled: false
     chart: "{{ .Values.repository.paths.charts }}/gha-runner"
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       workflowConfigMap:
         spec:
           serviceAccountName: runner-app
@@ -106,26 +99,21 @@ chart_apps:
               argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.name }}:actions.github.com/AutoscalingListener:gha-runner-app/gha-runner-app-{{ .Values.global.env.name }}
   gha-operator:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
   pomerium:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
   postgres:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-        access:
-          teams: ["admin", "dev", "pm", "qa"]
-          emails: []
+    globalValues:
+      access:
+        teams: ["admin", "dev", "pm", "qa"]
+        emails: []
   grafana:
     enabled: false
+    globalValues:
+      access:
+        teams: ["admin", "dev", "pm", "qa"]
+        emails: []
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-        access:
-          teams: ["admin", "dev", "pm", "qa"]
-          emails: []
       {{- if .Values.externalEnvs }}
       datasource:
         datasources:
@@ -147,44 +135,42 @@ chart_apps:
       {{- end }}
   konghq:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-        ingress:
-          class: konghq
+    globalValues:
+      ingress:
+        class: konghq
   cert-manager:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
   argocd:
     enabled: false
+    globalValues:
+      environment:
+        name: "{{ .Values.global.env.name }}"
+        server: "{{ .Values.global.env.server }}"
+        short_name: "{{ .Values.global.env.short_name }}"
+        long_name: "{{ .Values.global.env.long_name }}"
+      access:
+        teams: ["admin", "dev"]
+        emails: []
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-        environment: {{ .Values.global.env | toYaml | nindent 6 }}
-        access:
-          teams: ["admin", "dev"]
-          emails: []
       argocd:
         externalRedis:
           host: argocd-{{ .Values.global.env.name }}-redis-cluster-master
   prometheus:
     enabled: false
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       operator:
         prometheusOperator:
           fullnameOverride: "prometheus-{{ .Values.global.env.name }}-operator"
   fluent:
     enabled: false
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-      {{- if eq .Values.global.cloud.type "gcp" }}
+      {{- if eq .Values.global.env.cloud.type "gcp" }}
       fluentbit-gcp:
         enabled: true
       {{- end }}
   thanos:
     enabled: false
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       {{- if eq .Values.global.env.short_name "int" }}
       thanos:
         query:
@@ -199,7 +185,6 @@ chart_apps:
     enabled: false
     chart: '{{ .Values.repository.paths.charts }}/thanos'
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       thanos:
         query:
           stores:
@@ -214,7 +199,6 @@ chart_apps:
   loki:
     enabled: false
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       loki:
         nameOverride: "loki-{{ .Values.global.env.name }}"
         loki:
@@ -241,13 +225,10 @@ chart_apps:
 
   gl-runner:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
   gl-runner-app:
     enabled: false
     chart: "{{ .Values.repository.paths.charts }}/gl-runner"
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       gl-runner:
         runners:
           secret: "runner-app"

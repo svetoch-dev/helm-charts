@@ -29,7 +29,7 @@ connectionPooler: {}
 sidecars: {}
 defaultSidecars:
   enabled: false
-  pgExporterImage: "{{ $.Values.global.registry.url}}/postgres-exporter:v0.18.1-2"
+  pgExporterImage: "{{ $.Values.global.env.registry.url}}/postgres-exporter:v0.18.1-2"
 teamId: "main"
 nodeAffinity: {}
 podMonitor:
