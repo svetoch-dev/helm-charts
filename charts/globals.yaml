@@ -1,7 +1,22 @@
 global:
   company:
     name: #example
-    teams:
+    domain: #example.com
+  repo:
+    type:
+    provider:
+    group:
+    name:
+    revision:
+  envs: {}
+  #Cant use env: here because
+  #env is already set as global
+  #attr in original argocd chart
+  env:
+    name: #aws-prd or aws-int or aws-stg
+    server: #https://2.2.2.2
+    short_name: #gcp-pre/gcp-prd/gcp-int/etc
+    users:
       domain: ""
       admin:
         emails: []
@@ -11,26 +26,12 @@ global:
         emails: []
       pm:
         emails: []
-    domain:
-      root: #example.com
-      env: #int.example.com, dev.example.com, prd.example.com etc
-  cloud:
-    type: ""
-  network:
-    int_nat_gw:
-  registry:
-    url:
-  bucket:
-    type:
-    prefix:
-    suffix:
-  #Cant use env: here because
-  #env is already set as global
-  #attr in original argocd chart
-  env:
-    name: #aws-prd or aws-int or aws-stg
-    server: #https://2.2.2.2
-    short_name: #pre/prd/int/dev/etc
+    dns:
+      root:
+      domain:
+      provider:
+    cloud:
+      name: ""
   ingress:
     class: pomerium
   access:
@@ -40,7 +41,7 @@ global:
   pomerium:
     policy:
       default: |
-        {{- $teams  := .Values.global.company.teams }}
+        {{- $teams  := .Values.global.env.users }}
         {{- $emails := .Values.global.access.emails }}
         {{- range $team := .Values.global.access.teams }}
         {{- $emails = concat $emails (get $teams $team).emails }}

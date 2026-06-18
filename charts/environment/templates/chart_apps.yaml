@@ -35,13 +35,13 @@ spec:
   project: {{ $chart_app_obj.project | default "default" }}
   {{- if $chart_app_obj.values_sources }}
   sources:
-  - repoURL: {{ $chart_app_obj.repo_url | default $.Values.repository.url }}
+  - repoURL: {{ $chart_app_obj.repo_url | default (include "infra.repoURL" $) }}
     {{- if $chart_app_obj.chart }}
     path: {{ tpl $chart_app_obj.chart $ }}
     {{- else }}
     path: {{ tpl (printf "%s/%s" $chart_path $chart_app_name) $ }}
     {{- end }}
-    targetRevision: {{ $chart_app_obj.revision | default $.Values.repository.revision }}
+    targetRevision: {{ $chart_app_obj.revision | default (include "infra.repoRevision" $) }}
     {{- if $chart_app_obj.helm }}
     {{- with $chart_app_obj.helm }}
     helm:
@@ -79,13 +79,13 @@ spec:
     {{- end }}
   {{- else }}
   source:
-    repoURL: {{ $chart_app_obj.repo_url | default $.Values.repository.url }}
+    repoURL: {{ $chart_app_obj.repo_url | default (include "infra.repoURL" $) }}
     {{- if $chart_app_obj.chart }}
     path: {{ tpl $chart_app_obj.chart $ }}
     {{- else }}
     path: {{ tpl (printf "%s/%s" $chart_path $chart_app_name) $ }}
     {{- end }}
-    targetRevision: {{ $chart_app_obj.revision | default $.Values.repository.revision }}
+    targetRevision: {{ $chart_app_obj.revision | default (include "infra.repoRevision" $) }}
     {{- if $chart_app_obj.helm }}
     {{- with $chart_app_obj.helm }}
     helm:

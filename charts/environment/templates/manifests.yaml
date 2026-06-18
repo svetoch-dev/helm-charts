@@ -31,8 +31,8 @@ spec:
     {{- toYaml . | nindent 6 }}
     {{- end }}
     path: {{ tpl $.Values.repository.paths.manifests $ }}
-    repoURL: {{ $.Values.repository.url }}
-    targetRevision: {{ .revision | default $.Values.repository.revision }}
+    repoURL: {{ include "infra.repoURL" $ }}
+    targetRevision: {{ .revision | default (include "infra.repoRevision" $) }}
   {{- with .syncPolicy }}
   syncPolicy:
   {{- toYaml . | nindent 4 }}

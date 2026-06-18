@@ -15,14 +15,14 @@ ingresses:
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2 }}
 
     hosts:
-    - host: "ag.{{ .Values.global.company.domain.env }}"
+    - host: "ag.{{ .Values.global.env.dns.domain }}"
       paths:
       - path: /
         pathType: ImplementationSpecific
     tls:
     - secretName: ag-tls
       hosts:
-      - "ag.{{ .Values.global.company.domain.env }}"
+      - "ag.{{ .Values.global.env.dns.domain }}"
 
 argocd:
   enabled: false

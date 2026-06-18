@@ -1,21 +1,28 @@
-{{- range $env_name, $env_obj := .Values.envs -}}
+{{- range $env_name, $env_obj := .Values.global.envs -}}
 {{- if $env_obj.enabled -}}
-{{- $structuredEnvName := required (printf "envs.%s.name is required" $env_name) $env_obj.name -}}
-{{- $shortName := required (printf "envs.%s.short_name is required" $env_name) $env_obj.short_name -}}
-{{- $registryUrl := required (printf "envs.%s.registry.url is required" $env_name) (dig "registry" "url" "" $env_obj) -}}
-{{- $dnsRoot := $.Values.global.company.domain.root -}}
-{{- $dnsDomain := printf "%s.%s" $shortName $.Values.global.company.domain.root -}}
+{{- $structuredEnvName := required (printf "global.envs.%s.name is required" $env_name) $env_obj.name -}}
+{{- $shortName := required (printf "global.envs.%s.short_name is required" $env_name) $env_obj.short_name -}}
+{{- $registryTemplate := required (printf "global.envs.%s.registry.url is required" $env_name) (dig "registry" "url" "" $env_obj) -}}
+{{- $companyDomain := required "global.company.domain is required" $.Values.global.company.domain -}}
+{{- $dnsRoot := $companyDomain -}}
+{{- $dnsDomain := printf "%s.%s" $shortName $companyDomain -}}
 {{- if $env_obj.dns -}}
 {{- $dnsRoot = $env_obj.dns.root | default $dnsRoot -}}
 {{- $dnsDomain = $env_obj.dns.domain | default $dnsDomain | trimSuffix "." -}}
 {{- end -}}
-{{- $cloud := required (printf "envs.%s.cloud is required" $env_name) $env_obj.cloud -}}
-{{- $server := required (printf "envs.%s.kubernetes.server is required" $env_name) (dig "kubernetes" "server" "" $env_obj) -}}
+{{- $cloud := required (printf "global.envs.%s.cloud is required" $env_name) $env_obj.cloud -}}
+{{- $cloudName := required (printf "global.envs.%s.cloud.name is required" $env_name) $cloud.name -}}
+{{- $_ := required (printf "global.envs.%s.cloud.buckets.type is required" $env_name) $cloud.buckets.type -}}
+{{- $server := required (printf "global.envs.%s.kubernetes.server is required" $env_name) (dig "kubernetes" "server" "" $env_obj) -}}
+{{- $derivedShortName := printf "%s-%s" $cloudName $shortName -}}
+{{- $envForTpl := mergeOverwrite (deepCopy $env_obj) (dict "server" $server "short_name" $derivedShortName "dns" (dict "root" $dnsRoot "domain" $dnsDomain "provider" (dig "dns" "provider" "" $env_obj))) -}}
+{{- $tplValues := mergeOverwrite (deepCopy $.Values) (dict "global" (mergeOverwrite (deepCopy $.Values.global) (dict "env" $envForTpl))) -}}
+{{- $registryUrl := tpl $registryTemplate (mergeOverwrite (deepCopy $) (dict "Values" $tplValues)) -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ $env_name }}
+  name: {{ $derivedShortName }}
   namespace: argocd
   {{- with $env_obj.finalizers }}
   finalizers:
@@ -35,12 +42,12 @@ spec:
   project: default
   source:
     path: {{ $.Values.repository.paths.env_chart}}
-    repoURL: {{ $.Values.repository.url }}
-    targetRevision: {{ $env_obj.revision | default $.Values.repository.revision }}
+    repoURL: {{ include "infra.repoURL" $ }}
+    targetRevision: {{ $env_obj.revision | default (include "infra.repoRevision" $) }}
     helm:
       valueFiles:
         - ../globals.yaml
-        - {{ tpl (printf "%s/environments/%s/env.yaml" $.Values.repository.paths.root_from_chart $env_name ) $ }}
+        - {{ tpl (printf "%s/environments/%s/env.yaml" $.Values.repository.paths.root_from_chart $derivedShortName ) $ }}
     {{- with $env_obj.parameters }}
       parameters:
     {{- tpl (toYaml .) $ | nindent 8 }}
@@ -49,22 +56,16 @@ spec:
         global:
           company:
             name: {{ $.Values.global.company.name }}
-            teams:
-            {{- toYaml $.Values.global.company.teams | nindent 14 }}
-            domain:
-              root: {{ $dnsRoot }}
-              env: {{ $dnsDomain }}
-          network:
-            int_nat_gw: {{ $.Values.global.network.int_nat_gw }}
-          bucket:
-            type: {{ $.Values.global.bucket.type }}
-            prefix: {{ $.Values.global.company.name }}
-            suffix: {{ $shortName }}
+            domain: {{ $dnsRoot }}
+          repo:
+          {{- toYaml $.Values.global.repo | nindent 12 }}
+          envs:
+          {{- toYaml $.Values.global.envs | nindent 12 }}
           env:
             name: {{ $structuredEnvName }}
             enabled: {{ $env_obj.enabled }}
             server: {{ $server }}
-            short_name: {{ $shortName }}
+            short_name: {{ $derivedShortName }}
             {{- with $env_obj.long_name }}
             long_name: {{ . }}
             {{- end }}
@@ -73,11 +74,6 @@ spec:
             {{- end }}
             registry:
               url: {{ $registryUrl }}
-              {{- with $env_obj.registry.type }}
-              type: {{ . }}
-              {{- end }}
-              containers:
-              pip:
             {{- with $env_obj.users }}
             users:
             {{- toYaml . | nindent 14 }}
@@ -89,21 +85,17 @@ spec:
             dns:
               root: {{ $dnsRoot }}
               domain: {{ $dnsDomain }}
-              {{- with $env_obj.dns.type }}
-              type: {{ . }}
+              {{- with $env_obj.dns.provider }}
+              provider: {{ . }}
               {{- end }}
             kubernetes:
             {{- toYaml $env_obj.kubernetes | nindent 14 }}
-            {{- with $env_obj.tf_backend }}
-            tf_backend:
-            {{- toYaml . | nindent 14 }}
-            {{- end }}
             cloud:
             {{- toYaml $cloud | nindent 14 }}
+          {{- with $env_obj.alerts }}
           alerts:
-          {{- toYaml $.Values.global.alerts | nindent 12 }}
-        repository:
-          url: {{ $.Values.repository.url }}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
         {{- with $env_obj.externalEnvs }}
         externalEnvs:
         {{- toYaml . | nindent 10 }}

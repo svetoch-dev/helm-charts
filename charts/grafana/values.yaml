@@ -14,14 +14,14 @@ ingresses:
       ingress.pomerium.io/policy: |
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
-      - host: "gf.{{ .Values.global.company.domain.env }}"
+      - host: "gf.{{ .Values.global.env.dns.domain }}"
         paths:
           - path: /
             pathType: Prefix
     tls:
       - secretName: gf-tls
         hosts:
-          - "gf.{{ .Values.global.company.domain.env }}"
+          - "gf.{{ .Values.global.env.dns.domain }}"
   main-mcp:
     enabled: false
     name: '{{ include "grafana.fullname" . }}-main-mcp'
@@ -35,14 +35,14 @@ ingresses:
       ingress.pomerium.io/timeout: '300s'
       ingress.pomerium.io/allow_public_unauthenticated_access: 'true'
     hosts:
-      - host: "gf-mcp.{{ .Values.global.company.domain.env }}"
+      - host: "gf-mcp.{{ .Values.global.env.dns.domain }}"
         paths:
           - path: /api
             pathType: Prefix
     tls:
       - secretName: gf-mcp-tls
         hosts:
-          - "gf-mcp.{{ .Values.global.company.domain.env }}"
+          - "gf-mcp.{{ .Values.global.env.dns.domain }}"
 
 
 fluentbit-filters:
@@ -96,7 +96,7 @@ grafana-main:
     alerting:
       enabled: "false"
     server:
-      root_url: https://gf.{{ .Values.global.company.domain.env }}
+      root_url: https://gf.{{ .Values.global.env.dns.domain }}
   resources:
     limits:
       cpu: 3000m
@@ -106,7 +106,7 @@ grafana-main:
       memory: 100Mi
   environment:
     - name: GF_AUTH_SIGNOUT_REDIRECT_URL
-      value: 'https://gf.{{ .Values.global.company.domain.env }}/.pomerium/sign_out'
+      value: 'https://gf.{{ .Values.global.env.dns.domain }}/.pomerium/sign_out'
     - name: GF_AUTH_JWT_ENABLED
       value: 'true'
     - name: GF_AUTH_JWT_HEADER_NAME
@@ -116,7 +116,7 @@ grafana-main:
     - name: GF_AUTH_JWT_USERNAME_CLAIM
       value: email
     - name: GF_AUTH_JWT_JWK_SET_URL
-      value: 'https://authn.{{ .Values.global.company.domain.env }}/.well-known/pomerium/jwks.json'
+      value: 'https://authn.{{ .Values.global.env.dns.domain }}/.well-known/pomerium/jwks.json'
     - name: GF_AUTH_JWT_CACHE_TTL
       value: 60m
     - name: GF_AUTH_JWT_AUTO_SIGN_UP

@@ -13,10 +13,10 @@ postgres-operator:
       cpu: 10m
       memory: 35Mi
   configAwsOrGcp:
-    wal_gs_bucket: "{{ .Values.global.bucket.prefix }}-postgres-{{ .Values.global.bucket.suffix }}"
+    wal_gs_bucket: "{{ .Values.global.company.name }}-postgres-{{ .Values.global.env.short_name }}"
   configLogicalBackup:
-    logical_backup_provider: "{{ .Values.global.bucket.type }}"
-    logical_backup_s3_bucket: "{{ .Values.global.bucket.prefix }}-postgres-backup-{{ .Values.global.bucket.suffix }}"
+    logical_backup_provider: "{{ .Values.global.env.cloud.buckets.type }}"
+    logical_backup_s3_bucket: "{{ .Values.global.company.name }}-postgres-backup-{{ .Values.global.env.short_name }}"
     logical_backup_docker_image: "ghcr.io/zalando/postgres-operator/logical-backup:v1.15.1"
   # resources for logical backup pod, if empty configPostgresPodResources will be used
     logical_backup_cpu_request: 300m
@@ -61,7 +61,7 @@ pgadmin:
     tag: 9.4.0@sha256:6b1c0db09695758c72abcd5160b7c4cc6d0847ab0c90a2403bdbf951f0defb5a
   environment:
     - name: PGADMIN_DEFAULT_EMAIL
-      value: 'dev@{{ .Values.global.company.domain.root }}'
+      value: 'dev@{{ .Values.global.company.domain }}'
     - name: PGADMIN_CONFIG_WTF_CSRF_ENABLED
       value: 'False'
     - name: PGADMIN_CONFIG_ALLOW_SAVE_PASSWORD
@@ -95,14 +95,14 @@ pgadmin:
       ingress.pomerium.io/policy: |
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
-      - host: 'pg.{{ .Values.global.company.domain.env }}'
+      - host: 'pg.{{ .Values.global.env.dns.domain }}'
         paths:
           - path: /
             pathType: ImplementationSpecific
     tls:
       - secretName: pgadmin-tls
         hosts:
-          - 'pg.{{ .Values.global.company.domain.env }}'
+          - 'pg.{{ .Values.global.env.dns.domain }}'
 
 postgres-main:
   enabled: false

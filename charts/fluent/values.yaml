@@ -449,7 +449,7 @@ fluentbit-gcp:
           - read_ahead_kb=1024
         csi:
           driver: gcsfuse.csi.storage.gke.io
-          volumeHandle: '{{printf "%s-logs-%s" .Values.global.bucket.prefix .Values.global.bucket.suffix }}'
+          volumeHandle: '{{printf "%s-logs-%s" .Values.global.company.name .Values.global.env.short_name }}'
           volumeAttributes:
             skipCSIBucketAccessCheck: "true"
         claimRef:

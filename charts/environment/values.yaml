@@ -3,7 +3,6 @@ labels: {}
 externalEnvs: {}
 
 repository:
-  url: #git@github.com:ggramal/infrared.git
   paths:
     charts: argocd/charts/infra/charts
     crds: argocd/charts/infra/crds
@@ -13,7 +12,6 @@ repository:
     env_from_app_charts: ../../../environments/{{ .Values.global.env.name }}
     globals_from_app_charts: ../../infra/charts/globals.yaml
     globals_from_charts: ../globals.yaml
-  revision: master
 
 
 manifests:
@@ -164,14 +162,14 @@ chart_apps:
   fluent:
     enabled: false
     values: |
-      {{- if eq .Values.global.env.cloud.type "gcp" }}
+      {{- if eq .Values.global.env.cloud.name "gcp" }}
       fluentbit-gcp:
         enabled: true
       {{- end }}
   thanos:
     enabled: false
     values: |
-      {{- if eq .Values.global.env.short_name "int" }}
+      {{- if eq .Values.global.env.name "internal" }}
       thanos:
         query:
           stores:
@@ -203,20 +201,20 @@ chart_apps:
         nameOverride: "loki-{{ .Values.global.env.name }}"
         loki:
           compactor:
-            delete_request_store: "{{ .Values.global.bucket.type }}"
+            delete_request_store: "{{ .Values.global.env.cloud.buckets.type }}"
           storage:
-            type: "{{ .Values.global.bucket.type }}"
+            type: "{{ .Values.global.env.cloud.buckets.type }}"
             bucketNames:
               chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
               ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
             object_store:
-              type: "{{ .Values.global.bucket.type }}"
+              type: "{{ .Values.global.env.cloud.buckets.type }}"
               gcs:
                 bucket_name: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
           schemaConfig:
             configs:
               - from: 2025-05-01
-                object_store: "{{ .Values.global.bucket.type }}"
+                object_store: "{{ .Values.global.env.cloud.buckets.type }}"
                 store: tsdb
                 schema: v13
                 index:

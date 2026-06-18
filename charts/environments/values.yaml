@@ -1,8 +1,18 @@
 labels: {}
 
+global:
+  company:
+    name:
+    domain:
+  repo:
+    type:
+    provider:
+    group:
+    name:
+    revision:
+  envs: {}
+
 repository:
-  url: #git@github.com:ggramal/infrared.git
-  revision: master
   paths:
     env_chart: argocd/charts/infra/charts/environment
     envs_chart: argocd/charts/infra/charts/environments
@@ -14,38 +24,3 @@ root:
   revision:
   finalizers: {}
   syncPolicy: {}
-
-envs: {}
-#  gcp-prd:
-#    enabled: true
-#    name: gcp-prd
-#    short_name: prd
-#    long_name: production
-#    type: product
-#    tf_backend:
-#      type: gcs
-#      configs:
-#        bucket: "{company.name}-tf-state"
-#        prefix: "{env.name}/{tf_backend.state_name}"
-#    registry:
-#      type: gar
-#      url: example-docker.pkg.dev/project/containers
-#    dns:
-#      root: example.com
-#      domain: prd.example.com
-#      type: gcp
-#    cloud:
-#      type: gcp
-#    kubernetes:
-#      enabled: "true"
-#      server: https://kubernetes.default.svc
-#    labels: {}
-#    revision:
-#    finalizers: {}
-#    syncPolicy: {}
-#  gcp-int:
-#    enabled: true
-#    labels: {}
-#    revision:
-#    finalizers: {}
-#    syncPolicy: {}
