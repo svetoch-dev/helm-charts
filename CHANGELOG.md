@@ -42,6 +42,7 @@ Enhancements:
     * `Top 5 tables by Heap-Only Tuples (HOT) update` shows >0.1 rows/s instead of >0.5
     * `Top 5 tables by not Heap-Only Tuples (HOT) update` shows >0.1 rows/s instead of >0.5
     * `Top 5 transactions by duration` shows >5ms instead of >100ms
+  * `Pods` `Replicas` panel shows `deployments`
 
 Fixes
 * `prometheus-operated` fix `thanosServiceMonitor` values key typo
