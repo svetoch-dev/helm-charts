@@ -142,7 +142,6 @@ chart_apps:
         name: "{{ .Values.global.env.name }}"
         server: "{{ .Values.global.env.server }}"
         short_name: "{{ .Values.global.env.short_name }}"
-        long_name: "{{ .Values.global.env.long_name }}"
       access:
         roles: ["admin", "dev"]
     values: |
