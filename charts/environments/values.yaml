@@ -18,6 +18,10 @@ repository:
     envs_chart: argocd/charts/infra/charts/environments
     root_from_chart: "../../../.."
 
+environment:
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
 root:
   enabled: true
   labels: {}

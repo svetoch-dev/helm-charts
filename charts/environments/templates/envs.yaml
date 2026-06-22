@@ -14,17 +14,22 @@
 {{- $cloudName := required (printf "global.envs.%s.cloud.name is required" $env_name) $cloud.name -}}
 {{- $_ := required (printf "global.envs.%s.cloud.buckets.type is required" $env_name) $cloud.buckets.type -}}
 {{- $server := required (printf "global.envs.%s.kubernetes.server is required" $env_name) (dig "kubernetes" "server" "" $env_obj) -}}
-{{- $derivedShortName := printf "%s-%s" $cloudName $shortName -}}
-{{- $envForTpl := mergeOverwrite (deepCopy $env_obj) (dict "server" $server "short_name" $derivedShortName "dns" (dict "root" $dnsRoot "domain" $dnsDomain "provider" (dig "dns" "provider" "" $env_obj))) -}}
+{{- $cloudShortName := printf "%s-%s" $cloudName $shortName -}}
+{{- $envForTpl := mergeOverwrite (deepCopy $env_obj) (dict "server" $server "short_name" $shortName "cloud_short_name" $cloudShortName "dns" (dict "root" $dnsRoot "domain" $dnsDomain "provider" (dig "dns" "provider" "" $env_obj))) -}}
 {{- $tplValues := mergeOverwrite (deepCopy $.Values) (dict "global" (mergeOverwrite (deepCopy $.Values.global) (dict "env" $envForTpl))) -}}
+{{- $dnsDomain = tpl $dnsDomain (mergeOverwrite (deepCopy $) (dict "Values" $tplValues)) -}}
 {{- $registryUrl := tpl $registryTemplate (mergeOverwrite (deepCopy $) (dict "Values" $tplValues)) -}}
+{{- $finalizers := $.Values.environment.finalizers -}}
+{{- if hasKey $env_obj "finalizers" -}}
+{{- $finalizers = $env_obj.finalizers -}}
+{{- end -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ $derivedShortName }}
+  name: {{ $cloudShortName }}
   namespace: argocd
-  {{- with $env_obj.finalizers }}
+  {{- with $finalizers }}
   finalizers:
   {{- toYaml . | nindent 6 }}
   {{- end }}
@@ -47,7 +52,7 @@ spec:
     helm:
       valueFiles:
         - ../globals.yaml
-        - {{ tpl (printf "%s/environments/%s/env.yaml" $.Values.repository.paths.root_from_chart $derivedShortName ) $ }}
+        - {{ tpl (printf "%s/environments/%s/env.yaml" $.Values.repository.paths.root_from_chart $cloudShortName ) $ }}
     {{- with $env_obj.parameters }}
       parameters:
     {{- tpl (toYaml .) $ | nindent 8 }}
@@ -65,7 +70,8 @@ spec:
             name: {{ $structuredEnvName }}
             enabled: {{ $env_obj.enabled }}
             server: {{ $server }}
-            short_name: {{ $derivedShortName }}
+            short_name: {{ $shortName }}
+            cloud_short_name: {{ $cloudShortName }}
             {{- with $env_obj.long_name }}
             long_name: {{ . }}
             {{- end }}
