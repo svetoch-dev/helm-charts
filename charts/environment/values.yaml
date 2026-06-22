@@ -61,8 +61,7 @@ chart_apps:
     enabled: false
     globalValues:
       access:
-        teams: ["admin", "dev"]
-        emails: []
+        roles: ["admin", "dev"]
   redis:
     enabled: false
   external-dns:
@@ -103,14 +102,12 @@ chart_apps:
     enabled: false
     globalValues:
       access:
-        teams: ["admin", "dev", "pm", "qa"]
-        emails: []
+        roles: ["admin", "dev", "pm", "qa"]
   grafana:
     enabled: false
     globalValues:
       access:
-        teams: ["admin", "dev", "pm", "qa"]
-        emails: []
+        roles: ["admin", "dev", "pm", "qa"]
     values: |
       {{- if .Values.externalEnvs }}
       datasource:
@@ -147,8 +144,7 @@ chart_apps:
         short_name: "{{ .Values.global.env.short_name }}"
         long_name: "{{ .Values.global.env.long_name }}"
       access:
-        teams: ["admin", "dev"]
-        emails: []
+        roles: ["admin", "dev"]
     values: |
       argocd:
         externalRedis:

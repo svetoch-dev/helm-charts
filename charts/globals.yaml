@@ -16,16 +16,7 @@ global:
     name: #aws-prd or aws-int or aws-stg
     server: #https://2.2.2.2
     short_name: #gcp-pre/gcp-prd/gcp-int/etc
-    users:
-      domain: ""
-      admin:
-        emails: []
-      qa:
-        emails: []
-      dev:
-        emails: []
-      pm:
-        emails: []
+    users: {}
     dns:
       root:
       domain:
@@ -35,20 +26,34 @@ global:
   ingress:
     class: pomerium
   access:
-    teams: ["admin"]
-    emails: []
+    roles: ["admin"]
   alerts: {}
   pomerium:
     policy:
       default: |
-        {{- $teams  := .Values.global.env.users }}
-        {{- $emails := .Values.global.access.emails }}
-        {{- range $team := .Values.global.access.teams }}
-        {{- $emails = concat $emails (get $teams $team).emails }}
+        {{- $emails := list }}
+        {{- $domains := list }}
+        {{- $roles := .Values.global.access.roles }}
+        {{- range $user := .Values.global.env.users }}
+        {{- range $role := $user.roles }}
+        {{- if has $role $roles }}
+        {{- if hasPrefix "*@" $user.name }}
+        {{- $domains = append $domains (trimPrefix "*@" $user.name) }}
+        {{- else }}
+        {{- $emails = append $emails $user.name }}
         {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- $emails = uniq $emails }}
+        {{- $domains = uniq $domains }}
         allow:
           or:
             {{- range $email :=  $emails }}
             - email:
                 is: {{ $email }}
+            {{- end }}
+            {{- range $domain := $domains }}
+            - domain:
+                is: {{ $domain }}
             {{- end }}
