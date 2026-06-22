@@ -163,7 +163,7 @@ chart_apps:
   thanos:
     enabled: false
     values: |
-      {{- if eq .Values.global.env.name "internal" }}
+      {{- if eq .Values.global.env.type "internal" }}
       thanos:
         query:
           stores:
