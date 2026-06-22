@@ -1,5 +1,5 @@
 {{- with .Values.crds -}}
-{{- $app_name := (printf "%s-%s" "crds" $.Values.global.env.name) }}
+{{- $app_name := (printf "%s-%s" "crds" $.Values.global.env.cloud_short_name) }}
 {{- if .enabled -}}
 ---
 apiVersion: argoproj.io/v1alpha1

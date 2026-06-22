@@ -6,10 +6,10 @@ repository:
   paths:
     charts: argocd/charts/infra/charts
     crds: argocd/charts/infra/crds
-    manifests: "argocd/environments/{{ .Values.global.env.name }}/manifests"
+    manifests: "argocd/environments/{{ .Values.global.env.cloud_short_name }}/manifests"
     app_charts: argocd/charts/app
-    env_from_charts: ../../../../environments/{{ .Values.global.env.name }}
-    env_from_app_charts: ../../../environments/{{ .Values.global.env.name }}
+    env_from_charts: ../../../../environments/{{ .Values.global.env.cloud_short_name }}
+    env_from_app_charts: ../../../environments/{{ .Values.global.env.cloud_short_name }}
     globals_from_app_charts: ../../infra/charts/globals.yaml
     globals_from_charts: ../globals.yaml
 
@@ -73,11 +73,11 @@ chart_apps:
         listenerTemplate:
           metadata:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:actions.github.com/Pod:gha-runner/gha-runner-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.cloud_short_name }}:actions.github.com/Pod:gha-runner/gha-runner-{{ .Values.global.env.cloud_short_name }}
         resourceMeta:
           autoscalingListener:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:actions.github.com/AutoscalingListener:gha-runner/gha-runner-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.cloud_short_name }}:actions.github.com/AutoscalingListener:gha-runner/gha-runner-{{ .Values.global.env.cloud_short_name }}
   gha-runner-app:
     enabled: false
     chart: "{{ .Values.repository.paths.charts }}/gha-runner"
@@ -89,11 +89,11 @@ chart_apps:
         listenerTemplate:
           metadata:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.name }}:actions.github.com/Pod:gha-runner-app/gha-runner-app-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.cloud_short_name }}:actions.github.com/Pod:gha-runner-app/gha-runner-app-{{ .Values.global.env.cloud_short_name }}
         resourceMeta:
           autoscalingListener:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.name }}:actions.github.com/AutoscalingListener:gha-runner-app/gha-runner-app-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.cloud_short_name }}:actions.github.com/AutoscalingListener:gha-runner-app/gha-runner-app-{{ .Values.global.env.cloud_short_name }}
   gha-operator:
     enabled: false
   pomerium:
@@ -139,7 +139,7 @@ chart_apps:
     enabled: false
     globalValues:
       environment:
-        name: "{{ .Values.global.env.name }}"
+        name: "{{ .Values.global.env.cloud_short_name }}"
         server: "{{ .Values.global.env.server }}"
         short_name: "{{ .Values.global.env.short_name }}"
       access:
@@ -147,13 +147,13 @@ chart_apps:
     values: |
       argocd:
         externalRedis:
-          host: argocd-{{ .Values.global.env.name }}-redis-cluster-master
+          host: argocd-{{ .Values.global.env.cloud_short_name }}-redis-cluster-master
   prometheus:
     enabled: false
     values: |
       operator:
         prometheusOperator:
-          fullnameOverride: "prometheus-{{ .Values.global.env.name }}-operator"
+          fullnameOverride: "prometheus-{{ .Values.global.env.cloud_short_name }}-operator"
   fluent:
     enabled: false
     values: |
@@ -168,10 +168,10 @@ chart_apps:
       thanos:
         query:
           stores:
-            - {{ printf "thanos-%s-storegateway:10901" .Values.global.env.name }}
-            - {{ printf "prometheus-%s-prometheus-main-thanos:8080" .Values.global.env.name }}
+            - {{ printf "thanos-%s-storegateway:10901" .Values.global.env.cloud_short_name }}
+            - {{ printf "prometheus-%s-prometheus-main-thanos:8080" .Values.global.env.cloud_short_name }}
             {{- if .Values.externalEnvs }}
-            - {{ printf "thanos-external-%s-query-grpc:10901" .Values.global.env.name }}
+            - {{ printf "thanos-external-%s-query-grpc:10901" .Values.global.env.cloud_short_name }}
             {{- end }}
       {{- end }}
   thanos-external:
@@ -193,7 +193,7 @@ chart_apps:
     enabled: false
     values: |
       loki:
-        nameOverride: "loki-{{ .Values.global.env.name }}"
+        nameOverride: "loki-{{ .Values.global.env.cloud_short_name }}"
         loki:
           compactor:
             delete_request_store: "{{ .Values.global.env.cloud.buckets.type }}"

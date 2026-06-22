@@ -24,6 +24,8 @@
 {{- range $externalEnvName, $externalEnvObj := $.Values.global.envs -}}
 {{- if and $externalEnvObj.enabled (eq (dig "type" "" $externalEnvObj) "product") -}}
 {{- $externalShortName := required (printf "global.envs.%s.short_name is required" $externalEnvName) $externalEnvObj.short_name -}}
+{{- $externalCloudName := required (printf "global.envs.%s.cloud.name is required" $externalEnvName) $externalEnvObj.cloud.name -}}
+{{- $externalCloudShortName := printf "%s-%s" $externalCloudName $externalShortName -}}
 {{- $externalDnsRoot := $companyDomain -}}
 {{- $externalDnsDomain := printf "%s.%s" $externalShortName $externalDnsRoot -}}
 {{- if $externalEnvObj.dns -}}
@@ -33,7 +35,7 @@
 {{- $externalEnvForTpl := mergeOverwrite (deepCopy $externalEnvObj) (dict "short_name" $externalShortName "dns" (dict "root" $externalDnsRoot "domain" $externalDnsDomain "provider" (dig "dns" "provider" "" $externalEnvObj))) -}}
 {{- $externalTplValues := mergeOverwrite (deepCopy $.Values) (dict "global" (mergeOverwrite (deepCopy $.Values.global) (dict "env" $externalEnvForTpl))) -}}
 {{- $externalDnsDomain = tpl $externalDnsDomain (mergeOverwrite (deepCopy $) (dict "Values" $externalTplValues)) | trimSuffix "." -}}
-{{- $_ := set $externalEnvs $externalEnvName (dict "domain" $externalDnsDomain) -}}
+{{- $_ := set $externalEnvs $externalCloudShortName (dict "domain" $externalDnsDomain) -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

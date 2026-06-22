@@ -438,7 +438,7 @@ prometheus-main:
       enableAdminAPI: true
 
       externalLabels:
-        env: "{{ .Values.global.env.name }}"
+        env: "{{ .Values.global.env.cloud_short_name }}"
 
       ruleSelector:
         matchLabels:

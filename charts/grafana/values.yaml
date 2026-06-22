@@ -122,7 +122,7 @@ grafana-main:
     - name: GF_AUTH_JWT_AUTO_SIGN_UP
       value: 'true'
   labels:
-    app.kubernetes.io/instance: grafana-{{ .Values.global.env.name }}
+    app.kubernetes.io/instance: grafana-{{ .Values.global.env.cloud_short_name }}
 
 
 datasource:
@@ -136,20 +136,20 @@ datasource:
         type: prometheus
         isDefault: true
         access: proxy
-        url: http://thanos-{{ .Values.global.env.name }}-query.prometheus.svc.cluster.local:9090
+        url: http://thanos-{{ .Values.global.env.cloud_short_name }}-query.prometheus.svc.cluster.local:9090
         jsonData:
           manageAlerts: 'false'
           prometheusType: Thanos
-    loki-{{ .Values.global.env.name }}:
+    loki-{{ .Values.global.env.cloud_short_name }}:
       enabled: true
-      uid: loki-{{ .Values.global.env.name }}
+      uid: loki-{{ .Values.global.env.cloud_short_name }}
       selector:
         grafana: main
       datasource:
         type: loki
         isDefault: false
         access: proxy
-        url: http://loki-{{ .Values.global.env.name }}-read.loki.svc.cluster.local:3100
+        url: http://loki-{{ .Values.global.env.cloud_short_name }}-read.loki.svc.cluster.local:3100
         jsonData:
           manageAlerts: 'false'
           timeout: 300
