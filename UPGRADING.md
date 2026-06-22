@@ -126,6 +126,23 @@ hosts:
 - host: 'api.{{ .Values.global.env.dns.domain }}'
 ```
 
+Set `global.envs.<key>.dns.provider` for every environment that enables the
+`external-dns` chart. The environment chart passes it to the child chart as
+`external-dns.provider`:
+
+```yaml
+global:
+  envs:
+    internal:
+      dns:
+        root: example.com
+        domain: "{{ .Values.global.env.short_name }}.{{ .Values.global.env.dns.root }}"
+        provider: google
+```
+
+Do not rely on the external-dns chart's previous default provider. Use the provider
+identifier supported by the selected external-dns chart version.
+
 ### 2. Move environment-specific values to `env.yaml`
 
 Keep values that differ by deployed environment in that environment's `env.yaml`.
@@ -247,7 +264,8 @@ Check the rendered output before allowing Argo CD to prune resources:
 * environment Application names still use the expected `cloud_short_name`;
 * every generated `valueFiles` path exists;
 * repository URL and revision are correct;
-* DNS domains, registry URLs and Kubernetes API servers match the old values;
+* DNS domains and external-dns providers match the old values;
+* registry URLs and Kubernetes API servers match the old values;
 * internal `externalEnvs` keys and domains are correct;
 * no wildcard domain access was introduced unintentionally;
 * child Application, release, Service, Redis, PostgreSQL, Loki and Prometheus names  remain unchanged.

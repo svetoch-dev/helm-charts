@@ -25,6 +25,7 @@ Enhancements:
   * pass common values to child Applications automatically and merge application-specific `globalValues`
   * use `global.env.cloud_short_name` for Application names, release names, environment value-file paths and service references
   * use `global.repo.revision` as the common default revision
+  * pass `global.env.dns.provider` to the `external-dns` chart as `external-dns.provider`
 * `app/core`:
   * support `tpl` for `Deployment.metadata.name`
   * add `strategy` support to `Deployment` template
