@@ -1,4 +1,260 @@
 # Upgrade to v11
+
+## Environment values schema
+
+Version 11 replaces the legacy templated environment values with structured Helm
+values. Migrate the root `envs.yaml` and every environment `env.yaml` before syncing
+the root Argo CD Application.
+
+Do not sync a partially migrated configuration. The new charts no longer read the
+legacy top-level `envs`, `repository`, `global.registry`, `global.bucket`,
+`global.network`, `global.cloud.type`, or `global.company.teams` values.
+
+### 1. Convert the root `envs.yaml`
+
+Move repository and environment definitions under `global`:
+
+```yaml
+global:
+  company:
+    name: example
+    domain: example.com
+
+  repo:
+    type: github
+    provider: github.com
+    group: example-org
+    name: infrastructure
+    revision: master
+
+  envs:
+    internal:
+      enabled: true
+      name: internal
+      short_name: int
+      type: internal
+      users: {}
+      registry:
+        type: gar
+        url: "{{ .Values.global.env.cloud.location.region }}-docker.pkg.dev/{{ .Values.global.env.cloud.id }}/containers"
+      dns:
+        root: example.com
+        domain: "{{ .Values.global.env.short_name }}.{{ .Values.global.env.dns.root }}"
+        provider: google
+      cloud:
+        name: gcp
+        id: example-internal
+        location:
+          region: europe-west2
+        buckets:
+          type: gcs
+        network:
+          int_nat_gw: 192.0.2.10
+      kubernetes:
+        server: https://kubernetes.default.svc
+
+    production:
+      enabled: true
+      name: production
+      short_name: prd
+      type: product
+      users: {}
+      registry:
+        type: gar
+        url: "{{ .Values.global.env.cloud.location.region }}-docker.pkg.dev/{{ .Values.global.env.cloud.id }}/containers"
+      dns:
+        root: example.com
+        domain: "{{ .Values.global.env.short_name }}.{{ .Values.global.env.dns.root }}"
+        provider: google
+      cloud:
+        name: gcp
+        id: example-production
+        location:
+          region: europe-west2
+        buckets:
+          type: gcs
+        network:
+          int_nat_gw: 192.0.2.10
+      kubernetes:
+        server: https://example.invalid
+```
+
+The key under `global.envs` is the logical environment key. `name` is the logical
+environment name. It replaces the old `long_name` value.
+
+The chart derives `global.env.cloud_short_name` as
+`<global.env.cloud.name>-<global.env.short_name>`. For example, an environment with
+`cloud.name: gcp` and `short_name: int` gets `cloud_short_name: gcp-int`.
+
+`cloud_short_name` is used for:
+
+* Argo CD Application and Helm release names;
+* environment override directories such as `argocd/environments/gcp-int`;
+* Kubernetes resource and Service references;
+* log labels and datasource UIDs that previously used the old environment name.
+
+Keep `cloud.name` and `short_name` unchanged during this migration if existing
+resource names must remain unchanged. Changing either value can make Argo CD create
+new Applications and delete the old ones.
+
+Use this field mapping when converting existing values:
+
+| Legacy value | Version 11 value |
+| --- | --- |
+| `repository.url` | constructed from `global.repo.type/provider/group/name` |
+| `repository.revision` | `global.repo.revision` |
+| `envs` | `global.envs` |
+| `global.company.domain.root` | `global.company.domain` or `global.env.dns.root` |
+| `global.company.domain.env` | `global.env.dns.domain` |
+| `global.company.teams` | `global.env.users` |
+| `global.access.teams` | `global.access.roles` |
+| `global.registry.url` or `global.env.registry` | `global.env.registry.url` |
+| `global.bucket.type` | `global.env.cloud.buckets.type` |
+| `global.network.int_nat_gw` | `global.env.cloud.network.int_nat_gw` |
+| `global.cloud.type` | `global.env.cloud.name` |
+| `global.env.long_name` | `global.env.name` |
+| `global.env.server` source value | `global.envs.<key>.kubernetes.server` |
+
+The selected environment is still exposed to child charts as `global.env`. Update
+application and environment overrides to use the new paths, for example:
+
+```yaml
+image:
+  repository: '{{ printf "%s/%s" .Values.global.env.registry.url .Values.global.app.name }}'
+
+hosts:
+- host: 'api.{{ .Values.global.env.dns.domain }}'
+```
+
+### 2. Move environment-specific values to `env.yaml`
+
+Keep values that differ by deployed environment in that environment's `env.yaml`.
+In particular, move alert receivers out of the root `envs.yaml`:
+
+```yaml
+repository:
+  revision: '{{ .Values.global.repo.revision }}'
+
+global:
+  alerts:
+    receivers:
+    - name: default
+      slackConfigs:
+      - channel: '#alerts'
+        useDefaults: true
+```
+
+Repeat this for every environment directory and for any environment template used
+to create new directories.
+
+Replace application `values` blocks that copied and extended the complete global
+object:
+
+```yaml
+chart_apps:
+  example:
+    values: |
+      global: {{ .Values.global | toYaml | nindent 4 }}
+        access:
+          teams: [admin, dev]
+```
+
+with `globalValues` containing only application-specific overrides:
+
+```yaml
+chart_apps:
+  example:
+    globalValues:
+      access:
+        roles:
+        - admin
+        - dev
+```
+
+The environment chart now passes the common `global` object to every child
+Application and merges `globalValues` over it.
+
+### 3. Convert access control to users and roles
+
+Define users separately for every environment:
+
+```yaml
+users:
+  developer:
+    name: developer@example.com
+    roles: [dev]
+  administrator:
+    name: administrator@example.com
+    roles: [admin]
+```
+
+An application grants access when a user's role is present in that application's
+`global.access.roles`. A wildcard user grants domain-wide access:
+
+```yaml
+users:
+  all:
+    name: "*@example.com"
+    roles: [dev]
+```
+
+This allows every current or future address in `example.com` to access every
+application that includes the `dev` role. It is broader than listing individual
+users. Add wildcard users only when domain-wide access is intended.
+
+### 4. Review generated external environments
+
+For an environment with `type: internal`, the environments chart automatically
+creates `externalEnvs` from all enabled environments with `type: product`. Keys use
+the external environment's `cloud_short_name`, for example:
+
+```yaml
+externalEnvs:
+  gcp-prd:
+    domain: prd.example.com
+```
+
+Remove manually generated `externalEnvs` blocks that duplicate these product
+environments. Verify datasource UIDs and any templates that iterate over
+`externalEnvs` before syncing.
+
+### 5. Rebuild local dependencies
+
+When `chart_deps` sources change, rebuild every parent chart that packages that
+dependency. Rendering without this step can silently use an old `charts/*.tgz`
+archive:
+
+```bash
+helm dependency update <chart>
+```
+
+Run it for application charts and infrastructure charts that directly depend on a
+changed local chart. If `charts/*/charts` is ignored by Git, CI and deployment jobs
+must run `helm dependency build` or `helm dependency update` in a clean checkout.
+
+### 6. Validate before syncing
+
+Render the root environments chart first:
+
+```bash
+helm dependency update charts/environments
+helm lint charts/environments -f <path-to-envs.yaml>
+helm template environments charts/environments -f <path-to-envs.yaml> > /tmp/environments.yaml
+```
+
+Check the rendered output before allowing Argo CD to prune resources:
+
+* environment Application names still use the expected `cloud_short_name`;
+* every generated `valueFiles` path exists;
+* repository URL and revision are correct;
+* DNS domains, registry URLs and Kubernetes API servers match the old values;
+* internal `externalEnvs` keys and domains are correct;
+* no wildcard domain access was introduced unintentionally;
+* child Application, release, Service, Redis, PostgreSQL, Loki and Prometheus names  remain unchanged.
+
+Then render each environment chart with its generated global values and its environment `env.yaml`.
+Do not enable automated sync or pruning until the rendered names and value-file paths have been compared with the currently managed Argo CD Applications.
+
 ## Postgres
 Important note on deprecated K8s Endpoints
 We swithced `Postgres-operator` `kubernetes_use_configmaps` to `True`. For clusters with replicas you cannot easily switch from using Endpoints to ConfigMaps without risking a split-brain scenario because Patroni would read DCS-related facts from both these resources at the same time during a rotation. There are two possible migration paths:
