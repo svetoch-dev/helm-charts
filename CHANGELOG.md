@@ -22,6 +22,7 @@ Enhancements:
   * construct GitHub or GitLab repository URLs from `global.repo`
   * use shared environment finalizers by default with per-environment overrides
   * template registry URLs and DNS domains in the selected environment context
+  * pass `global.ci` only to environments with `type: internal`
 * `environment`:
   * pass common values to child Applications automatically and merge application-specific `globalValues`
   * use `global.env.cloud_short_name` for Application names, release names, environment value-file paths and service references

@@ -20,6 +20,9 @@ global:
     name: example
     domain: example.com
 
+  ci:
+    type: gha
+
   repo:
     type: github
     provider: github.com
@@ -81,6 +84,9 @@ global:
 
 The key under `global.envs` is the logical environment key. `name` is the logical
 environment name. It replaces the old `long_name` value.
+
+`global.ci` is passed only to the environment with `type: internal`. Product
+environments do not receive CI configuration.
 
 The chart derives `global.env.cloud_short_name` as
 `<global.env.cloud.name>-<global.env.short_name>`. For example, an environment with

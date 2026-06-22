@@ -70,6 +70,10 @@ spec:
             domain: {{ $dnsRoot }}
           repo:
           {{- toYaml $.Values.global.repo | nindent 12 }}
+          {{- if and (eq (dig "type" "" $env_obj) "internal") (dig "ci" "type" "" $.Values.global) }}
+          ci:
+          {{- toYaml $.Values.global.ci | nindent 12 }}
+          {{- end }}
           env:
             name: {{ $structuredEnvName }}
             enabled: {{ $env_obj.enabled }}
