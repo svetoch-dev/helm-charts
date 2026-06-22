@@ -5,6 +5,7 @@ BrakingChanges. See [UPGRADING](UPGRADING.md):
 * new `environments` values schema with structured `global.company`, `global.repo`, `global.envs` and `global.env` objects
 * replace `global.company.teams` and `global.access.teams/emails` with environment users and role-based access (`global.env.users` and `global.access.roles`)
 * replace `global.env.server` with `global.env.kubernetes.server`
+* remove the legacy `global.environment` compatibility object; use `global.env`
 
 New features:
 * `postgres-exporter` get query along with queryid

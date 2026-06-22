@@ -141,10 +141,6 @@ chart_apps:
   argocd:
     enabled: false
     globalValues:
-      environment:
-        name: "{{ .Values.global.env.cloud_short_name }}"
-        server: "{{ .Values.global.env.kubernetes.server }}"
-        short_name: "{{ .Values.global.env.short_name }}"
       access:
         roles: ["admin", "dev"]
     values: |

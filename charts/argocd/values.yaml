@@ -128,7 +128,7 @@ probes:
         prometheus: main
       spec:
         prober:
-          url: 'prometheus-{{ .Values.global.environment.name }}-prometheus-blackbox-exporter.prometheus.svc.cluster.local:9115'
+          url: 'prometheus-{{ .Values.global.env.cloud_short_name }}-prometheus-blackbox-exporter.prometheus.svc.cluster.local:9115'
         jobName: argocd
         module: http_3xx
         targets:

@@ -120,6 +120,9 @@ Use this field mapping when converting existing values:
 | `global.cloud.type` | `global.env.cloud.name` |
 | `global.env.long_name` | `global.env.name` |
 | `global.env.server` | `global.env.kubernetes.server` (configured in `global.envs.<key>.kubernetes.server`) |
+| `global.environment.name` | `global.env.cloud_short_name` |
+| `global.environment.server` | `global.env.kubernetes.server` |
+| `global.environment.short_name` | `global.env.short_name` |
 
 The selected environment is still exposed to child charts as `global.env`. Update
 application and environment overrides to use the new paths, for example:
@@ -134,6 +137,9 @@ hosts:
 destination:
   server: '{{ .Values.global.env.kubernetes.server }}'
 ```
+
+The legacy `global.environment` compatibility object is no longer populated. Read
+all environment attributes from `global.env`.
 
 Set `global.envs.<key>.dns.provider` for every environment that enables the
 `external-dns` chart. The environment chart passes it to the child chart as

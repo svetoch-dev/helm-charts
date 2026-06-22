@@ -8,7 +8,6 @@ global:
     group:
     name:
     revision:
-  envs: {}
   #Cant use env: here because
   #env is already set as global
   #attr in original argocd chart
