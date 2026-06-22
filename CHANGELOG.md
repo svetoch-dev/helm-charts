@@ -4,6 +4,7 @@ BrakingChanges. See [UPGRADING](UPGRADING.md):
 * crds and charts uses `ot-container-kit/redis-operator + redis` instead of `Spotahome`
 * new `environments` values schema with structured `global.company`, `global.repo`, `global.envs` and `global.env` objects
 * replace `global.company.teams` and `global.access.teams/emails` with environment users and role-based access (`global.env.users` and `global.access.roles`)
+* replace `global.env.server` with `global.env.kubernetes.server`
 
 New features:
 * `postgres-exporter` get query along with queryid

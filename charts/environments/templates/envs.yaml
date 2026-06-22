@@ -13,7 +13,7 @@
 {{- $cloud := required (printf "global.envs.%s.cloud is required" $env_name) $env_obj.cloud -}}
 {{- $cloudName := required (printf "global.envs.%s.cloud.name is required" $env_name) $cloud.name -}}
 {{- $_ := required (printf "global.envs.%s.cloud.buckets.type is required" $env_name) $cloud.buckets.type -}}
-{{- $server := required (printf "global.envs.%s.server is required" $env_name) $env_obj.server -}}
+{{- $_ := required (printf "global.envs.%s.kubernetes.server is required" $env_name) (dig "kubernetes" "server" "" $env_obj) -}}
 {{- $cloudShortName := required (printf "global.envs.%s.cloud_short_name is required" $env_name) $env_obj.cloud_short_name -}}
 {{- $externalEnvs := dict -}}
 {{- if eq (dig "type" "" $env_obj) "internal" -}}
@@ -73,7 +73,6 @@ spec:
           env:
             name: {{ $structuredEnvName }}
             enabled: {{ $env_obj.enabled }}
-            server: {{ $server }}
             short_name: {{ $shortName }}
             cloud_short_name: {{ $cloudShortName }}
             {{- with $env_obj.type }}

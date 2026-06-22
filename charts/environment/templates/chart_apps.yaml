@@ -29,7 +29,7 @@ metadata:
   {{- end }}
 spec:
   destination:
-    server: {{ $.Values.global.env.server }}
+    server: {{ $.Values.global.env.kubernetes.server }}
     {{- if $chart_app_obj.namespace }}
     namespace: {{ $chart_app_obj.namespace }}
     {{- end }}

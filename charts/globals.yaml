@@ -15,9 +15,10 @@ global:
   env:
     name: #aws-prd or aws-int or aws-stg
     cloud_short_name: #gcp-prd, gcp-int, etc; stable infrastructure identifier
-    server: #https://2.2.2.2
     short_name: #gcp-pre/gcp-prd/gcp-int/etc
     users: {}
+    kubernetes:
+      server: #https://2.2.2.2
     dns:
       root:
       domain:

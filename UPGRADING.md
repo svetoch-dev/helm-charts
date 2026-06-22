@@ -113,7 +113,7 @@ Use this field mapping when converting existing values:
 | `global.network.int_nat_gw` | `global.env.cloud.network.int_nat_gw` |
 | `global.cloud.type` | `global.env.cloud.name` |
 | `global.env.long_name` | `global.env.name` |
-| `global.env.server` source value | `global.envs.<key>.kubernetes.server` |
+| `global.env.server` | `global.env.kubernetes.server` (configured in `global.envs.<key>.kubernetes.server`) |
 
 The selected environment is still exposed to child charts as `global.env`. Update
 application and environment overrides to use the new paths, for example:
@@ -124,6 +124,9 @@ image:
 
 hosts:
 - host: 'api.{{ .Values.global.env.dns.domain }}'
+
+destination:
+  server: '{{ .Values.global.env.kubernetes.server }}'
 ```
 
 Set `global.envs.<key>.dns.provider` for every environment that enables the
