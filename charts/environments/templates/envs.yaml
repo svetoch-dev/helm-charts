@@ -90,9 +90,6 @@ spec:
             server: {{ $server }}
             short_name: {{ $shortName }}
             cloud_short_name: {{ $cloudShortName }}
-            {{- with $env_obj.long_name }}
-            long_name: {{ . }}
-            {{- end }}
             {{- with $env_obj.type }}
             type: {{ . }}
             {{- end }}
