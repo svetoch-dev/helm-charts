@@ -2,6 +2,8 @@
 BrakingChanges. See [UPGRADING](UPGRADING.md):
 * `postgres-operator` uses configmaps instead endpoints (`kubernetes_use_configmaps: true`)
 * crds and charts uses `ot-container-kit/redis-operator + redis` instead of `Spotahome`
+* new `environments` values schema with structured `global.company`, `global.repo`, `global.envs` and `global.env` objects
+* replace `global.company.teams` and `global.access.teams/emails` with environment users and role-based access (`global.env.users` and `global.access.roles`)
 
 New features:
 * `postgres-exporter` get query along with queryid
@@ -10,8 +12,19 @@ New features:
 * `redis` adds self-managed `chart_deps/redis/redis-operator` chart for Opstree Redis Operator
 * new `postgres` panel `Matching querie_IDs to queries` shows real sql requests
 * new alert `RedisSentinel_master_down` to check the condition of `RedisSentinel`
+* `environments` automatically builds `externalEnvs` for internal environments from enabled product environments
+* environment users support wildcard domain access, for example `name: "*@example.com"`, scoped by assigned roles
 
 Enhancements:
+* `environments`:
+  * generate environment Applications from structured values using `valuesObject`
+  * construct GitHub or GitLab repository URLs from `global.repo`
+  * use shared environment finalizers by default with per-environment overrides
+  * template registry URLs and DNS domains in the selected environment context
+* `environment`:
+  * pass common values to child Applications automatically and merge application-specific `globalValues`
+  * use `global.env.cloud_short_name` for Application names, release names, environment value-file paths and service references
+  * use `global.repo.revision` as the common default revision
 * `app/core`:
   * support `tpl` for `Deployment.metadata.name`
   * add `strategy` support to `Deployment` template
@@ -45,6 +58,7 @@ Enhancements:
   * `Pods` `Replicas` panel shows `deployments`
 
 Fixes
+* fix newline after YAML separator in `app/core/templates/_ingress.tpl` for `helm lint`
 * `prometheus-operated` fix `thanosServiceMonitor` values key typo
 * `prometheus/lib` `podMonitor` render `podTargetLabels` instead of invalid `targetLabels`
 * `grafana` panels:
