@@ -34,7 +34,7 @@ spec:
     {{- toYaml . | nindent 6 }}
     {{- end }}
     repoURL: {{ include "infra.repoURL" $ }}
-    targetRevision: {{ $operator_obj.revision | default $.Values.crds.revision | default (include "infra.repoRevision" $) }}
+    targetRevision: {{ $operator_obj.revision | default $.Values.crds.revision | default (required "repository.revision is required" (tpl $.Values.repository.revision $)) }}
   {{- end }}
   {{- end }}
   {{- with .syncPolicy }}

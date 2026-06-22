@@ -4,6 +4,7 @@
 {{- $chart_path := ternary $.Values.repository.paths.app_charts $.Values.repository.paths.charts (eq $chart_app_obj.app true) }}
 {{- $env_path := ternary $.Values.repository.paths.env_from_app_charts $.Values.repository.paths.env_from_charts (eq $chart_app_obj.app true) }}
 {{- $globals_path := ternary $.Values.repository.paths.globals_from_app_charts $.Values.repository.paths.globals_from_charts (eq $chart_app_obj.app true) }}
+{{- $repositoryRevision := required "repository.revision is required" (tpl $.Values.repository.revision $) }}
 {{- $globalValues := mustDeepCopy $.Values.global }}
 {{- with $chart_app_obj.globalValues }}
 {{- $globalValues = mergeOverwrite $globalValues (tpl (toYaml .) $ | fromYaml) }}
@@ -41,7 +42,7 @@ spec:
     {{- else }}
     path: {{ tpl (printf "%s/%s" $chart_path $chart_app_name) $ }}
     {{- end }}
-    targetRevision: {{ $chart_app_obj.revision | default (include "infra.repoRevision" $) }}
+    targetRevision: {{ $chart_app_obj.revision | default $repositoryRevision }}
     {{- if $chart_app_obj.helm }}
     {{- with $chart_app_obj.helm }}
     helm:
@@ -85,7 +86,7 @@ spec:
     {{- else }}
     path: {{ tpl (printf "%s/%s" $chart_path $chart_app_name) $ }}
     {{- end }}
-    targetRevision: {{ $chart_app_obj.revision | default (include "infra.repoRevision" $) }}
+    targetRevision: {{ $chart_app_obj.revision | default $repositoryRevision }}
     {{- if $chart_app_obj.helm }}
     {{- with $chart_app_obj.helm }}
     helm:

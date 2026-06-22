@@ -32,7 +32,7 @@ spec:
     {{- end }}
     path: {{ tpl $.Values.repository.paths.manifests $ }}
     repoURL: {{ include "infra.repoURL" $ }}
-    targetRevision: {{ .revision | default (include "infra.repoRevision" $) }}
+    targetRevision: {{ .revision | default (required "repository.revision is required" (tpl $.Values.repository.revision $)) }}
   {{- with .syncPolicy }}
   syncPolicy:
   {{- toYaml . | nindent 4 }}
