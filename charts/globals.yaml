@@ -19,7 +19,6 @@ global:
     kubernetes:
       server: #https://2.2.2.2
     dns:
-      root:
       domain:
       provider:
     cloud:

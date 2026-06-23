@@ -41,8 +41,7 @@ global:
         type: gar
         url: "{{ .Values.global.env.cloud.location.region }}-docker.pkg.dev/{{ .Values.global.env.cloud.id }}/containers"
       dns:
-        root: example.com
-        domain: "{{ .Values.global.env.short_name }}.{{ .Values.global.env.dns.root }}"
+        domain: "{{ .Values.global.env.short_name }}.{{ .Values.global.company.domain }}"
         provider: google
       cloud:
         name: gcp
@@ -66,8 +65,7 @@ global:
         type: gar
         url: "{{ .Values.global.env.cloud.location.region }}-docker.pkg.dev/{{ .Values.global.env.cloud.id }}/containers"
       dns:
-        root: example.com
-        domain: "{{ .Values.global.env.short_name }}.{{ .Values.global.env.dns.root }}"
+        domain: "{{ .Values.global.env.short_name }}.{{ .Values.global.company.domain }}"
         provider: google
       cloud:
         name: gcp
@@ -133,7 +131,7 @@ Use this field mapping when converting existing values:
 | `repository.url` | constructed from `global.repo.type/provider/group/name` |
 | `repository.revision` | `global.repo.revision` |
 | `envs` | `global.envs` |
-| `global.company.domain.root` | `global.company.domain` or `global.env.dns.root` |
+| `global.company.domain.root` | `global.company.domain` |
 | `global.company.domain.env` | `global.env.dns.domain` |
 | `global.company.teams` | `global.env.users` |
 | `global.access.teams` | `global.access.roles` |
@@ -173,8 +171,7 @@ global:
   envs:
     internal:
       dns:
-        root: example.com
-        domain: "{{ .Values.global.env.short_name }}.{{ .Values.global.env.dns.root }}"
+        domain: "{{ .Values.global.env.short_name }}.{{ .Values.global.company.domain }}"
         provider: google
 ```
 

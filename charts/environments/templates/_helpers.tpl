@@ -25,10 +25,8 @@
 {{- with $env.dns -}}
 {{- $dns = deepCopy . -}}
 {{- end -}}
-{{- $dnsRoot := $dns.root | default $companyDomain -}}
 {{- $dnsDomainTemplate := $dns.domain | default (printf "%s.%s" $shortName $companyDomain) -}}
-{{- $_ := set $dns "root" $dnsRoot -}}
-{{- $_ = set $dns "domain" $dnsDomainTemplate -}}
+{{- $_ := set $dns "domain" $dnsDomainTemplate -}}
 {{- $_ = set $env "cloud_short_name" (printf "%s-%s" $cloudName $shortName) -}}
 {{- $_ = set $env "dns" $dns -}}
 {{- $tplContext := deepCopy $root -}}

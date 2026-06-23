@@ -8,7 +8,6 @@
 {{- $structuredEnvName := required (printf "global.envs.%s.name is required" $env_name) $env_obj.name -}}
 {{- $shortName := $env_obj.short_name -}}
 {{- $registryUrl := $env_obj.registry.url -}}
-{{- $dnsRoot := $env_obj.dns.root -}}
 {{- $dnsDomain := $env_obj.dns.domain -}}
 {{- $cloud := $env_obj.cloud -}}
 {{- $cloudShortName := $env_obj.cloud_short_name -}}
@@ -66,7 +65,7 @@ spec:
         global:
           company:
             name: {{ $.Values.global.company.name }}
-            domain: {{ $dnsRoot }}
+            domain: {{ $.Values.global.company.domain }}
           repo:
           {{- toYaml $repo | nindent 12 }}
           {{- if eq $env_obj.type "internal" }}
@@ -96,7 +95,6 @@ spec:
             {{- toYaml . | nindent 14 }}
             {{- end }}
             dns:
-              root: {{ $dnsRoot }}
               domain: {{ $dnsDomain }}
               {{- with $env_obj.dns.provider }}
               provider: {{ . }}

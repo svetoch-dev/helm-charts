@@ -6,6 +6,7 @@ BrakingChanges. See [UPGRADING](UPGRADING.md):
 * replace `global.company.teams` and `global.access.teams/emails` with environment users and role-based access (`global.env.users` and `global.access.roles`)
 * replace `global.env.server` with `global.env.kubernetes.server`
 * remove the legacy `global.environment` compatibility object; use `global.env`
+* remove `global.env.dns.root`; define the complete environment DNS domain in `global.envs.<key>.dns.domain`
 
 New features:
 * `postgres-exporter` get query along with queryid
