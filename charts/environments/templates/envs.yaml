@@ -91,10 +91,6 @@ spec:
             users:
             {{- toYaml . | nindent 14 }}
             {{- end }}
-            {{- with $env_obj.apps }}
-            apps:
-            {{- toYaml . | nindent 14 }}
-            {{- end }}
             dns:
               domain: {{ $dnsDomain }}
               {{- with $env_obj.dns.provider }}
