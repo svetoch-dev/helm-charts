@@ -17,29 +17,23 @@
 {{/* Resolve fields in an env that may be templated against that same env. */}}
 {{- define "infra.resolveEnv" -}}
 {{- $root := .root -}}
-{{- $envName := .name -}}
 {{- $env := deepCopy .env -}}
-{{- $shortName := required (printf "global.envs.%s.short_name is required" $envName) $env.short_name -}}
-{{- $cloud := required (printf "global.envs.%s.cloud is required" $envName) $env.cloud -}}
-{{- $cloudName := required (printf "global.envs.%s.cloud.name is required" $envName) $cloud.name -}}
-{{- $kubernetes := required (printf "global.envs.%s.kubernetes is required" $envName) $env.kubernetes -}}
-{{- $_ := required (printf "global.envs.%s.kubernetes.server is required" $envName) $kubernetes.server -}}
-{{- $companyDomain := required "global.company.domain is required" $root.Values.global.company.domain -}}
+{{- $shortName := $env.short_name -}}
+{{- $cloudName := $env.cloud.name -}}
+{{- $companyDomain := $root.Values.global.company.domain -}}
 {{- $dns := dict -}}
 {{- with $env.dns -}}
 {{- $dns = deepCopy . -}}
 {{- end -}}
 {{- $dnsRoot := $dns.root | default $companyDomain -}}
 {{- $dnsDomainTemplate := $dns.domain | default (printf "%s.%s" $shortName $companyDomain) -}}
-{{- $dnsForTpl := mergeOverwrite (deepCopy $dns) (dict "root" $dnsRoot "domain" $dnsDomainTemplate) -}}
-{{- $envForTpl := mergeOverwrite (deepCopy $env) (dict "short_name" $shortName "cloud_short_name" (printf "%s-%s" $cloudName $shortName) "dns" $dnsForTpl) -}}
-{{- $tplValues := mergeOverwrite (deepCopy $root.Values) (dict "global" (mergeOverwrite (deepCopy $root.Values.global) (dict "env" $envForTpl))) -}}
-{{- $dnsDomain := tpl $dnsDomainTemplate (mergeOverwrite (deepCopy $root) (dict "Values" $tplValues)) | trimSuffix "." -}}
-{{- $_ := set $envForTpl "dns" (mergeOverwrite (deepCopy $dns) (dict "root" $dnsRoot "domain" $dnsDomain)) -}}
-{{- $tplValues = mergeOverwrite (deepCopy $root.Values) (dict "global" (mergeOverwrite (deepCopy $root.Values.global) (dict "env" $envForTpl))) -}}
-{{- $registry := required (printf "global.envs.%s.registry is required" $envName) $env.registry -}}
-{{- $registryTemplate := required (printf "global.envs.%s.registry.url is required" $envName) $registry.url -}}
-{{- $registryUrl := tpl $registryTemplate (mergeOverwrite (deepCopy $root) (dict "Values" $tplValues)) -}}
-{{- $_ = set $envForTpl "registry" (mergeOverwrite (deepCopy $registry) (dict "url" $registryUrl)) -}}
-{{- toYaml $envForTpl -}}
+{{- $_ := set $dns "root" $dnsRoot -}}
+{{- $_ = set $dns "domain" $dnsDomainTemplate -}}
+{{- $_ = set $env "cloud_short_name" (printf "%s-%s" $cloudName $shortName) -}}
+{{- $_ = set $env "dns" $dns -}}
+{{- $tplContext := deepCopy $root -}}
+{{- $_ = set $tplContext.Values.global "env" $env -}}
+{{- $_ = set $dns "domain" (tpl $dnsDomainTemplate $tplContext | trimSuffix ".") -}}
+{{- $_ = set $env.registry "url" (tpl $env.registry.url $tplContext) -}}
+{{- toYaml $env -}}
 {{- end -}}
