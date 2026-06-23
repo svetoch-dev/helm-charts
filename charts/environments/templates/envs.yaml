@@ -13,6 +13,7 @@
 {{- $cloudShortName := $env_obj.cloud_short_name -}}
 {{- $revision := $env_obj.revision | default (include "infra.repoRevision" $) -}}
 {{- $repo := mergeOverwrite (deepCopy $.Values.global.repo) (dict "revision" $revision) -}}
+{{- $_ := set $repo "provider" (include "infra.repoProvider" $) -}}
 {{- $externalEnvs := dict -}}
 {{- if eq $env_obj.type "internal" -}}
 {{- range $externalEnvName, $externalEnvObj := $resolvedEnvs -}}
