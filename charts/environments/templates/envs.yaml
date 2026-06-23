@@ -6,23 +6,20 @@
 {{- end -}}
 {{- range $env_name, $env_obj := $resolvedEnvs -}}
 {{- $structuredEnvName := required (printf "global.envs.%s.name is required" $env_name) $env_obj.name -}}
-{{- $shortName := required (printf "global.envs.%s.short_name is required" $env_name) $env_obj.short_name -}}
-{{- $registryUrl := required (printf "global.envs.%s.registry.url is required" $env_name) (dig "registry" "url" "" $env_obj) -}}
-{{- $dnsRoot := required (printf "global.envs.%s.dns.root is required" $env_name) (dig "dns" "root" "" $env_obj) -}}
-{{- $dnsDomain := required (printf "global.envs.%s.dns.domain is required" $env_name) (dig "dns" "domain" "" $env_obj) -}}
-{{- $cloud := required (printf "global.envs.%s.cloud is required" $env_name) $env_obj.cloud -}}
-{{- $cloudName := required (printf "global.envs.%s.cloud.name is required" $env_name) $cloud.name -}}
-{{- $_ := required (printf "global.envs.%s.cloud.buckets.type is required" $env_name) $cloud.buckets.type -}}
-{{- $_ := required (printf "global.envs.%s.kubernetes.server is required" $env_name) (dig "kubernetes" "server" "" $env_obj) -}}
-{{- $cloudShortName := required (printf "global.envs.%s.cloud_short_name is required" $env_name) $env_obj.cloud_short_name -}}
+{{- $shortName := $env_obj.short_name -}}
+{{- $registryUrl := $env_obj.registry.url -}}
+{{- $dnsRoot := $env_obj.dns.root -}}
+{{- $dnsDomain := $env_obj.dns.domain -}}
+{{- $cloud := $env_obj.cloud -}}
+{{- $cloudShortName := $env_obj.cloud_short_name -}}
 {{- $revision := $env_obj.revision | default (include "infra.repoRevision" $) -}}
 {{- $repo := mergeOverwrite (deepCopy $.Values.global.repo) (dict "revision" $revision) -}}
 {{- $externalEnvs := dict -}}
 {{- if eq $env_obj.type "internal" -}}
 {{- range $externalEnvName, $externalEnvObj := $resolvedEnvs -}}
 {{- if and $externalEnvObj.enabled (eq (dig "type" "" $externalEnvObj) "product") -}}
-{{- $externalCloudShortName := required (printf "global.envs.%s.cloud_short_name is required" $externalEnvName) $externalEnvObj.cloud_short_name -}}
-{{- $externalDnsDomain := required (printf "global.envs.%s.dns.domain is required" $externalEnvName) (dig "dns" "domain" "" $externalEnvObj) -}}
+{{- $externalCloudShortName := $externalEnvObj.cloud_short_name -}}
+{{- $externalDnsDomain := $externalEnvObj.dns.domain -}}
 {{- $_ := set $externalEnvs $externalCloudShortName (dict "domain" $externalDnsDomain) -}}
 {{- end -}}
 {{- end -}}
