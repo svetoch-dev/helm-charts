@@ -4,10 +4,16 @@
 {{- if or (eq $repoType "github") (eq $repoType "gitlab") -}}
 {{- $repoType = "git" -}}
 {{- end -}}
-{{- $repoProvider := required "global.repo.provider is required" $repo.provider -}}
+{{- $repoProvider := $repo.provider -}}
+{{- if eq $repo.type "github" -}}
+{{- $repoProvider = default "github.com" $repoProvider -}}
+{{- else if eq $repo.type "gitlab" -}}
+{{- $repoProvider = default "gitlab.com" $repoProvider -}}
+{{- end -}}
+{{- $repoProvider = required "global.repo.provider is required" $repoProvider -}}
 {{- $repoGroup := required "global.repo.group is required" $repo.group -}}
 {{- $repoName := required "global.repo.name is required" $repo.name -}}
-{{- printf "%s@%s:%s/%s.%s" $repoType $repoProvider $repoGroup $repoName $repoType -}}
+{{- printf "git@%s:%s/%s.git" $repoProvider $repoGroup $repoName -}}
 {{- end -}}
 
 {{- define "infra.repoRevision" -}}
