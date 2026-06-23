@@ -24,7 +24,7 @@ manifests:
 
 crds:
   enabled: false
-  revision: master
+  revision:
   operators: {}
 #    argocd:
 #      enabled: true
