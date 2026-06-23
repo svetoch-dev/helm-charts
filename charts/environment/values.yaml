@@ -54,7 +54,9 @@ crds:
 
   labels: {}
   finalizers: {}
-  syncPolicy: {}
+  syncPolicy:
+    syncOptions:
+      - ServerSideApply=true
 
 chart_apps:
   rabbitmq:
