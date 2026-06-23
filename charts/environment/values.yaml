@@ -3,6 +3,7 @@ labels: {}
 externalEnvs: {}
 
 repository:
+  revision: '{{ .Values.global.repo.revision }}'
   paths:
     charts: argocd/charts/infra/charts
     crds: argocd/charts/infra/crds

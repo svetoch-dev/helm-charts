@@ -9,7 +9,3 @@
 {{- $repoName := required "global.repo.name is required" $repo.name -}}
 {{- printf "%s@%s:%s/%s.%s" $repoType $repoProvider $repoGroup $repoName $repoType -}}
 {{- end -}}
-
-{{- define "infra.repoRevision" -}}
-{{- required "global.repo.revision is required" .Values.global.repo.revision -}}
-{{- end -}}

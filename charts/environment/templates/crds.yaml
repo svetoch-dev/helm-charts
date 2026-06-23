@@ -1,6 +1,6 @@
 {{- with .Values.crds -}}
-{{- $app_name := (printf "%s-%s" "crds" $.Values.global.env.cloud_short_name) }}
 {{- if .enabled -}}
+{{- $app_name := (printf "%s-%s" "crds" $.Values.global.env.cloud_short_name) }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -34,7 +34,7 @@ spec:
     {{- toYaml . | nindent 6 }}
     {{- end }}
     repoURL: {{ include "infra.repoURL" $ }}
-    targetRevision: {{ $operator_obj.revision | default $.Values.crds.revision | default (required "repository.revision is required" (tpl $.Values.repository.revision $)) }}
+    targetRevision: {{ $operator_obj.revision | default $.Values.crds.revision | default (tpl $.Values.repository.revision $) }}
   {{- end }}
   {{- end }}
   {{- with .syncPolicy }}

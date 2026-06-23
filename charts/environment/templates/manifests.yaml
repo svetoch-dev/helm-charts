@@ -1,6 +1,6 @@
 {{- with .Values.manifests -}}
-{{- $app_name := (printf "%s-%s" "manifests" $.Values.global.env.cloud_short_name) }}
 {{- if .enabled -}}
+{{- $app_name := (printf "%s-%s" "manifests" $.Values.global.env.cloud_short_name) }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -32,7 +32,7 @@ spec:
     {{- end }}
     path: {{ tpl $.Values.repository.paths.manifests $ }}
     repoURL: {{ include "infra.repoURL" $ }}
-    targetRevision: {{ .revision | default (required "repository.revision is required" (tpl $.Values.repository.revision $)) }}
+    targetRevision: {{ .revision | default (tpl $.Values.repository.revision $) }}
   {{- with .syncPolicy }}
   syncPolicy:
   {{- toYaml . | nindent 4 }}
