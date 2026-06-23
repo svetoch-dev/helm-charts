@@ -18,6 +18,7 @@ New features:
 * environment users support wildcard domain access, for example `name: "*@example.com"`, scoped by assigned roles
 
 Enhancements:
+* `pomerium` image update 0.32.0 -> 0.32.9
 * `environments`:
   * generate environment Applications from structured values using `valuesObject`
   * construct GitHub or GitLab repository URLs from `global.repo`
