@@ -31,6 +31,8 @@
 {{- $dnsProvider = default "webhook" $dnsProvider -}}
 {{- else if eq $dnsType "aws" -}}
 {{- $dnsProvider = default "aws" $dnsProvider -}}
+{{- else if eq $dnsType "cloudflare" -}}
+{{- $dnsProvider = default "cloudflare" $dnsProvider -}}
 {{- end -}}
 {{- $dnsProvider | default "" -}}
 {{- end -}}

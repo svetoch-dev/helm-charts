@@ -147,8 +147,9 @@ all environment attributes from `global.env`.
 
 Both `global.envs.<key>.dns.type` and `global.envs.<key>.dns.provider` are
 optional. The `environments` chart derives the provider for known DNS types:
-`gcp` maps to `google`, `yc` maps to `webhook`, and `aws` maps to `aws`. The
-resolved provider is passed to the child chart as `external-dns.provider`.
+`gcp` maps to `google`, `yc` maps to `webhook`, `aws` maps to `aws`, and
+`cloudflare` maps to `cloudflare`. The resolved provider is passed to the child
+chart as `external-dns.provider`.
 
 An explicit provider overrides the default derived from the DNS type. If neither
 a known type nor a provider is set, `dns.provider` is passed as an empty string.
