@@ -1,7 +1,11 @@
 {{- $resolvedEnvs := dict -}}
 {{- range $envName, $env := .Values.global.envs -}}
-{{- if $env.enabled -}}
-{{- $_ := set $resolvedEnvs $envName (include "infra.resolveEnv" (dict "root" $ "env" $env) | fromYaml) -}}
+{{- $enabled := true -}}
+{{- if hasKey $env "enabled" -}}
+{{- $enabled = $env.enabled -}}
+{{- end -}}
+{{- if $enabled -}}
+{{- $_ := set $resolvedEnvs $envName (include "infra.resolveEnv" (dict "root" $ "env" $env "enabled" $enabled) | fromYaml) -}}
 {{- end -}}
 {{- end -}}
 {{- range $env_name, $env_obj := $resolvedEnvs -}}

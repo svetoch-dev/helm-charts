@@ -31,7 +31,6 @@ global:
 
   envs:
     internal:
-      enabled: true
       name: internal
       short_name: int
       type: internal
@@ -47,15 +46,12 @@ global:
         id: example-internal
         location:
           region: europe-west2
-        buckets:
-          type: gcs
         network:
           int_nat_gw: 192.0.2.10
       kubernetes:
         server: https://kubernetes.default.svc
 
     production:
-      enabled: true
       name: production
       short_name: prd
       type: product
@@ -71,8 +67,6 @@ global:
         id: example-production
         location:
           region: europe-west2
-        buckets:
-          type: gcs
         network:
           int_nat_gw: 192.0.2.10
       kubernetes:
@@ -81,6 +75,9 @@ global:
 
 The key under `global.envs` is the logical environment key. `name` is the logical
 environment name. It replaces the old `long_name` value.
+
+Environments are enabled by default. Set `global.envs.<key>.enabled: false`
+explicitly to prevent the chart from generating that environment Application.
 
 Repository revisions use the following precedence, from highest to lowest:
 
@@ -119,7 +116,7 @@ Use this field mapping when converting existing values:
 | `global.company.teams` | `global.env.users` |
 | `global.access.teams` | `global.access.roles` |
 | `global.registry.url` or `global.env.registry` | `global.env.registry.url` |
-| `global.bucket.type` | `global.env.cloud.buckets.type` |
+| `global.bucket.type` | `global.env.cloud.buckets.type` (optional override; otherwise derived from `global.env.cloud.name`) |
 | `global.network.int_nat_gw` | `global.env.cloud.network.int_nat_gw` |
 | `global.cloud.type` | `global.env.cloud.name` |
 | `global.env.long_name` | `global.env.name` |
@@ -155,6 +152,11 @@ An explicit provider overrides the default derived from the DNS type. If neither
 a known type nor a provider is set, `dns.provider` is passed as an empty string.
 Set it to an identifier supported by the selected external-dns chart version when
 provider configuration is required.
+
+`global.env.cloud.buckets.type` is derived from `global.env.cloud.name`: `gcp`
+maps to `gcs`, while `yc` and `aws` map to `s3`. An explicitly configured bucket
+type overrides the derived value. For other cloud names without an override, the
+bucket type is passed as an empty string.
 
 ### 2. Move environment-specific values to `env.yaml`
 

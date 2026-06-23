@@ -22,10 +22,12 @@ Enhancements:
 * `pomerium` crds + image update 0.32.0 -> 0.32.9
 * `environments`:
   * generate environment Applications from structured values using `valuesObject`
+  * enable environments by default unless `global.envs.<key>.enabled` is explicitly `false`
   * construct GitHub or GitLab repository URLs from `global.repo`
   * apply revision precedence: application, environment, then global repository default
   * use top-level shared `finalizers` by default with per-environment overrides
   * template registry URLs and DNS domains in the selected environment context
+  * derive `global.env.cloud.buckets.type` from known `global.env.cloud.name` values
   * pass `global.ci` only to environments with `type: internal`
 * `environment`:
   * pass common values to child Applications automatically and merge application-specific `globalValues`

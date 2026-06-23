@@ -25,6 +25,8 @@ global:
       provider:
     cloud:
       name: ""
+      buckets:
+        type:
   ingress:
     class: pomerium
   access:
