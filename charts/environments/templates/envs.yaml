@@ -18,7 +18,7 @@
 {{- $revision := $env_obj.revision | default (include "infra.repoRevision" $) -}}
 {{- $repo := mergeOverwrite (deepCopy $.Values.global.repo) (dict "revision" $revision) -}}
 {{- $externalEnvs := dict -}}
-{{- if eq (dig "type" "" $env_obj) "internal" -}}
+{{- if eq $env_obj.type "internal" -}}
 {{- range $externalEnvName, $externalEnvObj := $resolvedEnvs -}}
 {{- if and $externalEnvObj.enabled (eq (dig "type" "" $externalEnvObj) "product") -}}
 {{- $externalCloudShortName := required (printf "global.envs.%s.cloud_short_name is required" $externalEnvName) $externalEnvObj.cloud_short_name -}}
