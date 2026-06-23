@@ -22,6 +22,19 @@
 {{- required "global.repo.revision is required" .Values.global.repo.revision -}}
 {{- end -}}
 
+{{- define "infra.dnsProvider" -}}
+{{- $dnsType := .dns.type | default "" -}}
+{{- $dnsProvider := .dns.provider -}}
+{{- if eq $dnsType "gcp" -}}
+{{- $dnsProvider = default "google" $dnsProvider -}}
+{{- else if eq $dnsType "yc" -}}
+{{- $dnsProvider = default "webhook" $dnsProvider -}}
+{{- else if eq $dnsType "aws" -}}
+{{- $dnsProvider = default "aws" $dnsProvider -}}
+{{- end -}}
+{{- $dnsProvider | default "" -}}
+{{- end -}}
+
 {{/* Resolve fields in an env that may be templated against that same env. */}}
 {{- define "infra.resolveEnv" -}}
 {{- $root := .root -}}
@@ -35,6 +48,7 @@
 {{- end -}}
 {{- $dnsDomainTemplate := $dns.domain | default (printf "%s.%s" $shortName $companyDomain) -}}
 {{- $_ := set $dns "domain" $dnsDomainTemplate -}}
+{{- $_ = set $dns "provider" (include "infra.dnsProvider" (dict "dns" $dns)) -}}
 {{- $_ = set $env "cloud_short_name" (printf "%s-%s" $cloudName $shortName) -}}
 {{- $_ = set $env "dns" $dns -}}
 {{- $tplContext := deepCopy $root -}}

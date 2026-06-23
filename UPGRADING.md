@@ -42,7 +42,7 @@ global:
         url: "{{ .Values.global.env.cloud.location.region }}-docker.pkg.dev/{{ .Values.global.env.cloud.id }}/containers"
       dns:
         domain: "{{ .Values.global.env.short_name }}.{{ .Values.global.company.domain }}"
-        provider: google
+        type: gcp
       cloud:
         name: gcp
         id: example-internal
@@ -66,7 +66,7 @@ global:
         url: "{{ .Values.global.env.cloud.location.region }}-docker.pkg.dev/{{ .Values.global.env.cloud.id }}/containers"
       dns:
         domain: "{{ .Values.global.env.short_name }}.{{ .Values.global.company.domain }}"
-        provider: google
+        type: gcp
       cloud:
         name: gcp
         id: example-production
@@ -162,21 +162,15 @@ destination:
 The legacy `global.environment` compatibility object is no longer populated. Read
 all environment attributes from `global.env`.
 
-Set `global.envs.<key>.dns.provider` for every environment that enables the
-`external-dns` chart. The environment chart passes it to the child chart as
-`external-dns.provider`:
+Both `global.envs.<key>.dns.type` and `global.envs.<key>.dns.provider` are
+optional. The `environments` chart derives the provider for known DNS types:
+`gcp` maps to `google`, `yc` maps to `webhook`, and `aws` maps to `aws`. The
+resolved provider is passed to the child chart as `external-dns.provider`.
 
-```yaml
-global:
-  envs:
-    internal:
-      dns:
-        domain: "{{ .Values.global.env.short_name }}.{{ .Values.global.company.domain }}"
-        provider: google
-```
-
-Do not rely on the external-dns chart's previous default provider. Use the provider
-identifier supported by the selected external-dns chart version.
+An explicit provider overrides the default derived from the DNS type. If neither
+a known type nor a provider is set, `dns.provider` is passed as an empty string.
+Set it to an identifier supported by the selected external-dns chart version when
+provider configuration is required.
 
 ### 2. Move environment-specific values to `env.yaml`
 
