@@ -5,6 +5,7 @@ global:
   repo:
     type:
     provider:
+    url:
     group:
     name:
     revision:
