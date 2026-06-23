@@ -17,7 +17,7 @@
 {{- $externalEnvs := dict -}}
 {{- if eq $env_obj.type "internal" -}}
 {{- range $externalEnvName, $externalEnvObj := $resolvedEnvs -}}
-{{- if and $externalEnvObj.enabled (eq (dig "type" "" $externalEnvObj) "product") -}}
+{{- if and $externalEnvObj.enabled (eq $externalEnvObj.type "product") -}}
 {{- $externalCloudShortName := $externalEnvObj.cloud_short_name -}}
 {{- $externalDnsDomain := $externalEnvObj.dns.domain -}}
 {{- $_ := set $externalEnvs $externalCloudShortName (dict "domain" $externalDnsDomain) -}}
@@ -69,9 +69,13 @@ spec:
             domain: {{ $dnsRoot }}
           repo:
           {{- toYaml $repo | nindent 12 }}
-          {{- if and (eq (dig "type" "" $env_obj) "internal") (dig "ci" "type" "" $.Values.global) }}
+          {{- if eq $env_obj.type "internal" }}
+          {{- with $.Values.global.ci }}
+          {{- if .type }}
           ci:
-          {{- toYaml $.Values.global.ci | nindent 12 }}
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
           {{- end }}
           env:
             name: {{ $structuredEnvName }}
