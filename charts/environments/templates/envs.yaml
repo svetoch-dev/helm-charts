@@ -24,7 +24,7 @@
 {{- end -}}
 {{- end -}}
 {{- end -}}
-{{- $finalizers := $.Values.environment.finalizers -}}
+{{- $finalizers := $.Values.finalizers -}}
 {{- if hasKey $env_obj "finalizers" -}}
 {{- $finalizers = $env_obj.finalizers -}}
 {{- end -}}

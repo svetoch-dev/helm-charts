@@ -23,7 +23,7 @@ Enhancements:
   * generate environment Applications from structured values using `valuesObject`
   * construct GitHub or GitLab repository URLs from `global.repo`
   * apply revision precedence: application, environment, then global repository default
-  * use shared environment finalizers by default with per-environment overrides
+  * use top-level shared `finalizers` by default with per-environment overrides
   * template registry URLs and DNS domains in the selected environment context
   * pass `global.ci` only to environments with `type: internal`
 * `environment`:

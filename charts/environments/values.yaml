@@ -1,4 +1,6 @@
 labels: {}
+finalizers:
+  - resources-finalizer.argocd.argoproj.io
 
 global:
   company:
@@ -17,10 +19,6 @@ repository:
     env_chart: argocd/charts/infra/charts/environment
     envs_chart: argocd/charts/infra/charts/environments
     root_from_chart: "../../../.."
-
-environment:
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 
 root:
   enabled: true
