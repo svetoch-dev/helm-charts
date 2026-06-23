@@ -1,9 +1,6 @@
 {{- define "infra.repoURL" -}}
 {{- $repo := .Values.global.repo -}}
 {{- $repoType := required "global.repo.type is required" $repo.type -}}
-{{- if or (eq $repoType "github") (eq $repoType "gitlab") -}}
-{{- $repoType = "git" -}}
-{{- end -}}
 {{- $repoProvider := $repo.provider -}}
 {{- if eq $repo.type "github" -}}
 {{- $repoProvider = default "github.com" $repoProvider -}}
