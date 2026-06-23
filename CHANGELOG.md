@@ -30,7 +30,7 @@ Enhancements:
 * `environment`:
   * pass common values to child Applications automatically and merge application-specific `globalValues`
   * use `global.env.cloud_short_name` for Application names, release names, environment value-file paths and service references
-  * use `global.repo.revision` as the common default revision
+  * use `global.repo.revision` as the common revision, defaulting to `master`
   * make CRD Applications inherit the environment revision unless explicitly overridden
   * derive `global.env.dns.provider` from known `global.env.dns.type` values and pass it to the `external-dns` chart
   * enable `ServerSideApply` by default for the CRDs Application

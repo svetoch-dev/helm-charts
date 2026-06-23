@@ -11,7 +11,7 @@ global:
     provider:
     group:
     name:
-    revision:
+    revision: master
   envs: {}
 
 repository:
