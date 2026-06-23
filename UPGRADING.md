@@ -85,6 +85,29 @@ global:
 The key under `global.envs` is the logical environment key. `name` is the logical
 environment name. It replaces the old `long_name` value.
 
+Repository revisions use the following precedence, from highest to lowest:
+
+1. `chart_apps.<app>.revision` for one application;
+2. `global.envs.<key>.revision` for an environment and all applications in it;
+3. `global.repo.revision` as the common default.
+
+For example, this keeps most environments and applications on `master`, moves the
+complete internal environment to `internal-branch`, and keeps only Grafana on a
+separate revision:
+
+```yaml
+global:
+  repo:
+    revision: master
+  envs:
+    internal:
+      revision: internal-branch
+
+chart_apps:
+  grafana:
+    revision: grafana-branch
+```
+
 `global.ci` is passed only to the environment with `type: internal`. Product
 environments do not receive CI configuration.
 

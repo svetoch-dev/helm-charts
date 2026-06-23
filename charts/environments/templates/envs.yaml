@@ -15,6 +15,8 @@
 {{- $_ := required (printf "global.envs.%s.cloud.buckets.type is required" $env_name) $cloud.buckets.type -}}
 {{- $_ := required (printf "global.envs.%s.kubernetes.server is required" $env_name) (dig "kubernetes" "server" "" $env_obj) -}}
 {{- $cloudShortName := required (printf "global.envs.%s.cloud_short_name is required" $env_name) $env_obj.cloud_short_name -}}
+{{- $revision := $env_obj.revision | default (include "infra.repoRevision" $) -}}
+{{- $repo := mergeOverwrite (deepCopy $.Values.global.repo) (dict "revision" $revision) -}}
 {{- $externalEnvs := dict -}}
 {{- if eq (dig "type" "" $env_obj) "internal" -}}
 {{- range $externalEnvName, $externalEnvObj := $resolvedEnvs -}}
@@ -54,7 +56,7 @@ spec:
   source:
     path: {{ $.Values.repository.paths.env_chart}}
     repoURL: {{ include "infra.repoURL" $ }}
-    targetRevision: {{ $env_obj.revision | default (include "infra.repoRevision" $) }}
+    targetRevision: {{ $revision }}
     helm:
       valueFiles:
         - ../globals.yaml
@@ -69,7 +71,7 @@ spec:
             name: {{ $.Values.global.company.name }}
             domain: {{ $dnsRoot }}
           repo:
-          {{- toYaml $.Values.global.repo | nindent 12 }}
+          {{- toYaml $repo | nindent 12 }}
           {{- if and (eq (dig "type" "" $env_obj) "internal") (dig "ci" "type" "" $.Values.global) }}
           ci:
           {{- toYaml $.Values.global.ci | nindent 12 }}
