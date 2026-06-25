@@ -4,6 +4,13 @@ externalEnvs: {}
 envApps: {}
 appOverrides: {}
 
+apps_tpl_values:
+  globalValues:
+    access:
+      roles: ["admin", "dev"]
+    ingress:
+      class: "{{ .Values.global.ingress.class }}"
+
 repository:
   revision: '{{ .Values.global.repo.revision }}'
   paths:

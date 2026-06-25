@@ -5,6 +5,7 @@
 {{- define "infra.generatedChartApps" -}}
 {{- $generatedApps := dict -}}
 {{- $overrides := .overrides | default dict -}}
+{{- $appsTplValues := .apps_tpl_values | default dict -}}
 {{- range $appKey, $app := .apps -}}
 {{- $override := index $overrides $appKey | default dict -}}
 {{- $chartName := $override.chart_name | default $appKey -}}
@@ -41,21 +42,23 @@
 {{- if $redisEnabled -}}
 {{- $_ := set $services "redis" (printf "{{ printf \"%s-%%s-redis-sentinel-sentinel\" .Values.global.env.cloud_short_name }}" $chartName) -}}
 {{- end -}}
-{{- $globalValues := dict
-      "access" (dict "roles" (list "admin" "dev"))
-      "ingress" (dict "class" "konghq-app") -}}
+{{- $globalValues := dict -}}
+{{- with $appsTplValues.globalValues -}}
+{{- $globalValues = deepCopy . -}}
+{{- end -}}
 {{- with $deployments -}}
 {{- $_ := set $globalValues "deployments" . -}}
 {{- end -}}
 {{- with $services -}}
 {{- $_ := set $globalValues "svc" . -}}
 {{- end -}}
-{{- $_ := set $generatedApps $chartName (dict
+{{- $generatedApp := mergeOverwrite (deepCopy $appsTplValues) (dict
       "enabled" $enabled
       "name" (printf "{{ printf \"%s-%%s\" .Values.global.env.cloud_short_name }}" $appName)
       "namespace" $namespace
       "app" true
       "globalValues" $globalValues) -}}
+{{- $_ := set $generatedApps $chartName $generatedApp -}}
 {{- end -}}
 {{- toYaml $generatedApps -}}
 {{- end -}}

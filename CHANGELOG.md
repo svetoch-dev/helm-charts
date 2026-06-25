@@ -37,6 +37,7 @@ Enhancements:
   * make CRD Applications inherit the environment revision unless explicitly overridden
   * derive `global.env.dns.provider` from known `global.env.dns.type` values and pass it to the `external-dns` chart
   * add disabled-by-default `konghq-app` chart application using the `konghq` chart and `konghq-app` ingress class
+  * allow generated application defaults to be configured through `apps_tpl_values`
   * render `chart_apps` values with merged `globalValues` so child chart values can use application-specific globals
   * enable `ServerSideApply` by default for the CRDs Application
 * `konghq`:
