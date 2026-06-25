@@ -15,6 +15,7 @@
 {{- $dnsDomain := $env_obj.dns.domain -}}
 {{- $cloud := $env_obj.cloud -}}
 {{- $cloudShortName := $env_obj.cloud_short_name -}}
+{{- $envApps := $env_obj.apps | default dict -}}
 {{- $revision := $env_obj.revision | default (include "infra.repoRevision" $) -}}
 {{- $repo := mergeOverwrite (deepCopy $.Values.global.repo) (dict "revision" $revision) -}}
 {{- $_ := set $repo "provider" (include "infra.repoProvider" $) -}}
@@ -68,6 +69,10 @@ spec:
     {{- tpl (toYaml .) $ | nindent 8 }}
     {{- end }}
       valuesObject:
+        {{- with $envApps }}
+        envApps:
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
         global:
           company:
             name: {{ $.Values.global.company.name }}

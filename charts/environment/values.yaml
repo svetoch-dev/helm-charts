@@ -1,6 +1,8 @@
 labels: {}
 
 externalEnvs: {}
+envApps: {}
+appOverrides: {}
 
 repository:
   revision: '{{ .Values.global.repo.revision }}'

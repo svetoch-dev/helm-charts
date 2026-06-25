@@ -1,7 +1,11 @@
-{{- range $chart_app_name, $chart_app_obj := .Values.chart_apps -}}
+{{- $generatedChartApps := include "infra.generatedChartApps" (dict "apps" .Values.envApps "overrides" .Values.appOverrides) | fromYaml -}}
+{{- $chartApps := mergeOverwrite $generatedChartApps .Values.chart_apps -}}
+{{- range $chart_app_name, $chart_app_obj := $chartApps -}}
 {{- if $chart_app_obj.enabled -}}
 {{- $app_name := (printf "%s-%s" $chart_app_name $.Values.global.env.cloud_short_name) }}
-{{- $app_name := ternary $app_name $chart_app_obj.name (not $chart_app_obj.name) }}
+{{- with $chart_app_obj.name }}
+{{- $app_name = tpl . $ }}
+{{- end }}
 {{- $chart_path := ternary $.Values.repository.paths.app_charts $.Values.repository.paths.charts (eq $chart_app_obj.app true) }}
 {{- $env_path := ternary $.Values.repository.paths.env_from_app_charts $.Values.repository.paths.env_from_charts (eq $chart_app_obj.app true) }}
 {{- $globals_path := ternary $.Values.repository.paths.globals_from_app_charts $.Values.repository.paths.globals_from_charts (eq $chart_app_obj.app true) }}

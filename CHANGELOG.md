@@ -1,5 +1,5 @@
 # 11.0.0-alpha
-BrakingChanges. See [UPGRADING](UPGRADING.md):
+Breaking changes. See [UPGRADING](UPGRADING.md):
 * `postgres-operator` uses configmaps instead endpoints (`kubernetes_use_configmaps: true`)
 * crds and charts uses `ot-container-kit/redis-operator + redis` instead of `Spotahome`
 * new `environments` values schema with structured `global.company`, `global.repo`, `global.envs` and `global.env` objects
@@ -22,6 +22,7 @@ Enhancements:
 * `pomerium` crds + image update 0.32.0 -> 0.32.9
 * `environments`:
   * generate environment Applications from structured values using `valuesObject`
+  * generate application defaults from `global.envs.<key>.apps` with `name`/`namespace` support and per-environment `chart_apps` overrides
   * enable environments by default unless `global.envs.<key>.enabled` is explicitly `false`
   * construct GitHub or GitLab repository URLs from `global.repo`
   * apply revision precedence: application, environment, then global repository default
