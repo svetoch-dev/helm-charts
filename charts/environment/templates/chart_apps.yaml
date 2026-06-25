@@ -14,6 +14,8 @@
 {{- with $chart_app_obj.globalValues }}
 {{- $globalValues = mergeOverwrite $globalValues (tpl (toYaml .) $ | fromYaml) }}
 {{- end }}
+{{- $appTplContext := deepCopy $ }}
+{{- $_ := set $appTplContext.Values "global" $globalValues }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -77,7 +79,7 @@ spec:
         global:
         {{- toYaml $globalValues | nindent 10 }}
     {{- with $chart_app_obj.values }}
-    {{- tpl . $ | nindent 8 }}
+    {{- tpl . $appTplContext | nindent 8 }}
     {{- end }}
     {{- with $chart_app_obj.values_sources }}
     {{- toYaml . | nindent 2 }}
@@ -121,7 +123,7 @@ spec:
         global:
         {{- toYaml $globalValues | nindent 10 }}
     {{- with $chart_app_obj.values }}
-    {{- tpl . $ | nindent 8 }}
+    {{- tpl . $appTplContext | nindent 8 }}
     {{- end }}
   {{- end }}
   {{- with $chart_app_obj.syncPolicy }}

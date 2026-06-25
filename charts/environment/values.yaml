@@ -141,6 +141,20 @@ chart_apps:
     globalValues:
       ingress:
         class: konghq
+    values: |
+      kong:
+        ingressController:
+          ingressClass: "{{ .Values.global.ingress.class }}"
+  konghq-app:
+    enabled: false
+    chart: "{{ .Values.repository.paths.charts }}/konghq"
+    globalValues:
+      ingress:
+        class: konghq-app
+    values: |
+      kong:
+        ingressController:
+          ingressClass: "{{ .Values.global.ingress.class }}"
   cert-manager:
     enabled: false
   argocd:
