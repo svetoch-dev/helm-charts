@@ -62,7 +62,7 @@ Entries under `global.envs.<key>.apps` generate application defaults for the
 `app: true`, grant the `admin` and `dev` roles, and use `global.ingress.class`
 as the ingress class.
 
-Generated application defaults are configured through `apps_tpl_values` in the
+Generated application defaults are configured through `default_apps_values` in the
 `environment` chart values. Override this object in an environment `env.yaml` to
 change defaults for all generated applications in that environment.
 
