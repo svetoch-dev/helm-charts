@@ -1,4 +1,4 @@
-{{- $generatedChartApps := include "infra.generatedChartApps" (dict "apps" .Values.envApps "overrides" .Values.appOverrides "default_apps_values" .Values.default_apps_values) | fromYaml -}}
+{{- $generatedChartApps := include "infra.generatedChartApps" (dict "apps" .Values.envApps "overrides" .Values.appOverrides "defaultAppsValues" .Values.defaultAppsValues) | fromYaml -}}
 {{- $chartApps := mergeOverwrite $generatedChartApps .Values.chart_apps -}}
 {{- range $chart_app_name, $chart_app_obj := $chartApps -}}
 {{- if $chart_app_obj.enabled -}}

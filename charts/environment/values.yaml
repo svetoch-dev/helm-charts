@@ -4,7 +4,7 @@ externalEnvs: {}
 envApps: {}
 appOverrides: {}
 
-default_apps_values:
+defaultAppsValues:
   access:
     roles: ["admin", "dev"]
   ingress:

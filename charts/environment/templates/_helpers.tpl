@@ -5,7 +5,7 @@
 {{- define "infra.generatedChartApps" -}}
 {{- $generatedApps := dict -}}
 {{- $overrides := .overrides | default dict -}}
-{{- $defaultAppsValues := .default_apps_values | default dict -}}
+{{- $defaultAppsValues := .defaultAppsValues | default dict -}}
 {{- range $appKey, $app := .apps -}}
 {{- $override := index $overrides $appKey | default dict -}}
 {{- $chartName := $override.chart_name | default $appKey -}}
