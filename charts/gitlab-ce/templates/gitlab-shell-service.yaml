@@ -1,0 +1,32 @@
+{{- if .Values.gitlabShell.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "gitlab-ce.fullname" . }}-gitlab-shell
+  labels:
+    {{- include "gitlab-ce.labels" . | nindent 4 }}
+    app.kubernetes.io/component: gitlab-shell
+  {{- with .Values.gitlabShell.service.annotations }}
+  annotations:
+    {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.gitlabShell.service.type }}
+  {{- if and (eq .Values.gitlabShell.service.type "LoadBalancer") .Values.gitlabShell.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.gitlabShell.service.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.gitlabShell.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.gitlabShell.service.externalTrafficPolicy }}
+  {{- end }}
+  ports:
+  - name: ssh
+    port: {{ .Values.gitlabShell.service.port }}
+    targetPort: 2222
+    protocol: TCP
+    {{- if and (eq .Values.gitlabShell.service.type "NodePort") .Values.gitlabShell.service.nodePort }}
+    nodePort: {{ .Values.gitlabShell.service.nodePort }}
+    {{- end }}
+  selector:
+    app: gitlab-shell
+    release: {{ .Release.Name }}
+{{- end }}
