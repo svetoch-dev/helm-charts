@@ -35,17 +35,17 @@ certificates:
       name: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
       acme:
         server: https://acme-v02.api.letsencrypt.org/directory
-        email: "sre@{{ .Values.global.company.domain.root }}"
+        email: "sre@{{ .Values.global.company.domain }}"
         privateKeySecretRef:
           name: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
         solvers:
         - selector:
             dnsZones:
             #Full host name is set
-            #using .Values.company.domain.env
+            #using .Values.global.env.dns.domain
             #variable of environment
             #argocd/environments/<env>/env.yaml
-            - "{{ .Values.global.company.domain.env }}"
+            - "{{ .Values.global.env.dns.domain }}"
           http01:
             ingress:
               ingressClassName: "{{ .Values.global.ingress.class }}"
@@ -97,7 +97,6 @@ kong:
       #set in environment/values.yaml
       external-dns.alpha.kubernetes.io/ttl: "60"
   ingressController:
-    ingressClass: konghq
     args:
     - '--log-format=json'
     resources:

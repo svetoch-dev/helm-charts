@@ -1,41 +1,24 @@
 labels: {}
+finalizers:
+  - resources-finalizer.argocd.argoproj.io
+
+global:
+  company:
+    name:
+    domain:
+  repo:
+    type:
+    provider:
+    group:
+    name:
+    revision: master
+  envs: {}
 
 repository:
-  url: #git@github.com:ggramal/infrared.git
-  revision: master
   paths:
     env_chart: argocd/charts/infra/charts/environment
     envs_chart: argocd/charts/infra/charts/environments
     root_from_chart: "../../../.."
-
-defaultValuesTpl: |
-  global:
-    company:
-      name: {{ .Values.global.company.name }}
-      teams: {{ .Values.global.company.teams | toYaml | nindent 6 }}
-      domain:
-        root: {{ .domain.root }}
-        env: {{ .domain.env }}
-    network:
-      int_nat_gw: {{ .Values.global.network.int_nat_gw }}
-    registry:
-      url: {{ .env.registry }}
-      containers:
-      pip:
-    bucket:
-      type:   {{ .Values.global.bucket.type }}
-      prefix: {{ .Values.global.company.name }}
-      suffix: {{ .env.short_name }}
-    env:
-      name: {{ .env.name }}
-      server: {{ .env.server }}
-      short_name: {{ .env.short_name }}
-    alerts: {{ .Values.global.alerts | toYaml | nindent 4 }}
-    cloud: {{ .cloud | toYaml | nindent 4 }}
-
-
-  repository:
-    url: {{ .Values.repository.url }}
 
 root:
   enabled: true
@@ -43,17 +26,3 @@ root:
   revision:
   finalizers: {}
   syncPolicy: {}
-
-envs: {}
-#  gcp-prd:
-#    enabled: true
-#    labels: {}
-#    revision:
-#    finalizers: {}
-#    syncPolicy: {}
-#  gcp-int:
-#    enabled: true
-#    labels: {}
-#    revision:
-#    finalizers: {}
-#    syncPolicy: {}

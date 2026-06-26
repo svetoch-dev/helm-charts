@@ -142,7 +142,7 @@ prometheus:
 
     enableFeatures: []
 
-    externalUrl: "https://pm.{{ .Values.global.company.domain.env }}"
+    externalUrl: "https://pm.{{ .Values.global.env.dns.domain }}"
 
     routePrefix: "/"
 
@@ -302,6 +302,6 @@ secrets:
     name: thanos
     data:
       objstore.yml: |
-        type: "{{ .Values.global.bucket.type | upper }}"
+        type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
         config:
           bucket: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.short_name }}"

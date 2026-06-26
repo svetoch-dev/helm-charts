@@ -19,14 +19,14 @@ ingresses:
       ingress.pomerium.io/policy: |
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
-      - host: "al.{{ .Values.global.company.domain.env }}"
+      - host: "al.{{ .Values.global.env.dns.domain }}"
         paths:
           - path: /
             pathType: ImplementationSpecific
     tls:
       - secretName: al-tls
         hosts:
-          - "al.{{ .Values.global.company.domain.env }}"
+          - "al.{{ .Values.global.env.dns.domain }}"
   prometheus-main:
     enabled: false
     name: '{{ include "prometheus.fullname" . }}-prometheus-main'
@@ -39,14 +39,14 @@ ingresses:
       ingress.pomerium.io/policy: |
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
-      - host: "pm.{{ .Values.global.company.domain.env }}"
+      - host: "pm.{{ .Values.global.env.dns.domain }}"
         paths:
           - path: /
             pathType: ImplementationSpecific
     tls:
       - secretName: pm-tls
         hosts:
-          - "pm.{{ .Values.global.company.domain.env }}"
+          - "pm.{{ .Values.global.env.dns.domain }}"
   prometheus-main-thanos:
     enabled: false
     name: '{{ include "prometheus.fullname" . }}-prometheus-main-thanos'
@@ -59,14 +59,14 @@ ingresses:
       konghq.com/protocols: grpc,grpcs
       konghq.com/plugins: thanos-main-ip-restriction
     hosts:
-      - host: "thanos.{{ .Values.global.company.domain.env }}"
+      - host: "thanos.{{ .Values.global.env.dns.domain }}"
         paths:
           - path: /
             pathType: ImplementationSpecific
     tls:
       - secretName: thanos-tls
         hosts:
-          - "thanos.{{ .Values.global.company.domain.env }}"
+          - "thanos.{{ .Values.global.env.dns.domain }}"
 
 
 alertmanager-configs:
@@ -401,7 +401,7 @@ kong-plugins:
         kubernetes.io/ingress.class: konghq
       config:
         allow:
-          - "{{ .Values.global.network.int_nat_gw }}"
+          - "{{ .Values.global.env.cloud.network.int_nat_gw }}"
 
 prometheus-main:
   enabled: true
@@ -438,7 +438,7 @@ prometheus-main:
       enableAdminAPI: true
 
       externalLabels:
-        env: "{{ .Values.global.env.name }}"
+        env: "{{ .Values.global.env.cloud_short_name }}"
 
       ruleSelector:
         matchLabels:

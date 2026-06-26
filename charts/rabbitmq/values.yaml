@@ -11,14 +11,14 @@ ingresses:
       ingress.pomerium.io/policy: |
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
-    - host: "rm.{{ .Values.global.company.domain.env }}"
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
+      - host: "rm.{{ .Values.global.env.dns.domain }}"
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
     tls:
-    - secretName: rm-tls
-      hosts:
-      - "rm.{{ .Values.global.company.domain.env }}"
+      - secretName: rm-tls
+        hosts:
+          - "rm.{{ .Values.global.env.dns.domain }}"
 
 rabbitmq-cluster-operator:
   enabled: false
