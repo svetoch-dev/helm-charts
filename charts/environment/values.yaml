@@ -1,19 +1,25 @@
 labels: {}
 
 externalEnvs: {}
+appOverrides: {}
+
+defaultAppsValues:
+  access:
+    roles: ["admin", "dev"]
+  ingress:
+    class: "{{ .Values.global.ingress.class }}"
 
 repository:
-  url: #git@github.com:ggramal/infrared.git
+  revision: '{{ .Values.global.repo.revision }}'
   paths:
     charts: argocd/charts/infra/charts
     crds: argocd/charts/infra/crds
-    manifests: "argocd/environments/{{ .Values.global.env.name }}/manifests"
+    manifests: "argocd/environments/{{ .Values.global.env.cloud_short_name }}/manifests"
     app_charts: argocd/charts/app
-    env_from_charts: ../../../../environments/{{ .Values.global.env.name }}
-    env_from_app_charts: ../../../environments/{{ .Values.global.env.name }}
+    env_from_charts: ../../../../environments/{{ .Values.global.env.cloud_short_name }}
+    env_from_app_charts: ../../../environments/{{ .Values.global.env.cloud_short_name }}
     globals_from_app_charts: ../../infra/charts/globals.yaml
     globals_from_charts: ../globals.yaml
-  revision: master
 
 
 manifests:
@@ -26,7 +32,7 @@ manifests:
 
 crds:
   enabled: false
-  revision: master
+  revision:
   operators: {}
 #    argocd:
 #      enabled: true
@@ -56,42 +62,39 @@ crds:
 
   labels: {}
   finalizers: {}
-  syncPolicy: {}
+  syncPolicy:
+    syncOptions:
+      - ServerSideApply=true
 
 chart_apps:
   rabbitmq:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-        access:
-          teams: ["admin", "dev"]
-          emails: []
+    globalValues:
+      access:
+        roles: ["admin", "dev"]
   redis:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
   external-dns:
     enabled: false
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
+      external-dns:
+        provider: {{ .Values.global.env.dns.provider | quote }}
   gha-runner:
     enabled: false
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       gha-runner:
         listenerTemplate:
           metadata:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:actions.github.com/Pod:gha-runner/gha-runner-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.cloud_short_name }}:actions.github.com/Pod:gha-runner/gha-runner-{{ .Values.global.env.cloud_short_name }}
         resourceMeta:
           autoscalingListener:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.name }}:actions.github.com/AutoscalingListener:gha-runner/gha-runner-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-{{ .Values.global.env.cloud_short_name }}:actions.github.com/AutoscalingListener:gha-runner/gha-runner-{{ .Values.global.env.cloud_short_name }}
   gha-runner-app:
     enabled: false
     chart: "{{ .Values.repository.paths.charts }}/gha-runner"
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       workflowConfigMap:
         spec:
           serviceAccountName: runner-app
@@ -99,33 +102,26 @@ chart_apps:
         listenerTemplate:
           metadata:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.name }}:actions.github.com/Pod:gha-runner-app/gha-runner-app-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.cloud_short_name }}:actions.github.com/Pod:gha-runner-app/gha-runner-app-{{ .Values.global.env.cloud_short_name }}
         resourceMeta:
           autoscalingListener:
             annotations:
-              argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.name }}:actions.github.com/AutoscalingListener:gha-runner-app/gha-runner-app-{{ .Values.global.env.name }}
+              argocd.argoproj.io/tracking-id: gha-runner-app-{{ .Values.global.env.cloud_short_name }}:actions.github.com/AutoscalingListener:gha-runner-app/gha-runner-app-{{ .Values.global.env.cloud_short_name }}
   gha-operator:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
   pomerium:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
   postgres:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-        access:
-          teams: ["admin", "dev", "pm", "qa"]
-          emails: []
+    globalValues:
+      access:
+        roles: ["admin", "dev", "pm", "qa"]
   grafana:
     enabled: false
+    globalValues:
+      access:
+        roles: ["admin", "dev", "pm", "qa"]
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-        access:
-          teams: ["admin", "dev", "pm", "qa"]
-          emails: []
       {{- if .Values.externalEnvs }}
       datasource:
         datasources:
@@ -147,59 +143,64 @@ chart_apps:
       {{- end }}
   konghq:
     enabled: false
+    globalValues:
+      ingress:
+        class: konghq
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-        ingress:
-          class: konghq
+      kong:
+        ingressController:
+          ingressClass: "{{ .Values.global.ingress.class }}"
+  konghq-app:
+    enabled: false
+    chart: "{{ .Values.repository.paths.charts }}/konghq"
+    globalValues:
+      ingress:
+        class: konghq-app
+    values: |
+      kong:
+        ingressController:
+          ingressClass: "{{ .Values.global.ingress.class }}"
   cert-manager:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
   argocd:
     enabled: false
+    globalValues:
+      access:
+        roles: ["admin", "dev"]
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-        environment: {{ .Values.global.env | toYaml | nindent 6 }}
-        access:
-          teams: ["admin", "dev"]
-          emails: []
       argocd:
         externalRedis:
-          host: argocd-{{ .Values.global.env.name }}-redis-cluster-master
+          host: argocd-{{ .Values.global.env.cloud_short_name }}-redis-cluster-master
   prometheus:
     enabled: false
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       operator:
         prometheusOperator:
-          fullnameOverride: "prometheus-{{ .Values.global.env.name }}-operator"
+          fullnameOverride: "prometheus-{{ .Values.global.env.cloud_short_name }}-operator"
   fluent:
     enabled: false
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-      {{- if eq .Values.global.cloud.type "gcp" }}
+      {{- if eq .Values.global.env.cloud.name "gcp" }}
       fluentbit-gcp:
         enabled: true
       {{- end }}
   thanos:
     enabled: false
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
-      {{- if eq .Values.global.env.short_name "int" }}
+      {{- if eq .Values.global.env.type "internal" }}
       thanos:
         query:
           stores:
-            - {{ printf "thanos-%s-storegateway:10901" .Values.global.env.name }}
-            - {{ printf "prometheus-%s-prometheus-main-thanos:8080" .Values.global.env.name }}
+            - {{ printf "thanos-%s-storegateway:10901" .Values.global.env.cloud_short_name }}
+            - {{ printf "prometheus-%s-prometheus-main-thanos:8080" .Values.global.env.cloud_short_name }}
             {{- if .Values.externalEnvs }}
-            - {{ printf "thanos-external-%s-query-grpc:10901" .Values.global.env.name }}
+            - {{ printf "thanos-external-%s-query-grpc:10901" .Values.global.env.cloud_short_name }}
             {{- end }}
       {{- end }}
   thanos-external:
     enabled: false
     chart: '{{ .Values.repository.paths.charts }}/thanos'
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       thanos:
         query:
           stores:
@@ -214,25 +215,24 @@ chart_apps:
   loki:
     enabled: false
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       loki:
-        nameOverride: "loki-{{ .Values.global.env.name }}"
+        nameOverride: "loki-{{ .Values.global.env.cloud_short_name }}"
         loki:
           compactor:
-            delete_request_store: "{{ .Values.global.bucket.type }}"
+            delete_request_store: "{{ .Values.global.env.cloud.buckets.type }}"
           storage:
-            type: "{{ .Values.global.bucket.type }}"
+            type: "{{ .Values.global.env.cloud.buckets.type }}"
             bucketNames:
               chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
               ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
             object_store:
-              type: "{{ .Values.global.bucket.type }}"
+              type: "{{ .Values.global.env.cloud.buckets.type }}"
               gcs:
                 bucket_name: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
           schemaConfig:
             configs:
               - from: 2025-05-01
-                object_store: "{{ .Values.global.bucket.type }}"
+                object_store: "{{ .Values.global.env.cloud.buckets.type }}"
                 store: tsdb
                 schema: v13
                 index:
@@ -241,13 +241,10 @@ chart_apps:
 
   gl-runner:
     enabled: false
-    values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
   gl-runner-app:
     enabled: false
     chart: "{{ .Values.repository.paths.charts }}/gl-runner"
     values: |
-      global: {{ .Values.global | toYaml | nindent 4 }}
       gl-runner:
         runners:
           secret: "runner-app"

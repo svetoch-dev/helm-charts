@@ -12,7 +12,13 @@ items:
 {{ include "probes.labels" $ | indent 8 }}
         {{- toYaml $probe_obj.selector | nindent 8 }}
     spec:
-      {{- tpl (toYaml $probe_obj.spec ) $ | nindent 6 }}
+      {{- $spec := tpl (toYaml $probe_obj.spec) $ | fromYaml }}
+      {{- with $spec.prober }}
+      {{- with .url }}
+      {{- $_ := set $spec.prober "url" (tpl . $) }}
+      {{- end }}
+      {{- end }}
+      {{- toYaml $spec | nindent 6 }}
 {{- end }}
 {{- end }}
 {{- end }}

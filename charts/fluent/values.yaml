@@ -42,10 +42,10 @@ fluentbit:
       logLevel: "info"
       loki:
         dropSingleKey: "on"
-        host: "loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local"
+        host: "loki-{{ .Values.global.env.cloud_short_name }}-write.loki.svc.cluster.local"
         port: 3100
         labels:
-          env: "{{ .Values.global.env.name }}"
+          env: "{{ .Values.global.env.cloud_short_name }}"
           job: fluentbit-systemd
           node: $_HOSTNAME
           stream: $_TRANSPORT
@@ -62,10 +62,10 @@ fluentbit:
       logLevel: "info"
       loki:
         dropSingleKey: "on"
-        host: "loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local"
+        host: "loki-{{ .Values.global.env.cloud_short_name }}-write.loki.svc.cluster.local"
         port: 3100
         labels:
-          env: "{{ .Values.global.env.name }}"
+          env: "{{ .Values.global.env.cloud_short_name }}"
           job: fluentbit-pods
           pod: $kubernetes['pod_name']
           container: $kubernetes['container_name']
@@ -368,10 +368,10 @@ fluentbit-gcp:
     control-plane:
       name: loki
       match: 'kube.control-plane.*'
-      host: 'loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local'
+      host: 'loki-{{ .Values.global.env.cloud_short_name }}-write.loki.svc.cluster.local'
       port: 3100
       labels:
-        env: '{{ .Values.global.env.name }}'
+        env: '{{ .Values.global.env.cloud_short_name }}'
         app_kubernetes_io_instance: $resource['labels']['component_name']
         app_kubernetes_io_name: $resource['labels']['component_name']
         job: 'fluentbit-control-plane'
@@ -381,10 +381,10 @@ fluentbit-gcp:
     audit:
       name: loki
       match: 'kube.audit.*'
-      host: 'loki-{{ .Values.global.env.name }}-write.loki.svc.cluster.local'
+      host: 'loki-{{ .Values.global.env.cloud_short_name }}-write.loki.svc.cluster.local'
       port: 3100
       labels:
-        env: '{{ .Values.global.env.name }}'
+        env: '{{ .Values.global.env.cloud_short_name }}'
         resource_name: $protoPayload['resourceName']
         principal: $protoPayload['authenticationInfo']['principalEmail']
         method_name: $protoPayload['methodName']
@@ -449,7 +449,7 @@ fluentbit-gcp:
           - read_ahead_kb=1024
         csi:
           driver: gcsfuse.csi.storage.gke.io
-          volumeHandle: '{{printf "%s-logs-%s" .Values.global.bucket.prefix .Values.global.bucket.suffix }}'
+          volumeHandle: '{{printf "%s-logs-%s" .Values.global.company.name .Values.global.env.short_name }}'
           volumeAttributes:
             skipCSIBucketAccessCheck: "true"
         claimRef:

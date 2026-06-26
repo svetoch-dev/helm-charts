@@ -15,14 +15,14 @@ ingresses:
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2 }}
 
     hosts:
-    - host: "ag.{{ .Values.global.company.domain.env }}"
+    - host: "ag.{{ .Values.global.env.dns.domain }}"
       paths:
       - path: /
         pathType: ImplementationSpecific
     tls:
     - secretName: ag-tls
       hosts:
-      - "ag.{{ .Values.global.company.domain.env }}"
+      - "ag.{{ .Values.global.env.dns.domain }}"
 
 argocd:
   enabled: false
@@ -128,7 +128,7 @@ probes:
         prometheus: main
       spec:
         prober:
-          url: 'prometheus-{{ .Values.global.environment.name }}-prometheus-blackbox-exporter.prometheus.svc.cluster.local:9115'
+          url: 'prometheus-{{ .Values.global.env.cloud_short_name }}-prometheus-blackbox-exporter.prometheus.svc.cluster.local:9115'
         jobName: argocd
         module: http_3xx
         targets:

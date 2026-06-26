@@ -1,7 +1,7 @@
 global:
   image:
     repository: pomerium/ingress-controller
-    tag: v0.32.0@sha256:6b78abf488e3f5360990a2a87a5ef4b3479e58c7b5ae2de5f90034194050145e
+    tag: v0.32.9@sha256:e72d8e3b557fc068db502a8b2a8b281a7433e67c74250a906ef0fb0e33ef016d
 
 ingressClassName: '{{ .Values.global.ingress.class }}'
 
@@ -16,7 +16,7 @@ certificates:
       enabled: false
       secretName: authn-tls
       dnsNames:
-      - 'authn.{{ .Values.global.company.domain.env }}'
+      - 'authn.{{ .Values.global.env.dns.domain }}'
       issuerRef:
         kind: Issuer
         name: selfsigned
@@ -26,17 +26,17 @@ certificates:
       name: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
       acme:
         server: https://acme-v02.api.letsencrypt.org/directory
-        email: "sre@{{ .Values.global.company.domain.root }}"
+        email: "sre@{{ .Values.global.company.domain }}"
         privateKeySecretRef:
           name: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
         solvers:
         - selector:
             dnsZones:
             #Full host name is set
-            #using .Values.company.domain.env
+            #using .Values.global.env.dns.domain
             #variable of environment
             #argocd/environments/<env>/env.yaml
-            - "{{ .Values.global.company.domain.env }}"
+            - "{{ .Values.global.env.dns.domain }}"
           http01:
             ingress:
               ingressClassName: "{{ .Values.global.ingress.class }}"
@@ -46,7 +46,7 @@ pomerium:
   name: global
   spec:
     authenticate:
-      url: "https://authn.{{ .Values.global.company.domain.env }}"
+      url: "https://authn.{{ .Values.global.env.dns.domain }}"
     certificates:
     - '{{ .Release.Namespace }}/authn-tls'
     identityProvider:
@@ -128,7 +128,7 @@ controller:
     name: pomerium-proxy
     type: LoadBalancer
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: "authn.{{ .Values.global.company.domain.env }}."
+      external-dns.alpha.kubernetes.io/hostname: "authn.{{ .Values.global.env.dns.domain }}."
     externalTrafficPolicy: Local
     ports:
     - name: https
