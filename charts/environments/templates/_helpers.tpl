@@ -19,7 +19,7 @@
 {{- end -}}
 
 {{- define "infra.repoRevision" -}}
-{{- required "global.repo.revision is required" .Values.global.repo.revision -}}
+{{- .Values.global.repo.revision | default "master" -}}
 {{- end -}}
 
 {{- define "infra.dnsProvider" -}}
