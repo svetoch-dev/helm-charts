@@ -8,8 +8,10 @@
 {{- $defaultAppsValues := .defaultAppsValues | default dict -}}
 {{- range $appKey, $app := .apps -}}
 {{- $override := index $overrides $appKey | default dict -}}
-{{- $chartName := $override.chart_name | default $appKey -}}
-{{- $appName := $app.name | default $appKey -}}
+{{- $chartName := $app.name | default $appKey -}}
+{{- with $override.chart_name -}}
+{{- $chartName = . -}}
+{{- end -}}
 {{- $namespace := $override.namespace | default $app.namespace | default $app.name | default $appKey -}}
 {{- $enabled := true -}}
 {{- if and (hasKey $app "enabled") (kindIs "bool" $app.enabled) -}}
@@ -54,7 +56,7 @@
 {{- end -}}
 {{- $generatedApp := dict
       "enabled" $enabled
-      "name" (printf "{{ printf \"%s-%%s\" .Values.global.env.cloud_short_name }}" $appName)
+      "name" (printf "{{ printf \"%s-%%s\" .Values.global.env.cloud_short_name }}" $chartName)
       "namespace" $namespace
       "app" true
       "globalValues" $globalValues -}}

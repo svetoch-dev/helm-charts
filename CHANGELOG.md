@@ -33,6 +33,7 @@ Enhancements:
 * `environment`:
   * pass common values to child Applications automatically and merge application-specific `globalValues`
   * use `global.env.cloud_short_name` for Application names, release names, environment value-file paths and service references
+  * generate application and release names from the app key, then app `name`, then `appOverrides.<key>.chart_name`
   * use `global.repo.revision` as the common revision, defaulting to `master`
   * make CRD Applications inherit the environment revision unless explicitly overridden
   * derive `global.env.dns.provider` from known `global.env.dns.type` values and pass it to the `external-dns` chart
@@ -75,6 +76,7 @@ Enhancements:
   * `Pods` `Replicas` panel shows `deployments`
 
 Fixes
+* `probes` render templated `spec.prober.url` values after resolving the probe spec
 * fix newline after YAML separator in `app/core/templates/_ingress.tpl` for `helm lint`
 * `prometheus-operated` fix `thanosServiceMonitor` values key typo
 * `prometheus/lib` `podMonitor` render `podTargetLabels` instead of invalid `targetLabels`

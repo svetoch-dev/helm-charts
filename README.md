@@ -66,8 +66,10 @@ Generated application defaults are configured through `defaultAppsValues` in the
 `environment` chart values. Override this object in an environment `env.yaml` to
 change defaults for all generated applications in that environment.
 
-The generated Argo CD Application name uses the app `name` field and falls back
-to the app key when `name` is omitted. The namespace is resolved in this order:
+The generated Argo CD Application and Helm release names use the app key by
+default, then `global.envs.<key>.apps.<app>.name`, and finally
+`appOverrides.<key>.chart_name` when it is set. The namespace is resolved in this
+order:
 
 1. `appOverrides.<key>.namespace` in the environment's `env.yaml`;
 2. `global.envs.<key>.apps.<app>.namespace`;
