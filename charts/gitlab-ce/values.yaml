@@ -54,86 +54,22 @@ ingresses:
       hosts:
       - "registry.{{ .Values.global.company.domain.env }}"
 
-  # -- GitLab Pages (enable if pages is enabled)
-  # pages:
-  #   enabled: false
-  #   name: '{{ include "gitlab-ce.fullname" . }}-pages'
-  #   service:
-  #     name: '{{ include "gitlab-ce.fullname" . }}-gitlab-pages'
-  #     port: 8090
-  #   className: "{{ .Values.global.ingress.class }}"
-  #   annotations:
-  #     cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
-  #   hosts:
-  #   - host: "pages.{{ .Values.global.company.domain.env }}"
-  #     paths:
-  #     - path: /
-  #       pathType: ImplementationSpecific
-  #   tls:
-  #   - secretName: gl-pages-tls
-  #     hosts:
-  #     - "pages.{{ .Values.global.company.domain.env }}"
-
-  # -- Mattermost (enable if mattermost is enabled)
-  # mattermost:
-  #   enabled: false
-  #   name: '{{ include "gitlab-ce.fullname" . }}-mattermost'
-  #   service:
-  #     name: '{{ include "gitlab-ce.fullname" . }}-mattermost'
-  #     port: 8065
-  #   className: "{{ .Values.global.ingress.class }}"
-  #   annotations:
-  #     cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
-  #   hosts:
-  #   - host: "mattermost.{{ .Values.global.company.domain.env }}"
-  #     paths:
-  #     - path: /
-  #       pathType: ImplementationSpecific
-  #   tls:
-  #   - secretName: gl-mattermost-tls
-  #     hosts:
-  #     - "mattermost.{{ .Values.global.company.domain.env }}"
-
-  # -- KAS (Kubernetes Agent Server) - for GitLab Agent for Kubernetes
-  # kas:
-  #   enabled: false
-  #   name: '{{ include "gitlab-ce.fullname" . }}-kas'
-  #   service:
-  #     name: '{{ include "gitlab-ce.fullname" . }}-kas'
-  #     port: 8150
-  #   className: "{{ .Values.global.ingress.class }}"
-  #   annotations:
-  #     cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
-  #   hosts:
-  #   - host: "kas.{{ .Values.global.company.domain.env }}"
-  #     paths:
-  #     - path: /
-  #       pathType: ImplementationSpecific
-  #   tls:
-  #   - secretName: gl-kas-tls
-  #     hosts:
-  #     - "kas.{{ .Values.global.company.domain.env }}"
-
-# =============================================================================
-# GitLab Shell SSH Service Configuration
-# =============================================================================
-# SSH access requires a separate LoadBalancer/NodePort service (not Ingress)
-gitlabShell:
-  service:
-    enabled: false  # SET THIS: true to enable SSH access
-    type: LoadBalancer  # or NodePort
-    port: 22
-    # -- For LoadBalancer: static IP (optional, GCP/AWS specific)
-    # loadBalancerIP: ""
-    # -- For LoadBalancer: preserve client IP
-    externalTrafficPolicy: Local
-    # -- For NodePort: specific node port (optional)
-    # nodePort: 30022
-    annotations: {}
-      # -- GCP example:
-      # cloud.google.com/load-balancer-type: "External"
-      # -- AWS example:
-      # service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+# gitlabShell:
+#   service:
+#     enabled: false  # SET THIS: true to enable SSH access
+#     type: LoadBalancer  # or NodePort
+#     port: 22
+#     # -- For LoadBalancer: static IP (optional, GCP/AWS specific)
+#     # loadBalancerIP: ""
+#     # -- For LoadBalancer: preserve client IP
+#     externalTrafficPolicy: Local
+#     # -- For NodePort: specific node port (optional)
+#     # nodePort: 30022
+#     annotations: {}
+#       # -- GCP example:
+#       # cloud.google.com/load-balancer-type: "External"
+#       # -- AWS example:
+#       # service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 
 # =============================================================================
 # PostgreSQL Configuration (deployed via postgres-cluster subchart)
@@ -170,7 +106,7 @@ postgres-main:
     size: 10Gi
     storageClass: premium-rwo
   databases:
-    gitlabhq_production: gitlab
+    gitlabhq_production: gitlabhq_production
   preparedDatabases:
     gitlabhq_production:
       defaultUsers: true
@@ -233,338 +169,338 @@ redis:
 # =============================================================================
 # GitLab CE Main Configuration
 # =============================================================================
-gitlab-ce:
-  enabled: true
-  global:
-    # -- Hosts derived from ingress configuration
-    hosts:
-      domain: "{{ .Values.global.company.domain.env }}"
-      gitlab:
-        name: "gl.{{ .Values.global.company.domain.env }}"
-        https: true
-      registry:
-        name: "registry.{{ .Values.global.company.domain.env }}"  # Change if needed or leave empty to disable
-      minio:
-        enabled: false  # Disabled - using external object storage
-    # -- Ingress configuration (using your own ingress)
-    ingress:
-      enabled: false  # Disable GitLab's ingress - you manage your own
-      configureCertmanager: false
-    # -- GitLab Shell (SSH) configuration
-    shell:
-      port: 22
-    # =========================================================================
-    # External PostgreSQL Configuration
-    # =========================================================================
-    psql:
-      # -- REQUIRED: External PostgreSQL host
-      host: ""  # SET THIS: PostgreSQL hostname (e.g., postgres-gitlab.namespace.svc.cluster.local)
-      port: 5432
-      database: gitlabhq_production
-      username: gitlab
-      # -- REQUIRED: Secret containing PostgreSQL password
-      password:
-        useSecret: true
-        secret: gitlab-postgres-secret  # SET THIS: name of secret containing password
-        key: password  # SET THIS: key in secret containing password
-    # =========================================================================
-    # External Redis Configuration
-    # =========================================================================
-    redis:
-      # -- REQUIRED: External Redis host (or sentinel configuration)
-      host: ""  # SET THIS: Redis hostname (e.g., redis-gitlab.namespace.svc.cluster.local)
-      port: 6379
-      # -- For Sentinel setup, uncomment and configure:
-      # sentinels:
-      #   - host: sentinel-0.redis.svc.cluster.local
-      #     port: 26379
-      # sentinelMaster: mymaster
-      password:
-        enabled: true
-        secret: gitlab-redis-secret  # SET THIS: name of secret containing password
-        key: password  # SET THIS: key in secret containing password
-    # =========================================================================
-    # External Object Storage Configuration
-    # =========================================================================
-    # All object storage backends use the same connection configuration
-    # Supported providers: AWS, GCS, Azure Blob
-    # =========================================================================
-    minio:
-      enabled: false  # Disable built-in MinIO
-    # -- GCS Object storage with Workload Identity (no secrets needed)
-    # Prerequisites:
-    # 1. Create GCP Service Account with roles/storage.objectAdmin on buckets
-    # 2. Bind KSA to GSA:
-    #    gcloud iam service-accounts add-iam-policy-binding \
-    #      GSA_NAME@PROJECT_ID.iam.gserviceaccount.com \
-    #      --role roles/iam.workloadIdentityUser \
-    #      --member "serviceAccount:PROJECT_ID.svc.id.goog[NAMESPACE/KSA_NAME]"
-    # 3. Annotate Kubernetes ServiceAccount (done via serviceAccount.annotations below)
-    appConfig:
-      # -- LFS (Large File Storage)
-      lfs:
-        enabled: true
-        bucket: ""  # SET THIS: bucket name for LFS (e.g., gitlab-lfs)
-        connection:
-          secret: gitlab-object-storage
-          key: connection
-      # -- Artifacts storage
-      artifacts:
-        enabled: true
-        bucket: ""  # SET THIS: bucket name for artifacts (e.g., gitlab-artifacts)
-        connection:
-          secret: gitlab-object-storage
-          key: connection
-      # -- Uploads storage
-      uploads:
-        enabled: true
-        bucket: ""  # SET THIS: bucket name for uploads (e.g., gitlab-uploads)
-        connection:
-          secret: gitlab-object-storage
-          key: connection
-      # -- Packages storage
-      packages:
-        enabled: true
-        bucket: ""  # SET THIS: bucket name for packages (e.g., gitlab-packages)
-        connection:
-          secret: gitlab-object-storage
-          key: connection
-      # -- External diff storage
-      externalDiffs:
-        enabled: true
-        bucket: ""  # SET THIS: bucket name for diffs (e.g., gitlab-external-diffs)
-        connection:
-          secret: gitlab-object-storage
-          key: connection
-      # -- Terraform state storage
-      terraformState:
-        enabled: true
-        bucket: ""  # SET THIS: bucket name for terraform state (e.g., gitlab-terraform-state)
-        connection:
-          secret: gitlab-object-storage
-          key: connection
-      # -- Dependency proxy storage
-      dependencyProxy:
-        enabled: true
-        bucket: ""  # SET THIS: bucket name for dependency proxy (e.g., gitlab-dependency-proxy)
-        connection:
-          secret: gitlab-object-storage
-          key: connection
-      # -- CI secure files storage
-      ciSecureFiles:
-        enabled: true
-        bucket: ""  # SET THIS: bucket name for CI secure files (e.g., gitlab-ci-secure-files)
-        connection:
-          secret: gitlab-object-storage
-          key: connection
-    # =========================================================================
-    # Backups Configuration (Object Storage)
-    # =========================================================================
-    backups:
-      bucket: ""  # SET THIS: bucket name for backups (e.g., gitlab-backups)
-      # -- Uncomment to configure backup connection
-      # objectStorage:
-      #   config:
-      #     secret: gitlab-backup-storage
-      #     key: config
-  # ===========================================================================
-  # Workload Identity Configuration
-  # ===========================================================================
-  # All GitLab components use this service account for GCS access via Workload Identit
-  serviceAccount:
-    create: true
-    name: gitlab  # SET THIS: KSA name to bind to GSA
-    annotations:
-      # SET THIS: your GCP service account email
-      iam.gke.io/gcp-service-account: ""  # e.g., gitlab-sa@PROJECT_ID.iam.gserviceaccount.com
-  # ===========================================================================
-  # Component Configuration
-  # ===========================================================================
-  # -- Disable bundled services (using external)
-  postgresql:
-    install: false
-  redis:
-    install: false
-  # -- Disable built-in nginx ingress (using your own)
-  nginx-ingress:
-    enabled: false
-  # -- Disable built-in cert-manager (using your own)
-  certmanager:
-    install: false
-  # -- Disable prometheus (optional - enable if you want GitLab's prometheus)
-  prometheus:
-    install: false
-  # -- GitLab Runner (disable for minimal POC, enable later if needed)
-  gitlab-runner:
-    install: false
-  # ===========================================================================
-  # GitLab Webservice (main Rails application)
-  # ===========================================================================
-  gitlab:
-    webservice:
-      # -- Number of replicas
-      replicaCount: 1  # SET THIS: increase for HA
-      # -- Resource limits
-      resources:
-        requests:
-          cpu: 300m
-          memory: 2Gi
-        limits:
-          cpu: 2
-          memory: 4Gi
-      # -- Node selector (optional)
-      nodeSelector: {}
-        # SET THIS: uncomment and set your node selector
-        # kubernetes.io/node-pool: gitlab-pool
-        # node-type: gitlab
-      # -- Tolerations (optional)
-      tolerations: []
-        # SET THIS: uncomment and configure if needed
-        # - key: "dedicated"
-        #   operator: "Equal"
-        #   value: "gitlab"
-        #   effect: "NoSchedule"
-    # =========================================================================
-    # Sidekiq (background job processor)
-    # =========================================================================
-    sidekiq:
-      # -- Number of replicas
-      replicaCount: 1  # SET THIS: increase for HA
-      resources:
-        requests:
-          cpu: 100m
-          memory: 1Gi
-        limits:
-          cpu: 1
-          memory: 2Gi
-      nodeSelector: {}
-        # SET THIS: same as webservice if needed
-      tolerations: []
-    # =========================================================================
-    # Gitaly (Git RPC service)
-    # =========================================================================
-    gitaly:
-      resources:
-        requests:
-          cpu: 100m
-          memory: 200Mi
-        limits:
-          cpu: 1
-          memory: 1Gi
-      persistence:
-        enabled: true
-        size: 50Gi  # SET THIS: size for git repositories
-        storageClass: ""  # SET THIS: your storage class (e.g., standard, premium-rwo)
+# gitlab-ce:
+#   enabled: true
+#   global:
+#     # -- Hosts derived from ingress configuration
+#     hosts:
+#       domain: "{{ .Values.global.company.domain.env }}"
+#       gitlab:
+#         name: "gl.{{ .Values.global.company.domain.env }}"
+#         https: true
+#       registry:
+#         name: "registry.{{ .Values.global.company.domain.env }}"  # Change if needed or leave empty to disable
+#         https: true
+#       ssh: "gl.{{ .Values.global.company.domain.env }}"
 
-      nodeSelector: {}
-      tolerations: []
-    # =========================================================================
-    # GitLab Shell (SSH access)
-    # =========================================================================
-    gitlab-shell:
-      replicaCount: 1
-      resources:
-        requests:
-          cpu: 10m
-          memory: 50Mi
-        limits:
-          cpu: 100m
-          memory: 150Mi
-      nodeSelector: {}
-      tolerations: []
-    # =========================================================================
-    # Task Runner (for maintenance tasks, backups)
-    # =========================================================================
-    toolbox:
-      enabled: true
-      resources:
-        requests:
-          cpu: 50m
-          memory: 350Mi
-        limits:
-          cpu: 500m
-          memory: 1Gi
-      nodeSelector: {}
-      tolerations: []
-    # =========================================================================
-    # Migrations Job
-    # =========================================================================
-    migrations:
-      resources:
-        requests:
-          cpu: 100m
-          memory: 200Mi
-        limits:
-          cpu: 1
-          memory: 2Gi
-      nodeSelector: {}
-      tolerations: []
+#     ingress:
+#       enabled: false
+#       configureCertmanager: false
+#     # -- GitLab Shell (SSH) configuration
+#     shell:
+#       port: 22
+#     # =========================================================================
+#     # External PostgreSQL Configuration
+#     # =========================================================================
+#     psql:
+#       # -- REQUIRED: External PostgreSQL host
+#       host: ""  # SET THIS: PostgreSQL hostname (e.g., postgres-gitlab.namespace.svc.cluster.local)
+#       port: 5432
+#       database: gitlabhq_production
+#       username: gitlab
+#       # -- REQUIRED: Secret containing PostgreSQL password
+#       password:
+#         useSecret: true
+#         secret: gitlab-postgres-secret  # SET THIS: name of secret containing password
+#         key: password  # SET THIS: key in secret containing password
+#     # =========================================================================
+#     # External Redis Configuration
+#     # =========================================================================
+#     redis:
+#       # -- REQUIRED: External Redis host (or sentinel configuration)
+#       host: ""  # SET THIS: Redis hostname (e.g., redis-gitlab.namespace.svc.cluster.local)
+#       port: 6379
+#       # -- For Sentinel setup, uncomment and configure:
+#       # sentinels:
+#       #   - host: sentinel-0.redis.svc.cluster.local
+#       #     port: 26379
+#       # sentinelMaster: mymaster
+#       password:
+#         enabled: true
+#         secret: gitlab-redis-secret  # SET THIS: name of secret containing password
+#         key: password  # SET THIS: key in secret containing password
+#     # =========================================================================
+#     # External Object Storage Configuration
+#     # =========================================================================
+#     # All object storage backends use the same connection configuration
+#     # Supported providers: AWS, GCS, Azure Blob
+#     # =========================================================================
+#     minio:
+#       enabled: false  # Disable built-in MinIO
+#     # -- GCS Object storage with Workload Identity (no secrets needed)
+#     # Prerequisites:
+#     # 1. Create GCP Service Account with roles/storage.objectAdmin on buckets
+#     # 2. Bind KSA to GSA:
+#     #    gcloud iam service-accounts add-iam-policy-binding \
+#     #      GSA_NAME@PROJECT_ID.iam.gserviceaccount.com \
+#     #      --role roles/iam.workloadIdentityUser \
+#     #      --member "serviceAccount:PROJECT_ID.svc.id.goog[NAMESPACE/KSA_NAME]"
+#     # 3. Annotate Kubernetes ServiceAccount (done via serviceAccount.annotations below)
+#     appConfig:
+#       # -- LFS (Large File Storage)
+#       lfs:
+#         enabled: true
+#         bucket: ""  # SET THIS: bucket name for LFS (e.g., gitlab-lfs)
+#         connection:
+#           secret: gitlab-object-storage
+#           key: connection
+#       # -- Artifacts storage
+#       artifacts:
+#         enabled: true
+#         bucket: ""  # SET THIS: bucket name for artifacts (e.g., gitlab-artifacts)
+#         connection:
+#           secret: gitlab-object-storage
+#           key: connection
+#       # -- Uploads storage
+#       uploads:
+#         enabled: true
+#         bucket: ""  # SET THIS: bucket name for uploads (e.g., gitlab-uploads)
+#         connection:
+#           secret: gitlab-object-storage
+#           key: connection
+#       # -- Packages storage
+#       packages:
+#         enabled: true
+#         bucket: ""  # SET THIS: bucket name for packages (e.g., gitlab-packages)
+#         connection:
+#           secret: gitlab-object-storage
+#           key: connection
+#       # -- External diff storage
+#       externalDiffs:
+#         enabled: true
+#         bucket: ""  # SET THIS: bucket name for diffs (e.g., gitlab-external-diffs)
+#         connection:
+#           secret: gitlab-object-storage
+#           key: connection
+#       # -- Terraform state storage
+#       terraformState:
+#         enabled: true
+#         bucket: ""  # SET THIS: bucket name for terraform state (e.g., gitlab-terraform-state)
+#         connection:
+#           secret: gitlab-object-storage
+#           key: connection
+#       # -- Dependency proxy storage
+#       dependencyProxy:
+#         enabled: true
+#         bucket: ""  # SET THIS: bucket name for dependency proxy (e.g., gitlab-dependency-proxy)
+#         connection:
+#           secret: gitlab-object-storage
+#           key: connection
+#       # -- CI secure files storage
+#       ciSecureFiles:
+#         enabled: true
+#         bucket: ""  # SET THIS: bucket name for CI secure files (e.g., gitlab-ci-secure-files)
+#         connection:
+#           secret: gitlab-object-storage
+#           key: connection
+#     # =========================================================================
+#     # Backups Configuration (Object Storage)
+#     # =========================================================================
+#     backups:
+#       bucket: ""  # SET THIS: bucket name for backups (e.g., gitlab-backups)
+#       # -- Uncomment to configure backup connection
+#       # objectStorage:
+#       #   config:
+#       #     secret: gitlab-backup-storage
+#       #     key: config
+#   # ===========================================================================
+#   # Workload Identity Configuration
+#   # ===========================================================================
+#   # All GitLab components use this service account for GCS access via Workload Identit
+#   serviceAccount:
+#     create: true
+#     name: gitlab  # SET THIS: KSA name to bind to GSA
+#     annotations:
+#       # SET THIS: your GCP service account email
+#       iam.gke.io/gcp-service-account: ""  # e.g., gitlab-sa@PROJECT_ID.iam.gserviceaccount.com
+#   # ===========================================================================
+#   # Component Configuration
+#   # ===========================================================================
+#   # -- Disable bundled services (using external)
+#   postgresql:
+#     install: false
+#   redis:
+#     install: false
+#   # -- Disable built-in nginx ingress (using your own)
+#   nginx-ingress:
+#     enabled: false
+#   # -- Disable built-in cert-manager (using your own)
+#   certmanager:
+#     install: false
+#   # -- Disable prometheus (optional - enable if you want GitLab's prometheus)
+#   prometheus:
+#     install: false
+#   # -- GitLab Runner (disable for minimal POC, enable later if needed)
+#   gitlab-runner:
+#     install: false
+#   # ===========================================================================
+#   # GitLab Webservice (main Rails application)
+#   # ===========================================================================
+#   gitlab:
+#     webservice:
+#       # -- Number of replicas
+#       replicaCount: 1  # SET THIS: increase for HA
+#       # -- Resource limits
+#       resources:
+#         requests:
+#           cpu: 300m
+#           memory: 2Gi
+#         limits:
+#           cpu: 2
+#           memory: 4Gi
+#       # -- Node selector (optional)
+#       nodeSelector: {}
+#         # SET THIS: uncomment and set your node selector
+#         # kubernetes.io/node-pool: gitlab-pool
+#         # node-type: gitlab
+#       # -- Tolerations (optional)
+#       tolerations: []
+#         # SET THIS: uncomment and configure if needed
+#         # - key: "dedicated"
+#         #   operator: "Equal"
+#         #   value: "gitlab"
+#         #   effect: "NoSchedule"
+#     # =========================================================================
+#     # Sidekiq (background job processor)
+#     # =========================================================================
+#     sidekiq:
+#       # -- Number of replicas
+#       replicaCount: 1  # SET THIS: increase for HA
+#       resources:
+#         requests:
+#           cpu: 100m
+#           memory: 1Gi
+#         limits:
+#           cpu: 1
+#           memory: 2Gi
+#       nodeSelector: {}
+#         # SET THIS: same as webservice if needed
+#       tolerations: []
+#     # =========================================================================
+#     # Gitaly (Git RPC service)
+#     # =========================================================================
+#     gitaly:
+#       resources:
+#         requests:
+#           cpu: 100m
+#           memory: 200Mi
+#         limits:
+#           cpu: 1
+#           memory: 1Gi
+#       persistence:
+#         enabled: true
+#         size: 50Gi  # SET THIS: size for git repositories
+#         storageClass: ""  # SET THIS: your storage class (e.g., standard, premium-rwo)
 
-  # ===========================================================================
-  # Registry Configuration (Container Registry)
-  # ===========================================================================
-  registry:
-    enabled: false  # SET THIS: true to enable container registry
+#       nodeSelector: {}
+#       tolerations: []
+#     # =========================================================================
+#     # GitLab Shell (SSH access)
+#     # =========================================================================
+#     gitlab-shell:
+#       replicaCount: 1
+#       resources:
+#         requests:
+#           cpu: 10m
+#           memory: 50Mi
+#         limits:
+#           cpu: 100m
+#           memory: 150Mi
+#       nodeSelector: {}
+#       tolerations: []
+#     # =========================================================================
+#     # Task Runner (for maintenance tasks, backups)
+#     # =========================================================================
+#     toolbox:
+#       enabled: true
+#       resources:
+#         requests:
+#           cpu: 50m
+#           memory: 350Mi
+#         limits:
+#           cpu: 500m
+#           memory: 1Gi
+#       nodeSelector: {}
+#       tolerations: []
+#     # =========================================================================
+#     # Migrations Job
+#     # =========================================================================
+#     migrations:
+#       resources:
+#         requests:
+#           cpu: 100m
+#           memory: 200Mi
+#         limits:
+#           cpu: 1
+#           memory: 2Gi
+#       nodeSelector: {}
+#       tolerations: []
 
-    # -- When enabled, configure storage:
-    # storage:
-    #   secret: gitlab-registry-storage
-    #   key: config
-    #   # Example config in secret for S3:
-    #   # s3:
-    #   #   bucket: gitlab-registry
-    #   #   region: us-east-1
-    #   #   accesskey: ACCESS_KEY
-    #   #   secretkey: SECRET_KEY
+#   # ===========================================================================
+#   # Registry Configuration (Container Registry)
+#   # ===========================================================================
+#   registry:
+#     enabled: false  # SET THIS: true to enable container registry
 
-    # replicaCount: 1
-    # resources:
-    #   requests:
-    #     cpu: 50m
-    #     memory: 32Mi
-    #   limits:
-    #     cpu: 200m
-    #     memory: 128Mi
-    # nodeSelector: {}
-    # tolerations: []
+#     # -- When enabled, configure storage:
+#     # storage:
+#     #   secret: gitlab-registry-storage
+#     #   key: config
+#     #   # Example config in secret for S3:
+#     #   # s3:
+#     #   #   bucket: gitlab-registry
+#     #   #   region: us-east-1
+#     #   #   accesskey: ACCESS_KEY
+#     #   #   secretkey: SECRET_KEY
 
-# =============================================================================
-# GCP Workload Identity Setup
-# =============================================================================
-#
-# 1. Create GCP Service Account:
-#    gcloud iam service-accounts create gitlab-sa \
-#      --display-name="GitLab Service Account"
-#
-# 2. Grant GCS permissions to GSA:
-#    gsutil iam ch serviceAccount:gitlab-sa@PROJECT_ID.iam.gserviceaccount.com:objectAdmin \
-#      gs://YOUR_GITLAB_BUCKET
-#    # Repeat for all buckets (lfs, artifacts, uploads, packages, etc.)
-#
-# 3. Bind KSA to GSA (Workload Identity):
-#    gcloud iam service-accounts add-iam-policy-binding \
-#      gitlab-sa@PROJECT_ID.iam.gserviceaccount.com \
-#      --role roles/iam.workloadIdentityUser \
-#      --member "serviceAccount:PROJECT_ID.svc.id.goog[gitlab-ce/gitlab]"
-#
-# 4. Create object storage connection secret (Workload Identity - no key needed):
-#    kubectl create secret generic gitlab-object-storage \
-#      --from-file=connection=gcs-connection.yaml
-#
-#    gcs-connection.yaml (Workload Identity):
-#    ---
-#    provider: Google
-#    google_project: YOUR_GCP_PROJECT_ID
-#    google_application_default: true
-#
-# 5. For registry storage (if enabled):
-#    kubectl create secret generic gitlab-registry-storage \
-#      --from-file=config=registry-gcs-config.yaml
-#
-#    registry-gcs-config.yaml (Workload Identity):
-#    ---
-#    gcs:
-#      bucket: gitlab-registry
-#    # No keyfile needed - uses Workload Identity
-#
-# =============================================================================
+#     # replicaCount: 1
+#     # resources:
+#     #   requests:
+#     #     cpu: 50m
+#     #     memory: 32Mi
+#     #   limits:
+#     #     cpu: 200m
+#     #     memory: 128Mi
+#     # nodeSelector: {}
+#     # tolerations: []
+
+# # =============================================================================
+# # GCP Workload Identity Setup
+# # =============================================================================
+# #
+# # 1. Create GCP Service Account:
+# #    gcloud iam service-accounts create gitlab-sa \
+# #      --display-name="GitLab Service Account"
+# #
+# # 2. Grant GCS permissions to GSA:
+# #    gsutil iam ch serviceAccount:gitlab-sa@PROJECT_ID.iam.gserviceaccount.com:objectAdmin \
+# #      gs://YOUR_GITLAB_BUCKET
+# #    # Repeat for all buckets (lfs, artifacts, uploads, packages, etc.)
+# #
+# # 3. Bind KSA to GSA (Workload Identity):
+# #    gcloud iam service-accounts add-iam-policy-binding \
+# #      gitlab-sa@PROJECT_ID.iam.gserviceaccount.com \
+# #      --role roles/iam.workloadIdentityUser \
+# #      --member "serviceAccount:PROJECT_ID.svc.id.goog[gitlab-ce/gitlab]"
+# #
+# # 4. Create object storage connection secret (Workload Identity - no key needed):
+# #    kubectl create secret generic gitlab-object-storage \
+# #      --from-file=connection=gcs-connection.yaml
+# #
+# #    gcs-connection.yaml (Workload Identity):
+# #    ---
+# #    provider: Google
+# #    google_project: YOUR_GCP_PROJECT_ID
+# #    google_application_default: true
+# #
+# # 5. For registry storage (if enabled):
+# #    kubectl create secret generic gitlab-registry-storage \
+# #      --from-file=config=registry-gcs-config.yaml
+# #
+# #    registry-gcs-config.yaml (Workload Identity):
+# #    ---
+# #    gcs:
+# #      bucket: gitlab-registry
+# #    # No keyfile needed - uses Workload Identity
+# #
+# # =============================================================================
