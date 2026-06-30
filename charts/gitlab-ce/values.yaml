@@ -75,15 +75,16 @@ gitlab-ce:
       port: 5432
       database: "gitlabhq_production"
       username: ""
+    redis:
+      host: ""
+      auth:
+        enabled: true
+        secret: "gitlab-redis"
+        key: "password"
+      user: "gitlab-redis"
     ingress:
       class: "{{ .Values.global.ingress.class }}"
       configureCertmanager: false
-  # redis:
-  #   host: ""
-  #   auth:
-  #     enabled: true
-  #     secret: ""
-  #     key: ""
   nginx-ingress:
     enabled: false
   installCertmanager: false
