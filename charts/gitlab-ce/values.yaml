@@ -67,17 +67,17 @@ gitlab-ce:
         name: "registry.{{ .Values.global.company.domain.env }}"
         https: true
       ssh: "gl.{{ .Values.global.company.domain.env }}"
+    psql:
+      host: ""
+      password:
+        secret: ""
+        key: ""
+      port: 5432
+      database: "gitlabhq_production"
+      username: ""
   ingress:
     class: "{{ .Values.global.ingress.class }}"
     configureCertmanager: false
-  psql:
-    host: ""
-    password:
-      secret: ""
-      key: ""
-    port: 5432
-    database: "gitlabhq_production"
-    username: ""
   # redis:
   #   host: ""
   #   auth:
