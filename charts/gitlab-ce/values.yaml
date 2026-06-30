@@ -55,6 +55,7 @@ ingresses:
       - "registry.{{ .Values.global.company.domain.env }}"
 
 gitlab-ce:
+  enabled: false
   global:
     edition: ce
     hosts:
