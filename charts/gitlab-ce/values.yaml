@@ -75,9 +75,9 @@ gitlab-ce:
       port: 5432
       database: "gitlabhq_production"
       username: ""
-  ingress:
-    class: "{{ .Values.global.ingress.class }}"
-    configureCertmanager: false
+    ingress:
+      class: "{{ .Values.global.ingress.class }}"
+      configureCertmanager: false
   # redis:
   #   host: ""
   #   auth:
@@ -87,8 +87,8 @@ gitlab-ce:
   nginx-ingress:
     enabled: false
   installCertmanager: false
-  certmanager-issuer:
-    email: "test@example.com"
+  # certmanager-issuer:
+  #   email: "test@example.com"
   certmanager:
     install: false
 
