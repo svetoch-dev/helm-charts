@@ -67,9 +67,9 @@ gitlab-ce:
         name: "registry.{{ .Values.global.company.domain.env }}"
         https: true
       ssh: "gl.{{ .Values.global.company.domain.env }}"
-      ingress:
-        class: "{{ .Values.global.ingress.class }}"
-        configureCertmanager: false
+  ingress:
+    class: "{{ .Values.global.ingress.class }}"
+    configureCertmanager: false
   # psql:
   #   host: ""
   #   password:
