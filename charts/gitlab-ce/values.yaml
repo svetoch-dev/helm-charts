@@ -70,14 +70,14 @@ gitlab-ce:
   ingress:
     class: "{{ .Values.global.ingress.class }}"
     configureCertmanager: false
-  # psql:
-  #   host: ""
-  #   password:
-  #     secret: ""
-  #     key: ""
-  #   port: 5432
-  #   database: "gitlabhq_production"
-  #   username: ""
+  psql:
+    host: ""
+    password:
+      secret: ""
+      key: ""
+    port: 5432
+    database: "gitlabhq_production"
+    username: ""
   # redis:
   #   host: ""
   #   auth:
