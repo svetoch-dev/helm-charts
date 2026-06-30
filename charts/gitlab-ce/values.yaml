@@ -54,38 +54,38 @@ ingresses:
       hosts:
       - "registry.{{ .Values.global.company.domain.env }}"
 
-# gitlab-ce:
-#   global:
-#     edition: ce
-#     hosts:
-#       domain: "{{ .Values.global.company.domain.env }}"
-#       gitlab:
-#         name: "gl.{{ .Values.global.company.domain.env }}"
-#         https: true
-#       registry:
-#         name: "registry.{{ .Values.global.company.domain.env }}"
-#         https: true
-#       ssh: "gl.{{ .Values.global.company.domain.env }}"
-#       ingress:
-#         class: "{{ .Values.global.ingress.class }}"
-#         configureCertmanager: false
-#   psql:
-#     host: ""
-#     password:
-#       secret: ""
-#       key: ""
-#     port: 5432
-#     database: "gitlabhq_production"
-#     username: ""
-#   redis:
-#     host: ""
-#     auth:
-#       enabled: true
-#       secret: ""
-#       key: ""
-#   nginx-ingress:
-#     enabled: false
-#   installCertmanager: false
+gitlab-ce:
+  global:
+    edition: ce
+    hosts:
+      domain: "{{ .Values.global.company.domain.env }}"
+      gitlab:
+        name: "gl.{{ .Values.global.company.domain.env }}"
+        https: true
+      registry:
+        name: "registry.{{ .Values.global.company.domain.env }}"
+        https: true
+      ssh: "gl.{{ .Values.global.company.domain.env }}"
+      ingress:
+        class: "{{ .Values.global.ingress.class }}"
+        configureCertmanager: false
+  # psql:
+  #   host: ""
+  #   password:
+  #     secret: ""
+  #     key: ""
+  #   port: 5432
+  #   database: "gitlabhq_production"
+  #   username: ""
+  # redis:
+  #   host: ""
+  #   auth:
+  #     enabled: true
+  #     secret: ""
+  #     key: ""
+  nginx-ingress:
+    enabled: false
+  installCertmanager: false
 
 postgres-gitlab:
   enabled: false
