@@ -11,10 +11,10 @@ dependencies:
   - name: redis-operated
     version: 0.1.0
     repository: file://../chart_deps/redis/redis-operated
-    alias: redis
-    condition: redis.enabled
+    alias: redis-gitlab
+    condition: redis-gitlab.enabled
   - name: postgres-cluster
     version: 0.1.0
     repository: file://../chart_deps/postgres/postgres-cluster
-    alias: postgres-main
-    condition: postgres-main.enabled
+    alias: postgres-gitlab
+    condition: postgres-gitlab.enabled
