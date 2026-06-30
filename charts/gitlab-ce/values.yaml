@@ -74,7 +74,7 @@ ingresses:
 # =============================================================================
 # PostgreSQL Configuration (deployed via postgres-cluster subchart)
 # =============================================================================
-postgres-main:
+postgres-cluster:
   enabled: false
   defaultSidecars:
     enabled: true
