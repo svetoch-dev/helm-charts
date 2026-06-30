@@ -87,6 +87,10 @@ gitlab-ce:
   nginx-ingress:
     enabled: false
   installCertmanager: false
+  certmanager-issuer:
+    email: "test@example.com"
+  certmanager:
+    install: false
 
 postgres-gitlab:
   enabled: false
