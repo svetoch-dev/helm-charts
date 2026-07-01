@@ -28,7 +28,6 @@ ingresses:
       hosts:
       - "gl.{{ .Values.global.company.domain.env }}"
 
-  Container Registry (enable when registry.enabled: true)
   registry:
     enabled: false
     name: '{{ include "gitlab-ce.fullname" . }}-registry'
@@ -105,26 +104,31 @@ gitlab-ce:
       enabled: false
 
     appConfig:
-      # Object storage connection for Rails (LFS, artifacts, uploads, packages)
-      # Requires secret with GCS Workload Identity config - see bottom of file
+      # Consolidated object storage with Workload Identity
       object_store:
         enabled: true
         proxy_download: true
+        storage_options: {}
         connection:
           secret: gitlab-object-storage
           key: connection
+
       lfs:
         enabled: true
         bucket: ""  # SET THIS: e.g., gitlab-lfs
+        connection: {}
       artifacts:
         enabled: true
         bucket: ""  # SET THIS: e.g., gitlab-artifacts
+        connection: {}
       uploads:
         enabled: true
         bucket: ""  # SET THIS: e.g., gitlab-uploads
+        connection: {}
       packages:
         enabled: true
         bucket: ""  # SET THIS: e.g., gitlab-packages
+        connection: {}
       externalDiffs:
         enabled: false
       terraformState:
@@ -169,6 +173,11 @@ gitlab-ce:
 
   registry:
     enabled: false
+    # When enabling, configure GCS storage:
+    # storage:
+    #   secret: gitlab-registry-storage
+    #   key: config
+    # bucket: ""  # SET THIS: e.g., gitlab-registry
 
   # ===========================================================================
   # GitLab Components
