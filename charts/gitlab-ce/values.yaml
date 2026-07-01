@@ -56,8 +56,17 @@ ingresses:
 
 gitlab-ce:
   enabled: false
+  gitlab:
+    toolbox:
+      backups:
+        objectStorage:
+          backend: gcs
   global:
     edition: ce
+    appConfig:
+      backups:
+        bucket: "gitlab-backup-storage"
+        tmpBucket: "gitlab-tmp-storage"
     hosts:
       domain: "{{ .Values.global.company.domain.env }}"
       gitlab:
