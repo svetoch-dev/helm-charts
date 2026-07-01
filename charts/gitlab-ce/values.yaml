@@ -1,72 +1,63 @@
 # =============================================================================
 # GitLab CE Minimal POC Configuration
 # =============================================================================
-# This chart uses EXTERNAL PostgreSQL, Redis, and Object Storage
-# Disable internal bundled services and configure external connections
-# =============================================================================
 
 # =============================================================================
 # Ingress Configuration (your own ingress)
 # =============================================================================
 ingresses:
-  # -- Main GitLab web interface
-  webserver:
+  webservice:
     enabled: false
-    name: '{{ include "gitlab-ce.fullname" . }}-webserver'
+    name: '{{ include "gitlab-ce.fullname" . }}-webservice'
     service:
-      name: '{{ include "gitlab-ce.fullname" . }}-gitlab-webserver'
-      port: 80
+      name: '{{ .Release.Name }}-gitlab-ce-webservice-default'
+      port: 8181
     className: "{{ .Values.global.ingress.class }}"
     annotations:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
-      ingress.pomerium.io/pass_identity_headers: 'true'
-      ingress.pomerium.io/policy: |
-        {{- tpl .Values.global.pomerium.policy.default $ | indent 2 }}
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
+      nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
     hosts:
     - host: "gl.{{ .Values.global.company.domain.env }}"
       paths:
       - path: /
-        pathType: ImplementationSpecific
+        pathType: Prefix
     tls:
     - secretName: gl-tls
       hosts:
       - "gl.{{ .Values.global.company.domain.env }}"
 
-  # -- Container Registry (enable if registry is enabled)
+  Container Registry (enable when registry.enabled: true)
   registry:
     enabled: false
     name: '{{ include "gitlab-ce.fullname" . }}-registry'
     service:
-      name: '{{ include "gitlab-ce.fullname" . }}-registry'
+      name: '{{ .Release.Name }}-gitlab-ce-registry'
       port: 5000
     className: "{{ .Values.global.ingress.class }}"
     annotations:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
-      # Registry needs large body size for image pushes
       nginx.ingress.kubernetes.io/proxy-body-size: "0"
     hosts:
     - host: "registry.{{ .Values.global.company.domain.env }}"
       paths:
       - path: /
-        pathType: ImplementationSpecific
+        pathType: Prefix
     tls:
     - secretName: gl-registry-tls
       hosts:
       - "registry.{{ .Values.global.company.domain.env }}"
 
+# =============================================================================
+# GitLab CE Configuration
+# =============================================================================
 gitlab-ce:
   enabled: false
-  gitlab:
-    toolbox:
-      backups:
-        objectStorage:
-          backend: gcs
+
   global:
     edition: ce
-    appConfig:
-      backups:
-        bucket: "gitlab-backup-storage"
-        tmpBucket: "gitlab-tmp-storage"
+
     hosts:
       domain: "{{ .Values.global.company.domain.env }}"
       gitlab:
@@ -75,33 +66,189 @@ gitlab-ce:
       registry:
         name: "registry.{{ .Values.global.company.domain.env }}"
         https: true
-      ssh: "gl.{{ .Values.global.company.domain.env }}"
+      minio:
+        enabled: false
+
+    # Disable built-in ingress (using external)
+    ingress:
+      enabled: false
+      configureCertmanager: false
+
+    # =========================================================================
+    # External PostgreSQL
+    # =========================================================================
     psql:
-      host: ""
-      password:
-        secret: ""
-        key: ""
+      host: ""  # SET THIS: e.g., postgres-gitlab-postgresql.gitlab-ce.svc.cluster.local
       port: 5432
-      database: "gitlabhq_production"
-      username: ""
+      database: gitlabhq_production
+      username: gitlabhq_production
+      password:
+        useSecret: true
+        secret: ""  # SET THIS: secret name with postgres password
+        key: password
+
+    # =========================================================================
+    # External Redis
+    # =========================================================================
     redis:
-      host: ""
+      host: ""  # SET THIS: e.g., rfs-redis-gitlab.gitlab-ce.svc.cluster.local
+      port: 6379
       auth:
         enabled: true
-        secret: "gitlab-redis"
-        key: "password"
-      user: "gitlab-redis"
-    ingress:
-      class: "{{ .Values.global.ingress.class }}"
-      configureCertmanager: false
+        secret: ""  # SET THIS: secret name with redis password
+        key: password
+
+    # =========================================================================
+    # GCS Object Storage (Workload Identity)
+    # =========================================================================
+    minio:
+      enabled: false
+
+    appConfig:
+      # Object storage connection for Rails (LFS, artifacts, uploads, packages)
+      # Requires secret with GCS Workload Identity config - see bottom of file
+      object_store:
+        enabled: true
+        proxy_download: true
+        connection:
+          secret: gitlab-object-storage
+          key: connection
+      lfs:
+        enabled: true
+        bucket: ""  # SET THIS: e.g., gitlab-lfs
+      artifacts:
+        enabled: true
+        bucket: ""  # SET THIS: e.g., gitlab-artifacts
+      uploads:
+        enabled: true
+        bucket: ""  # SET THIS: e.g., gitlab-uploads
+      packages:
+        enabled: true
+        bucket: ""  # SET THIS: e.g., gitlab-packages
+      externalDiffs:
+        enabled: false
+      terraformState:
+        enabled: false
+      dependencyProxy:
+        enabled: false
+
+      # Backups - Workload Identity without secret
+      backups:
+        bucket: ""  # SET THIS: e.g., gitlab-backups
+        tmpBucket: ""  # SET THIS: e.g., gitlab-tmp
+
+    # =========================================================================
+    # Workload Identity ServiceAccount
+    # =========================================================================
+    serviceAccount:
+      enabled: true
+      create: true
+      annotations:
+        iam.gke.io/gcp-service-account: ""  # SET THIS: GSA email
+
+  # ===========================================================================
+  # Disable bundled components
+  # ===========================================================================
+  postgresql:
+    install: false
+
+  redis:
+    install: false
+
   nginx-ingress:
     enabled: false
-  installCertmanager: false
-  certmanager-issuer:
-    email: "test@example.com"
+
   certmanager:
     install: false
 
+  prometheus:
+    install: false
+
+  gitlab-runner:
+    install: false
+
+  registry:
+    enabled: false
+
+  # ===========================================================================
+  # GitLab Components
+  # ===========================================================================
+  gitlab:
+    webservice:
+      minReplicas: 1
+      maxReplicas: 1
+      resources:
+        requests:
+          cpu: 300m
+          memory: 2Gi
+        limits:
+          memory: 4Gi
+      workhorse:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            memory: 200Mi
+
+    sidekiq:
+      minReplicas: 1
+      maxReplicas: 1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 1Gi
+        limits:
+          memory: 2Gi
+
+    gitaly:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 200Mi
+        limits:
+          memory: 1Gi
+      persistence:
+        enabled: true
+        size: 50Gi  # SET THIS: storage size for repositories
+        storageClass: "pd-standard"  # SET THIS: your storage class
+
+    gitlab-shell:
+      minReplicas: 1
+      maxReplicas: 1
+      resources:
+        requests:
+          cpu: 10m
+          memory: 50Mi
+        limits:
+          memory: 150Mi
+
+    toolbox:
+      enabled: true
+      backups:
+        objectStorage:
+          # Workload Identity - no secret needed for backups
+          backend: gcs
+          # config.secret and config.key intentionally omitted for Workload Identity
+      resources:
+        requests:
+          cpu: 50m
+          memory: 350Mi
+        limits:
+          memory: 1Gi
+
+    migrations:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 200Mi
+        limits:
+          memory: 2Gi
+
+# =============================================================================
+# PostgreSQL (via postgres-cluster subchart)
+# =============================================================================
+# DO NOT MODIFY - configure separately
 postgres-gitlab:
   enabled: false
   defaultSidecars:
@@ -158,6 +305,10 @@ postgres-gitlab:
       log_destination: "jsonlog"
       logging_collector: "true"
 
+# =============================================================================
+# Redis (via redis-operated subchart)
+# =============================================================================
+# DO NOT MODIFY - configure separately
 redis-gitlab:
   enabled: false
   redisServiceMonitor:
@@ -190,3 +341,41 @@ redis-gitlab:
         memory: 250Mi
     exporter:
       enabled: true
+
+# =============================================================================
+# GCS Object Storage with Workload Identity
+# =============================================================================
+#
+# 1. Create GCS buckets:
+#    - gitlab-lfs, gitlab-artifacts, gitlab-uploads, gitlab-packages
+#    - gitlab-backups, gitlab-tmp
+#
+# 2. Create GCP Service Account and grant storage access:
+#    export PROJECT_ID=$(gcloud config get-value project)
+#    gcloud iam service-accounts create gitlab-gcs --display-name "GitLab GCS"
+#
+#    # Grant storage.objectAdmin on buckets
+#    for bucket in gitlab-lfs gitlab-artifacts gitlab-uploads gitlab-packages gitlab-backups gitlab-tmp; do
+#      gsutil iam ch serviceAccount:gitlab-gcs@${PROJECT_ID}.iam.gserviceaccount.com:objectAdmin gs://${bucket}
+#    done
+#
+# 3. Bind KSA to GSA (Workload Identity):
+#    gcloud iam service-accounts add-iam-policy-binding \
+#      gitlab-gcs@${PROJECT_ID}.iam.gserviceaccount.com \
+#      --role roles/iam.workloadIdentityUser \
+#      --member "serviceAccount:${PROJECT_ID}.svc.id.goog[gitlab-ce/RELEASE_NAME-gitlab]"
+#
+# 4. Create Rails connection secret (required for LFS/artifacts/uploads/packages):
+#
+#    cat > rails.gcs.yaml << EOF
+#    provider: Google
+#    google_project: YOUR_PROJECT_ID
+#    google_application_default: true
+#    EOF
+#
+#    kubectl create secret generic gitlab-object-storage \
+#      --from-file=connection=rails.gcs.yaml -n gitlab-ce
+#
+# Note: Backups use Workload Identity directly without secret (google_application_default)
+#
+# =============================================================================

@@ -9,3 +9,7 @@ charts/**/charts
 !charts/chart_deps/rabbitmq/rabbitmq-cluster-operator/charts
 !charts/chart_deps/prometheus/prometheus-operated/charts
 !charts/chart_deps/grafana/grafana-operated/charts
+
+# ai content
+
+ai-content/*
