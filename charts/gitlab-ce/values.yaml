@@ -165,7 +165,6 @@ gitlab-ce:
   certmanager:
     installCRDs: false
 
-  # certmanager disabled - using external
   certmanager-issuer:
     email: ""
 

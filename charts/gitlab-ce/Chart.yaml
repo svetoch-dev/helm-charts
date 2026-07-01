@@ -18,3 +18,6 @@ dependencies:
     repository: file://../chart_deps/postgres/postgres-cluster
     alias: postgres-gitlab
     condition: postgres-gitlab.enabled
+  - name: core
+    version: 0.1.0
+    repository: file://../chart_deps/app/core
