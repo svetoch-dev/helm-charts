@@ -3,3 +3,4 @@
 {{- $labels := set $labels "app.kubernetes.io/name" (printf "%s-%s" (get $labels "app.kubernetes.io/name") $ingress_name )}}
 {{- include "core.ingress" (list $ $labels $ingress_obj )}}
 {{- end }}
+
