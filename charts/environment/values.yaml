@@ -254,7 +254,7 @@ chart_apps:
         runners:
           secret: "runner-app"
           serviceAccount: "runner-app"
-  gitlab-ce:
+  gitlab:
     enabled: false
     values: |
       global: {{ .Values.global | toYaml | nindent 4 }}

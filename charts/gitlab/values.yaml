@@ -8,9 +8,9 @@
 ingresses:
   webservice:
     enabled: false
-    name: '{{ include "gitlab-ce.fullname" . }}-webservice'
+    name: '{{ include "gitlab.fullname" . }}-webservice'
     service:
-      name: '{{ .Release.Name }}-gitlab-ce-webservice'
+      name: '{{ .Release.Name }}-gitlab-webservice'
       port: 80
     className: "{{ .Values.global.ingress.class }}"
     annotations:
@@ -31,7 +31,7 @@ ingresses:
 # =============================================================================
 # GitLab CE Configuration
 # =============================================================================
-gitlab-ce:
+gitlab:
   enabled: false
 
   global:
@@ -57,7 +57,7 @@ gitlab-ce:
     # External PostgreSQL
     # =========================================================================
     psql:
-      host: ""  # SET THIS: e.g., postgres-gitlab-postgresql.gitlab-ce.svc.cluster.local
+      host: ""
       port: 5432
       database: gitlabhq_production
       username: gitlabhq_production
@@ -70,7 +70,7 @@ gitlab-ce:
     # External Redis
     # =========================================================================
     redis:
-      host: ""  # SET THIS: e.g., rfs-redis-gitlab.gitlab-ce.svc.cluster.local
+      host: ""
       port: 6379
       auth:
         enabled: true
@@ -355,7 +355,7 @@ redis-gitlab:
 #    gcloud iam service-accounts add-iam-policy-binding \
 #      gitlab-gcs@${PROJECT_ID}.iam.gserviceaccount.com \
 #      --role roles/iam.workloadIdentityUser \
-#      --member "serviceAccount:${PROJECT_ID}.svc.id.goog[gitlab-ce/RELEASE_NAME-gitlab]"
+#      --member "serviceAccount:${PROJECT_ID}.svc.id.goog[gitlab/RELEASE_NAME-gitlab]"
 #
 # 4. Create Rails connection secret (required for LFS/artifacts/uploads/packages):
 #
@@ -366,7 +366,7 @@ redis-gitlab:
 #    EOF
 #
 #    kubectl create secret generic gitlab-object-storage \
-#      --from-file=connection=rails.gcs.yaml -n gitlab-ce
+#      --from-file=connection=rails.gcs.yaml -n gitlab
 #
 # Note: Backups use Workload Identity directly without secret (google_application_default)
 #
