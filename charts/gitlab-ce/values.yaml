@@ -10,8 +10,8 @@ ingresses:
     enabled: false
     name: '{{ include "gitlab-ce.fullname" . }}-webservice'
     service:
-      name: '{{ .Release.Name }}-gitlab-ce-webservice-default'
-      port: 8181
+      name: '{{ .Release.Name }}-gitlab-ce-webservice'
+      port: 80
     className: "{{ .Values.global.ingress.class }}"
     annotations:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
@@ -27,26 +27,6 @@ ingresses:
     - secretName: gl-tls
       hosts:
       - "gl.{{ .Values.global.company.domain.env }}"
-
-  registry:
-    enabled: false
-    name: '{{ include "gitlab-ce.fullname" . }}-registry'
-    service:
-      name: '{{ .Release.Name }}-gitlab-ce-registry'
-      port: 5000
-    className: "{{ .Values.global.ingress.class }}"
-    annotations:
-      cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
-      nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    hosts:
-    - host: "registry.{{ .Values.global.company.domain.env }}"
-      paths:
-      - path: /
-        pathType: Prefix
-    tls:
-    - secretName: gl-registry-tls
-      hosts:
-      - "registry.{{ .Values.global.company.domain.env }}"
 
 # =============================================================================
 # GitLab CE Configuration
