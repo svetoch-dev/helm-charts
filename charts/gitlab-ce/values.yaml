@@ -163,7 +163,11 @@ gitlab-ce:
     enabled: false
 
   certmanager:
-    install: false
+    installCRDs: false
+
+  # certmanager disabled - using external
+  certmanager-issuer:
+    email: ""
 
   prometheus:
     install: false
