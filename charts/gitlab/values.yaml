@@ -53,10 +53,20 @@ gitlab:
   global:
     edition: ce
 
+    # NOTE: `global.hosts.domain`/`global.hosts.gitlab.name` are read directly
+    # by the vendored gitlab chart's own `gitlab.gitlab.hostname` helper
+    # (coalesce .Values.global.hosts.gitlab.name ...) with NO `tpl` call.
+    # Unlike `ingresses.*.hosts[].host` below (rendered through our own
+    # core.ingress, which does call `tpl`), Helm will NOT evaluate `{{ }}`
+    # Go-template syntax placed here - it will be baked verbatim into
+    # gitlab.yml/external_url/email settings and crash Rails with
+    # `URI::InvalidComponentError`. Verified by rendering charts/gitlab-10.1.1.tgz.
+    # SET THIS: literal domain per environment, e.g. "int.example.com" -
+    # must match the domain used in `ingresses.webservice.hosts[].host` below.
     hosts:
-      domain: "{{ .Values.global.company.domain.env }}"
+      domain: ""  # SET THIS: e.g. int.example.com
       gitlab:
-        name: "gl.{{ .Values.global.company.domain.env }}"
+        name: ""  # SET THIS: e.g. gl.int.example.com
         https: true
 
     gatewayApi:
