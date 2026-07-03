@@ -1,4 +1,5 @@
-Which secrets are important to create by yourself:
+## \[DRAFT\] Hints for creating gitlab kubernetes cluster via HELM
+## Which secrets are important to create by yourself:
 1. Redis secret  (redis-gitlab):
     ```bash
     kubectl create secret generic redis-gitlab   --namespace gitlab   --from-literal=password="$(openssl rand -base64 24)"   --from-literal=redis-password="$(openssl rand -base64 24)"
@@ -14,3 +15,11 @@ Which secrets are important to create by yourself:
     ```bash
     kubectl create secret generic gitlab-object-storage   --namespace gitlab   --from-file=connection=object_storage.yaml
     ```
+
+## Checks:
+1. Check if is Workload Identity have right service account
+```bash
+    kubectl exec -n <namespace name> -it <pod-name> -- \
+    curl -H "Metadata-Flavor: Google" \
+    http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/email
+```
