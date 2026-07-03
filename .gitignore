@@ -13,3 +13,5 @@ charts/**/charts
 # ai content
 
 ai-content/*
+.opencode/*
+AGENTS.md

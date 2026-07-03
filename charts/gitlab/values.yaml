@@ -20,7 +20,7 @@ global:
 ingresses:
   webservice:
     enabled: false
-    name: '{{ include "gitlab.fullname" . }}-webservice'
+    name: '{{ include "gitlabwrapper.fullname" . }}-webservice'
     service:
       # NOTE: the gitlab/gitlab chart names its webservice Service
       # "<release-name>-webservice-<deployment-name>" (default deployment
