@@ -310,13 +310,13 @@ redis-gitlab:
   redisServiceMonitor:
     enabled: true
     prometheusSelector:
-      prometheus: gitlab-redis
+      prometheus: redis-gitlab
   sentinelServiceMonitor:
     enabled: true
     prometheusSelector:
-      prometheus: gitlab-redis
+      prometheus: redis-gitlab
   auth:
-    secretPath: gitlab-redis
+    secretPath: redis-gitlab
   sentinel:
     replicas: 1
     resources:
