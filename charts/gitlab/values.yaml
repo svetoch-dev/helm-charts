@@ -2,13 +2,35 @@
 # GitLab CE Minimal POC Configuration
 # =============================================================================
 
+# NOTE: `global.gatewayApi.installEnvoy` MUST be set here, at this chart's
+# own root `global`, not only under `gitlab.global.gatewayApi`. The
+# `envoy-gateway` dependency is a *grandchild* dependency (declared inside
+# the vendored gitlab/gitlab chart's own Chart.yaml, condition
+# "global.gatewayApi.installEnvoy"). Helm resolves conditions on nested
+# dependencies using the root chart's top-level `global` values - setting it
+# only under the "gitlab" alias key is NOT enough and silently leaves
+# Envoy Gateway (+ Gateway API CRUD resources) deployed. Verified by
+# rendering charts/gitlab-10.1.1.tgz through this wrapper both ways.
+global:
+  gatewayApi:
+    enabled: false
+    installEnvoy: false
+    configureCertmanager: false
+
 ingresses:
   webservice:
     enabled: false
     name: '{{ include "gitlab.fullname" . }}-webservice'
     service:
-      name: '{{ .Release.Name }}-gitlab-webservice'
-      port: 80
+      # NOTE: the gitlab/gitlab chart names its webservice Service
+      # "<release-name>-webservice-<deployment-name>" (default deployment
+      # name is "default") - it is NOT "<release-name>-gitlab-webservice".
+      # Verified by rendering charts/gitlab-10.1.1.tgz directly.
+      name: '{{ .Release.Name }}-webservice-default'
+      # Route to the workhorse port (8181), not the plain webservice port
+      # (8080). Workhorse handles Git HTTP, LFS, and web-socket upgrades -
+      # this is the same port the chart's own bundled Ingress targets.
+      port: 8181
     className: "{{ .Values.global.ingress.class }}"
     annotations:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
@@ -36,20 +58,16 @@ gitlab:
       gitlab:
         name: "gl.{{ .Values.global.company.domain.env }}"
         https: true
-      registry:
-        name: "registry.{{ .Values.global.company.domain.env }}"
-        https: true
-      minio:
-        enabled: false
 
-    # Disable built-in ingress (using external)
+    gatewayApi:
+      enabled: false
+      installEnvoy: false
+      configureCertmanager: false
+
     ingress:
       enabled: false
       configureCertmanager: false
 
-    # =========================================================================
-    # External PostgreSQL
-    # =========================================================================
     psql:
       host: ""
       port: 5432
@@ -60,9 +78,6 @@ gitlab:
         secret: ""  # SET THIS: secret name with postgres password
         key: password
 
-    # =========================================================================
-    # External Redis
-    # =========================================================================
     redis:
       host: ""
       port: 6379
@@ -71,9 +86,6 @@ gitlab:
         secret: ""  # SET THIS: secret name with redis password
         key: password
 
-    # =========================================================================
-    # GCS Object Storage (Workload Identity)
-    # =========================================================================
     minio:
       enabled: false
 
@@ -115,9 +127,6 @@ gitlab:
         bucket: ""  # SET THIS: e.g., gitlab-backups
         tmpBucket: ""  # SET THIS: e.g., gitlab-tmp
 
-    # =========================================================================
-    # Workload Identity ServiceAccount
-    # =========================================================================
     serviceAccount:
       enabled: true
       create: true
@@ -136,11 +145,20 @@ gitlab:
   nginx-ingress:
     enabled: false
 
+  # This is the actual toggle for the bundled cert-manager dependency.
+  # `certmanager.installCRDs` below only configures it IF installed - it does
+  # NOT disable it. Without this, cert-manager (deployment, webhooks, CRDs
+  # via install job) gets deployed redundantly alongside the company-wide
+  # cert-manager already managed by charts/cert-manager. Verified by
+  # rendering: without this flag, gitlab/charts/certmanager/* resources
+  # were present in the output.
+  installCertmanager: false
+
   certmanager:
     installCRDs: false
 
-  certmanager-issuer:
-    email: ""
+  # certmanager-issuer:
+  #   email: ""
 
   prometheus:
     install: false
@@ -196,7 +214,7 @@ gitlab:
           memory: 1Gi
       persistence:
         enabled: true
-        size: 50Gi  # SET THIS: storage size for repositories
+        size: 20Gi  # SET THIS: storage size for repositories
         storageClass: "pd-standard"  # SET THIS: your storage class
 
     gitlab-shell:
@@ -231,10 +249,6 @@ gitlab:
         limits:
           memory: 2Gi
 
-# =============================================================================
-# PostgreSQL (via postgres-cluster subchart)
-# =============================================================================
-# DO NOT MODIFY - configure separately
 postgres-gitlab:
   enabled: false
   defaultSidecars:
@@ -291,10 +305,6 @@ postgres-gitlab:
       log_destination: "jsonlog"
       logging_collector: "true"
 
-# =============================================================================
-# Redis (via redis-operated subchart)
-# =============================================================================
-# DO NOT MODIFY - configure separately
 redis-gitlab:
   enabled: false
   redisServiceMonitor:
@@ -327,41 +337,3 @@ redis-gitlab:
         memory: 250Mi
     exporter:
       enabled: true
-
-# =============================================================================
-# GCS Object Storage with Workload Identity
-# =============================================================================
-#
-# 1. Create GCS buckets:
-#    - gitlab-lfs, gitlab-artifacts, gitlab-uploads, gitlab-packages
-#    - gitlab-backups, gitlab-tmp
-#
-# 2. Create GCP Service Account and grant storage access:
-#    export PROJECT_ID=$(gcloud config get-value project)
-#    gcloud iam service-accounts create gitlab-gcs --display-name "GitLab GCS"
-#
-#    # Grant storage.objectAdmin on buckets
-#    for bucket in gitlab-lfs gitlab-artifacts gitlab-uploads gitlab-packages gitlab-backups gitlab-tmp; do
-#      gsutil iam ch serviceAccount:gitlab-gcs@${PROJECT_ID}.iam.gserviceaccount.com:objectAdmin gs://${bucket}
-#    done
-#
-# 3. Bind KSA to GSA (Workload Identity):
-#    gcloud iam service-accounts add-iam-policy-binding \
-#      gitlab-gcs@${PROJECT_ID}.iam.gserviceaccount.com \
-#      --role roles/iam.workloadIdentityUser \
-#      --member "serviceAccount:${PROJECT_ID}.svc.id.goog[gitlab/RELEASE_NAME-gitlab]"
-#
-# 4. Create Rails connection secret (required for LFS/artifacts/uploads/packages):
-#
-#    cat > rails.gcs.yaml << EOF
-#    provider: Google
-#    google_project: YOUR_PROJECT_ID
-#    google_application_default: true
-#    EOF
-#
-#    kubectl create secret generic gitlab-object-storage \
-#      --from-file=connection=rails.gcs.yaml -n gitlab
-#
-# Note: Backups use Workload Identity directly without secret (google_application_default)
-#
-# =============================================================================
