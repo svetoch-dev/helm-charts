@@ -79,6 +79,9 @@ gitlab:
       gitlab:
         name: ""  # SET THIS: e.g. gl.int.example.com
         https: true
+      registry:
+        name: ""
+        https: true
 
     gatewayApi:
       enabled: false
@@ -201,12 +204,13 @@ gitlab:
   gitlab:
     webservice:
       minReplicas: 1
-      maxReplicas: 1
+      maxReplicas: 2
       resources:
         requests:
           cpu: 300m
           memory: 2Gi
         limits:
+          cpu: 2000m
           memory: 4Gi
       workhorse:
         resources:
@@ -214,7 +218,8 @@ gitlab:
             cpu: 100m
             memory: 100Mi
           limits:
-            memory: 200Mi
+            cpu: 500m
+            memory: 400Mi
 
     sidekiq:
       minReplicas: 1
@@ -224,6 +229,7 @@ gitlab:
           cpu: 100m
           memory: 1Gi
         limits:
+          cpu: 1000m
           memory: 2Gi
 
     gitaly:
@@ -232,7 +238,8 @@ gitlab:
           cpu: 100m
           memory: 200Mi
         limits:
-          memory: 1Gi
+          cpu: 2000m
+          memory: 2Gi
       persistence:
         enabled: true
         size: 20Gi  # SET THIS: storage size for repositories
@@ -260,7 +267,8 @@ gitlab:
           cpu: 50m
           memory: 350Mi
         limits:
-          memory: 1Gi
+          cpu: 1000m
+          memory: 2Gi
 
     migrations:
       resources:
