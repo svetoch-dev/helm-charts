@@ -81,8 +81,8 @@ gitlab:
     psql:
       host: ""
       port: 5432
-      database: gitlabhq_production
-      username: gitlabhq_production
+      database: "gl1"
+      username: "gitlab_owner_user"
       password:
         useSecret: true
         secret: ""  # SET THIS: secret name with postgres password
@@ -291,10 +291,13 @@ postgres-gitlab:
     size: 10Gi
     storageClass: premium-rwo
   databases:
-    gitlabhq_production: gitlabhq_production
+    gl1: gitlab
   preparedDatabases:
-    gitlabhq_production:
+    gl1:
       defaultUsers: true
+      schemas:
+        public:
+          defaultRoles: true
   logicalBackup:
     enabled: true
     schedule: "40 00 * * *"
