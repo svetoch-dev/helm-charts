@@ -36,13 +36,23 @@ ingresses:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
       ingress.pomerium.io/timeout: '300s'
       ingress.pomerium.io/pass_identity_headers: 'true'
+      # Without this, Pomerium sets the upstream Host header to the route's
+      # "To" URL (i.e. the internal Service DNS name from this Ingress'
+      # backend: "<release>-webservice-default.<namespace>.svc.cluster.local:8181"),
+      # not the public hostname the client actually requested. GitLab mostly
+      # renders fine regardless (relative asset/form paths), but any absolute
+      # redirect it issues (e.g. unauthenticated "/" -> "/users/sign_in") is
+      # built from the Host header it received, so the browser gets bounced
+      # to the internal cluster-local address instead of the public domain.
+      # See https://www.pomerium.com/docs/reference/routes/headers#1-preserve-host-header
+      ingress.pomerium.io/preserve_host_header: 'true'
       ingress.pomerium.io/policy: |
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
     - host: "gl.{{ .Values.global.company.domain.env }}"
       paths:
       - path: /
-        pathType: Prefix
+        pathType: ImplementationSpecific
     tls:
     - secretName: gl-tls
       hosts:
