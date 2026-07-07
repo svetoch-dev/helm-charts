@@ -34,9 +34,10 @@ ingresses:
     className: "{{ .Values.global.ingress.class }}"
     annotations:
       cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
-      nginx.ingress.kubernetes.io/proxy-body-size: "0"
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
-      nginx.ingress.kubernetes.io/proxy-connect-timeout: "60"
+      ingress.pomerium.io/timeout: '300s'
+      ingress.pomerium.io/pass_identity_headers: 'true'
+      ingress.pomerium.io/policy: |
+        {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
     - host: "gl.{{ .Values.global.company.domain.env }}"
       paths:
