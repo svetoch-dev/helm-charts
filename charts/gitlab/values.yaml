@@ -291,7 +291,7 @@ postgres-gitlab:
     size: 10Gi
     storageClass: premium-rwo
   databases:
-    gl1: gitlab
+    gl1: gl1_owner
   preparedDatabases:
     gl1:
       defaultUsers: true
