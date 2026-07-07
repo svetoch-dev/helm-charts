@@ -225,7 +225,7 @@ gitlab:
       persistence:
         enabled: true
         size: 20Gi  # SET THIS: storage size for repositories
-        storageClass: "pd-standard"  # SET THIS: your storage class
+        storageClass: "standard-rwo"  # SET THIS: your storage class
 
     gitlab-shell:
       minReplicas: 1
