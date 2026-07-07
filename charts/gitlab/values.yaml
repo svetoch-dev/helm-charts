@@ -79,9 +79,6 @@ gitlab:
       gitlab:
         name: ""  # SET THIS: e.g. gl.int.example.com
         https: true
-      registry:
-        name: ""
-        https: true
 
     gatewayApi:
       enabled: false
