@@ -1,4 +1,4 @@
 provider: Google
-google_project: kitchenhub-internal
+google_project: organization-project
 google_client_email: null
 google_json_key_string: null

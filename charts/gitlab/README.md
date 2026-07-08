@@ -8,7 +8,7 @@
    1. object_storage.yaml
     ```yaml
     provider: Google
-    google_project: kitchenhub-internal
+    google_project: organization-project
     google_application_default: true
     ```
    2. create
@@ -25,3 +25,15 @@
     curl -H "Metadata-Flavor: Google" \
     http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/email
 ```
+
+## Solve problems
+1. Delete project in Gitlab if a PV was recreated (gitaly in STS mode)
+   1. Connect to gitlab-rake console 
+    ```
+    kubectl exec -it <gitlab toolbox pod> -n gitlab -- gitlab-rails console
+    ```
+   2. Delete project
+    ```
+     project = Project.find_by_full_path("group/project")
+     project.destroy!
+    ``` 
