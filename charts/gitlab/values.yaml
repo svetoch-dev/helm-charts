@@ -52,7 +52,7 @@ ingresses:
     - host: "gl.{{ .Values.global.company.domain.env }}"
       paths:
       - path: /
-        pathType: ImplementationSpecific
+        pathType: Prefix
     tls:
     - secretName: gl-tls
       hosts:
