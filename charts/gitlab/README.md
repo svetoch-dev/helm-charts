@@ -16,6 +16,7 @@
     kubectl create secret generic gitlab-object-storage   --namespace gitlab   --from-file=connection=object_storage.yaml
     ```
 3. Map postgres SA in gitlab namespace to postgres via gcp Workload identity mapping
+4. Map KSA for every gitlab service (like gcp-int-gitlab-webservice) with GSA in Workload identity mapping
 
 ## Checks:
 1. Check if is Workload Identity have right service account

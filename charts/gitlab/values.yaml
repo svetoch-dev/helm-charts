@@ -52,11 +52,35 @@ ingresses:
     - host: "gl.{{ .Values.global.company.domain.env }}"
       paths:
       - path: /
-        pathType: Prefix
+        pathType: ImplementationSpecific
     tls:
     - secretName: gl-tls
       hosts:
       - "gl.{{ .Values.global.company.domain.env }}"
+
+# GKE's built-in StorageClasses (e.g. "standard-rwo", "premium-rwo") default to
+# `reclaimPolicy: Delete` - if a bound PVC is ever deleted (manual mistake, an
+# ArgoCD prune, a chart change that forces a StatefulSet's
+# `volumeClaimTemplates` to be recreated under a new name, etc.) the
+# underlying GCE PD disk is destroyed immediately, with no recovery path.
+# NOTE: Kubernetes already retains PVCs created via `volumeClaimTemplates`
+# when the StatefulSet itself is deleted/scaled down (gitaly's chart does not
+# opt into `persistentVolumeClaimRetentionPolicy.whenDeleted: Delete`) - this
+# StorageClass instead protects against the PVC *object* being deleted: the
+# disk survives as "Released" and can be manually recovered/re-bound instead
+# of being wiped.
+storageClasses:
+  standard-rwo-retain:
+    enabled: true
+    provisioner: pd.csi.storage.gke.io
+    parameters:
+      type: pd-balanced
+    reclaimPolicy: Retain
+    volumeBindingMode: WaitForFirstConsumer
+    allowVolumeExpansion: true
+    annotations:
+      storage.gke.io/pv-labels-from-sc: "true"
+      pv.kubernetes.io/provisioning-label: gcp-int-gitlab-gitaly-pv
 
 gitlab:
   enabled: false
@@ -240,7 +264,11 @@ gitlab:
       persistence:
         enabled: true
         size: 20Gi  # SET THIS: storage size for repositories
-        storageClass: "standard-rwo"  # SET THIS: your storage class
+        # Retain-policy clone of "standard-rwo" (see `storageClasses` above) so
+        # that repository data survives even if the PVC itself is deleted.
+        storageClass: "standard-rwo-retain"
+        matchLabels:
+          gcp-int-gitlab-gitaly-pv: ""
 
     gitlab-shell:
       minReplicas: 1

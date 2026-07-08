@@ -1,0 +1,23 @@
+{{- range $sc_name, $sc_obj := .Values.storageClasses }}
+{{- if $sc_obj.enabled }}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ $sc_name }}
+  labels:
+    {{- include "gitlabwrapper.labels" $ | nindent 4 }}
+  {{- with $sc_obj.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+provisioner: {{ $sc_obj.provisioner }}
+{{- with $sc_obj.parameters }}
+parameters:
+  {{- toYaml . | nindent 2 }}
+{{- end }}
+reclaimPolicy: {{ $sc_obj.reclaimPolicy | default "Retain" }}
+volumeBindingMode: {{ $sc_obj.volumeBindingMode | default "WaitForFirstConsumer" }}
+allowVolumeExpansion: {{ $sc_obj.allowVolumeExpansion | default true }}
+{{- end }}
+{{- end }}
