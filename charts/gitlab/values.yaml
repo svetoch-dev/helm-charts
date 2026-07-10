@@ -196,6 +196,16 @@ gitlab:
           secret: gitlab-object-storage
           key: connection
 
+      omniauth:
+        enabled: false
+        allowSingleSignOn: ['openid_connect']
+        blockAutoCreatedUsers: false
+        autoLinkUser: ['openid_connect']
+        syncProfileAttributes: ['email', 'name', 'nickname']
+        providers:
+        - secret: gitlab-oidc-secret
+          key: provider
+
       lfs:
         enabled: true
         bucket: ""  # SET THIS: e.g., gitlab-lfs
