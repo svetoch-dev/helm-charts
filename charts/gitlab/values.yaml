@@ -202,6 +202,7 @@ gitlab:
         blockAutoCreatedUsers: false
         autoLinkUser: ['openid_connect']
         syncProfileAttributes: ['email', 'name', 'nickname']
+        autoSignInWithProvider: 'openid_connect'
         providers:
         - secret: gitlab-oidc-secret
           key: provider
