@@ -72,8 +72,8 @@ ingresses:
       port: 2222
     className: "{{ .Values.global.ingress.class }}"
     annotations:
-      cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
-      ingress.pomerium.io/timeout: '300s'
+      # cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+      # ingress.pomerium.io/timeout: '300s'
       # ingress.pomerium.io/pass_identity_headers: 'true'
       # # Without this, Pomerium sets the upstream Host header to the route's
       # # "To" URL (i.e. the internal Service DNS name from this Ingress'
@@ -97,10 +97,10 @@ ingresses:
             name: ssh-service
             port:
               name: ssh
-    tls:
-    - secretName: gl-ssh-tls
-      hosts:
-      - "gl-ssh.{{ .Values.global.company.domain.env }}"
+    # tls:
+    # - secretName: gl-ssh-tls
+    #   hosts:
+    #   - "gl-ssh.{{ .Values.global.company.domain.env }}"
 
 # GKE's built-in StorageClasses (e.g. "standard-rwo", "premium-rwo") default to
 # `reclaimPolicy: Delete` - if a bound PVC is ever deleted (manual mistake, an
