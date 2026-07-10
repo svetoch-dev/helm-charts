@@ -196,24 +196,24 @@ gitlab:
           secret: gitlab-object-storage
           key: connection
 
-      # omniauth:
-      #   enabled: false
-      #   allowSingleSignOn: ['openid_connect']
-      #   blockAutoCreatedUsers: false
-      #   autoLinkUser: ['openid_connect']
-      #   syncProfileAttributes: ['email', 'name', 'nickname']
-      #   providers:
-      #   - secret: gitlab-oidc-secret
-      #     key: provider
-
       omniauth:
         enabled: false
-        allowSingleSignOn: ['auth0']
+        allowSingleSignOn: ['openid_connect']
         blockAutoCreatedUsers: false
-        autoLinkUser: ['auth0']
+        autoLinkUser: ['openid_connect']
+        syncProfileAttributes: ['email', 'name', 'nickname']
         providers:
-        - secret: gitlab-auth0-secret
+        - secret: gitlab-oidc-secret
           key: provider
+
+      # omniauth:
+      #   enabled: false
+      #   allowSingleSignOn: ['auth0']
+      #   blockAutoCreatedUsers: false
+      #   autoLinkUser: ['auth0']
+      #   providers:
+      #   - secret: gitlab-auth0-secret
+      #     key: provider
 
       lfs:
         enabled: true
