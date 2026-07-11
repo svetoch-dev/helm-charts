@@ -23,6 +23,9 @@ spec:
   resources:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
+  {{- with .Values.terminationGracePeriodSeconds }}
+  terminationGracePeriodSeconds: {{ . }}
+  {{- end }}
   {{- with .Values.persistence }}
   persistence:
   {{- tpl (toYaml .) $ | nindent 4 }}
@@ -33,6 +36,10 @@ spec:
   {{- end }}
   {{- with .Values.affinity }}
   affinity:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
+  {{- with .Values.topologySpreadConstraints }}
+  topologySpreadConstraints:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- with .Values.override }}
