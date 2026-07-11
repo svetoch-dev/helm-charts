@@ -18,6 +18,7 @@ redis:
       memory: 15Mi
   ignoreAnnotations: []
   minReadySeconds: 0
+  terminationGracePeriodSeconds: 30
   recreateStatefulSetOnUpdateInvalid: false
   maxMemoryPercentOfLimit: 0
   persistentVolumeClaimRetentionPolicy: {}
@@ -39,7 +40,13 @@ redis:
     #        storage: 1Gi
   affinity: {}
   tolerations: []
-  topologySpreadConstraints: []
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app: '{{ include "redis-operated.clusterName" . }}'
   TLS:
     ca: ca.crt
     cert: tls.crt
@@ -124,6 +131,7 @@ sentinel:
       memory: 15Mi
   ignoreAnnotations: []
   minReadySeconds: 0
+  terminationGracePeriodSeconds: 30
   recreateStatefulSetOnUpdateInvalid: false
   persistentVolumeClaimRetentionPolicy: {}
   podSecurityContext:
@@ -134,7 +142,13 @@ sentinel:
   nodeSelector: {}
   affinity: {}
   tolerations: []
-  topologySpreadConstraints: []
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app: '{{ include "redis-operated.sentinelName" . }}-sentinel'
   TLS:
     ca: ca.crt
     cert: tls.crt

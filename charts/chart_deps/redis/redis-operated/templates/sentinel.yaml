@@ -77,6 +77,10 @@ spec:
     persistentVolumeClaimRetentionPolicy: {{ toYaml $sentinel.persistentVolumeClaimRetentionPolicy | nindent 6 }}
     {{- end }}
 
+  {{- with $sentinel.terminationGracePeriodSeconds }}
+  terminationGracePeriodSeconds: {{ . }}
+  {{- end }}
+
   redisExporter:
     enabled: {{ $redisExporter.enabled }}
     image: "{{ $redisExporter.image }}:{{ $redisExporter.tag }}"
@@ -110,7 +114,7 @@ spec:
   tolerations: {{ toYaml $sentinel.tolerations | nindent 4 }}
   {{- end }}
   {{- if $sentinel.topologySpreadConstraints }}
-  topologySpreadConstraints: {{ toYaml $sentinel.topologySpreadConstraints | nindent 4 }}
+  topologySpreadConstraints: {{ tpl (toYaml $sentinel.topologySpreadConstraints) . | nindent 4 }}
   {{- end }}
   {{- if and $tls.ca $tls.cert $tls.key $tlsSecret.secretName }}
   TLS:
