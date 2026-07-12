@@ -37,6 +37,7 @@ argocd:
     cm:
       create: true
     params:
+      redis.compression: gzip
       server.insecure: true
 
   externalRedis:
