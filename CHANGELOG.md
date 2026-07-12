@@ -60,8 +60,19 @@ Enhancements:
 * `argocd`:
   * move Redis `port` and `existingSecret` from `env` to `argocd` chart values
   * point external Redis host to the new Opstree Redis master service
+  * explicitly enable `gzip` Redis cache compression for consistent cache keys across Argo CD components
 * delete non-working `AbsentMetricCritical alerts`
-* `redis` image update 6.2.6 -> 8.6.1
+* `redis`:
+  * image update 6.2.6 -> 8.6.1
+  * add templated `topologySpreadConstraints` for Redis and Sentinel pods to distribute replicas across available nodes
+  * set `terminationGracePeriodSeconds` to 30 seconds for Redis and Sentinel pods
+* `rabbitmq-cluster`:
+  * add templated `topologySpreadConstraints` to distribute replicas across available nodes
+  * set `terminationGracePeriodSeconds` to 300 seconds instead of the operator's seven-day default
+* `loki`:
+  * add templated `topologySpreadConstraints` for read, write and backend pods
+  * disable default required pod anti-affinity so three replicas can be scheduled on two nodes
+  * explicitly set termination grace periods to 30 seconds for read pods and 300 seconds for write and backend pods
 * `grafana`:
   * `crds + chart` update 5.21.4 -> 5.24.0
   * `image` update 12.3.3 -> 12.4.4
