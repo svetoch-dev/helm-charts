@@ -11,11 +11,11 @@
 # only under the "gitlab" alias key is NOT enough and silently leaves
 # Envoy Gateway (+ Gateway API CRUD resources) deployed. Verified by
 # rendering charts/gitlab-10.1.1.tgz through this wrapper both ways.
-# global:
-#   gatewayApi:
-#     enabled: false
-#     installEnvoy: false
-#     configureCertmanager: false
+global:
+  gatewayApi:
+    enabled: false
+    installEnvoy: false
+    configureCertmanager: false
 
 ingresses:
   webservice:
