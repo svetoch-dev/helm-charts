@@ -11,11 +11,11 @@
 # only under the "gitlab" alias key is NOT enough and silently leaves
 # Envoy Gateway (+ Gateway API CRUD resources) deployed. Verified by
 # rendering charts/gitlab-10.1.1.tgz through this wrapper both ways.
-global:
-  gatewayApi:
-    enabled: false
-    installEnvoy: false
-    configureCertmanager: false
+# global:
+#   gatewayApi:
+#     enabled: false
+#     installEnvoy: false
+#     configureCertmanager: false
 
 ingresses:
   webservice:
@@ -147,13 +147,15 @@ gitlab:
       gitlab:
         name: ""  # SET THIS: e.g. gl.int.example.com
         https: true
-      ssh: ""
+      ssh: ""     # SET THIS: e.g. gl-ssh.int.example.com
 
+    #disable certmanager
     gatewayApi:
       enabled: false
       installEnvoy: false
       configureCertmanager: false
 
+    #disable internal ingress
     ingress:
       enabled: false
       configureCertmanager: false
@@ -165,7 +167,7 @@ gitlab:
       username: "gitlab_owner_user"
       password:
         useSecret: true
-        secret: ""  # SET THIS: secret name with postgres password
+        secret: ""
         key: password
 
     redis:
@@ -173,18 +175,23 @@ gitlab:
       port: 6379
       auth:
         enabled: false
-        secret: "redis-gitlab"  # SET THIS: secret name with redis password
+        secret: "redis-gitlab"
         key: password
       sentinel:
       - host: ""
         port: 26379
-      # sentinelAuth:
-      #   enabled:
-      #     secret: "redis-gitlab"
-      #     key: "password"
 
-    minio:
-      enabled: false
+    ## https://docs.gitlab.com/charts/charts/globals#configure-gitlab-shell
+    shell:
+      # port:  #default - 22
+      authToken: {}
+      # secret:
+      # key:
+      hostKeys: {}
+        # secret:
+      ## https://docs.gitlab.com/charts/charts/globals#tcp-proxy-protocol
+      tcp:
+        proxyProtocol: false
 
     appConfig:
       # Consolidated object storage with Workload Identity
@@ -195,7 +202,7 @@ gitlab:
         connection:
           secret: gitlab-object-storage
           key: connection
-
+      # Setup omniauth for openid google
       omniauth:
         enabled: false
         allowSingleSignOn: ['openid_connect']
@@ -206,15 +213,6 @@ gitlab:
         providers:
         - secret: gitlab-oidc-secret
           key: provider
-
-      # omniauth:
-      #   enabled: false
-      #   allowSingleSignOn: ['auth0']
-      #   blockAutoCreatedUsers: false
-      #   autoLinkUser: ['auth0']
-      #   providers:
-      #   - secret: gitlab-auth0-secret
-      #     key: provider
 
       lfs:
         enabled: true
@@ -273,9 +271,6 @@ gitlab:
 
   certmanager:
     installCRDs: false
-
-  # certmanager-issuer:
-  #   email: ""
 
   prometheus:
     install: false
@@ -345,7 +340,7 @@ gitlab:
 
     gitlab-shell:
       minReplicas: 1
-      maxReplicas: 1
+      maxReplicas: 2
       resources:
         requests:
           cpu: 10m
