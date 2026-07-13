@@ -95,7 +95,7 @@ ingresses:
           service:
             name: "{{ .Release.Name }}-gitlab-shell"
             port:
-              name: ssh
+              number: 22
     # tls:
     # - secretName: gl-ssh-tls
     #   hosts:
