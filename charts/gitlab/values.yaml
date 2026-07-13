@@ -177,7 +177,7 @@ gitlab:
         enabled: false
         secret: "redis-gitlab"
         key: password
-      sentinel:
+      sentinels:
       - host: ""
         port: 26379
 
