@@ -60,46 +60,15 @@ ingresses:
     enabled: false
     name: '{{ include "gitlabwrapper.fullname" . }}-gitlab-shell'
     service:
-      # NOTE: the gitlab/gitlab chart names its webservice Service
-      # "<release-name>-webservice-<deployment-name>" (default deployment
-      # name is "default") - it is NOT "<release-name>-gitlab-webservice".
-      # Verified by rendering charts/gitlab-10.1.1.tgz directly.
       name: '{{ .Release.Name }}-gitlab-shell'
-      # Route to the workhorse port (8181), not the plain webservice port
-      # (8080). Workhorse handles Git HTTP, LFS, and web-socket upgrades -
-      # this is the same port the chart's own bundled Ingress targets.
-      port: 2222
+      port: 22
     className: "{{ .Values.global.ingress.class }}"
     annotations:
-      # cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
-      # ingress.pomerium.io/timeout: '300s'
-      # ingress.pomerium.io/pass_identity_headers: 'true'
-      # # Without this, Pomerium sets the upstream Host header to the route's
-      # # "To" URL (i.e. the internal Service DNS name from this Ingress'
-      # # backend: "<release>-webservice-default.<namespace>.svc.cluster.local:8181"),
-      # # not the public hostname the client actually requested. GitLab mostly
-      # # renders fine regardless (relative asset/form paths), but any absolute
-      # # redirect it issues (e.g. unauthenticated "/" -> "/users/sign_in") is
-      # # built from the Host header it received, so the browser gets bounced
-      # # to the internal cluster-local address instead of the public domain.
-      # # See https://www.pomerium.com/docs/reference/routes/headers#1-preserve-host-header
-      # ingress.pomerium.io/preserve_host_header: 'true'
-      # ingress.pomerium.io/policy: |
-      #   {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
       ingress.pomerium.io/ssh_upstream: 'true'
     hosts:
     - host: "gl"
       paths:
       - pathType: ImplementationSpecific
-        backend:
-          service:
-            name: "{{ .Release.Name }}-gitlab-shell"
-            port:
-              number: 22
-    # tls:
-    # - secretName: gl-ssh-tls
-    #   hosts:
-    #   - "gl-ssh.{{ .Values.global.company.domain.env }}"
 
 # GKE's built-in StorageClasses (e.g. "standard-rwo", "premium-rwo") default to
 # `reclaimPolicy: Delete` - if a bound PVC is ever deleted (manual mistake, an
