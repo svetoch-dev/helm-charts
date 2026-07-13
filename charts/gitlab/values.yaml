@@ -24,8 +24,7 @@ ingresses:
     service:
       # NOTE: the gitlab/gitlab chart names its webservice Service
       # "<release-name>-webservice-<deployment-name>" (default deployment
-      # name is "default") - it is NOT "<release-name>-gitlab-webservice".
-      # Verified by rendering charts/gitlab-10.1.1.tgz directly.
+      # name is "default").
       name: '{{ .Release.Name }}-webservice-default'
       # Route to the workhorse port (8181), not the plain webservice port
       # (8080). Workhorse handles Git HTTP, LFS, and web-socket upgrades -
