@@ -64,9 +64,11 @@ ingresses:
       port: 22
     className: "{{ .Values.global.ingress.class }}"
     annotations:
-      ingress.pomerium.io/ssh_upstream: 'true'
+      ingress.pomerium.io/tcp_upstream: 'true'
+      ingress.pomerium.io/policy: |
+        {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
-    - host: "gl"
+    - host: "gl.{{ .Values.global.company.domain.env }}"
       paths:
       - pathType: ImplementationSpecific
 
