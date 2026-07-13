@@ -88,12 +88,12 @@ ingresses:
       #   {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
       ingress.pomerium.io/ssh_upstream: 'true'
     hosts:
-    - host: "gl-ssh.{{ .Values.global.company.domain.env }}"
+    - host: "gl.{{ .Values.global.company.domain.env }}"
       paths:
       - pathType: ImplementationSpecific
         backend:
           service:
-            name: ssh-service
+            name: gitlab-gcp-int-gitlab-shell
             port:
               name: ssh
     # tls:
