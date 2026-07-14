@@ -1,4 +1,4 @@
-# 11.0.0-alpha
+# 11.0.0
 Breaking changes. See [UPGRADING](UPGRADING.md):
 * `postgres-operator` uses configmaps instead endpoints (`kubernetes_use_configmaps: true`)
 * crds and charts uses `ot-container-kit/redis-operator + redis` instead of `Spotahome`
