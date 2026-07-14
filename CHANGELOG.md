@@ -64,13 +64,13 @@ Enhancements:
 * delete non-working `AbsentMetricCritical alerts`
 * `redis`:
   * image update 6.2.6 -> 8.6.1
-  * add templated `topologySpreadConstraints` for Redis and Sentinel pods to distribute replicas across available nodes
+  * add templated `topologySpreadConstraints` with `ScheduleAnyway` for best-effort distribution of Redis and Sentinel replicas across available nodes
   * set `terminationGracePeriodSeconds` to 30 seconds for Redis and Sentinel pods
 * `rabbitmq-cluster`:
-  * add templated `topologySpreadConstraints` to distribute replicas across available nodes
+  * add templated `topologySpreadConstraints` with `ScheduleAnyway` for best-effort distribution of replicas across available nodes
   * set `terminationGracePeriodSeconds` to 300 seconds instead of the operator's seven-day default
 * `loki`:
-  * add templated `topologySpreadConstraints` for read, write and backend pods
+  * add templated `topologySpreadConstraints` with `ScheduleAnyway` for best-effort distribution of read, write and backend pods across available nodes
   * disable default required pod anti-affinity so three replicas can be scheduled on two nodes
   * explicitly set termination grace periods to 30 seconds for read pods and 300 seconds for write and backend pods
 * `grafana`:
