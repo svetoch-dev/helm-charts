@@ -84,6 +84,7 @@ loki:
     enabled: false
   write:
     affinity: null
+    maxUnavailable: 1
     terminationGracePeriodSeconds: 300
     topologySpreadConstraints:
       - maxSkew: 1
@@ -104,6 +105,7 @@ loki:
         memory: 4Gi
   read:
     affinity: null
+    maxUnavailable: 1
     terminationGracePeriodSeconds: 30
     topologySpreadConstraints:
       - maxSkew: 1
@@ -123,6 +125,7 @@ loki:
         memory: 6Gi
   backend:
     affinity: null
+    maxUnavailable: 1
     terminationGracePeriodSeconds: 300
     topologySpreadConstraints:
       - maxSkew: 1
