@@ -83,6 +83,18 @@ loki:
   ingress:
     enabled: false
   write:
+    affinity: null
+    maxUnavailable: 1
+    terminationGracePeriodSeconds: 300
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: '{{ include "loki.name" . }}'
+            app.kubernetes.io/instance: '{{ .Release.Name }}'
+            app.kubernetes.io/component: write
     # -- Resource requests and limits for the write
     resources:
       requests:
@@ -92,6 +104,18 @@ loki:
         cpu: '3'
         memory: 4Gi
   read:
+    affinity: null
+    maxUnavailable: 1
+    terminationGracePeriodSeconds: 30
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: '{{ include "loki.name" . }}'
+            app.kubernetes.io/instance: '{{ .Release.Name }}'
+            app.kubernetes.io/component: read
     # -- Resource requests and limits for the read
     resources:
       requests:
@@ -100,6 +124,18 @@ loki:
       limits:
         memory: 6Gi
   backend:
+    affinity: null
+    maxUnavailable: 1
+    terminationGracePeriodSeconds: 300
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: '{{ include "loki.name" . }}'
+            app.kubernetes.io/instance: '{{ .Release.Name }}'
+            app.kubernetes.io/component: backend
     # -- Resource requests and limits for the backend
     resources:
       requests:

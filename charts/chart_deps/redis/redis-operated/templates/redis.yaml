@@ -61,6 +61,9 @@ spec:
   {{- if $redis.readinessProbe }}
   readinessProbe: {{ toYaml $redis.readinessProbe | nindent 4 }}
   {{- end }}
+  {{- with $redis.terminationGracePeriodSeconds }}
+  terminationGracePeriodSeconds: {{ . }}
+  {{- end }}
 
   redisExporter:
     enabled: {{ $redisExporter.enabled }}
@@ -107,7 +110,7 @@ spec:
   tolerations: {{ toYaml $redis.tolerations | nindent 4 }}
   {{- end }}
   {{- if $redis.topologySpreadConstraints }}
-  topologySpreadConstraints: {{ toYaml $redis.topologySpreadConstraints | nindent 4 }}
+  topologySpreadConstraints: {{ tpl (toYaml $redis.topologySpreadConstraints) . | nindent 4 }}
   {{- end }}
   {{- if and $tls.ca $tls.cert $tls.key $tlsSecret.secretName }}
   TLS:
