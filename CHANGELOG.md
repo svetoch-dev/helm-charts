@@ -1,4 +1,10 @@
+# 11.0.1
+
+Fixes:
+* `rabbitmq-cluster` move `topologySpreadConstraints` to `spec.override.statefulSet.spec.template.spec`, ensuring the RabbitMQ Operator applies the constraints and preventing Argo CD from reporting the cluster as `OutOfSync`
+
 # 11.0.0
+
 Breaking changes. See [UPGRADING](UPGRADING.md):
 * `postgres-operator` uses configmaps instead endpoints (`kubernetes_use_configmaps: true`)
 * crds and charts uses `ot-container-kit/redis-operator + redis` instead of `Spotahome`
