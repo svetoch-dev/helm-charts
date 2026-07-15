@@ -38,10 +38,6 @@ spec:
   affinity:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- with .Values.topologySpreadConstraints }}
-  topologySpreadConstraints:
-  {{- tpl (toYaml .) $ | nindent 4 }}
-  {{- end }}
   {{- with .Values.override }}
   override:
   {{- tpl (toYaml .) $ | nindent 4 }}

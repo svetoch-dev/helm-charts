@@ -11,14 +11,20 @@ rabbitmq:
 persistence: {}
 tolerations: {}
 affinity: {}
-topologySpreadConstraints:
-  - maxSkew: 1
-    topologyKey: kubernetes.io/hostname
-    whenUnsatisfiable: ScheduleAnyway
-    labelSelector:
-      matchLabels:
-        app.kubernetes.io/name: '{{ include "rabbitmq-cluster.fullname" . }}'
-override: {}
+override:
+  statefulSet:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: rabbitmq
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: ScheduleAnyway
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: '{{ include "rabbitmq-cluster.fullname" . }}'
 vhosts: {}
 serviceMonitor:
   metric_families:
