@@ -1,3 +1,11 @@
+# 11.1.0
+
+Features:
+* `gitlab` chart
+
+Fixes:
+* `pomerium` fix immutable image issue for pomerium secrets job
+
 # 11.0.1
 
 Fixes:
