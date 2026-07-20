@@ -1,5 +1,10 @@
+{{- $global := .Values.global | default dict }}
+{{- $env := get $global "env" | default dict }}
+{{- $cloud := get $env "cloud" | default dict }}
+{{- $cloudName := get $cloud "name" | default "gcp" }}
 {{- range $sc_name, $sc_obj := .Values.storageClasses }}
 {{- if $sc_obj.enabled }}
+{{- $provider := required (printf "storageClasses.%s does not support cloud %q; supported clouds are gcp and yc" $sc_name $cloudName) (get $sc_obj.providers $cloudName) }}
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -7,14 +12,14 @@ metadata:
   name: {{ $sc_name }}
   labels:
     {{- include "gitlabwrapper.labels" $ | nindent 4 }}
-  {{- with $sc_obj.annotations }}
+  {{- with $provider.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
+    {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-provisioner: {{ $sc_obj.provisioner }}
-{{- with $sc_obj.parameters }}
+provisioner: {{ $provider.provisioner }}
+{{- with $provider.parameters }}
 parameters:
-  {{- toYaml . | nindent 2 }}
+  {{- tpl (toYaml .) $ | nindent 2 }}
 {{- end }}
 reclaimPolicy: {{ $sc_obj.reclaimPolicy | default "Retain" }}
 volumeBindingMode: {{ $sc_obj.volumeBindingMode | default "WaitForFirstConsumer" }}
