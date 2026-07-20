@@ -11,13 +11,15 @@ metadata:
   labels:
 {{- include "core.labels.constructor" (list $ $labels $obj) | nindent 4 }}
   namespace: "{{ $obj.namespace }}"
+  {{- if hasKey $obj "annotations" }}
   annotations:
   {{- tpl (toYaml $obj.annotations) $ | nindent 4 }}
+  {{- end }}
 spec:
   type: {{ $obj.type }}
   {{- with $obj.ports }}
   ports:
-  {{- toYaml . | nindent 4 }}
+  {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- if $obj.externalTrafficPolicy }}
   externalTrafficPolicy: {{ $obj.externalTrafficPolicy }}
@@ -26,4 +28,3 @@ spec:
     {{- tpl (toYaml $obj.selectorLabels) $ | nindent 4 }} 
 {{- end }}
 {{- end }}
-

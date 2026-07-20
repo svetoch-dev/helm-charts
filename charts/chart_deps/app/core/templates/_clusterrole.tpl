@@ -28,6 +28,6 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ tpl $obj.serviceAccount.name $ }}
-  namespace: {{ tpl $obj.serviceAccount.namespace $ }}
+  namespace: {{ tpl (default $.Release.Namespace $obj.serviceAccount.namespace) $ }}
 {{- end -}}
 {{- end -}}

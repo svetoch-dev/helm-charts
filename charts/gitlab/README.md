@@ -1,7 +1,7 @@
 ## \[DRAFT\] Hints for creating gitlab kubernetes cluster via HELM
 1. Redis secret  (redis-gitlab):
     ```bash
-    kubectl create secret generic redis-gitlab --namespace gitlab --from-literal=password="$(openssl rand -base64 24)" --from-literal=redis-password="$(openssl rand -base64 24)"
+    kubectl create secret generic redis-gitlab --namespace gitlab --from-literal=password="$(openssl rand -base64 24)"
     ```
 2. Object storage secret (gitlab-object-storage):
    1. object_storage.yaml
@@ -52,7 +52,7 @@
 
 ## Solve problems
 1. Delete project in Gitlab if a PV was recreated (gitaly in STS mode)
-   1. Connect to gitlab-rake console 
+   1. Connect to gitlab-rake console
     ```
     kubectl exec -it <gitlab toolbox pod> -n gitlab -- gitlab-rails console
     ```
@@ -60,4 +60,4 @@
     ```
      project = Project.find_by_full_path("group/project")
      project.destroy!
-    ``` 
+    ```

@@ -6,6 +6,9 @@
 ---
 apiVersion: v1
 kind: ServiceAccount
+{{- if hasKey $obj "automountServiceAccountToken" }}
+automountServiceAccountToken: {{ $obj.automountServiceAccountToken }}
+{{- end }}
 metadata:
   name: {{ tpl $obj.name $ }}
   labels:

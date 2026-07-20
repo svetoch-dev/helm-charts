@@ -1,12 +1,46 @@
-{{- range $env_name, $env_obj := .Values.envs -}}
-{{- if $env_obj.enabled -}}
+{{- $resolvedEnvs := dict -}}
+{{- range $envName, $env := .Values.global.envs -}}
+{{- $enabled := true -}}
+{{- if hasKey $env "enabled" -}}
+{{- $enabled = $env.enabled -}}
+{{- end -}}
+{{- if $enabled -}}
+{{- $_ := set $resolvedEnvs $envName (include "infra.resolveEnv" (dict "root" $ "env" $env "enabled" $enabled) | fromYaml) -}}
+{{- end -}}
+{{- end -}}
+{{- range $env_name, $env_obj := $resolvedEnvs -}}
+{{- $structuredEnvName := required (printf "global.envs.%s.name is required" $env_name) $env_obj.name -}}
+{{- $shortName := $env_obj.short_name -}}
+{{- $registryUrl := $env_obj.registry.url -}}
+{{- $dnsDomain := $env_obj.dns.domain -}}
+{{- $cloud := $env_obj.cloud -}}
+{{- $cloudShortName := $env_obj.cloud_short_name -}}
+{{- $envApps := $env_obj.apps | default dict -}}
+{{- $revision := $env_obj.revision | default (include "infra.repoRevision" $) -}}
+{{- $repo := mergeOverwrite (deepCopy $.Values.global.repo) (dict "revision" $revision) -}}
+{{- $_ := set $repo "provider" (include "infra.repoProvider" $) -}}
+{{- $_ = set $repo "url" (include "infra.repoURL" $) -}}
+{{- $externalEnvs := dict -}}
+{{- if eq $env_obj.type "internal" -}}
+{{- range $externalEnvName, $externalEnvObj := $resolvedEnvs -}}
+{{- if and $externalEnvObj.enabled (eq $externalEnvObj.type "product") -}}
+{{- $externalCloudShortName := $externalEnvObj.cloud_short_name -}}
+{{- $externalDnsDomain := $externalEnvObj.dns.domain -}}
+{{- $_ := set $externalEnvs $externalCloudShortName (dict "domain" $externalDnsDomain) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- $finalizers := $.Values.finalizers -}}
+{{- if hasKey $env_obj "finalizers" -}}
+{{- $finalizers = $env_obj.finalizers -}}
+{{- end -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ $env_name }}
+  name: {{ $cloudShortName }}
   namespace: argocd
-  {{- with $env_obj.finalizers }}
+  {{- with $finalizers }}
   finalizers:
   {{- toYaml . | nindent 6 }}
   {{- end }}
@@ -24,26 +58,69 @@ spec:
   project: default
   source:
     path: {{ $.Values.repository.paths.env_chart}}
-    repoURL: {{ $.Values.repository.url }}
-    targetRevision: {{ $env_obj.revision | default $.Values.repository.revision }}
+    repoURL: {{ include "infra.repoURL" $ }}
+    targetRevision: {{ $revision }}
     helm:
       valueFiles:
         - ../globals.yaml
-        - {{ tpl (printf "%s/environments/%s/env.yaml" $.Values.repository.paths.root_from_chart $env_name ) $ }}
+        - {{ tpl (printf "%s/environments/%s/env.yaml" $.Values.repository.paths.root_from_chart $cloudShortName ) $ }}
     {{- with $env_obj.parameters }}
       parameters:
     {{- tpl (toYaml .) $ | nindent 8 }}
     {{- end }}
-    {{- with $env_obj.valuesObject }}
       valuesObject:
-    {{- tpl (toYaml .) $ | nindent 8 }}
-    {{- end }}
-    {{- if $env_obj.values }}
-      values: {{ tpl (toYaml $env_obj.values) $ | nindent 8 }}
-    {{- end }}
+        {{- with $envApps }}
+        envApps:
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
+        global:
+          company:
+            name: {{ $.Values.global.company.name }}
+            domain: {{ $.Values.global.company.domain }}
+          repo:
+          {{- toYaml $repo | nindent 12 }}
+          {{- if eq $env_obj.type "internal" }}
+          {{- with $.Values.global.ci }}
+          {{- if .type }}
+          ci:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          env:
+            name: {{ $structuredEnvName }}
+            enabled: {{ $env_obj.enabled }}
+            short_name: {{ $shortName }}
+            cloud_short_name: {{ $cloudShortName }}
+            {{- with $env_obj.type }}
+            type: {{ . }}
+            {{- end }}
+            registry:
+              url: {{ $registryUrl }}
+            {{- with $env_obj.users }}
+            users:
+            {{- toYaml . | nindent 14 }}
+            {{- end }}
+            dns:
+              {{- with $env_obj.dns.type }}
+              type: {{ $env_obj.dns.type }}
+              {{- end }}
+              domain: {{ $dnsDomain }}
+              provider: {{ $env_obj.dns.provider | quote }}
+            kubernetes:
+            {{- toYaml $env_obj.kubernetes | nindent 14 }}
+            cloud:
+            {{- toYaml $cloud | nindent 14 }}
+          {{- with $env_obj.alerts }}
+          alerts:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- with $externalEnvs }}
+        externalEnvs:
+        {{- toYaml . | nindent 10 }}
+        {{- end }}
   {{- with $env_obj.syncPolicy }}
   syncPolicy:
   {{- toYaml . | nindent 4 }}
   {{- end }}
 {{ end }}
-{{- end }}

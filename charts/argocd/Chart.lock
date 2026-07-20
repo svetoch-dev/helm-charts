@@ -18,4 +18,4 @@ dependencies:
   repository: file://../chart_deps/app/core
   version: 0.1.0
 digest: sha256:7b389af146eb727caad67ae31a027cbde992627eb06a6882cb8127abac906dad
-generated: "2026-06-03T09:20:04.587762719Z"
+generated: "2026-06-07T21:31:52.539673536Z"

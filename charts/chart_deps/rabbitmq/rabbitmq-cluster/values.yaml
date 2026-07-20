@@ -4,20 +4,34 @@ nameOverride: ""
 prometheusSelector: {}
 annotations: {}
 replicas: 1
+terminationGracePeriodSeconds: 300
 rabbitmq:
   additionalConfig: |
     log.console.formatter = json
 persistence: {}
 tolerations: {}
 affinity: {}
-override: {}
+override:
+  statefulSet:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: rabbitmq
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: ScheduleAnyway
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: '{{ include "rabbitmq-cluster.fullname" . }}'
 vhosts: {}
 serviceMonitor:
   metric_families:
-  - queue_coarse_metrics
-  - queue_metrics
-  - connection_churn_metrics
-  - node_metrics
-  - node_coarse_metrics
-  - channel_queue_exchange_metrics
-  - channel_queue_metrics
+    - queue_coarse_metrics
+    - queue_metrics
+    - connection_churn_metrics
+    - node_metrics
+    - node_coarse_metrics
+    - channel_queue_exchange_metrics
+    - channel_queue_metrics

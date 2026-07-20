@@ -1,6 +1,6 @@
 {{/*
 NOTE: these helpers are intentionally prefixed with "gitlabwrapper" instead of
-"gitlab". The vendored upstream dependency (charts/gitlab-10.1.1.tgz) is
+"gitlab". The vendored upstream dependency (charts/gitlab-10.1.2.tgz) is
 ITSELF a chart named "gitlab" and defines its own internal helpers named
 "gitlab.name", "gitlab.selectorLabels", "gitlab.labels", etc. (see its
 templates/_application.tpl). Helm's named-template namespace is global across

@@ -48,14 +48,14 @@ ingresses:
       ingress.pomerium.io/policy: |
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
-    - host: "gl.{{ .Values.global.company.domain.env }}"
+    - host: "gl.{{ .Values.global.env.dns.domain }}"
       paths:
       - path: /
         pathType: ImplementationSpecific
     tls:
     - secretName: gl-tls
       hosts:
-      - "gl.{{ .Values.global.company.domain.env }}"
+      - "gl.{{ .Values.global.env.dns.domain }}"
   ssh:
     enabled: false
     name: '{{ include "gitlabwrapper.fullname" . }}-gitlab-shell'
@@ -68,7 +68,7 @@ ingresses:
       ingress.pomerium.io/policy: |
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
-    - host: "gl.{{ .Values.global.company.domain.env }}"
+    - host: "gl.{{ .Values.global.env.dns.domain }}"
       paths:
       - pathType: ImplementationSpecific
 
@@ -141,13 +141,17 @@ gitlab:
         key: password
 
     redis:
-      host: ""
+      # When using Sentinel, this is the Sentinel master group name rather
+      # than a Kubernetes Service hostname.
+      host: "mymaster"
       port: 6379
       auth:
-        enabled: false
+        enabled: true
         secret: "redis-gitlab"
         key: password
       sentinels:
+      # SET THIS to the Opstree Sentinel Service for the Helm release, for
+      # example "gitlab-redis-gitlab-sentinel-sentinel".
       - host: ""
         port: 26379
 
@@ -402,33 +406,40 @@ postgres-gitlab:
 
 redis-gitlab:
   enabled: false
-  redisServiceMonitor:
-    enabled: true
-    prometheusSelector:
-      prometheus: redis-gitlab
-  sentinelServiceMonitor:
-    enabled: true
-    prometheusSelector:
-      prometheus: redis-gitlab
-  auth:
-    secretPath: redis-gitlab
-  sentinel:
-    replicas: 1
-    resources:
-      requests:
-        cpu: 10m
-        memory: 10Mi
-      limits:
-        memory: 200Mi
-    exporter:
-      enabled: true
   redis:
-    replicas: 1
+    clusterSize: 1
+    redisSecret:
+      secretName: redis-gitlab
+      secretKey: password
+    monitor:
+      enabled: true
+      prometheusSelector:
+        prometheus: redis-gitlab
     resources:
       requests:
         cpu: 50m
         memory: 10Mi
       limits:
         memory: 250Mi
+    exporter:
+      enabled: true
+  sentinel:
+    clusterSize: 1
+    redisSentinelConfig:
+      masterGroupName: mymaster
+      quorum: 1
+      redisReplicationPassword:
+        secretName: redis-gitlab
+        secretKey: password
+    monitor:
+      enabled: true
+      prometheusSelector:
+        prometheus: redis-gitlab
+    resources:
+      requests:
+        cpu: 10m
+        memory: 10Mi
+      limits:
+        memory: 200Mi
     exporter:
       enabled: true

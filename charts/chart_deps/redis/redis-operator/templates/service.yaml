@@ -1,0 +1,5 @@
+{{- $labels := include "redis-operator.labels" . | fromYaml }}
+{{- $service := tpl (toYaml .Values.webhook.service) . | fromYaml }}
+{{- $service = set $service "enabled" .Values.webhook.enabled }}
+{{- $service = set $service "selectorLabels" (include "redis-operator.selectorLabels" . | fromYaml) }}
+{{- include "core.service" (list $ $labels $service) }}

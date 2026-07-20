@@ -7,11 +7,19 @@ template:
     annotations:
     {{- toYaml . | nindent 6 }}
     {{- end }}
-    {{- with $obj.selectorLabels }}
+    {{- if or $obj.selectorLabels $obj.podLabels }}
     labels:
+    {{- with $obj.selectorLabels }}
     {{- tpl (toYaml .) $ | nindent 6 }}
     {{- end }}
+    {{- with $obj.podLabels }}
+    {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
+    {{- end }}
   spec:
+    {{- if hasKey $obj "automountServiceAccountToken" }}
+    automountServiceAccountToken: {{ $obj.automountServiceAccountToken }}
+    {{- end }}
     {{- with $obj.imagePullSecrets }}
     imagePullSecrets:
     {{- toYaml . | nindent 6 }}

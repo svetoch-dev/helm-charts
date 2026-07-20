@@ -1,0 +1,4 @@
+{{- $labels := include "redis-operator.labels" . | fromYaml }}
+{{- $podMonitor := tpl (toYaml .Values.podMonitor) . | fromYaml }}
+{{- $podMonitor = set $podMonitor "selectorLabels" (include "redis-operator.selectorLabels" . | fromYaml) }}
+{{- include "prometheus.podMonitor" (list $ $labels $podMonitor) }}

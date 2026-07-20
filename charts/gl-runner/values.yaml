@@ -21,7 +21,7 @@ gl-runner:
       app.kubernetes.io/instance: "{{ .Release.Name }}"
     runnerCache:
       enabled: false
-      type: "{{ .Values.global.bucket.type }}"
+      type: "{{ .Values.global.env.cloud.buckets.type }}"
       path: "cache"
       shared: true
       maxUploadedArchiveSize: 0
@@ -65,7 +65,7 @@ gl-runner:
           MaxUploadedArchiveSize = {{ .maxUploadedArchiveSize }}
           Path = "{{ .path }}"
           Shared = {{ .shared }}
-        {{- if eq $.Values.global.bucket.type "gcs" }}
+        {{- if eq $.Values.global.env.cloud.buckets.type "gcs" }}
         [runners.cache.gcs]
           BucketName = "{{ tpl .bucketName $ }}"
         {{- end }}

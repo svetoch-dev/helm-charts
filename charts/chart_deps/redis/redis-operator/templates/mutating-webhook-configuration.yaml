@@ -1,0 +1,9 @@
+{{- $labels := include "redis-operator.labels" . | fromYaml }}
+{{- $webhook := tpl (toYaml .Values.webhook) . | fromYaml }}
+{{- range $item := $webhook.webhooks }}
+{{- if and $item.clientConfig $item.clientConfig.service (not (hasKey $item.clientConfig.service "namespace")) }}
+{{- $_ := set $item.clientConfig.service "namespace" $.Release.Namespace }}
+{{- end }}
+{{- end }}
+{{- $webhook = set $webhook "enabled" .Values.webhook.enabled }}
+{{- include "core.mutatingWebhookConfiguration" (list $ $labels $webhook) }}

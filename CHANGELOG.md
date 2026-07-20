@@ -1,16 +1,112 @@
-# 11.0.0-alpha
-BrakingChanges:
-* `postgres-operator` uses configmaps instead endpoints (`kubernetes_use_configmaps: true`). See [UPGRADING](UPGRADING.md)
+# 11.0.1
+
+Fixes:
+* `rabbitmq-cluster` move `topologySpreadConstraints` to `spec.override.statefulSet.spec.template.spec`, ensuring the RabbitMQ Operator applies the constraints and preventing Argo CD from reporting the cluster as `OutOfSync`
+
+# 11.0.0
+
+Breaking changes. See [UPGRADING](UPGRADING.md):
+* `postgres-operator` uses configmaps instead endpoints (`kubernetes_use_configmaps: true`)
+* crds and charts uses `ot-container-kit/redis-operator + redis` instead of `Spotahome`
+* new `environments` values schema with structured `global.company`, `global.repo`, `global.envs` and `global.env` objects
+* replace `global.company.teams` and `global.access.teams/emails` with environment users and role-based access (`global.env.users` and `global.access.roles`)
+* replace `global.env.server` with `global.env.kubernetes.server`
+* remove the legacy `global.environment` compatibility object; use `global.env`
+* remove `global.env.dns.root`; define the complete environment DNS domain in `global.envs.<key>.dns.domain`
 
 New features:
 * `postgres-exporter` get query along with queryid
+* `app/core` can template `configMap`
+* `app/core` can template `MutatingWebhookConfiguration`
+* `redis` adds self-managed `chart_deps/redis/redis-operator` chart for Opstree Redis Operator
+* new `postgres` panel `Matching querie_IDs to queries` shows real sql requests
+* new alert `RedisSentinel_master_down` to check the condition of `RedisSentinel`
+* `environments` automatically builds `externalEnvs` for internal environments from enabled product environments
+* environment users support wildcard domain access, for example `name: "*@example.com"`, scoped by assigned roles
 
 Enhancements:
+* `pomerium` crds + image update 0.32.0 -> 0.32.9
+* `environments`:
+  * generate environment Applications from structured values using `valuesObject`
+  * generate application defaults from `global.envs.<key>.apps` with `name`/`namespace` support and per-environment `chart_apps` overrides
+  * enable environments by default unless `global.envs.<key>.enabled` is explicitly `false`
+  * construct GitHub or GitLab repository URLs from `global.repo`
+  * apply revision precedence: application, environment, then global repository default
+  * use top-level shared `finalizers` by default with per-environment overrides
+  * template registry URLs and DNS domains in the selected environment context
+  * derive `global.env.cloud.buckets.type` from known `global.env.cloud.name` values
+  * pass `global.ci` only to environments with `type: internal`
+* `environment`:
+  * pass common values to child Applications automatically and merge application-specific `globalValues`
+  * use `global.env.cloud_short_name` for Application names, release names, environment value-file paths and service references
+  * generate application and release names from the app key, then app `name`, then `appOverrides.<key>.chart_name`
+  * use `global.repo.revision` as the common revision, defaulting to `master`
+  * make CRD Applications inherit the environment revision unless explicitly overridden
+  * derive `global.env.dns.provider` from known `global.env.dns.type` values and pass it to the `external-dns` chart
+  * add disabled-by-default `konghq-app` chart application using the `konghq` chart and `konghq-app` ingress class
+  * allow generated application defaults to be configured through `defaultAppsValues`
+  * render `chart_apps` values with merged `globalValues` so child chart values can use application-specific globals
+  * enable `ServerSideApply` by default for the CRDs Application
+* `konghq`:
+  * move `kong.ingressController.ingressClass` configuration to environment chart defaults
+* `app/core`:
+  * support `tpl` for `Deployment.metadata.name`
+  * add `strategy` support to `Deployment` template
+  * avoid mutating shared labels while merging object labels
+  * use `serviceAccount.namespace` with `Release.Namespace` fallback in `ClusterRoleBinding`
+  * support `podLabels` and `automountServiceAccountToken` in pod templates
+  * support `automountServiceAccountToken` in `ServiceAccount`
+  * support optional service annotations and `tpl` in service ports
+* `certificates` supports `tpl` in `Certificate.spec.secretName`
 * `postgres-operator`:
   * crds update 1.14.0 -> 1.15.1
   * chart update 1.14.0 -> 1.15.1
   * switch to using original `logical-backup` v1.15.1 image
 * `postgres-exporter` update 0.17.1 -> 0.18.1
+* `argocd`:
+  * move Redis `port` and `existingSecret` from `env` to `argocd` chart values
+  * point external Redis host to the new Opstree Redis master service
+  * explicitly enable `gzip` Redis cache compression for consistent cache keys across Argo CD components
+* delete non-working `AbsentMetricCritical alerts`
+* `redis`:
+  * image update 6.2.6 -> 8.6.1
+  * add templated `topologySpreadConstraints` with `ScheduleAnyway` for best-effort distribution of Redis and Sentinel replicas across available nodes
+  * set `terminationGracePeriodSeconds` to 30 seconds for Redis and Sentinel pods
+* `rabbitmq-cluster`:
+  * add templated `topologySpreadConstraints` with `ScheduleAnyway` for best-effort distribution of replicas across available nodes
+  * set `terminationGracePeriodSeconds` to 300 seconds instead of the operator's seven-day default
+* `loki`:
+  * add templated `topologySpreadConstraints` with `ScheduleAnyway` for best-effort distribution of read, write and backend pods across available nodes
+  * disable default required pod anti-affinity so three replicas can be scheduled on two nodes
+  * explicitly set termination grace periods to 30 seconds for read pods and 300 seconds for write and backend pods
+* `grafana`:
+  * `crds + chart` update 5.21.4 -> 5.24.0
+  * `image` update 12.3.3 -> 12.4.4
+  * `Redis` panel:
+    * `Number of masters` shows current `master pod` name
+    * enable `legend` on `Hits / Misses per Sec`
+  * `Postgres` panel:
+    * `Top 5 tables by update` shows >0.1 rows/s instead of >0.5
+    * `Top 5 tables by Heap-Only Tuples (HOT) update` shows >0.1 rows/s instead of >0.5
+    * `Top 5 tables by not Heap-Only Tuples (HOT) update` shows >0.1 rows/s instead of >0.5
+    * `Top 5 transactions by duration` shows >5ms instead of >100ms
+  * `Pods` `Replicas` panel shows `deployments`
+
+Fixes
+* `probes` render templated `spec.prober.url` values after resolving the probe spec
+* fix newline after YAML separator in `app/core/templates/_ingress.tpl` for `helm lint`
+* `prometheus-operated` fix `thanosServiceMonitor` values key typo
+* `prometheus/lib` `podMonitor` render `podTargetLabels` instead of invalid `targetLabels`
+* `grafana` panels:
+  * `Redis` `Expired/Evicted Keys` show `expired, instance label` correctly
+  * `Redis sentinel`:
+    * `Clients connected to sentinel` has been fixed for new `exporter`
+    * `Clients connected to sentinel` shows only to sentinel connections
+    * `Sentinel masters` has been fixed for new `exporter`
+  * `Postgres`:
+    * `Size of tables` has been fixed for new `exporter`
+    * `Table disk block reads per second ` shows only master pod info
+    * `DB Commits per second` shows only master pod info
 
 # 10.13.0
 

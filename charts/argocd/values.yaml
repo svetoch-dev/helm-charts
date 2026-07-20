@@ -15,14 +15,14 @@ ingresses:
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2 }}
 
     hosts:
-    - host: "ag.{{ .Values.global.company.domain.env }}"
+    - host: "ag.{{ .Values.global.env.dns.domain }}"
       paths:
       - path: /
         pathType: ImplementationSpecific
     tls:
     - secretName: ag-tls
       hosts:
-      - "ag.{{ .Values.global.company.domain.env }}"
+      - "ag.{{ .Values.global.env.dns.domain }}"
 
 argocd:
   enabled: false
@@ -37,7 +37,12 @@ argocd:
     cm:
       create: true
     params:
+      redis.compression: gzip
       server.insecure: true
+
+  externalRedis:
+    port: 6379
+    existingSecret: "argocd-redis"
 
   redis:
     enabled: false
@@ -105,36 +110,15 @@ certificates:
 
 redis:
   enabled: false
-  redisServiceMonitor:
-    enabled: true
-    prometheusSelector:
-      prometheus: main
-  sentinelServiceMonitor:
-    enabled: true
-    prometheusSelector:
-      prometheus: main
-  auth:
-    secretPath: argocd-redis
-  sentinel:
-    replicas: 3
-    resources:
-      requests:
-        cpu: 10m
-        memory: 10Mi
-      limits:
-        memory: 200Mi
-    exporter:
-      enabled: true
   redis:
-    replicas: 3
-    resources:
-      requests:
-        cpu: 50m
-        memory: 10Mi
-      limits:
-        memory: 250Mi
-    exporter:
-      enabled: true
+    redisSecret:
+      secretName: "argocd-redis"
+      secretKey: "redis-password"
+  sentinel:
+    redisSentinelConfig:
+      redisReplicationPassword:
+        secretName: "argocd-redis"
+        secretKey: "redis-password"
 
 probes:
   enabled: false
@@ -145,7 +129,7 @@ probes:
         prometheus: main
       spec:
         prober:
-          url: 'prometheus-{{ .Values.global.environment.name }}-prometheus-blackbox-exporter.prometheus.svc.cluster.local:9115'
+          url: 'prometheus-{{ .Values.global.env.cloud_short_name }}-prometheus-blackbox-exporter.prometheus.svc.cluster.local:9115'
         jobName: argocd
         module: http_3xx
         targets:
