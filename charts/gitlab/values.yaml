@@ -227,8 +227,6 @@ gitlab:
     serviceAccount:
       enabled: true
       create: true
-      annotations:
-        iam.gke.io/gcp-service-account: ""  # SET THIS: GSA email
 
   # ===========================================================================
   # Disable bundled components
@@ -316,9 +314,6 @@ gitlab:
         # Retain-policy clone of "standard-rwo" (see `storageClasses` above) so
         # that repository data survives even if the PVC itself is deleted.
         storageClass: "standard-rwo-retain"
-        # match lanels work only if we use gitaly not in STS
-        # matchLabels:
-        #   gcp-int-gitlab-gitaly-pv: ""
 
     gitlab-shell:
       minReplicas: 1
