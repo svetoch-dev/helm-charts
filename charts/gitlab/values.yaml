@@ -374,7 +374,7 @@ postgres-gitlab:
       cpu: 2000m
       memory: 8Gi
     requests:
-      cpu: 3000m
+      cpu: 300m
       memory: 3Gi
   volume:
     size: 10Gi
@@ -437,7 +437,7 @@ redis-gitlab:
     monitor:
       enabled: true
       prometheusSelector:
-        prometheus: redis-gitlab
+        prometheus: main
     resources:
       requests:
         cpu: 10m
