@@ -1,0 +1,23 @@
+apiVersion: v2
+name: gitlab
+version: 0.1.0
+dependencies:
+  # https://gitlab.com/gitlab-org/charts/gitlab
+  - name: gitlab
+    version: 10.2.0
+    repository: https://charts.gitlab.io
+    alias: gitlab
+    condition: gitlab.enabled
+  - name: redis-operated
+    version: 0.1.0
+    repository: file://../chart_deps/redis/redis-operated
+    alias: redis-gitlab
+    condition: redis-gitlab.enabled
+  - name: postgres-cluster
+    version: 0.1.0
+    repository: file://../chart_deps/postgres/postgres-cluster
+    alias: postgres-gitlab
+    condition: postgres-gitlab.enabled
+  - name: core
+    version: 0.1.0
+    repository: file://../chart_deps/app/core

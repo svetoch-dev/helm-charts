@@ -64,6 +64,10 @@ gen-secrets:
     enabled: false
   job:
     enabled: true
+    annotations:
+      # Job pod templates are immutable. Delete and recreate this completed
+      # Job when the Pomerium image or another pod-template field changes.
+      argocd.argoproj.io/sync-options: Force=true,Replace=true
     args:
     - gen-secrets
     - --secrets=$(POD_NAMESPACE)/bootstrap

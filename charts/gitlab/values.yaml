@@ -1,0 +1,448 @@
+# =============================================================================
+# GitLab CE Minimal POC Configuration
+# =============================================================================
+
+# NOTE: `global.gatewayApi.installEnvoy` MUST be set here, at this chart's
+# own root `global`, not only under `gitlab.global.gatewayApi`. The
+# `envoy-gateway` dependency is a *grandchild* dependency (declared inside
+# the vendored gitlab/gitlab chart's own Chart.yaml, condition
+# "global.gatewayApi.installEnvoy"). Helm resolves conditions on nested
+# dependencies using the root chart's top-level `global` values - setting it
+# only under the "gitlab" alias key is NOT enough and silently leaves
+# Envoy Gateway (+ Gateway API CRUD resources) deployed. Verified by
+# rendering charts/gitlab-10.1.1.tgz through this wrapper both ways.
+global:
+  gatewayApi:
+    enabled: false
+    installEnvoy: false
+    configureCertmanager: false
+
+ingresses:
+  webservice:
+    enabled: false
+    name: '{{ include "gitlabwrapper.fullname" . }}-webservice'
+    service:
+      # NOTE: the gitlab/gitlab chart names its webservice Service
+      # "<release-name>-webservice-<deployment-name>" (default deployment
+      # name is "default").
+      name: '{{ .Release.Name }}-webservice-default'
+      # Route to the workhorse port (8181), not the plain webservice port
+      # (8080). Workhorse handles Git HTTP, LFS, and web-socket upgrades -
+      # this is the same port the chart's own bundled Ingress targets.
+      port: 8181
+    className: "{{ .Values.global.ingress.class }}"
+    annotations:
+      cert-manager.io/cluster-issuer: '{{ printf "letsencrypt-%s" .Values.global.ingress.class }}'
+      ingress.pomerium.io/timeout: '300s'
+      ingress.pomerium.io/pass_identity_headers: 'true'
+      # Without this, Pomerium sets the upstream Host header to the route's
+      # "To" URL (i.e. the internal Service DNS name from this Ingress'
+      # backend: "<release>-webservice-default.<namespace>.svc.cluster.local:8181"),
+      # not the public hostname the client actually requested. GitLab mostly
+      # renders fine regardless (relative asset/form paths), but any absolute
+      # redirect it issues (e.g. unauthenticated "/" -> "/users/sign_in") is
+      # built from the Host header it received, so the browser gets bounced
+      # to the internal cluster-local address instead of the public domain.
+      # See https://www.pomerium.com/docs/reference/routes/headers#1-preserve-host-header
+      ingress.pomerium.io/preserve_host_header: 'true'
+      ingress.pomerium.io/policy: |
+        {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
+    hosts:
+    - host: "gl.{{ .Values.global.env.dns.domain }}"
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+    tls:
+    - secretName: gl-tls
+      hosts:
+      - "gl.{{ .Values.global.env.dns.domain }}"
+  ssh:
+    enabled: false
+    name: '{{ include "gitlabwrapper.fullname" . }}-gitlab-shell'
+    service:
+      name: '{{ .Release.Name }}-gitlab-shell'
+      port: 22
+    className: "{{ .Values.global.ingress.class }}"
+    annotations:
+      ingress.pomerium.io/tcp_upstream: 'true'
+      ingress.pomerium.io/policy: |
+        {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
+    hosts:
+    - host: "gl.{{ .Values.global.env.dns.domain }}"
+      paths:
+      - pathType: ImplementationSpecific
+
+# The managed StorageClasses in GCP and Yandex Cloud default to
+# `reclaimPolicy: Delete`. If a bound PVC is ever deleted (manual mistake, an
+# Argo CD prune, a chart change that forces a StatefulSet's
+# `volumeClaimTemplates` to be recreated under a new name, etc.) the
+# underlying cloud disk is destroyed immediately, with no recovery path.
+# NOTE: Kubernetes already retains PVCs created via `volumeClaimTemplates`
+# when the StatefulSet itself is deleted/scaled down (gitaly's chart does not
+# opt into `persistentVolumeClaimRetentionPolicy.whenDeleted: Delete`) - this
+# StorageClass instead protects against the PVC *object* being deleted: the
+# disk survives as "Released" and can be manually recovered/re-bound instead
+# of being wiped.
+storageClasses:
+  standard-rwo-retain:
+    enabled: true
+    # Selected by global.env.cloud.name. GCP remains the fallback when the
+    # chart is rendered directly without environment values.
+    providers:
+      gcp:
+        provisioner: pd.csi.storage.gke.io
+        parameters:
+          type: pd-balanced
+        annotations:
+          storage.gke.io/pv-labels-from-sc: "true"
+      yc:
+        provisioner: disk-csi-driver.mks.ycloud.io
+        parameters:
+          type: network-ssd
+          csi.storage.k8s.io/fstype: ext4
+    reclaimPolicy: Retain
+    volumeBindingMode: WaitForFirstConsumer
+    allowVolumeExpansion: true
+
+gitlab:
+  enabled: false
+
+  global:
+    edition: ce
+
+    # NOTE: `global.hosts.domain`/`global.hosts.gitlab.name` are read directly
+    # by the vendored gitlab chart's own `gitlab.gitlab.hostname` helper
+    # (coalesce .Values.global.hosts.gitlab.name ...) with NO `tpl` call.
+    # Unlike `ingresses.*.hosts[].host` below (rendered through our own
+    # core.ingress, which does call `tpl`), Helm will NOT evaluate `{{ }}`
+    # Go-template syntax placed here - it will be baked verbatim into
+    # gitlab.yml/external_url/email settings and crash Rails with
+    # `URI::InvalidComponentError`. Verified by rendering charts/gitlab-10.1.1.tgz.
+    # SET THIS: literal domain per environment, e.g. "int.example.com" -
+    # must match the domain used in `ingresses.webservice.hosts[].host` below.
+    hosts:
+      domain: ""  # SET THIS: e.g. int.example.com
+      gitlab:
+        name: ""  # SET THIS: e.g. gl.int.example.com
+        https: true
+      ssh: ""     # SET THIS: e.g. gl-ssh.int.example.com
+
+    #disable certmanager
+    gatewayApi:
+      enabled: false
+      installEnvoy: false
+      configureCertmanager: false
+
+    #disable internal ingress
+    ingress:
+      enabled: false
+      configureCertmanager: false
+
+    psql:
+      host: ""
+      port: 5432
+      database: "gl1"
+      username: "gitlab_owner_user"
+      password:
+        useSecret: true
+        secret: ""
+        key: password
+
+    redis:
+      # When using Sentinel, this is the Sentinel master group name rather
+      # than a Kubernetes Service hostname.
+      host: "mymaster"
+      port: 6379
+      auth:
+        enabled: true
+        secret: "redis-gitlab"
+        key: password
+      sentinels:
+      # SET THIS to the Opstree Sentinel Service for the Helm release, for
+      # example "gitlab-redis-gitlab-sentinel-sentinel".
+      - host: ""
+        port: 26379
+
+    ## https://docs.gitlab.com/charts/charts/globals#configure-gitlab-shell
+    shell:
+      # port:  #default - 22
+      authToken: {}
+      # secret:
+      # key:
+      hostKeys: {}
+        # secret:
+      ## https://docs.gitlab.com/charts/charts/globals#tcp-proxy-protocol
+      tcp:
+        proxyProtocol: false
+
+    appConfig:
+      # Consolidated object storage with Workload Identity
+      object_store:
+        enabled: true
+        proxy_download: true
+        storage_options: {}
+        connection:
+          secret: gitlab-object-storage
+          key: connection
+      # Setup omniauth for openid google
+      omniauth:
+        enabled: false
+        allowSingleSignOn: ['openid_connect']
+        blockAutoCreatedUsers: false
+        autoLinkUser: ['openid_connect']
+        syncProfileAttributes: ['email', 'name', 'nickname']
+        autoSignInWithProvider: 'openid_connect'
+        providers:
+        - secret: gitlab-oidc-secret
+          key: provider
+
+      lfs:
+        enabled: true
+        bucket: ""  # SET THIS: e.g., gitlab-lfs
+        connection: {}
+      artifacts:
+        enabled: true
+        bucket: ""  # SET THIS: e.g., gitlab-artifacts
+        connection: {}
+      uploads:
+        enabled: true
+        bucket: ""  # SET THIS: e.g., gitlab-uploads
+        connection: {}
+      packages:
+        enabled: true
+        bucket: ""  # SET THIS: e.g., gitlab-packages
+        connection: {}
+      externalDiffs:
+        enabled: false
+      terraformState:
+        enabled: false
+      dependencyProxy:
+        enabled: false
+
+      # Backups - Workload Identity without secret
+      backups:
+        bucket: ""  # SET THIS: e.g., gitlab-backups
+        tmpBucket: ""  # SET THIS: e.g., gitlab-tmp
+
+    serviceAccount:
+      enabled: true
+      create: true
+
+  # ===========================================================================
+  # Disable bundled components
+  # ===========================================================================
+  postgresql:
+    install: false
+
+  redis:
+    install: false
+
+  nginx-ingress:
+    enabled: false
+
+  # This is the actual toggle for the bundled cert-manager dependency.
+  # `certmanager.installCRDs` below only configures it IF installed - it does
+  # NOT disable it. Without this, cert-manager (deployment, webhooks, CRDs
+  # via install job) gets deployed redundantly alongside the company-wide
+  # cert-manager already managed by charts/cert-manager. Verified by
+  # rendering: without this flag, gitlab/charts/certmanager/* resources
+  # were present in the output.
+  installCertmanager: false
+
+  certmanager:
+    installCRDs: false
+
+  prometheus:
+    install: false
+
+  gitlab-runner:
+    install: false
+
+  registry:
+    enabled: false
+    # When enabling, configure GCS storage:
+    # storage:
+    #   secret: gitlab-registry-storage
+    #   key: config
+    # bucket: ""  # SET THIS: e.g., gitlab-registry
+
+  # ===========================================================================
+  # GitLab Components
+  # ===========================================================================
+  gitlab:
+    webservice:
+      minReplicas: 1
+      maxReplicas: 2
+      resources:
+        requests:
+          cpu: 300m
+          memory: 2Gi
+        limits:
+          cpu: 2000m
+          memory: 4Gi
+      workhorse:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 500m
+            memory: 400Mi
+
+    sidekiq:
+      minReplicas: 1
+      maxReplicas: 2
+      resources:
+        requests:
+          cpu: 100m
+          memory: 1Gi
+        limits:
+          cpu: 1000m
+          memory: 2Gi
+
+    gitaly:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 200Mi
+        limits:
+          cpu: 2000m
+          memory: 2Gi
+      persistence:
+        enabled: true
+        size: 20Gi  # SET THIS: storage size for repositories
+        # Retain-policy clone of "standard-rwo" (see `storageClasses` above) so
+        # that repository data survives even if the PVC itself is deleted.
+        storageClass: "standard-rwo-retain"
+
+    gitlab-shell:
+      minReplicas: 1
+      maxReplicas: 2
+      resources:
+        requests:
+          cpu: 10m
+          memory: 50Mi
+        limits:
+          memory: 150Mi
+
+    toolbox:
+      enabled: true
+      backups:
+        objectStorage:
+          # Workload Identity - no secret needed for backups
+          backend: gcs
+          # config.secret and config.key intentionally omitted for Workload Identity
+      resources:
+        requests:
+          cpu: 50m
+          memory: 350Mi
+        limits:
+          cpu: 1000m
+          memory: 2Gi
+
+    migrations:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 200Mi
+        limits:
+          memory: 2Gi
+
+postgres-gitlab:
+  enabled: false
+  defaultSidecars:
+    enabled: true
+  podMonitor:
+    enabled: true
+    prometheusSelector:
+      prometheus: main
+  fluentbit:
+    enabled: true
+  prometheus-rules:
+    enabled: true
+    PrometheusAlerts:
+      postgres:
+        AbsentMetricCritical:
+          enabled: true
+          rules:
+            pg_up:
+              enabled: true
+  teamId: devops
+  replicas: 1
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 8Gi
+    requests:
+      cpu: 300m
+      memory: 3Gi
+  volume:
+    size: 10Gi
+    storageClass: premium-rwo
+  databases:
+    gl1: gl1_owner
+  preparedDatabases:
+    gl1:
+      defaultUsers: true
+      schemas:
+        public:
+          defaultRoles: true
+  logicalBackup:
+    enabled: true
+    schedule: "40 00 * * *"
+  postgresql:
+    version: "17"
+    parameters:
+      password_encryption: "scram-sha-256"
+      max_connections: "100"
+      work_mem: "65536"
+      max_wal_size: "2048"
+      maintenance_work_mem: "262144"
+      max_worker_processes: "4"
+      max_parallel_workers: "4"
+      max_parallel_workers_per_gather: "0"
+      max_parallel_maintenance_workers: "4"
+      max_standby_archive_delay: "400000"
+      max_standby_streaming_delay: "400000"
+      log_destination: "jsonlog"
+      logging_collector: "true"
+
+redis-gitlab:
+  enabled: false
+  redis:
+    clusterSize: 1
+    redisSecret:
+      secretName: redis-gitlab
+      secretKey: password
+    monitor:
+      enabled: true
+      prometheusSelector:
+        prometheus: main
+    resources:
+      requests:
+        cpu: 50m
+        memory: 10Mi
+      limits:
+        memory: 250Mi
+    exporter:
+      enabled: true
+  sentinel:
+    clusterSize: 1
+    redisSentinelConfig:
+      masterGroupName: mymaster
+      quorum: 1
+      redisReplicationPassword:
+        secretName: redis-gitlab
+        secretKey: password
+    monitor:
+      enabled: true
+      prometheusSelector:
+        prometheus: main
+    resources:
+      requests:
+        cpu: 10m
+        memory: 10Mi
+      limits:
+        memory: 200Mi
+    exporter:
+      enabled: true

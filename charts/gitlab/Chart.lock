@@ -1,0 +1,15 @@
+dependencies:
+- name: gitlab
+  repository: https://charts.gitlab.io
+  version: 10.2.0
+- name: redis-operated
+  repository: file://../chart_deps/redis/redis-operated
+  version: 0.1.0
+- name: postgres-cluster
+  repository: file://../chart_deps/postgres/postgres-cluster
+  version: 0.1.0
+- name: core
+  repository: file://../chart_deps/app/core
+  version: 0.1.0
+digest: sha256:dbea6bb5c50957331d2fb28004de73415daaa4184040a055d42d05b89e792d9d
+generated: "2026-07-20T20:42:56.321343477+03:00"
