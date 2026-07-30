@@ -30,3 +30,13 @@ dependencies:
   - name: core
     version: 0.1.0
     repository: file://../core
+  - name: probes
+    version: 0.1.0
+    repository: file://../../prometheus/probes
+    alias: probes
+    condition: probes.enabled
+  - name: prometheus-rules
+    version: 0.1.0
+    repository: file://../../prometheus/prometheus-rules
+    alias: prometheus-rules
+    condition: prometheus-rules.enabled

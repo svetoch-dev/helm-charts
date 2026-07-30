@@ -96,7 +96,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  enabled: true
+  enabled: false
   name: '{{ include "common.fullname" . }}'
   type: ClusterIP
   ports:
@@ -167,9 +167,8 @@ args: []
 
 serviceMonitor:
   enabled: false
-  prometheusSelector: {}
-#  prometheusSelector:
-#    prometheus: test
+  prometheusSelector:
+    prometheus: main
   labels: {}
   targetLabels: []
   endpoints:
@@ -189,3 +188,36 @@ secrets:
 #        some:
 #          yaml:
 #            - 123
+
+probes:
+  enabled: false
+  probes:
+    api:
+      enabled: false
+      selector:
+        prometheus: main
+      spec:
+        prober:
+          url: '{{ .Values.global.svc.prometheus.blackbox }}:9115'
+        jobName: "api"
+        module: http_2xx
+        targets:
+          staticConfig:
+            static:
+              - 'https://{{ .Values.global.app.name }}-api.{{ .Values.global.env.dns.domain }}/api/health/db'
+
+prometheus-rules:
+  enabled: false
+  PrometheusAlerts:
+    api:
+      env: "{{ .Values.global.env.short_name }}"
+      team: sre
+      selector:
+        prometheus: main
+      AbsentMetricCritical:
+        enabled: false
+        rules:
+          probe_success:
+            enabled: false
+            source: '{{ .Values.global.app.name }}-api probes'
+            query: '{instance="https://{{ .Values.global.app.name }}-api.{{ .Values.global.env.dns.domain }}/api/health/db"}'
