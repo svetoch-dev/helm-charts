@@ -4,8 +4,6 @@ New features:
 * `app/common` adds optional `probes` and `prometheus-rules` subcharts with disabled-by-default API health probe and `probe_success` alert examples
 
 Enhancements:
-* `app/common` disables the default Service; applications that require it must explicitly set `service.enabled: true`
-* explicitly enable the Service for `postgres.pgadmin` and `pomerium.controller`
 * `app/common` ServiceMonitor uses the `prometheus: main` selector by default
 
 # 11.1.0

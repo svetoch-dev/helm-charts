@@ -86,8 +86,6 @@ pgadmin:
     configs:
       storage: 1Gi
       mountPath: /var/lib/pgadmin
-  service:
-    enabled: true
   ingress:
     enabled: false
     className: "{{ .Values.global.ingress.class }}"

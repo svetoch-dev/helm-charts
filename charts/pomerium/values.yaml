@@ -129,7 +129,6 @@ controller:
       fieldRef:
         fieldPath: status.podIP
   service:
-    enabled: true
     name: pomerium-proxy
     type: LoadBalancer
     annotations:
