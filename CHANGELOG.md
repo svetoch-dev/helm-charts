@@ -1,3 +1,11 @@
+# 11.2.0
+
+New features:
+* `app/common` adds optional `probes` and `prometheus-rules` subcharts with disabled-by-default API health probe and `probe_success` alert examples
+
+Enhancements:
+* `app/common` ServiceMonitor uses the `prometheus: main` selector by default
+
 # 11.1.0
 
 Features:
