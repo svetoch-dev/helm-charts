@@ -19,6 +19,9 @@ gha-runner:
               cpu: 10m
               memory: 20Mi
   template:
+    metadata:
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
     spec:
       nodeSelector:
         runner: 'true'
@@ -56,6 +59,7 @@ workflowConfigMap:
   name: workflow-pod
   metaAnnotations:
     argocd.argoproj.io/tracking-id: "{{ .Release.Name }}:/Pod:{{ .Release.Namespace }}/workflow-pod"
+    cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
   spec:
     serviceAccountName: runner
     nodeSelector:
