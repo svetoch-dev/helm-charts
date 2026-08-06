@@ -58,6 +58,13 @@ workflowConfigMap:
     argocd.argoproj.io/tracking-id: "{{ .Release.Name }}:/Pod:{{ .Release.Namespace }}/workflow-pod"
   spec:
     serviceAccountName: runner
+    nodeSelector:
+      runner: 'true'
+    tolerations:
+      - key: runner
+        operator: Equal
+        value: 'true'
+        effect: NoSchedule
     securityContext:
       fsGroup: 1001
     containers:
