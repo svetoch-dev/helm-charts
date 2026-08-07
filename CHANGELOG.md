@@ -1,3 +1,12 @@
+# 11.2.1
+
+Fixes:
+* `gha-runner` tolerations and node selector for worklow pods
+
+Enhancements:
+* `gl-runner`: ability to set annotations for job pods
+* `gl-runner|gha-runner`: do not scale down node if there is a runner pod
+
 # 11.2.0
 
 New features:

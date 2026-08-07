@@ -19,6 +19,8 @@ gl-runner:
     podLabels:
       app.kubernetes.io/component: gl-runner-worker
       app.kubernetes.io/instance: "{{ .Release.Name }}"
+    podAnnotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
     runnerCache:
       enabled: false
       type: "{{ .Values.global.env.cloud.buckets.type }}"
@@ -57,6 +59,14 @@ gl-runner:
           "{{ $podLabelKey }}" = "{{ tpl $podLabelValue $ }}"
           {{- end }}
         {{- end }}
+
+        {{- with .Values.runners.podAnnotations }}
+        [runners.kubernetes.pod_annotations]
+          {{- range $podAnnotationKey, $podAnnotationValue := . }}
+          "{{ $podAnnotationKey }}" = "{{ tpl $podAnnotationValue $ }}"
+          {{- end }}
+        {{- end }}
+
 
         {{- with .Values.runners.runnerCache }}
         {{- if .enabled }}
