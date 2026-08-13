@@ -22,6 +22,7 @@ metadata:
   labels:
 {{- include "core.labels.constructor" (list $ $labels $obj) | nindent 4 }}
   name: {{ tpl $obj.name $ }} 
+  namespace: "{{ $obj.namespace }}"
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
