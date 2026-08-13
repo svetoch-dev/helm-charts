@@ -3,12 +3,12 @@
 Fixes:
 * `loki`: set the memberlist `rejoin_interval` to 10 minutes so nodes can rejoin the cluster after a temporary disconnect
 * `rabbitmq-cluster-operator`: remove the duplicate `name` entry from `Chart.yaml` to keep the chart metadata valid
-* `alertmanager-operated`: preserve an explicitly configured `automountServiceAccountToken: false` in the generated Alertmanager resource
-* `alertmanager-operated`: render `clusterAdvertiseAddress` as a scalar value instead of injecting the root values context into the Alertmanager resource
+* `alertmanager-operated`:
+  * preserve an explicitly configured `automountServiceAccountToken: false` in the generated Alertmanager resource
+  * render `clusterAdvertiseAddress` as a scalar value instead of injecting the root values context into the Alertmanager resource
 * `app/common`: fix Job rendering to read image and scheduling overrides from `job.*` (with fallback to `global.*`) instead of checking unrelated top-level values
 * `app/core`: place `RoleBinding` in the same namespace as its `Role`, including when `role.namespace` is explicitly configured
-* `pre-commit`: make the yamllint ignore pattern recursive for nested Helm template files
-
+* `pre-commit`: exclude CRDs and nested Helm template files from yamllint checks
 
 # 11.2.1
 
