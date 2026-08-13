@@ -7,6 +7,7 @@ Fixes:
 * `alertmanager-operated`: render `clusterAdvertiseAddress` as a scalar value instead of injecting the root values context into the Alertmanager resource
 * `app/common`: fix Job rendering to read image and scheduling overrides from `job.*` (with fallback to `global.*`) instead of checking unrelated top-level values
 * `app/core`: place `RoleBinding` in the same namespace as its `Role`, including when `role.namespace` is explicitly configured
+* `pre-commit`: make the yamllint ignore pattern recursive for nested Helm template files
 
 
 # 11.2.1
