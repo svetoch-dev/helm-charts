@@ -144,6 +144,6 @@ spec:
   alertmanagerConfiguration:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
-  {{- if .Values.alertmanager.spec.automountServiceAccountToken }}
+  {{- if hasKey .Values.alertmanager.spec "automountServiceAccountToken" }}
   automountServiceAccountToken: {{ .Values.alertmanager.spec.automountServiceAccountToken }}
   {{- end }}

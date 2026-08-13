@@ -1,3 +1,11 @@
+# 11.2.2
+
+Fixes:
+* `loki`: set the memberlist `rejoin_interval` to 10 minutes so nodes can rejoin the cluster after a temporary disconnect
+* `rabbitmq-cluster-operator`: remove the duplicate `name` entry from `Chart.yaml` to keep the chart metadata valid
+* `alertmanager-operated`: preserve an explicitly configured `automountServiceAccountToken: false` in the generated Alertmanager resource
+
+
 # 11.2.1
 
 Fixes:
