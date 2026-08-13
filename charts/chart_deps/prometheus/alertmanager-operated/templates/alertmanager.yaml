@@ -115,8 +115,7 @@ spec:
   {{- tpl (toYaml .) $ | nindent 4 }}
   {{- end }}
   {{- if .Values.alertmanager.spec.clusterAdvertiseAddress }}
-  clusterAdvertiseAddress: {{ .Values.alertmanager.spec.clusterAdvertiseAddress }}
-  {{- tpl (toYaml .) $ | nindent 4 }}
+  clusterAdvertiseAddress: {{ tpl .Values.alertmanager.spec.clusterAdvertiseAddress $ | quote }}
   {{- end }}
   {{- if .Values.alertmanager.spec.clusterGossipInterval }}
   clusterGossipInterval: {{ .Values.alertmanager.spec.clusterGossipInterval  }}

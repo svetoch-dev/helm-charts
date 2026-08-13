@@ -4,6 +4,7 @@ Fixes:
 * `loki`: set the memberlist `rejoin_interval` to 10 minutes so nodes can rejoin the cluster after a temporary disconnect
 * `rabbitmq-cluster-operator`: remove the duplicate `name` entry from `Chart.yaml` to keep the chart metadata valid
 * `alertmanager-operated`: preserve an explicitly configured `automountServiceAccountToken: false` in the generated Alertmanager resource
+* `alertmanager-operated`: render `clusterAdvertiseAddress` as a scalar value instead of injecting the root values context into the Alertmanager resource
 * `app/common`: fix Job rendering to read image and scheduling overrides from `job.*` (with fallback to `global.*`) instead of checking unrelated top-level values
 
 
