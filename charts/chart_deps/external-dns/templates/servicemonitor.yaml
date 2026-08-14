@@ -1,0 +1,8 @@
+{{- if .Values.serviceMonitor.enabled -}}
+{{- $labels := include "external-dns.labels" . | fromYaml -}}
+{{- $monitor := mustDeepCopy .Values.serviceMonitor -}}
+{{- $monitor = set $monitor "name" (include "external-dns.fullname" .) -}}
+{{- $monitor = set $monitor "jobLabel" (include "external-dns.fullname" .) -}}
+{{- $monitor = set $monitor "selectorLabels" (include "external-dns.selectorLabels" . | fromYaml) -}}
+{{- include "prometheus.serviceMonitor" (list . $labels $monitor) -}}
+{{- end -}}

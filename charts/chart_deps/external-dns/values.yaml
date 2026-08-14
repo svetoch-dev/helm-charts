@@ -1,0 +1,177 @@
+global:
+  imagePullSecrets: []
+image:
+  repository: registry.k8s.io/external-dns/external-dns
+  tag: v0.21.0
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+namespaceOverride: ""
+commonLabels: {}
+
+serviceAccount:
+  create: true
+  labels: {}
+  annotations: {}
+  name: ""
+  automountServiceAccountToken: true
+
+service:
+  annotations: {}
+  port: 7979
+  enabled: true
+
+# Project compatibility settings retained from the former Bitnami chart.
+pdb:
+  enabled: true
+  maxUnavailable: 1
+networkPolicy:
+  enabled: true
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - ports:
+        - port: 7979
+          protocol: TCP
+  egress:
+    - {}
+
+rbac:
+  create: true
+  additionalPermissions: []
+  # Kept explicit so the local core-based RBAC template remains easy to extend.
+  rules:
+    - apiGroups: [""]
+      resources: [services, pods, nodes, namespaces]
+      verbs: [get, list, watch]
+    - apiGroups: [discovery.k8s.io]
+      resources: [endpointslices]
+      verbs: [get, list, watch]
+    - apiGroups: [extensions, networking.k8s.io]
+      resources: [ingresses]
+      verbs: [get, list, watch]
+    - apiGroups: [route.openshift.io]
+      resources: [routes]
+      verbs: [get, list, watch]
+    - apiGroups: [gateway.networking.k8s.io]
+      resources: [gateways, httproutes, tlsroutes, tcproutes, udproutes, grpcroutes]
+      verbs: [get, list, watch]
+    - apiGroups: [getambassador.io]
+      resources: [hosts]
+      verbs: [get, list, watch]
+    - apiGroups: [networking.istio.io]
+      resources: [gateways, virtualservices]
+      verbs: [get, list, watch]
+    - apiGroups: [zalando.org]
+      resources: [routegroups]
+      verbs: [get, list, watch]
+    - apiGroups: [zalando.org]
+      resources: [routegroups/status]
+      verbs: [patch, update]
+    - apiGroups: [projectcontour.io]
+      resources: [httpproxies]
+      verbs: [get, watch, list]
+    - apiGroups: [gloo.solo.io, gateway.solo.io]
+      resources: [proxies, virtualservices]
+      verbs: [get, list, watch]
+    - apiGroups: [configuration.konghq.com]
+      resources: [tcpingresses]
+      verbs: [get, list, watch]
+    - apiGroups: [cis.f5.com]
+      resources: [virtualservers, transportservers]
+      verbs: [get, watch, list]
+
+replicaCount: 1
+autoscaling:
+  enabled: false
+revisionHistoryLimit: 10
+deploymentAnnotations: {}
+deploymentStrategy:
+  type: Recreate
+podLabels: {}
+podAnnotations: {}
+automountServiceAccountToken: true
+shareProcessNamespace: false
+podSecurityContext:
+  runAsNonRoot: true
+  fsGroup: 65534
+  seccompProfile:
+    type: RuntimeDefault
+priorityClassName: ""
+terminationGracePeriodSeconds: null
+initContainers: []
+securityContext:
+  privileged: false
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  capabilities:
+    drop: [ALL]
+env: []
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 2
+  successThreshold: 1
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+  successThreshold: 1
+extraVolumes:
+  - name: empty-dir
+    emptyDir: {}
+extraVolumeMounts:
+  - name: empty-dir
+    mountPath: /tmp
+    subPath: tmp-dir
+resources: {}
+nodeSelector: {}
+affinity: {}
+topologySpreadConstraints: []
+tolerations: []
+
+serviceMonitor:
+  enabled: false
+  additionalLabels: {}
+  annotations: {}
+  namespace: ""
+  interval: ""
+  scrapeTimeout: ""
+  targetLabels: []
+
+logLevel: info
+logFormat: json
+interval: 1m
+triggerLoopOnEvent: false
+namespaced: false
+sources:
+  - service
+  - ingress
+policy: upsert-only
+registry: txt
+txtOwnerId: ""
+txtPrefix: ""
+txtSuffix: ""
+domainFilters: []
+excludeDomains: []
+labelFilter: ""
+annotationFilter: ""
+annotationPrefix: ""
+managedRecordTypes: []
+provider: aws
+extraArgs: {}
+command: []
+args: []

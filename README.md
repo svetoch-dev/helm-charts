@@ -27,13 +27,13 @@ The chart derives `global.env.cloud_short_name` as
 * log labels and datasource UIDs.
 
 Both `global.envs.<key>.dns.type` and `global.envs.<key>.dns.provider` are
-optional. The `environments` chart derives the provider for known DNS types:
+optional. The `external-dns` chart derives the provider for known DNS types:
 `gcp` maps to `google`, `yc` maps to `webhook`, `aws` maps to `aws`, and
-`cloudflare` maps to `cloudflare`. The resolved provider is passed to the child
-chart as `external-dns.provider`.
+`cloudflare` maps to `cloudflare`. The resolved provider is used only by the
+`external-dns` chart.
 
 An explicit provider overrides the default derived from the DNS type. If neither
-a known type nor a provider is set, `dns.provider` is passed as an empty string.
+a known type nor a provider is set, the upstream chart default is used.
 Set it to an identifier supported by the selected external-dns chart version when
 provider configuration is required.
 

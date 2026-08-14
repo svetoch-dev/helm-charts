@@ -1,0 +1,9 @@
+dependencies:
+- name: core
+  repository: file://../app/core
+  version: 0.1.0
+- name: prometheus-lib
+  repository: file://../prometheus/lib
+  version: 0.1.0
+digest: sha256:c644656cf2cd73c96be40515aa2e1cff5949c611777bf13e9fe2f66b9208aa55
+generated: "2026-08-14T06:23:11.588625234Z"

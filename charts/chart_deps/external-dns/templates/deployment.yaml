@@ -1,0 +1,42 @@
+{{- $labels := include "external-dns.labels" . | fromYaml -}}
+{{- $unused := "" -}}
+{{- $podSecurityContext := mustDeepCopy .Values.podSecurityContext -}}
+{{- if .Values.legacySecurityContext -}}
+{{- $unused = unset $podSecurityContext "runAsNonRoot" -}}
+{{- $unused = unset $podSecurityContext "seccompProfile" -}}
+{{- end -}}
+{{- $livenessProbe := mustDeepCopy .Values.livenessProbe -}}
+{{- if hasKey $livenessProbe "tcpSocket" -}}
+{{- $unused = unset $livenessProbe "httpGet" -}}
+{{- end -}}
+{{- $deployment := dict
+  "enabled" .Values.enabled
+  "name" (include "external-dns.fullname" .)
+  "replicaCount" .Values.replicaCount
+  "autoscaling" .Values.autoscaling
+  "revisionHistoryLimit" .Values.revisionHistoryLimit
+  "selectorLabels" (include "external-dns.selectorLabels" . | fromYaml)
+  "containerName" "external-dns"
+  "image" (include "external-dns.image" .)
+  "imagePullPolicy" .Values.image.pullPolicy
+  "imagePullSecrets" .Values.imagePullSecrets
+  "command" .Values.command
+  "args" .Values.args
+  "env" .Values.env
+  "ports" (list (dict "name" "http" "containerPort" 7979))
+  "podAnnotations" .Values.podAnnotations
+  "podLabels" (include "external-dns.podLabels" . | fromYaml)
+  "podSecurityContext" $podSecurityContext
+  "securityContext" .Values.securityContext
+  "automountServiceAccountToken" .Values.automountServiceAccountToken
+  "livenessProbe" $livenessProbe
+  "readinessProbe" .Values.readinessProbe
+  "volumeMounts" .Values.extraVolumeMounts
+  "volumes" .Values.extraVolumes
+  "resources" .Values.resources
+  "serviceAccountName" (include "external-dns.serviceAccountName" .)
+  "nodeSelector" .Values.nodeSelector
+  "affinity" .Values.affinity
+  "tolerations" .Values.tolerations
+  "priorityClassName" .Values.priorityClassName -}}
+{{- include "core.deployment" (list . $labels $deployment) -}}

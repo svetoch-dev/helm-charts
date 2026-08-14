@@ -1,0 +1,10 @@
+{{- if .Values.service.enabled -}}
+{{- $labels := include "external-dns.labels" . | fromYaml -}}
+{{- $service := dict
+  "enabled" true
+  "name" (include "external-dns.fullname" .)
+  "type" "ClusterIP"
+  "ports" (list (dict "name" "http" "port" .Values.service.port "targetPort" "http" "protocol" "TCP"))
+  "selectorLabels" (include "external-dns.selectorLabels" . | fromYaml) -}}
+{{- include "core.service" (list . $labels $service) -}}
+{{- end -}}
