@@ -3,4 +3,4 @@ repos:
   rev: v1.29.0
   hooks:
   - id: yamllint
-    args: ['-d {extends: relaxed, ignore: "**/templates/*.yaml\n", rules: {indentation: {spaces: 2, indent-sequences: consistent}, key-duplicates: {}, line-length: disable, new-line-at-end-of-file: disable, trailing-spaces: {}}}', '-s']
+    args: ['-d {extends: relaxed, ignore: "**/crds/**\n**/templates/**/*.yaml\n", rules: {indentation: {spaces: 2, indent-sequences: consistent}, key-duplicates: {}, line-length: disable, new-line-at-end-of-file: disable, trailing-spaces: {}}}', '-s']

@@ -9,4 +9,3 @@ dependencies:
     repository: https://charts.gitlab.io
     alias: gl-runner
     condition: gl-runner.enabled
-

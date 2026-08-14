@@ -52,6 +52,8 @@ loki:
     analytics:
       reporting_enabled: false
     auth_enabled: false
+    extraMemberlistConfig:
+      rejoin_interval: 10m
     compactor:
       delete_request_store: ""
       retention_enabled: true
