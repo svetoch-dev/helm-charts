@@ -152,26 +152,5 @@ serviceMonitor:
   scrapeTimeout: ""
   targetLabels: []
 
-logLevel: info
-logFormat: json
-interval: 1m
-triggerLoopOnEvent: false
-namespaced: false
-sources:
-  - service
-  - ingress
-policy: upsert-only
-registry: txt
-txtOwnerId: ""
-txtPrefix: ""
-txtSuffix: ""
-domainFilters: []
-excludeDomains: []
-labelFilter: ""
-annotationFilter: ""
-annotationPrefix: ""
-managedRecordTypes: []
-provider: aws
-extraArgs: {}
 command: []
 args: []

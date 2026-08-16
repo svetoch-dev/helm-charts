@@ -6,10 +6,14 @@ external-dns:
     tag: v0.21.0
   args:
     - '--provider={{ include "external-dns.providerName" . }}'
+    - --policy=upsert-only
+    - --registry=txt
+    - --interval=1m
+    - --log-level=info
+    - --log-format=json
     - --source=service
     - --source=ingress
     - --no-expose-internal-ipv6
-  logFormat: json
   resources:
     limits:
       cpu: 300m
@@ -53,6 +57,3 @@ external-dns:
     timeoutSeconds: 5
     successThreshold: 1
     failureThreshold: 6
-  sources:
-    - service
-    - ingress
