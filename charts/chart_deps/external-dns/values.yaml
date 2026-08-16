@@ -89,7 +89,11 @@ autoscaling:
 revisionHistoryLimit: 10
 deploymentAnnotations: {}
 deploymentStrategy:
-  type: Recreate
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 25%
+    maxUnavailable: 25%
+provider: ""
 aws:
   apiRetries: 3
   zoneType: ""
