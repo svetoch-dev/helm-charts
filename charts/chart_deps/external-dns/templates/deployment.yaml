@@ -63,6 +63,7 @@
   "readinessProbe" .Values.readinessProbe
   "volumeMounts" .Values.extraVolumeMounts
   "volumes" .Values.extraVolumes
+  "sidecars" .Values.sidecars
   "resources" .Values.resources
   "serviceAccountName" (include "external-dns.serviceAccountName" .)
   "nodeSelector" .Values.nodeSelector

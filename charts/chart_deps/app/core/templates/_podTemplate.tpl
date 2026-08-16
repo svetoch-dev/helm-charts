@@ -99,6 +99,9 @@ template:
         volumeMounts:
         {{- tpl (toYaml .) $ | nindent 10 }}
         {{- end }}
+    {{- with $obj.sidecars }}
+    {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
     {{- with $obj.nodeSelector }}
     nodeSelector:
     {{- tpl (toYaml .) $ | nindent 6 }}

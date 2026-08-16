@@ -162,6 +162,7 @@ extraVolumeMounts:
   - name: empty-dir
     mountPath: /tmp
     subPath: tmp-dir
+sidecars: []
 resources: {}
 nodeSelector: {}
 affinity: {}
