@@ -90,6 +90,31 @@ revisionHistoryLimit: 10
 deploymentAnnotations: {}
 deploymentStrategy:
   type: Recreate
+aws:
+  apiRetries: 3
+  zoneType: ""
+  assumeRoleArn: ""
+  batchChangeSize: 1000
+  zonesCacheDuration: 0
+  zoneTags: []
+  preferCNAME: false
+  evaluateTargetHealth: ""
+  dynamodbTable: ""
+  dynamodbRegion: ""
+  zoneMatchParent: false
+alibabacloud:
+  zoneType: ""
+cloudflare:
+  proxied: true
+  dnsRecordsPerPage: 100
+  regionalServices: false
+  regionKey: ""
+google:
+  project: ""
+  batchChangeSize: 1000
+  zoneVisibility: ""
+coredns:
+  etcdEndpoints: ""
 podLabels: {}
 podAnnotations: {}
 automountServiceAccountToken: true

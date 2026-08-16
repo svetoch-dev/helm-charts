@@ -11,6 +11,7 @@ external-dns:
     - --interval=1m
     - --log-level=info
     - --log-format=json
+    - --metrics-address=:7979
     - --source=service
     - --source=ingress
     - --no-expose-internal-ipv6
@@ -27,6 +28,16 @@ external-dns:
   podSecurityContext:
     fsGroup: 1001
     fsGroupChangePolicy: Always
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: '{{ include "external-dns.fullname" . }}'
+                app.kubernetes.io/name: external-dns
+            topologyKey: kubernetes.io/hostname
+          weight: 1
   legacySecurityContext: true
   securityContext:
     allowPrivilegeEscalation: false
@@ -37,6 +48,7 @@ external-dns:
     runAsGroup: 1001
     runAsNonRoot: true
     runAsUser: 1001
+    seLinuxOptions: {}
     seccompProfile:
       type: RuntimeDefault
   livenessProbe:
