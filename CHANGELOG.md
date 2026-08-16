@@ -1,3 +1,14 @@
+# 11.3.0
+
+Enhancements:
+* `external-dns`:
+  * replace the Bitnami dependency with a self-managed chart based on the local `app/core` and `prometheus-lib` dependencies
+  * use the original `registry.k8s.io/external-dns/external-dns:v0.21.0` image
+  * keep the existing resource names, labels, security settings, probes, RBAC and network policies compatible with deployed environments
+  * derive the provider from the environment DNS configuration inside the chart
+* `app/core` adds reusable `PodDisruptionBudget` and `NetworkPolicy` templates
+* `environment` no longer injects external-dns-specific provider values into generated applications
+
 # 11.2.2
 
 Fixes:
