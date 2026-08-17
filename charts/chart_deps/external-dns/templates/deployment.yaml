@@ -81,7 +81,6 @@
   {{- end -}}
   {{- end -}}
   {{- $deployment := dict
-  "enabled" .Values.enabled
   "name" (include "external-dns.fullname" .)
   "replicaCount" .Values.replicaCount
   "autoscaling" .Values.autoscaling
