@@ -86,6 +86,17 @@ rbac:
 replicaCount: 1
 autoscaling:
   enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          # 80% of the default CPU request (10m) is approximately 8m per pod.
+          averageUtilization: 80
+  behavior: {}
 revisionHistoryLimit: 10
 deploymentAnnotations: {}
 deploymentStrategy:
@@ -117,8 +128,6 @@ google:
   project: ""
   batchChangeSize: 1000
   zoneVisibility: ""
-coredns:
-  etcdEndpoints: ""
 podLabels: {}
 podAnnotations: {}
 automountServiceAccountToken: true
@@ -130,7 +139,7 @@ podSecurityContext:
     type: RuntimeDefault
 priorityClassName: ""
 terminationGracePeriodSeconds: null
-initContainers: []
+initContainers: {}
 securityContext:
   privileged: false
   allowPrivilegeEscalation: false
@@ -142,8 +151,7 @@ securityContext:
     drop: [ALL]
 env: []
 livenessProbe:
-  httpGet:
-    path: /healthz
+  tcpSocket:
     port: http
   initialDelaySeconds: 10
   periodSeconds: 10
@@ -154,6 +162,7 @@ readinessProbe:
   httpGet:
     path: /healthz
     port: http
+    scheme: HTTP
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5

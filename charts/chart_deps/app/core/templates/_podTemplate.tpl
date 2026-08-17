@@ -20,6 +20,12 @@ template:
     {{- if hasKey $obj "automountServiceAccountToken" }}
     automountServiceAccountToken: {{ $obj.automountServiceAccountToken }}
     {{- end }}
+    {{- if $obj.shareProcessNamespace }}
+    shareProcessNamespace: true
+    {{- end }}
+    {{- if and (hasKey $obj "terminationGracePeriodSeconds") (ne $obj.terminationGracePeriodSeconds nil) }}
+    terminationGracePeriodSeconds: {{ $obj.terminationGracePeriodSeconds }}
+    {{- end }}
     {{- with $obj.imagePullSecrets }}
     imagePullSecrets:
     {{- toYaml . | nindent 6 }}
@@ -37,7 +43,7 @@ template:
     {{- if $obj.initContainers }}
     initContainers:
     {{- range $name, $container := $obj.initContainers }}
-      - name: {{ $container.name }}
+      - name: {{ $container.name | default $name }}
         {{- with $container.command }}
         command:
         {{- tpl (toYaml .) $ | nindent 10 }}
@@ -49,7 +55,7 @@ template:
         {{- end }}
         {{- with $container.env }}
         env:
-        {{-  tpl (toYaml .) $ | nindent 10}}
+        {{- tpl (toYaml .) $ | nindent 10 }}
         {{- end }}
     {{- end }}
     {{- end }}
@@ -110,9 +116,16 @@ template:
     affinity:
     {{- tpl (toYaml .) $ | nindent 6 }}
     {{- end }}
+    {{- with $obj.topologySpreadConstraints }}
+    topologySpreadConstraints:
+    {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
     {{- with $obj.tolerations }}
     tolerations:
     {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
+    {{- with $obj.priorityClassName }}
+    priorityClassName: {{ tpl . $ }}
     {{- end }}
     {{- with $obj.volumes }}
     volumes: 

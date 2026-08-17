@@ -8,6 +8,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ tpl $obj.name $ }}
+  {{- with $obj.annotations }}
+  annotations:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
   labels:
 {{- include "core.labels.constructor" (list $ $labels $obj) | nindent 4 }}
   namespace: "{{ $obj.namespace }}"

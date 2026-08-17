@@ -16,7 +16,8 @@
 {{- $labels := index . 1 }}
 {{- $obj := index . 2 }}
 {{- if eq (hasKey $obj "namespace") false }}
-{{- $obj = set $obj "namespace" $.Release.Namespace }}
+{{- $namespace := $.Values.namespaceOverride | default $.Release.Namespace }}
+{{- $obj = set $obj "namespace" $namespace }}
 {{- end }}
 {{- if eq (hasKey $obj "enabled") false }}
 {{- $obj = set $obj "enabled" true }}

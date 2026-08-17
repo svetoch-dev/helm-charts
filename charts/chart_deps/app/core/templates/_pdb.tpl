@@ -12,11 +12,10 @@ metadata:
   labels:
 {{- include "core.labels.constructor" (list $ $labels $obj) | nindent 4 }}
 spec:
-  {{- with $obj.minAvailable }}
-  minAvailable: {{ . }}
-  {{- end }}
-  {{- with $obj.maxUnavailable }}
-  maxUnavailable: {{ . }}
+  {{- if hasKey $obj "minAvailable" }}
+  minAvailable: {{ $obj.minAvailable }}
+  {{- else if hasKey $obj "maxUnavailable" }}
+  maxUnavailable: {{ $obj.maxUnavailable }}
   {{- end }}
   selector:
     matchLabels:

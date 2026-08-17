@@ -6,11 +6,15 @@
 {{- $unused = unset $podSecurityContext "seccompProfile" -}}
 {{- end -}}
 {{- $livenessProbe := mustDeepCopy .Values.livenessProbe -}}
-  {{- if hasKey $livenessProbe "tcpSocket" -}}
-  {{- $unused = unset $livenessProbe "httpGet" -}}
+  {{- if hasKey $livenessProbe "httpGet" -}}
+  {{- $unused = unset $livenessProbe "tcpSocket" -}}
   {{- end -}}
   {{- $args := mustDeepCopy .Values.args -}}
-  {{- $provider := include "external-dns.providerName" . | trim -}}
+  {{- $provider := tpl (toString .Values.provider) . | trim -}}
+  {{- $imagePullSecrets := concat (.Values.global.imagePullSecrets | default list) (.Values.imagePullSecrets | default list) -}}
+  {{- if $provider -}}
+  {{- $args = prepend $args (printf "--provider=%s" $provider) -}}
+  {{- end -}}
   {{- if or (eq $provider "aws") (eq $provider "aws-sd") -}}
   {{- if .Values.aws.apiRetries -}}{{- $args = append $args (printf "--aws-api-retries=%v" .Values.aws.apiRetries) -}}{{- end -}}
   {{- if .Values.aws.zoneType -}}{{- $args = append $args (printf "--aws-zone-type=%v" .Values.aws.zoneType) -}}{{- end -}}
@@ -45,11 +49,12 @@
   "autoscaling" .Values.autoscaling
   "revisionHistoryLimit" .Values.revisionHistoryLimit
   "strategy" .Values.deploymentStrategy
+  "annotations" .Values.deploymentAnnotations
   "selectorLabels" (include "external-dns.selectorLabels" . | fromYaml)
   "containerName" "external-dns"
   "image" (include "external-dns.image" .)
   "imagePullPolicy" .Values.image.pullPolicy
-  "imagePullSecrets" .Values.imagePullSecrets
+  "imagePullSecrets" $imagePullSecrets
   "command" .Values.command
   "args" $args
   "env" .Values.env
@@ -59,6 +64,9 @@
   "podSecurityContext" $podSecurityContext
   "securityContext" .Values.securityContext
   "automountServiceAccountToken" .Values.automountServiceAccountToken
+  "shareProcessNamespace" .Values.shareProcessNamespace
+  "terminationGracePeriodSeconds" .Values.terminationGracePeriodSeconds
+  "initContainers" .Values.initContainers
   "livenessProbe" $livenessProbe
   "readinessProbe" .Values.readinessProbe
   "volumeMounts" .Values.extraVolumeMounts
@@ -68,6 +76,7 @@
   "serviceAccountName" (include "external-dns.serviceAccountName" .)
   "nodeSelector" .Values.nodeSelector
   "affinity" .Values.affinity
+  "topologySpreadConstraints" .Values.topologySpreadConstraints
   "tolerations" .Values.tolerations
   "priorityClassName" .Values.priorityClassName -}}
 {{- include "core.deployment" (list . $labels $deployment) -}}

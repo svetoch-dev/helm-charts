@@ -25,6 +25,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "external-dns.labels" -}}
+{{- $labels := include "external-dns.labels.base" . | fromYaml -}}
+{{- if .Values.commonLabels -}}
+{{- $labels = merge $labels .Values.commonLabels -}}
+{{- end -}}
+{{- toYaml $labels -}}
+{{- end -}}
+
+{{- define "external-dns.labels.base" -}}
 helm.sh/chart: {{ include "external-dns.chart" . }}
 {{ include "external-dns.selectorLabels" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
@@ -52,7 +60,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- printf "%s:%s" $repository $tag -}}
 {{- end -}}
 
-{{- define "external-dns.providerName" -}}
+{{- define "external-dns.providerDefault" -}}
 {{- $global := .Values.global | default dict -}}
 {{- $env := $global.env | default dict -}}
 {{- $dns := $env.dns | default dict -}}
@@ -67,13 +75,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- else if eq $dnsType "cloudflare" -}}
 {{- $provider = default "cloudflare" $provider -}}
 {{- end -}}
-{{- if not $provider -}}
-{{- $configured := .Values.provider -}}
-{{- if kindIs "map" $configured -}}
-{{- $provider = $configured.name | default "" -}}
-{{- else -}}
-{{- $provider = $configured | default "" -}}
-{{- end -}}
-{{- end -}}
 {{- tpl (toString $provider) . -}}
+{{- end -}}
+
+{{- define "external-dns.providerName" -}}
+{{- $configured := .Values.provider | default "" -}}
+{{- if kindIs "map" $configured -}}
+{{- $configured = $configured.name | default "" -}}
+{{- end -}}
+{{- $provider := tpl (toString $configured) . | trim -}}
+{{- if not $provider -}}
+{{- $provider = include "external-dns.providerDefault" . | trim -}}
+{{- end -}}
+{{- $provider -}}
 {{- end -}}

@@ -4,8 +4,8 @@ external-dns:
   image:
     repository: registry.k8s.io/external-dns/external-dns
     tag: v0.21.0
+  provider: '{{ include "external-dns.providerDefault" . }}'
   args:
-    - '--provider={{ include "external-dns.providerName" . }}'
     - --policy=upsert-only
     - --registry=txt
     - --interval=1m
@@ -51,21 +51,3 @@ external-dns:
     seLinuxOptions: {}
     seccompProfile:
       type: RuntimeDefault
-  livenessProbe:
-    tcpSocket:
-      port: http
-    initialDelaySeconds: 10
-    periodSeconds: 10
-    timeoutSeconds: 5
-    successThreshold: 1
-    failureThreshold: 2
-  readinessProbe:
-    httpGet:
-      path: /healthz
-      port: http
-      scheme: HTTP
-    initialDelaySeconds: 5
-    periodSeconds: 10
-    timeoutSeconds: 5
-    successThreshold: 1
-    failureThreshold: 6
