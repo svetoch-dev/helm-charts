@@ -1,5 +1,5 @@
 {{- $labels := include "external-dns.labels" . | fromYaml -}}
-{{- $clusterRole := dict "enabled" .Values.rbac.create "name" (printf "%s-external-dns" (include "external-dns.fullname" .)) -}}
+{{- $clusterRole := dict "enabled" .Values.rbac.create "name" (include "external-dns.fullname" .) -}}
 {{- $clusterRole = set $clusterRole "rules" (mustDeepCopy .Values.rbac.rules) -}}
 {{- if .Values.rbac.additionalPermissions }}
 {{- $clusterRole = set $clusterRole "rules" (concat $clusterRole.rules .Values.rbac.additionalPermissions) -}}

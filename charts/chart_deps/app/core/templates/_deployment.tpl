@@ -19,7 +19,7 @@ spec:
   {{- if not $obj.autoscaling.enabled }}
   replicas: {{ $obj.replicaCount }}
   {{- end }}
-  {{- if $obj.revisionHistoryLimit  }}
+  {{- if and (hasKey $obj "revisionHistoryLimit") (ne $obj.revisionHistoryLimit nil) }}
   revisionHistoryLimit: {{ $obj.revisionHistoryLimit }}
   {{- end }}
   {{- with $obj.selectorLabels }}

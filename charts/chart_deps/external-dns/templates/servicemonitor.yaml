@@ -2,7 +2,7 @@
 {{- $labels := include "external-dns.labels" . | fromYaml -}}
 {{- $monitor := mustDeepCopy .Values.serviceMonitor -}}
 {{- $monitor = set $monitor "name" (include "external-dns.fullname" .) -}}
-{{- $monitor = set $monitor "jobLabel" (include "external-dns.fullname" .) -}}
+{{- $monitor = set $monitor "jobLabel" "app.kubernetes.io/instance" -}}
 {{- $monitor = set $monitor "selectorLabels" (include "external-dns.selectorLabels" . | fromYaml) -}}
 {{- $monitor = set $monitor "labels" .Values.serviceMonitor.additionalLabels -}}
 {{- $workloadNamespace := .Values.namespaceOverride | default .Release.Namespace -}}

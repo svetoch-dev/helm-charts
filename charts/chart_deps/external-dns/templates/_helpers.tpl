@@ -41,6 +41,9 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 {{- define "external-dns.podLabels" -}}
 {{- $labels := include "external-dns.labels" . | fromYaml -}}
+{{- if .Values.podLabels -}}
+{{- $labels = mergeOverwrite $labels .Values.podLabels -}}
+{{- end -}}
 {{- $_ := unset $labels "app.kubernetes.io/instance" -}}
 {{- $_ = unset $labels "app.kubernetes.io/name" -}}
 {{- toYaml $labels -}}
@@ -60,7 +63,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- printf "%s:%s" $repository $tag -}}
 {{- end -}}
 
-{{- define "external-dns.providerDefault" -}}
+{{- define "external-dns.providerName" -}}
 {{- $global := .Values.global | default dict -}}
 {{- $env := $global.env | default dict -}}
 {{- $dns := $env.dns | default dict -}}
@@ -76,16 +79,4 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- $provider = default "cloudflare" $provider -}}
 {{- end -}}
 {{- tpl (toString $provider) . -}}
-{{- end -}}
-
-{{- define "external-dns.providerName" -}}
-{{- $configured := .Values.provider | default "" -}}
-{{- if kindIs "map" $configured -}}
-{{- $configured = $configured.name | default "" -}}
-{{- end -}}
-{{- $provider := tpl (toString $configured) . | trim -}}
-{{- if not $provider -}}
-{{- $provider = include "external-dns.providerDefault" . | trim -}}
-{{- end -}}
-{{- $provider -}}
 {{- end -}}

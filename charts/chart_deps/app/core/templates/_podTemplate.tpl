@@ -43,20 +43,9 @@ template:
     {{- if $obj.initContainers }}
     initContainers:
     {{- range $name, $container := $obj.initContainers }}
-      - name: {{ $container.name | default $name }}
-        {{- with $container.command }}
-        command:
-        {{- tpl (toYaml .) $ | nindent 10 }}
-        {{- end }}
-        image: "{{ tpl $container.image $ }}"
-        {{- with $container.volumeMounts }}
-        volumeMounts:
-        {{- tpl (toYaml .) $ | nindent 10 }}
-        {{- end }}
-        {{- with $container.env }}
-        env:
-        {{- tpl (toYaml .) $ | nindent 10 }}
-        {{- end }}
+    {{- $initContainer := mustDeepCopy $container }}
+    {{- $initContainer = set $initContainer "name" ($container.name | default $name) }}
+    {{- tpl (toYaml (list $initContainer)) $ | nindent 6 }}
     {{- end }}
     {{- end }}
     containers:

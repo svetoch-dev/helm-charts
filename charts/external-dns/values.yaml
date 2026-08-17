@@ -4,7 +4,7 @@ external-dns:
   image:
     repository: registry.k8s.io/external-dns/external-dns
     tag: v0.21.0
-  provider: '{{ include "external-dns.providerDefault" . }}'
+  provider: '{{ include "external-dns.providerName" . }}'
   args:
     - --policy=upsert-only
     - --registry=txt
@@ -34,7 +34,7 @@ external-dns:
         - podAffinityTerm:
             labelSelector:
               matchLabels:
-                app.kubernetes.io/instance: '{{ include "external-dns.fullname" . }}'
+                app.kubernetes.io/instance: '{{ .Release.Name }}'
                 app.kubernetes.io/name: external-dns
             topologyKey: kubernetes.io/hostname
           weight: 1

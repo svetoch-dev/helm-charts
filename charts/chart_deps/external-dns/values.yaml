@@ -193,3 +193,4 @@ serviceMonitor:
 
 command: []
 args: []
+extraArgs: {}

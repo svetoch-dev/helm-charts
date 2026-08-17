@@ -6,9 +6,31 @@
 {{- $unused = unset $podSecurityContext "seccompProfile" -}}
 {{- end -}}
 {{- $livenessProbe := mustDeepCopy .Values.livenessProbe -}}
-  {{- if hasKey $livenessProbe "httpGet" -}}
-  {{- $unused = unset $livenessProbe "tcpSocket" -}}
-  {{- end -}}
+{{- if hasKey $livenessProbe "exec" -}}
+{{- $unused = unset $livenessProbe "tcpSocket" -}}
+{{- $unused = unset $livenessProbe "httpGet" -}}
+{{- $unused = unset $livenessProbe "grpc" -}}
+{{- else if hasKey $livenessProbe "grpc" -}}
+{{- $unused = unset $livenessProbe "tcpSocket" -}}
+{{- $unused = unset $livenessProbe "httpGet" -}}
+{{- else if hasKey $livenessProbe "httpGet" -}}
+{{- $unused = unset $livenessProbe "tcpSocket" -}}
+{{- end -}}
+{{- $readinessProbe := mustDeepCopy .Values.readinessProbe -}}
+{{- if hasKey $readinessProbe "exec" -}}
+{{- $unused = unset $readinessProbe "httpGet" -}}
+{{- $unused = unset $readinessProbe "tcpSocket" -}}
+{{- $unused = unset $readinessProbe "grpc" -}}
+{{- else if hasKey $readinessProbe "grpc" -}}
+{{- $unused = unset $readinessProbe "httpGet" -}}
+{{- $unused = unset $readinessProbe "tcpSocket" -}}
+{{- else if hasKey $readinessProbe "tcpSocket" -}}
+{{- $unused = unset $readinessProbe "httpGet" -}}
+{{- end -}}
+{{- $deploymentStrategy := mustDeepCopy .Values.deploymentStrategy -}}
+{{- if eq $deploymentStrategy.type "Recreate" -}}
+{{- $unused = unset $deploymentStrategy "rollingUpdate" -}}
+{{- end -}}
   {{- $args := mustDeepCopy .Values.args -}}
   {{- $provider := tpl (toString .Values.provider) . | trim -}}
   {{- $imagePullSecrets := concat (.Values.global.imagePullSecrets | default list) (.Values.imagePullSecrets | default list) -}}
@@ -42,13 +64,29 @@
   {{- if eq $provider "alibabacloud" -}}
   {{- if .Values.alibabacloud.zoneType }}{{- $args = append $args (printf "--alibaba-cloud-zone-type=%v" .Values.alibabacloud.zoneType) -}}{{- end -}}
   {{- end -}}
+  {{- if not (kindIs "map" .Values.extraArgs) -}}
+  {{- fail "external-dns.extraArgs must be a map" -}}
+  {{- end -}}
+  {{- range $key, $value := .Values.extraArgs -}}
+  {{- if kindIs "invalid" $value -}}
+  {{- fail (printf "external-dns.extraArgs.%s must not be null; use true for a flag without a value" $key) -}}
+  {{- else if kindIs "bool" $value -}}
+  {{- if $value -}}{{- $args = append $args (printf "--%s" $key) -}}{{- end -}}
+  {{- else if kindIs "slice" $value -}}
+  {{- range $value -}}
+  {{- $args = append $args (printf "--%s=%s" $key (tpl (toString .) $)) -}}
+  {{- end -}}
+  {{- else -}}
+  {{- $args = append $args (printf "--%s=%s" $key (tpl (toString $value) $)) -}}
+  {{- end -}}
+  {{- end -}}
   {{- $deployment := dict
   "enabled" .Values.enabled
   "name" (include "external-dns.fullname" .)
   "replicaCount" .Values.replicaCount
   "autoscaling" .Values.autoscaling
   "revisionHistoryLimit" .Values.revisionHistoryLimit
-  "strategy" .Values.deploymentStrategy
+  "strategy" $deploymentStrategy
   "annotations" .Values.deploymentAnnotations
   "selectorLabels" (include "external-dns.selectorLabels" . | fromYaml)
   "containerName" "external-dns"
@@ -68,7 +106,7 @@
   "terminationGracePeriodSeconds" .Values.terminationGracePeriodSeconds
   "initContainers" .Values.initContainers
   "livenessProbe" $livenessProbe
-  "readinessProbe" .Values.readinessProbe
+  "readinessProbe" $readinessProbe
   "volumeMounts" .Values.extraVolumeMounts
   "volumes" .Values.extraVolumes
   "sidecars" .Values.sidecars
