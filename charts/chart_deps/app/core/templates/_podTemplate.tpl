@@ -23,7 +23,7 @@ template:
     {{- if $obj.shareProcessNamespace }}
     shareProcessNamespace: true
     {{- end }}
-    {{- if and (hasKey $obj "terminationGracePeriodSeconds") (ne $obj.terminationGracePeriodSeconds nil) }}
+    {{- if ne $obj.terminationGracePeriodSeconds nil }}
     terminationGracePeriodSeconds: {{ $obj.terminationGracePeriodSeconds }}
     {{- end }}
     {{- with $obj.imagePullSecrets }}
