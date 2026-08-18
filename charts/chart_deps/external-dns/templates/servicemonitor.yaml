@@ -1,23 +1,12 @@
 {{- if .Values.serviceMonitor.enabled -}}
 {{- $labels := include "external-dns.labels" . | fromYaml -}}
-{{- $monitor := mustDeepCopy .Values.serviceMonitor -}}
+{{- $monitor := tpl (toYaml .Values.serviceMonitor) . | fromYaml -}}
 {{- $monitor = set $monitor "name" (include "external-dns.fullname" .) -}}
 {{- $monitor = set $monitor "jobLabel" "app.kubernetes.io/instance" -}}
 {{- $monitor = set $monitor "selectorLabels" (include "external-dns.selectorLabels" . | fromYaml) -}}
-{{- $monitor = set $monitor "labels" .Values.serviceMonitor.additionalLabels -}}
 {{- $workloadNamespace := .Values.namespaceOverride | default .Release.Namespace -}}
 {{- $monitorNamespace := .Values.serviceMonitor.namespace | default $workloadNamespace -}}
 {{- $monitor = set $monitor "namespace" $monitorNamespace -}}
-{{- $monitor = set $monitor "namespaceSelector" $workloadNamespace -}}
-{{- if not (hasKey $monitor "endpoints") -}}
-{{- $endpoint := dict "port" "http" "path" "/metrics" -}}
-{{- with .Values.serviceMonitor.interval -}}
-{{- $endpoint = set $endpoint "interval" . -}}
-{{- end -}}
-{{- with .Values.serviceMonitor.scrapeTimeout -}}
-{{- $endpoint = set $endpoint "scrapeTimeout" . -}}
-{{- end -}}
-{{- $monitor = set $monitor "endpoints" (list $endpoint) -}}
-{{- end -}}
+{{- $monitor = set $monitor "namespaceSelector" ($monitor.namespaceSelector | default $workloadNamespace) -}}
 {{- include "prometheus.serviceMonitor" (list . $labels $monitor) -}}
 {{- end -}}

@@ -13,9 +13,14 @@ serviceAccount:
   automountServiceAccountToken: true
 
 service:
-  annotations: {}
-  port: 7979
   enabled: true
+  type: ClusterIP
+  annotations: {}
+  ports:
+    - name: http
+      port: 7979
+      targetPort: http
+      protocol: TCP
 
 pdb: {}
 networkPolicy:
@@ -83,6 +88,11 @@ deployment:
     pullPolicy: IfNotPresent
   imagePullSecrets: []
   replicaCount: 1
+  containerName: external-dns
+  ports:
+    - name: http
+      containerPort: 7979
+      protocol: TCP
   autoscaling:
     enabled: false
     minReplicas: 1
@@ -199,10 +209,12 @@ google:
   zoneVisibility: ""
 serviceMonitor:
   enabled: false
-  additionalLabels: {}
+  labels: {}
   annotations: {}
   namespace: ""
-  interval: ""
-  scrapeTimeout: ""
+  namespaceSelector: ""
   targetLabels: []
+  endpoints:
+    - port: http
+      path: /metrics
 extraArgs: {}
