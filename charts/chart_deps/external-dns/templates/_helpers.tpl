@@ -41,8 +41,8 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 
 {{- define "external-dns.podLabels" -}}
 {{- $labels := include "external-dns.labels" . | fromYaml -}}
-{{- if .Values.podLabels -}}
-{{- $labels = mergeOverwrite $labels .Values.podLabels -}}
+{{- if .Values.deployment.podLabels -}}
+{{- $labels = mergeOverwrite $labels .Values.deployment.podLabels -}}
 {{- end -}}
 {{- toYaml $labels -}}
 {{- end -}}
@@ -56,8 +56,8 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{- define "external-dns.image" -}}
-{{- $repository := .Values.image.repository -}}
-{{- $tag := .Values.image.tag | default .Chart.AppVersion -}}
+{{- $repository := .Values.deployment.image.repository -}}
+{{- $tag := .Values.deployment.image.tag | default .Chart.AppVersion -}}
 {{- printf "%s:%s" $repository $tag -}}
 {{- end -}}
 

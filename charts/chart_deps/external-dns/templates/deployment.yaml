@@ -1,17 +1,20 @@
 {{- $labels := include "external-dns.labels" . | fromYaml -}}
 {{- $unused := "" -}}
-{{- $podSecurityContext := mustDeepCopy .Values.podSecurityContext -}}
-{{- if .Values.legacySecurityContext -}}
+{{- $deployment := tpl (toYaml .Values.deployment) . | fromYaml -}}
+{{- $podSecurityContext := mustDeepCopy $deployment.podSecurityContext -}}
+{{- if $deployment.legacySecurityContext -}}
 {{- $unused = unset $podSecurityContext "runAsNonRoot" -}}
 {{- $unused = unset $podSecurityContext "seccompProfile" -}}
 {{- end -}}
-{{- $deploymentStrategy := mustDeepCopy .Values.deploymentStrategy -}}
+{{- $deploymentStrategy := mustDeepCopy $deployment.strategy -}}
 {{- if eq $deploymentStrategy.type "Recreate" -}}
 {{- $unused = unset $deploymentStrategy "rollingUpdate" -}}
 {{- end -}}
-  {{- $args := mustDeepCopy .Values.args -}}
+  {{- $args := mustDeepCopy $deployment.args -}}
   {{- $provider := tpl (toString .Values.provider) . | trim -}}
-  {{- $imagePullSecrets := concat (.Values.global.imagePullSecrets | default list) (.Values.imagePullSecrets | default list) -}}
+  {{- $imagePullSecrets := concat (.Values.global.imagePullSecrets | default list) ($deployment.imagePullSecrets | default list) -}}
+  {{- $volumeMounts := concat ($deployment.volumeMounts | default list) ($deployment.extraVolumeMounts | default list) -}}
+  {{- $volumes := concat ($deployment.volumes | default list) ($deployment.extraVolumes | default list) -}}
   {{- if $provider -}}
   {{- $args = prepend $args (printf "--provider=%s" $provider) -}}
   {{- end -}}
@@ -58,40 +61,19 @@
   {{- $args = append $args (printf "--%s=%s" $key (tpl (toString $value) $)) -}}
   {{- end -}}
   {{- end -}}
-  {{- $deployment := dict
-  "name" (include "external-dns.fullname" .)
-  "replicaCount" .Values.replicaCount
-  "autoscaling" .Values.autoscaling
-  "revisionHistoryLimit" .Values.revisionHistoryLimit
-  "strategy" $deploymentStrategy
-  "annotations" .Values.deploymentAnnotations
-  "selectorLabels" (include "external-dns.selectorLabels" . | fromYaml)
-  "containerName" "external-dns"
-  "image" (include "external-dns.image" .)
-  "imagePullPolicy" .Values.image.pullPolicy
-  "imagePullSecrets" $imagePullSecrets
-  "command" .Values.command
-  "args" $args
-  "env" .Values.env
-  "ports" (list (dict "name" "http" "containerPort" 7979))
-  "podAnnotations" .Values.podAnnotations
-  "podLabels" (include "external-dns.podLabels" . | fromYaml)
-  "podSecurityContext" $podSecurityContext
-  "securityContext" .Values.securityContext
-  "automountServiceAccountToken" .Values.automountServiceAccountToken
-  "shareProcessNamespace" .Values.shareProcessNamespace
-  "terminationGracePeriodSeconds" .Values.terminationGracePeriodSeconds
-  "initContainers" .Values.initContainers
-  "livenessProbe" .Values.livenessProbe
-  "readinessProbe" .Values.readinessProbe
-  "volumeMounts" .Values.extraVolumeMounts
-  "volumes" .Values.extraVolumes
-  "sidecars" .Values.sidecars
-  "resources" .Values.resources
-  "serviceAccountName" (include "external-dns.serviceAccountName" .)
-  "nodeSelector" .Values.nodeSelector
-  "affinity" .Values.affinity
-  "topologySpreadConstraints" .Values.topologySpreadConstraints
-  "tolerations" .Values.tolerations
-  "priorityClassName" .Values.priorityClassName -}}
+  {{- $deployment = set $deployment "name" (include "external-dns.fullname" .) -}}
+  {{- $deployment = set $deployment "selectorLabels" (include "external-dns.selectorLabels" . | fromYaml) -}}
+  {{- $deployment = set $deployment "containerName" "external-dns" -}}
+  {{- $imagePullPolicy := $deployment.image.pullPolicy -}}
+  {{- $deployment = set $deployment "image" (include "external-dns.image" .) -}}
+  {{- $deployment = set $deployment "imagePullPolicy" $imagePullPolicy -}}
+  {{- $deployment = set $deployment "imagePullSecrets" $imagePullSecrets -}}
+  {{- $deployment = set $deployment "args" $args -}}
+  {{- $deployment = set $deployment "ports" (list (dict "name" "http" "containerPort" 7979)) -}}
+  {{- $deployment = set $deployment "podLabels" (include "external-dns.podLabels" . | fromYaml) -}}
+  {{- $deployment = set $deployment "podSecurityContext" $podSecurityContext -}}
+  {{- $deployment = set $deployment "strategy" $deploymentStrategy -}}
+  {{- $deployment = set $deployment "volumeMounts" $volumeMounts -}}
+  {{- $deployment = set $deployment "volumes" $volumes -}}
+  {{- $deployment = set $deployment "serviceAccountName" (include "external-dns.serviceAccountName" .) -}}
 {{- include "core.deployment" (list . $labels $deployment) -}}

@@ -3,23 +3,24 @@ external-dns:
   pdb:
     enabled: true
     maxUnavailable: 1
-  resources:
-    limits:
-      cpu: 300m
-      memory: 300Mi
-    requests:
-      cpu: 10m
-      memory: 35Mi
+  deployment:
+    resources:
+      limits:
+        cpu: 300m
+        memory: 300Mi
+      requests:
+        cpu: 10m
+        memory: 35Mi
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: '{{ .Release.Name }}'
+                  app.kubernetes.io/name: external-dns
+              topologyKey: kubernetes.io/hostname
+            weight: 1
   serviceAccount:
     create: false
     name: external-dns
-  affinity:
-    podAntiAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
-        - podAffinityTerm:
-            labelSelector:
-              matchLabels:
-                app.kubernetes.io/instance: '{{ .Release.Name }}'
-                app.kubernetes.io/name: external-dns
-            topologyKey: kubernetes.io/hostname
-          weight: 1

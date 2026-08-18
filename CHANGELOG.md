@@ -5,7 +5,9 @@ Enhancements:
   * replace the Bitnami dependency with a self-managed chart
   * update `image` and `crds` `v0.20.0` -> `v0.21.0`
   * derive the provider from the environment DNS configuration inside the chart
-* `app/core` adds reusable `PodDisruptionBudget` and `NetworkPolicy` templates
+* `app/core`:
+  * add reusable `HorizontalPodAutoscaler`, `PodDisruptionBudget` and `NetworkPolicy` templates
+  * extend Deployment and pod templates with additional configuration options
 * `environment` no longer injects external-dns-specific provider values into generated applications
 
 # 11.2.2

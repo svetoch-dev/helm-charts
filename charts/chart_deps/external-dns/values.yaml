@@ -1,10 +1,5 @@
 global:
   imagePullSecrets: []
-image:
-  repository: registry.k8s.io/external-dns/external-dns
-  tag: v0.21.0
-  pullPolicy: IfNotPresent
-imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 namespaceOverride: ""
@@ -80,27 +75,104 @@ rbac:
       resources: [virtualservers, transportservers]
       verbs: [get, watch, list]
 
-replicaCount: 1
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          # 80% of the default CPU request (10m) is approximately 8m per pod.
-          averageUtilization: 80
-  behavior: {}
-revisionHistoryLimit: 10
-deploymentAnnotations: {}
-deploymentStrategy:
-  type: RollingUpdate
-  rollingUpdate:
-    maxSurge: 25%
-    maxUnavailable: 25%
+deployment:
+  enabled: true
+  image:
+    repository: registry.k8s.io/external-dns/external-dns
+    tag: v0.21.0
+    pullPolicy: IfNotPresent
+  imagePullSecrets: []
+  replicaCount: 1
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            # 80% of the default CPU request (10m) is approximately 8m per pod.
+            averageUtilization: 80
+    behavior: {}
+  revisionHistoryLimit: 10
+  annotations: {}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  podAnnotations: {}
+  podLabels: {}
+  automountServiceAccountToken: true
+  shareProcessNamespace: false
+  podSecurityContext:
+    fsGroup: 1001
+    fsGroupChangePolicy: Always
+  legacySecurityContext: true
+  priorityClassName: ""
+  terminationGracePeriodSeconds: null
+  initContainers: {}
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+    privileged: false
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1001
+    runAsGroup: 1001
+    seLinuxOptions: {}
+    seccompProfile:
+      type: RuntimeDefault
+  env: []
+  # Set tcpSocket to null when replacing it with another probe handler.
+  livenessProbe:
+    tcpSocket:
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 2
+    successThreshold: 1
+  # Set httpGet to null when replacing it with another probe handler.
+  readinessProbe:
+    httpGet:
+      path: /healthz
+      port: http
+      scheme: HTTP
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+  volumeMounts:
+    - name: empty-dir
+      mountPath: /tmp
+      subPath: tmp-dir
+  volumes:
+    - name: empty-dir
+      emptyDir: {}
+  sidecars: []
+  command: []
+  args:
+    - --policy=upsert-only
+    - --registry=txt
+    - --interval=1m
+    - --log-level=info
+    - --log-format=json
+    - --metrics-address=:7979
+    - --source=service
+    - --source=ingress
+    - --no-expose-internal-ipv6
+  extraVolumeMounts: []
+  extraVolumes: []
+  resources: {}
+  nodeSelector: {}
+  affinity: {}
+  topologySpreadConstraints: []
+  tolerations: []
 provider: '{{ include "external-dns.providerName" . }}'
 aws:
   apiRetries: 3
@@ -125,64 +197,6 @@ google:
   project: ""
   batchChangeSize: 1000
   zoneVisibility: ""
-podLabels: {}
-podAnnotations: {}
-automountServiceAccountToken: true
-shareProcessNamespace: false
-podSecurityContext:
-  fsGroup: 1001
-  fsGroupChangePolicy: Always
-legacySecurityContext: true
-priorityClassName: ""
-terminationGracePeriodSeconds: null
-initContainers: {}
-securityContext:
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop: [ALL]
-  privileged: false
-  readOnlyRootFilesystem: true
-  runAsNonRoot: true
-  runAsUser: 1001
-  runAsGroup: 1001
-  seLinuxOptions: {}
-  seccompProfile:
-    type: RuntimeDefault
-env: []
-# Set tcpSocket to null when replacing it with another probe handler.
-livenessProbe:
-  tcpSocket:
-    port: http
-  initialDelaySeconds: 10
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 2
-  successThreshold: 1
-# Set httpGet to null when replacing it with another probe handler.
-readinessProbe:
-  httpGet:
-    path: /healthz
-    port: http
-    scheme: HTTP
-  initialDelaySeconds: 5
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 6
-  successThreshold: 1
-extraVolumes:
-  - name: empty-dir
-    emptyDir: {}
-extraVolumeMounts:
-  - name: empty-dir
-    mountPath: /tmp
-    subPath: tmp-dir
-sidecars: []
-resources: {}
-nodeSelector: {}
-affinity: {}
-topologySpreadConstraints: []
-tolerations: []
-
 serviceMonitor:
   enabled: false
   additionalLabels: {}
@@ -191,16 +205,4 @@ serviceMonitor:
   interval: ""
   scrapeTimeout: ""
   targetLabels: []
-
-command: []
-args:
-  - --policy=upsert-only
-  - --registry=txt
-  - --interval=1m
-  - --log-level=info
-  - --log-format=json
-  - --metrics-address=:7979
-  - --source=service
-  - --source=ingress
-  - --no-expose-internal-ipv6
 extraArgs: {}
