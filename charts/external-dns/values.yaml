@@ -1,6 +1,8 @@
 external-dns:
   enabled: false
-  # Overrides kept in the same layout as the upstream external-dns chart.
+  pdb:
+    enabled: true
+    maxUnavailable: 1
   resources:
     limits:
       cpu: 300m

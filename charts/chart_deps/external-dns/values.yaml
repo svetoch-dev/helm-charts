@@ -11,10 +11,10 @@ namespaceOverride: ""
 commonLabels: {}
 
 serviceAccount:
-  create: true
+  create: false
   labels: {}
   annotations: {}
-  name: ""
+  name: external-dns
   automountServiceAccountToken: true
 
 service:
@@ -22,10 +22,7 @@ service:
   port: 7979
   enabled: true
 
-# Project compatibility settings retained from the former Bitnami chart.
-pdb:
-  enabled: true
-  maxUnavailable: 1
+pdb: {}
 networkPolicy:
   enabled: true
   policyTypes:
