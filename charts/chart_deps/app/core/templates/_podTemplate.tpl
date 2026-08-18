@@ -8,13 +8,10 @@ template:
     {{- toYaml . | nindent 6 }}
     {{- end }}
     {{- if or $obj.selectorLabels $obj.podLabels }}
+    {{- $podLabels := mustDeepCopy ($obj.podLabels | default dict) }}
+    {{- $podLabels = mergeOverwrite $podLabels ($obj.selectorLabels | default dict) }}
     labels:
-    {{- with $obj.selectorLabels }}
-    {{- tpl (toYaml .) $ | nindent 6 }}
-    {{- end }}
-    {{- with $obj.podLabels }}
-    {{- tpl (toYaml .) $ | nindent 6 }}
-    {{- end }}
+    {{- tpl (toYaml $podLabels) $ | nindent 6 }}
     {{- end }}
   spec:
     {{- if hasKey $obj "automountServiceAccountToken" }}

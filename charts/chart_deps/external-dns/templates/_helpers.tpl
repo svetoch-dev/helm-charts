@@ -44,8 +44,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.podLabels -}}
 {{- $labels = mergeOverwrite $labels .Values.podLabels -}}
 {{- end -}}
-{{- $_ := unset $labels "app.kubernetes.io/instance" -}}
-{{- $_ = unset $labels "app.kubernetes.io/name" -}}
 {{- toYaml $labels -}}
 {{- end -}}
 
