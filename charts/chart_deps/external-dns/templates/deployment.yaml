@@ -5,28 +5,6 @@
 {{- $unused = unset $podSecurityContext "runAsNonRoot" -}}
 {{- $unused = unset $podSecurityContext "seccompProfile" -}}
 {{- end -}}
-{{- $livenessProbe := mustDeepCopy .Values.livenessProbe -}}
-{{- if hasKey $livenessProbe "exec" -}}
-{{- $unused = unset $livenessProbe "tcpSocket" -}}
-{{- $unused = unset $livenessProbe "httpGet" -}}
-{{- $unused = unset $livenessProbe "grpc" -}}
-{{- else if hasKey $livenessProbe "grpc" -}}
-{{- $unused = unset $livenessProbe "tcpSocket" -}}
-{{- $unused = unset $livenessProbe "httpGet" -}}
-{{- else if hasKey $livenessProbe "httpGet" -}}
-{{- $unused = unset $livenessProbe "tcpSocket" -}}
-{{- end -}}
-{{- $readinessProbe := mustDeepCopy .Values.readinessProbe -}}
-{{- if hasKey $readinessProbe "exec" -}}
-{{- $unused = unset $readinessProbe "httpGet" -}}
-{{- $unused = unset $readinessProbe "tcpSocket" -}}
-{{- $unused = unset $readinessProbe "grpc" -}}
-{{- else if hasKey $readinessProbe "grpc" -}}
-{{- $unused = unset $readinessProbe "httpGet" -}}
-{{- $unused = unset $readinessProbe "tcpSocket" -}}
-{{- else if hasKey $readinessProbe "tcpSocket" -}}
-{{- $unused = unset $readinessProbe "httpGet" -}}
-{{- end -}}
 {{- $deploymentStrategy := mustDeepCopy .Values.deploymentStrategy -}}
 {{- if eq $deploymentStrategy.type "Recreate" -}}
 {{- $unused = unset $deploymentStrategy "rollingUpdate" -}}
@@ -104,8 +82,8 @@
   "shareProcessNamespace" .Values.shareProcessNamespace
   "terminationGracePeriodSeconds" .Values.terminationGracePeriodSeconds
   "initContainers" .Values.initContainers
-  "livenessProbe" $livenessProbe
-  "readinessProbe" $readinessProbe
+  "livenessProbe" .Values.livenessProbe
+  "readinessProbe" .Values.readinessProbe
   "volumeMounts" .Values.extraVolumeMounts
   "volumes" .Values.extraVolumes
   "sidecars" .Values.sidecars

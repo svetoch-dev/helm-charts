@@ -150,6 +150,7 @@ securityContext:
   capabilities:
     drop: [ALL]
 env: []
+# Set tcpSocket to null when replacing it with another probe handler.
 livenessProbe:
   tcpSocket:
     port: http
@@ -158,6 +159,7 @@ livenessProbe:
   timeoutSeconds: 5
   failureThreshold: 2
   successThreshold: 1
+# Set httpGet to null when replacing it with another probe handler.
 readinessProbe:
   httpGet:
     path: /healthz
