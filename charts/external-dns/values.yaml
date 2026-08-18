@@ -1,20 +1,6 @@
 external-dns:
   enabled: false
   # Overrides kept in the same layout as the upstream external-dns chart.
-  image:
-    repository: registry.k8s.io/external-dns/external-dns
-    tag: v0.21.0
-  provider: '{{ include "external-dns.providerName" . }}'
-  args:
-    - --policy=upsert-only
-    - --registry=txt
-    - --interval=1m
-    - --log-level=info
-    - --log-format=json
-    - --metrics-address=:7979
-    - --source=service
-    - --source=ingress
-    - --no-expose-internal-ipv6
   resources:
     limits:
       cpu: 300m
@@ -25,9 +11,6 @@ external-dns:
   serviceAccount:
     create: false
     name: external-dns
-  podSecurityContext:
-    fsGroup: 1001
-    fsGroupChangePolicy: Always
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
@@ -38,16 +21,3 @@ external-dns:
                 app.kubernetes.io/name: external-dns
             topologyKey: kubernetes.io/hostname
           weight: 1
-  legacySecurityContext: true
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop: [ALL]
-    privileged: false
-    readOnlyRootFilesystem: true
-    runAsGroup: 1001
-    runAsNonRoot: true
-    runAsUser: 1001
-    seLinuxOptions: {}
-    seccompProfile:
-      type: RuntimeDefault
