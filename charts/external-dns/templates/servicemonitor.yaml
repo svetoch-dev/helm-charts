@@ -1,4 +1,4 @@
-{{- if .Values.serviceMonitor.enabled -}}
+{{- if and .Values.enabled .Values.serviceMonitor.enabled -}}
 {{- $labels := include "external-dns.labels" . | fromYaml -}}
 {{- $monitor := tpl (toYaml .Values.serviceMonitor) . | fromYaml -}}
 {{- $monitor = set $monitor "name" (include "external-dns.fullname" .) -}}

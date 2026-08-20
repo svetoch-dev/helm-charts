@@ -1,5 +1,7 @@
+{{- if .Values.enabled }}
 {{- $labels := include "external-dns.labels" . | fromYaml }}
 {{- $pdb := mustDeepCopy .Values.pdb }}
 {{- $pdb = set $pdb "name" (include "external-dns.fullname" .) }}
 {{- $pdb = set $pdb "selectorLabels" (include "external-dns.selectorLabels" . | fromYaml) }}
 {{- include "core.podDisruptionBudget" (list . $labels $pdb) }}
+{{- end }}

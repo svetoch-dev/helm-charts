@@ -1,3 +1,4 @@
+{{- if .Values.enabled }}
 {{- if .Values.deployment.autoscaling.enabled -}}
 {{- $labels := include "external-dns.labels" . | fromYaml -}}
 {{- $hpa := mustDeepCopy .Values.deployment.autoscaling -}}
@@ -5,3 +6,4 @@
 {{- $hpa = set $hpa "targetName" (include "external-dns.fullname" .) -}}
 {{- include "core.horizontalPodAutoscaler" (list . $labels $hpa) -}}
 {{- end -}}
+{{- end }}

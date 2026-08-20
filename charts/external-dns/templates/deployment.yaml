@@ -1,3 +1,4 @@
+{{- if .Values.enabled }}
 {{- $labels := include "external-dns.labels" . | fromYaml -}}
 {{- $deployment := tpl (toYaml .Values.deployment) . | fromYaml -}}
 {{- $podSecurityContext := mustDeepCopy $deployment.podSecurityContext -}}
@@ -27,3 +28,4 @@
   {{- $deployment = set $deployment "volumes" $volumes -}}
   {{- $deployment = set $deployment "serviceAccountName" (include "external-dns.serviceAccountName" .) -}}
 {{- include "core.deployment" (list . $labels $deployment) -}}
+{{- end }}

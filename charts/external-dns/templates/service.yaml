@@ -1,4 +1,4 @@
-{{- if .Values.service.enabled -}}
+{{- if and .Values.enabled .Values.service.enabled -}}
 {{- $labels := include "external-dns.labels" . | fromYaml -}}
 {{- $service := tpl (toYaml .Values.service) . | fromYaml -}}
 {{- $service = set $service "name" (include "external-dns.fullname" .) -}}

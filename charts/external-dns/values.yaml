@@ -1,26 +1,238 @@
-external-dns:
+global:
+  imagePullSecrets: []
+enabled: true
+nameOverride: ""
+fullnameOverride: ""
+namespaceOverride: ""
+commonLabels: {}
+
+serviceAccount:
+  create: false
+  labels: {}
+  annotations: {}
+  name: external-dns
+  automountServiceAccountToken: true
+
+service:
+  enabled: true
+  type: ClusterIP
+  annotations: {}
+  ports:
+    - name: http
+      port: 7979
+      targetPort: http
+      protocol: TCP
+
+pdb:
+  enabled: true
+  maxUnavailable: 1
+networkPolicy:
+  enabled: true
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - ports:
+        - port: 7979
+          protocol: TCP
+  egress:
+    - {}
+
+rbac:
+  create: true
+  additionalPermissions: []
+  # Kept explicit so the local core-based RBAC template remains easy to extend.
+  rules:
+    - apiGroups: [""]
+      resources: [services, pods, nodes, namespaces]
+      verbs: [get, list, watch]
+    - apiGroups: [discovery.k8s.io]
+      resources: [endpointslices]
+      verbs: [get, list, watch]
+    - apiGroups: [extensions, networking.k8s.io]
+      resources: [ingresses]
+      verbs: [get, list, watch]
+    - apiGroups: [route.openshift.io]
+      resources: [routes]
+      verbs: [get, list, watch]
+    - apiGroups: [gateway.networking.k8s.io]
+      resources: [gateways, httproutes, tlsroutes, tcproutes, udproutes, grpcroutes]
+      verbs: [get, list, watch]
+    - apiGroups: [getambassador.io]
+      resources: [hosts]
+      verbs: [get, list, watch]
+    - apiGroups: [networking.istio.io]
+      resources: [gateways, virtualservices]
+      verbs: [get, list, watch]
+    - apiGroups: [zalando.org]
+      resources: [routegroups]
+      verbs: [get, list, watch]
+    - apiGroups: [zalando.org]
+      resources: [routegroups/status]
+      verbs: [patch, update]
+    - apiGroups: [projectcontour.io]
+      resources: [httpproxies]
+      verbs: [get, watch, list]
+    - apiGroups: [gloo.solo.io, gateway.solo.io]
+      resources: [proxies, virtualservices]
+      verbs: [get, list, watch]
+    - apiGroups: [configuration.konghq.com]
+      resources: [tcpingresses]
+      verbs: [get, list, watch]
+    - apiGroups: [cis.f5.com]
+      resources: [virtualservers, transportservers]
+      verbs: [get, watch, list]
+
+deployment:
+  enabled: true
+  image:
+    repository: registry.k8s.io/external-dns/external-dns
+    tag: v0.21.0
+    pullPolicy: IfNotPresent
+  imagePullSecrets: []
+  replicaCount: 1
+  containerName: external-dns
+  ports:
+    - name: http
+      containerPort: 7979
+      protocol: TCP
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            # 80% of the default CPU request (10m) is approximately 8m per pod.
+            averageUtilization: 80
+    behavior: {}
+  revisionHistoryLimit: 10
+  annotations: {}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  podAnnotations: {}
+  podLabels: {}
+  automountServiceAccountToken: true
+  shareProcessNamespace: false
+  podSecurityContext:
+    fsGroup: 1001
+    fsGroupChangePolicy: Always
+  legacySecurityContext: true
+  priorityClassName: ""
+  terminationGracePeriodSeconds: null
+  initContainers: {}
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+    privileged: false
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1001
+    runAsGroup: 1001
+    seLinuxOptions: {}
+    seccompProfile:
+      type: RuntimeDefault
+  env: []
+  # Set tcpSocket to null when replacing it with another probe handler.
+  livenessProbe:
+    tcpSocket:
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 2
+    successThreshold: 1
+  # Set httpGet to null when replacing it with another probe handler.
+  readinessProbe:
+    httpGet:
+      path: /healthz
+      port: http
+      scheme: HTTP
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+  volumeMounts:
+    - name: empty-dir
+      mountPath: /tmp
+      subPath: tmp-dir
+  volumes:
+    - name: empty-dir
+      emptyDir: {}
+  sidecars: []
+  command: []
+  args:
+    - --policy=upsert-only
+    - --registry=txt
+    - --interval=1m
+    - --log-level=info
+    - --log-format=json
+    - --metrics-address=:7979
+    - --source=service
+    - --source=ingress
+    - --no-expose-internal-ipv6
+  extraVolumeMounts: []
+  extraVolumes: []
+  resources:
+    limits:
+      cpu: 300m
+      memory: 300Mi
+    requests:
+      cpu: 10m
+      memory: 35Mi
+  nodeSelector: {}
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: '{{ .Release.Name }}'
+                app.kubernetes.io/name: external-dns
+            topologyKey: kubernetes.io/hostname
+          weight: 1
+  topologySpreadConstraints: []
+  tolerations: []
+provider: '{{ include "external-dns.providerName" . }}'
+aws:
+  apiRetries: 3
+  zoneType: ""
+  assumeRoleArn: ""
+  batchChangeSize: 1000
+  zonesCacheDuration: 0
+  zoneTags: []
+  preferCNAME: false
+  evaluateTargetHealth: ""
+  dynamodbTable: ""
+  dynamodbRegion: ""
+  zoneMatchParent: false
+alibabacloud:
+  zoneType: ""
+cloudflare:
+  proxied: true
+  dnsRecordsPerPage: 100
+  regionalServices: false
+  regionKey: ""
+google:
+  project: ""
+  batchChangeSize: 1000
+  zoneVisibility: ""
+serviceMonitor:
   enabled: false
-  pdb:
-    enabled: true
-    maxUnavailable: 1
-  deployment:
-    resources:
-      limits:
-        cpu: 300m
-        memory: 300Mi
-      requests:
-        cpu: 10m
-        memory: 35Mi
-    affinity:
-      podAntiAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/instance: '{{ .Release.Name }}'
-                  app.kubernetes.io/name: external-dns
-              topologyKey: kubernetes.io/hostname
-            weight: 1
-  serviceAccount:
-    create: false
-    name: external-dns
+  labels: {}
+  annotations: {}
+  namespace: ""
+  namespaceSelector: ""
+  targetLabels: []
+  endpoints:
+    - port: http
+      path: /metrics
+extraArgs: {}
