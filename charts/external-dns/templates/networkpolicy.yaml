@@ -1,8 +1,6 @@
-{{- if .Values.enabled }}
 {{- $labels := include "external-dns.labels" . | fromYaml }}
 {{- $labels = set $labels "app.kubernetes.io/component" "controller" }}
 {{- $networkPolicy := mustDeepCopy .Values.networkPolicy }}
 {{- $networkPolicy = set $networkPolicy "name" (include "external-dns.fullname" .) }}
 {{- $networkPolicy = set $networkPolicy "selectorLabels" (include "external-dns.selectorLabels" . | fromYaml) }}
 {{- include "core.networkPolicy" (list . $labels $networkPolicy) }}
-{{- end }}

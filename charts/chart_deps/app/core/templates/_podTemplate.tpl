@@ -39,10 +39,14 @@ template:
     {{- end }}
     {{- if $obj.initContainers }}
     initContainers:
+    {{- if kindIs "map" $obj.initContainers }}
     {{- range $name, $container := $obj.initContainers }}
     {{- $initContainer := mustDeepCopy $container }}
     {{- $initContainer = set $initContainer "name" ($container.name | default $name) }}
     {{- tpl (toYaml (list $initContainer)) $ | nindent 6 }}
+    {{- end }}
+    {{- else }}
+    {{- tpl (toYaml $obj.initContainers) $ | nindent 4 }}
     {{- end }}
     {{- end }}
     containers:

@@ -1,6 +1,5 @@
 global:
   imagePullSecrets: []
-enabled: true
 nameOverride: ""
 fullnameOverride: ""
 namespaceOverride: ""
