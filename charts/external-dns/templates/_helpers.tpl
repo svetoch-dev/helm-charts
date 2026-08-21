@@ -62,19 +62,16 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
 {{- define "external-dns.providerName" -}}
-{{- $dns := get (get .Values.global "env" | default dict) "dns" | default dict -}}
-{{- $provider := get $dns "provider" -}}
-{{- $dnsType := get $dns "type" -}}
+{{- $dnsType := .Values.global.env.dns.type -}}
 {{- if eq $dnsType "gcp" -}}
-{{- $provider = default "google" $provider -}}
+google
 {{- else if eq $dnsType "yc" -}}
-{{- $provider = default "webhook" $provider -}}
+webhook
 {{- else if eq $dnsType "aws" -}}
-{{- $provider = default "aws" $provider -}}
+aws
 {{- else if eq $dnsType "cloudflare" -}}
-{{- $provider = default "cloudflare" $provider -}}
+cloudflare
 {{- end -}}
-{{- tpl (toString ($provider | default "")) . -}}
 {{- end -}}
 
 {{- define "external-dns.args" -}}

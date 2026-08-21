@@ -2,13 +2,15 @@
 
 Enhancements:
 * `external-dns`:
-  * replace the Bitnami dependency with a self-managed chart
-  * update `image` and `crds` `v0.20.0` -> `v0.21.0`
-  * derive the provider from the environment DNS configuration inside the chart
+  * move to a standalone chart in `charts/external-dns`, enabled or disabled with `chart_apps.external-dns.enabled`
+  * replace the Bitnami dependency with a self-managed chart using the original external-dns image
+  * update external-dns image and CRD from `v0.20.0` to `v0.21.0`
+  * add provider-specific arguments, RBAC, Deployment, Service, ServiceMonitor, PDB, NetworkPolicy and HPA configuration
+  * derive the default provider from the mandatory `global.env.dns.type` and support a local `provider` override
+* `environment` no longer propagates the external-dns-specific `dns.provider` value
 * `app/core`:
   * add reusable `HorizontalPodAutoscaler`, `PodDisruptionBudget` and `NetworkPolicy` templates
   * extend Deployment and pod templates with additional configuration options
-* `environment` no longer injects external-dns-specific provider values into generated applications
 
 # 11.2.2
 

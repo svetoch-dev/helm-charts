@@ -106,9 +106,6 @@ spec:
               type: {{ $env_obj.dns.type }}
               {{- end }}
               domain: {{ $dnsDomain }}
-              {{- with $env_obj.dns.provider }}
-              provider: {{ . | quote }}
-              {{- end }}
             kubernetes:
             {{- toYaml $env_obj.kubernetes | nindent 14 }}
             cloud:
