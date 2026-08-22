@@ -22,21 +22,6 @@
 {{- .Values.global.repo.revision | default "master" -}}
 {{- end -}}
 
-{{- define "infra.dnsProvider" -}}
-{{- $dnsType := .dns.type | default "" -}}
-{{- $dnsProvider := .dns.provider -}}
-{{- if eq $dnsType "gcp" -}}
-{{- $dnsProvider = default "google" $dnsProvider -}}
-{{- else if eq $dnsType "yc" -}}
-{{- $dnsProvider = default "webhook" $dnsProvider -}}
-{{- else if eq $dnsType "aws" -}}
-{{- $dnsProvider = default "aws" $dnsProvider -}}
-{{- else if eq $dnsType "cloudflare" -}}
-{{- $dnsProvider = default "cloudflare" $dnsProvider -}}
-{{- end -}}
-{{- $dnsProvider | default "" -}}
-{{- end -}}
-
 {{- define "infra.bucketType" -}}
 {{- $cloudName := .cloud.name | default "" -}}
 {{- $bucketType := "" -}}
@@ -65,7 +50,6 @@
 {{- end -}}
 {{- $dnsDomainTemplate := $dns.domain | default (printf "%s.%s" $shortName $companyDomain) -}}
 {{- $_ := set $dns "domain" $dnsDomainTemplate -}}
-{{- $_ = set $dns "provider" (include "infra.dnsProvider" (dict "dns" $dns)) -}}
 {{- $cloud := deepCopy $env.cloud -}}
 {{- $buckets := dict -}}
 {{- with $cloud.buckets -}}

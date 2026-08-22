@@ -8,17 +8,20 @@ template:
     {{- toYaml . | nindent 6 }}
     {{- end }}
     {{- if or $obj.selectorLabels $obj.podLabels }}
+    {{- $podLabels := mustDeepCopy ($obj.podLabels | default dict) }}
+    {{- $podLabels = mergeOverwrite $podLabels ($obj.selectorLabels | default dict) }}
     labels:
-    {{- with $obj.selectorLabels }}
-    {{- tpl (toYaml .) $ | nindent 6 }}
-    {{- end }}
-    {{- with $obj.podLabels }}
-    {{- tpl (toYaml .) $ | nindent 6 }}
-    {{- end }}
+    {{- tpl (toYaml $podLabels) $ | nindent 6 }}
     {{- end }}
   spec:
     {{- if hasKey $obj "automountServiceAccountToken" }}
     automountServiceAccountToken: {{ $obj.automountServiceAccountToken }}
+    {{- end }}
+    {{- if $obj.shareProcessNamespace }}
+    shareProcessNamespace: true
+    {{- end }}
+    {{- if ne $obj.terminationGracePeriodSeconds nil }}
+    terminationGracePeriodSeconds: {{ $obj.terminationGracePeriodSeconds }}
     {{- end }}
     {{- with $obj.imagePullSecrets }}
     imagePullSecrets:
@@ -36,21 +39,14 @@ template:
     {{- end }}
     {{- if $obj.initContainers }}
     initContainers:
+    {{- if kindIs "map" $obj.initContainers }}
     {{- range $name, $container := $obj.initContainers }}
-      - name: {{ $container.name }}
-        {{- with $container.command }}
-        command:
-        {{- tpl (toYaml .) $ | nindent 10 }}
-        {{- end }}
-        image: "{{ tpl $container.image $ }}"
-        {{- with $container.volumeMounts }}
-        volumeMounts:
-        {{- tpl (toYaml .) $ | nindent 10 }}
-        {{- end }}
-        {{- with $container.env }}
-        env:
-        {{-  tpl (toYaml .) $ | nindent 10}}
-        {{- end }}
+    {{- $initContainer := mustDeepCopy $container }}
+    {{- $initContainer = set $initContainer "name" ($container.name | default $name) }}
+    {{- tpl (toYaml (list $initContainer)) $ | nindent 6 }}
+    {{- end }}
+    {{- else }}
+    {{- tpl (toYaml $obj.initContainers) $ | nindent 4 }}
     {{- end }}
     {{- end }}
     containers:
@@ -99,6 +95,9 @@ template:
         volumeMounts:
         {{- tpl (toYaml .) $ | nindent 10 }}
         {{- end }}
+    {{- with $obj.sidecars }}
+    {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
     {{- with $obj.nodeSelector }}
     nodeSelector:
     {{- tpl (toYaml .) $ | nindent 6 }}
@@ -107,9 +106,16 @@ template:
     affinity:
     {{- tpl (toYaml .) $ | nindent 6 }}
     {{- end }}
+    {{- with $obj.topologySpreadConstraints }}
+    topologySpreadConstraints:
+    {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
     {{- with $obj.tolerations }}
     tolerations:
     {{- tpl (toYaml .) $ | nindent 6 }}
+    {{- end }}
+    {{- with $obj.priorityClassName }}
+    priorityClassName: {{ tpl . $ }}
     {{- end }}
     {{- with $obj.volumes }}
     volumes: 

@@ -1,0 +1,29 @@
+{{- $labels := include "external-dns.labels" . | fromYaml -}}
+{{- $deployment := tpl (toYaml .Values.deployment) . | fromYaml -}}
+{{- $podSecurityContext := mustDeepCopy $deployment.podSecurityContext -}}
+{{- if $deployment.legacySecurityContext -}}
+{{- $podSecurityContext = omit $podSecurityContext "runAsNonRoot" "seccompProfile" -}}
+{{- end -}}
+{{- $deploymentStrategy := mustDeepCopy $deployment.strategy -}}
+{{- if eq $deploymentStrategy.type "Recreate" -}}
+{{- $deploymentStrategy = omit $deploymentStrategy "rollingUpdate" -}}
+{{- end -}}
+  {{- $args := include "external-dns.args" . | fromYamlArray -}}
+  {{- $imagePullSecrets := concat (.Values.global.imagePullSecrets | default list) ($deployment.imagePullSecrets | default list) -}}
+  {{- $volumeMounts := concat ($deployment.volumeMounts | default list) ($deployment.extraVolumeMounts | default list) -}}
+  {{- $volumes := concat ($deployment.volumes | default list) ($deployment.extraVolumes | default list) -}}
+  {{- $deployment = set $deployment "name" (include "external-dns.fullname" .) -}}
+  {{- $deployment = set $deployment "selectorLabels" (include "external-dns.selectorLabels" . | fromYaml) -}}
+  {{- $deployment = set $deployment "containerName" "external-dns" -}}
+  {{- $imagePullPolicy := $deployment.image.pullPolicy -}}
+  {{- $deployment = set $deployment "image" (include "external-dns.image" .) -}}
+  {{- $deployment = set $deployment "imagePullPolicy" $imagePullPolicy -}}
+  {{- $deployment = set $deployment "imagePullSecrets" $imagePullSecrets -}}
+  {{- $deployment = set $deployment "args" $args -}}
+  {{- $deployment = set $deployment "podLabels" (include "external-dns.podLabels" . | fromYaml) -}}
+  {{- $deployment = set $deployment "podSecurityContext" $podSecurityContext -}}
+  {{- $deployment = set $deployment "strategy" $deploymentStrategy -}}
+  {{- $deployment = set $deployment "volumeMounts" $volumeMounts -}}
+  {{- $deployment = set $deployment "volumes" $volumes -}}
+  {{- $deployment = set $deployment "serviceAccountName" (include "external-dns.serviceAccountName" .) -}}
+{{- include "core.deployment" (list . $labels $deployment) -}}

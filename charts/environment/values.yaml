@@ -76,9 +76,6 @@ chart_apps:
     enabled: false
   external-dns:
     enabled: false
-    values: |
-      external-dns:
-        provider: {{ .Values.global.env.dns.provider | quote }}
   gha-runner:
     enabled: false
     values: |

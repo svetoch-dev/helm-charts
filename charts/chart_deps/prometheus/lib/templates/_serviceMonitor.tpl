@@ -7,6 +7,10 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
+  {{- with $obj.annotations }}
+  annotations:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
   labels:
   {{- if $obj.prometheusSelector }}
   {{ tpl (toYaml $obj.prometheusSelector) . | nindent 4}}
@@ -29,7 +33,7 @@ spec:
     any: true
   {{- else }}
     matchNames:
-    - {{ $obj.namespace }}
+    - {{ $obj.namespaceSelector | default $obj.namespace }}
   {{- end }}
   {{- with $obj.selectorLabels }}
   selector:

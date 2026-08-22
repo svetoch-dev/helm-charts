@@ -1,10 +1,13 @@
 apiVersion: v2
 name: external-dns
 version: 0.1.0
+appVersion: "0.21.0"
+description: Chart for configuring and installing external-dns
+
 dependencies:
-  #https://github.com/bitnami/charts/tree/main/bitnami/external-dns
-  - name: external-dns
-    version: 9.0.3
-    repository: oci://registry-1.docker.io/bitnamicharts
-    alias: external-dns
-    condition: external-dns.enabled
+  - name: core
+    version: 0.1.0
+    repository: file://../chart_deps/app/core
+  - name: prometheus-lib
+    version: 0.1.0
+    repository: file://../chart_deps/prometheus/lib

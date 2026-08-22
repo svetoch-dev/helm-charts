@@ -1,0 +1,8 @@
+{{- $labels := include "external-dns.labels" . | fromYaml -}}
+{{- $clusterRole := dict
+  "enabled" .Values.rbac.create
+  "name" (include "external-dns.fullname" .)
+  "rules" (concat (mustDeepCopy .Values.rbac.rules) .Values.rbac.additionalPermissions)
+  "serviceAccount" (dict "name" (include "external-dns.serviceAccountName" .))
+-}}
+{{- include "core.clusterrole" (list . $labels $clusterRole) -}}

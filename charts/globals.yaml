@@ -22,7 +22,6 @@ global:
     dns:
       domain:
       type:
-      provider:
     cloud:
       name: ""
       buckets:
