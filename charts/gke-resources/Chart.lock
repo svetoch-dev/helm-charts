@@ -1,6 +1,6 @@
 dependencies:
-- name: ""
-  repository: file://../chart_deps/gcp/compute-class
+- name: compute-class
+  repository: file://../chart_deps/gke/compute-class
   version: 0.1.0
-digest: sha256:a2065262a93e2d9e2e5bf9f0eabadbc7a3a74a5dd89c3795e5918159c4286f1b
-generated: "2026-09-12T00:48:52.608892414+03:00"
+digest: sha256:ee3cbb8ee63b093569955e2e744c7621cdde53c1725baeb30a0156490647cdd8
+generated: "2026-09-12T01:09:11.683811452+03:00"

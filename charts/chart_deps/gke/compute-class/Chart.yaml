@@ -1,5 +1,5 @@
 apiVersion: v2
 appVersion: "1.0"
 description: Chart for configuring GKE ComputeClass resources
-name: gcp-compute-class
+name: compute-class
 version: 0.1.0
