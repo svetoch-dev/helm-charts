@@ -246,3 +246,5 @@ chart_apps:
         runners:
           secret: "runner-app"
           serviceAccount: "runner-app"
+  gke-resources:
+    enabled: false

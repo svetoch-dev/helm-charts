@@ -1,0 +1,19 @@
+# ComputeClasses is a map keyed by the ComputeClass metadata.name.
+# All fields other than enabled are rendered directly under spec, so every
+# option supported by the cloud.google.com/v1 ComputeClass CRD can be used.
+computeClasses: {}
+
+# Example:
+# computeClasses:
+#   cost-optimized:
+#     enabled: true
+#     priorities:
+#       - machineFamily: n4
+#         spot: true
+#       - machineFamily: n4
+#         spot: false
+#     nodePoolAutoCreation:
+#       enabled: true
+#     activeMigration:
+#       optimizeRulePriority: true
+#     whenUnsatisfiable: DoNotScaleUp

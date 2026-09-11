@@ -1,0 +1,9 @@
+apiVersion: v2
+name: gke-resources
+version: 0.1.0
+dependencies:
+  - name: compute-class
+    version: 0.1.0
+    repository: file://../chart_deps/gke/compute-class
+    alias: compute-class
+    condition: compute-class.enabled
