@@ -1,0 +1,15 @@
+{{- range $computeClassName, $computeClass := .Values.computeClasses }}
+{{- if $computeClass.enabled }}
+
+---
+apiVersion: cloud.google.com/v1
+kind: ComputeClass
+metadata:
+  labels:
+{{- include "gcp-compute-class.labels" $ | nindent 4 }}
+  name: {{ tpl $computeClassName $ }}
+spec:
+{{- tpl (toYaml (omit $computeClass "enabled")) $ | nindent 2 }}
+
+{{- end }}
+{{- end }}

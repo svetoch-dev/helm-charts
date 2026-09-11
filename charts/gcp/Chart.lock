@@ -1,0 +1,6 @@
+dependencies:
+- name: ""
+  repository: file://../chart_deps/gcp/compute-class
+  version: 0.1.0
+digest: sha256:a2065262a93e2d9e2e5bf9f0eabadbc7a3a74a5dd89c3795e5918159c4286f1b
+generated: "2026-09-12T00:48:52.608892414+03:00"
