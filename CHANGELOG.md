@@ -1,3 +1,10 @@
+# 11.4.0
+
+Featues:
+* `gke-resources`:
+  * Chart for gke specific resources like ComputeClass, FrontendConfigs, BackendConfigs etc
+* `char_deps/gke/compute-class` Chart for configuring GKE ComputeClass resources
+
 # 11.3.0
 
 Enhancements:
