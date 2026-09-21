@@ -104,7 +104,7 @@ spec:
   priorityClassName: "{{ $redis.priorityClassName }}"
   {{- end }}
   {{- if $redis.affinity }}
-  affinity: {{ toYaml $redis.affinity | nindent 4 }}
+  affinity: {{ tpl (toYaml $redis.affinity) . | nindent 4 }}
   {{- end }}
   {{- if $redis.tolerations }}
   tolerations: {{ toYaml $redis.tolerations | nindent 4 }}

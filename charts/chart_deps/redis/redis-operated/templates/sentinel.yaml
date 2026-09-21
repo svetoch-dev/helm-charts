@@ -108,7 +108,7 @@ spec:
   priorityClassName: "{{ $sentinel.priorityClassName }}"
   {{- end }}
   {{- if $sentinel.affinity }}
-  affinity: {{ toYaml $sentinel.affinity | nindent 4 }}
+  affinity: {{ tpl (toYaml $sentinel.affinity) . | nindent 4 }}
   {{- end }}
   {{- if $sentinel.tolerations }}
   tolerations: {{ toYaml $sentinel.tolerations | nindent 4 }}
