@@ -3,6 +3,7 @@
 Enhancements:
 * `rabbitmq-cluster`:
   * increase default resource requests and limits for `setup-container`
+  * add the `app.kubernetes.io/instance` label to RabbitMQ pod templates
 
 Fixes:
 * `redis-operated`:
