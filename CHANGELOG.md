@@ -1,3 +1,14 @@
+# 11.4.1
+
+Enhancements:
+* `rabbitmq-cluster`:
+  * increase default resource requests and limits for `setup-container`
+  * add the `app.kubernetes.io/instance` label to RabbitMQ pod templates
+
+Fixes:
+* `redis-operated`:
+  * render Redis and Sentinel `affinity` values with `tpl`
+
 # 11.4.0
 
 Featues:

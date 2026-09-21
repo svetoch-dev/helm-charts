@@ -15,9 +15,21 @@ override:
   statefulSet:
     spec:
       template:
+        metadata:
+          labels:
+            app.kubernetes.io/instance: '{{ include "rabbitmq-cluster.fullname" . }}'
         spec:
           containers:
             - name: rabbitmq
+          initContainers:
+            - name: setup-container
+              resources:
+                limits:
+                  cpu: 300m
+                  memory: 128Mi
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
           topologySpreadConstraints:
             - maxSkew: 1
               topologyKey: kubernetes.io/hostname
