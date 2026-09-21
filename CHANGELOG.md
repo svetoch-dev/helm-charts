@@ -1,3 +1,13 @@
+# 11.4.1
+
+Enhancements:
+* `rabbitmq-cluster`:
+  * increase default resource requests and limits for `setup-container`
+
+Fixes:
+* `redis-operated`:
+  * render Redis and Sentinel `affinity` values with `tpl`
+
 # 11.4.0
 
 Featues:
