@@ -1,0 +1,9 @@
+dependencies:
+- name: vedro-controller
+  repository: file://../chart_deps/vedro/vedro-controller
+  version: 0.1.0
+- name: vedro-resources
+  repository: file://../chart_deps/vedro/vedro-resources
+  version: 0.1.0
+digest: sha256:c3ca391604c5117e1f27f98aeef383cf5c2c5b6d3464118a18d82fbe11162f05
+generated: "2026-09-29T16:30:05.184927149+03:00"

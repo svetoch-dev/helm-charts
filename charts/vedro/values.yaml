@@ -1,0 +1,13 @@
+# The operator's CRDs are applied separately from crds/vedro before enabling it.
+vedro-controller:
+  enabled: false
+
+# Resource names and cloud settings are environment-specific.
+vedro-resources:
+  enabled: false
+  # SET THIS: define provider credentials and cloud settings when enabling resources.
+  providers: {}
+  # SET THIS: define cloud principals when needed.
+  principals: {}
+  # SET THIS: define buckets and access grants when needed.
+  buckets: {}
