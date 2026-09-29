@@ -248,3 +248,5 @@ chart_apps:
           serviceAccount: "runner-app"
   gke-resources:
     enabled: false
+  vedro:
+    enabled: false

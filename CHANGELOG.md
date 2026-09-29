@@ -1,3 +1,11 @@
+# Unreleased
+
+New features:
+* `vedro`: add an optional infrastructure chart for the controller and provider, principal, and bucket resources
+* `chart_deps/vedro/vedro-controller` and `vedro-resources`: add reusable controller and cloud-resource charts
+* `crds/vedro`: add versioned Vedro CRDs
+* `environment`: register the optional Vedro Application, disabled by default
+
 # 11.4.1
 
 Enhancements:
