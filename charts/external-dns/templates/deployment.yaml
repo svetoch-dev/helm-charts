@@ -1,5 +1,10 @@
 {{- $labels := include "external-dns.labels" . | fromYaml -}}
 {{- $deployment := tpl (toYaml .Values.deployment) . | fromYaml -}}
+{{- if eq .Values.global.env.dns.type "yc" }}
+{{- $sidecars := $deployment.sidecars }}
+{{- $sidecars = append $sidecars .Values.ycWebhookSidecar }}
+{{- $deployment = set $deployment "sidecars" $sidecars }}
+{{- end }}
 {{- $podSecurityContext := mustDeepCopy $deployment.podSecurityContext -}}
 {{- if $deployment.legacySecurityContext -}}
 {{- $podSecurityContext = omit $podSecurityContext "runAsNonRoot" "seccompProfile" -}}

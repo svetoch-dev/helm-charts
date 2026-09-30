@@ -37,6 +37,41 @@ networkPolicy:
   egress:
     - {}
 
+ycWebhookSidecar:
+  image: ghcr.io/svetoch-dev/external-dns-yandex-webhook:0.1.0
+  name: webhook
+  args:
+    - "--folder-id={{ .Values.global.env.cloud.folder_id }}"
+    - --use-workload-identity
+    - --network-interface=127.0.0.1
+  ports:
+    - containerPort: 8080
+      name: webhook-health
+      protocol: TCP
+  resources:
+    limits:
+      cpu: 300m
+      memory: 300Mi
+    requests:
+      cpu: 10m
+      memory: 35Mi
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: webhook-health
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 2
+  readinessProbe:
+    httpGet:
+      path: /healthz
+      port: webhook-health
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+
 rbac:
   create: true
   additionalPermissions: []

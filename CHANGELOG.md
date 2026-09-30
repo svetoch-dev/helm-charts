@@ -1,3 +1,10 @@
+# 11.5.0
+
+Feature:
+* `external-dns`:
+  * add yc webhook sidecar when dns.type is yc
+
+
 # 11.4.1
 
 Enhancements:
