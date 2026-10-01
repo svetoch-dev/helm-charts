@@ -1,0 +1,6 @@
+{{- $labels := include "gha-runner.labels" . | fromYaml }}
+{{- range $cronjob_name, $cronjob_obj := .Values.cronjobs }}
+{{- $name := or $cronjob_obj.name  $cronjob_name }}
+{{- $cronjob_obj = set $cronjob_obj "name" $name }}
+{{- include "core.cronjob" (list $ $labels $cronjob_obj) -}}
+{{- end }}

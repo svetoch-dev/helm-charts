@@ -8,3 +8,6 @@ dependencies:
     repository: oci://ghcr.io/actions/actions-runner-controller-charts
     alias: gha-runner
     condition: gha-runner.enabled
+  - name: core
+    version: 0.1.0
+    repository: file://../chart_deps/app/core
