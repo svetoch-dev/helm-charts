@@ -166,8 +166,12 @@ chart_apps:
         roles: ["admin", "dev"]
     values: |
       argocd:
+        global:
+          image:
+            repository: "{{ .Values.global.env.registry.url }}/argocd"
+            tag: v3.5.3
         externalRedis:
-          host: argocd-{{ .Values.global.env.cloud_short_name }}-redis-cluster-master
+          host: "argocd-{{ .Values.global.env.cloud_short_name }}-redis-cluster-master"
   prometheus:
     enabled: false
     values: |
