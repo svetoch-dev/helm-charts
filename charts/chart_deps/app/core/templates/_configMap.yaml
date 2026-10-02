@@ -21,7 +21,7 @@ immutable: {{ . }}
 data:
 {{- range $dataKey, $dataValue := $obj.data }}
   {{ $dataKey }}: |-
-{{ tpl (toString $dataValue) $ | nindent 4 }}
+{{- tpl (toString $dataValue) $ | nindent 4 }}
 {{- end }}
 {{- end }}
 {{- end }}

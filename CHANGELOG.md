@@ -1,3 +1,14 @@
+# 11.5.0
+
+Features:
+* `chart_deps/app/core` - add cronjob template 
+* `gha-runner`
+  * use core library chart to render configmap
+  * use core library chart to create cronjobs
+
+Fixes:
+* `chart_deps/app/core` `_configMap.tpl` remove unneccessary new line for string keys
+
 # 11.4.2
 
 Fix:
