@@ -1,4 +1,6 @@
+{{- if .Values.root.globalFromTfVars }}
 {{- $_ := include "infra.globalOverride" . }}
+{{- end }}
 {{- with index .Values "root" -}}
 {{- $env_name := "root" }}
 {{- if .enabled -}}
