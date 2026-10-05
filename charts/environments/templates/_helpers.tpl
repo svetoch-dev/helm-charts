@@ -1,20 +1,20 @@
 {{- define "infra.repoProvider" -}}
 {{- $repo := .Values.global.repo -}}
-{{- $repoType := required "global.repo.type is required" $repo.type -}}
+{{- $repoType := $repo.type -}}
 {{- $repoProvider := $repo.provider -}}
 {{- if eq $repoType "github" -}}
 {{- $repoProvider = default "github.com" $repoProvider -}}
 {{- else if eq $repoType "gitlab" -}}
 {{- $repoProvider = default "gitlab.com" $repoProvider -}}
 {{- end -}}
-{{- required "global.repo.provider is required" $repoProvider -}}
+{{- $repoProvider -}}
 {{- end -}}
 
 {{- define "infra.repoURL" -}}
 {{- $repo := .Values.global.repo -}}
 {{- $repoProvider := include "infra.repoProvider" . -}}
-{{- $repoGroup := required "global.repo.group is required" $repo.group -}}
-{{- $repoName := required "global.repo.name is required" $repo.name -}}
+{{- $repoGroup := $repo.group -}}
+{{- $repoName := $repo.name -}}
 {{- printf "git@%s:%s/%s.git" $repoProvider $repoGroup $repoName -}}
 {{- end -}}
 
@@ -65,4 +65,22 @@
 {{- $_ = set $dns "domain" (tpl $dnsDomainTemplate $tplContext | trimSuffix ".") -}}
 {{- $_ = set $env.registry "url" (tpl $env.registry.url $tplContext) -}}
 {{- toYaml $env -}}
+{{- end -}}
+
+{{- define "infra.globalOverride" -}}
+{{- $tfvars := .Values.tfvars | fromJson -}}
+
+{{- if not .Values.global -}}
+{{- $_ := set .Values "global" (dict) -}}
+{{- else -}}
+{{- if .Values.global.envs -}}
+{{- range $envName, $envObj := $tfvars.envs -}}
+{{- if not (has $envName (keys $.Values.global.envs)) -}}
+{{- $_ := unset $tfvars.envs $envName -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- $_ := mergeOverwrite .Values.global $tfvars -}}
 {{- end -}}

@@ -1,3 +1,4 @@
+{{- $_ := include "infra.globalOverride" . }}
 {{- with index .Values "root" -}}
 {{- $env_name := "root" }}
 {{- if .enabled -}}
@@ -31,6 +32,11 @@ spec:
       valueFiles:
         - ../globals.yaml
         - {{ tpl (printf "%s/envs.yaml" $.Values.repository.paths.root_from_chart) $ }}
+  {{- if .globalFromTfVars }}
+      fileParameters:
+        - name: tfvars
+          path: {{ tpl $.Values.repository.paths.tfvars $ }}
+  {{- end }}
   {{- with .syncPolicy }}
   syncPolicy:
   {{- toYaml . | nindent 4 }}

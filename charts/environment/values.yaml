@@ -5,7 +5,7 @@ appOverrides: {}
 
 defaultAppsValues:
   access:
-    roles: ["admin", "dev"]
+    roles: ["owner", "dev"]
   ingress:
     class: "{{ .Values.global.ingress.class }}"
 
@@ -71,7 +71,7 @@ chart_apps:
     enabled: false
     globalValues:
       access:
-        roles: ["admin", "dev"]
+        roles: ["owner", "dev"]
   redis:
     enabled: false
   external-dns:
@@ -112,12 +112,12 @@ chart_apps:
     enabled: false
     globalValues:
       access:
-        roles: ["admin", "dev", "pm", "qa"]
+        roles: ["owner", "dev", "pm", "qa"]
   grafana:
     enabled: false
     globalValues:
       access:
-        roles: ["admin", "dev", "pm", "qa"]
+        roles: ["owner", "dev", "pm", "qa"]
     values: |
       {{- if .Values.externalEnvs }}
       datasource:
@@ -163,7 +163,7 @@ chart_apps:
     enabled: false
     globalValues:
       access:
-        roles: ["admin", "dev"]
+        roles: ["owner", "dev"]
     values: |
       argocd:
         global:
