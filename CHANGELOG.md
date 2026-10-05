@@ -1,3 +1,10 @@
+# 11.6.0
+
+Enhancements:
+* `argocd`:
+  * chart and crds update 9.1.7 -> 10.9.6
+  * use self image v3.5.3
+
 # 11.5.0
 
 Features:
