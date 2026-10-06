@@ -69,16 +69,25 @@
 
 {{/* terraform.tfvars.json contains templates so we need to render them */}}
 {{- define "infra.renderEnv" }}
-{{- $env := deepCopy .env }}
-{{- $env = unset $env "tf_backend" }}
-{{- $env = toYaml $env }}
+{{- $env := include "infra.normalizeEnv" . }}
 {{- $env = regexReplaceAll "\\{([^{}]+)\\}" $env "{{ .$1 }}" -}}
 {{- tpl $env . }}
 {{- end }}
 
+
+{{/* Remove some unneccessary fields from env  */}}
+{{- define "infra.normalizeEnv" }}
+{{- $env := deepCopy .env }}
+{{- $env = unset $env "tf_backend" }}
+{{- range $app_name, $app_obj := $env.apps }}
+{{- $_ := unset (get $env.apps $app_name) "repo" }}
+{{- $_ = unset (get $env.apps $app_name) "cd" }}
+{{- end }}
+{{- toYaml $env }}
+{{- end }}
+
 {{- define "infra.globalOverride" -}}
 {{- $tfvars := .Values.tfvars | fromJson -}}
-
 {{- if not .Values.global -}}
 {{- $_ := set .Values "global" (dict) -}}
 {{- else -}}
@@ -90,7 +99,6 @@
 {{- end -}}
 {{- end -}}
 {{- end -}}
-
 {{- range $env_name, $env_obj := $tfvars.envs }}
 {{- $env := (dict "env" $env_obj "company" $tfvars.company "repo" $tfvars.repo "ci" $tfvars.ci ) }}
 {{- $_  := set $tfvars.envs $env_name (include "infra.renderEnv" $env | fromYaml) }}
