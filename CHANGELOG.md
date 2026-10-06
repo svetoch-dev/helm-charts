@@ -1,3 +1,9 @@
+# 11.7.0
+
+Features:
+* `environments` ability to get global attributes from terrafrom.tfvars.json
+* `environment` rename admin -> owner role
+
 # 11.6.0
 
 Enhancements:

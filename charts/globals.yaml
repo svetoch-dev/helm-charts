@@ -29,7 +29,7 @@ global:
   ingress:
     class: pomerium
   access:
-    roles: ["admin"]
+    roles: ["owner"]
   alerts: {}
   pomerium:
     policy:

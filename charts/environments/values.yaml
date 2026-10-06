@@ -19,9 +19,11 @@ repository:
     env_chart: argocd/charts/infra/charts/environment
     envs_chart: argocd/charts/infra/charts/environments
     root_from_chart: "../../../.."
+    tfvars: "../../../../../terraform.tfvars.json"
 
 root:
   enabled: true
+  globalFromTfVars: true
   labels: {}
   revision:
   finalizers: {}

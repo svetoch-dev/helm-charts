@@ -1,3 +1,6 @@
+{{- if .Values.root.globalFromTfVars }}
+{{- $_ := include "infra.globalOverride" . }}
+{{- end }}
 {{- $resolvedEnvs := dict -}}
 {{- range $envName, $env := .Values.global.envs -}}
 {{- $enabled := true -}}
