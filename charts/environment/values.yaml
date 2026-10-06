@@ -117,7 +117,7 @@ chart_apps:
     enabled: false
     globalValues:
       access:
-        roles: ["owner", "dev", "pm", "qa"]
+        roles: ["owner", "dev", "pm", "qa", "support"]
     values: |
       {{- if .Values.externalEnvs }}
       datasource:
