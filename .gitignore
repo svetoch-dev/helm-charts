@@ -13,3 +13,4 @@ charts/**/charts
 !charts/chart_deps/prometheus/prometheus-operated/charts
 !charts/chart_deps/grafana/grafana-operated/charts
 !charts/chart_deps/vedro/vedro-controller/charts
+.opencode/opencode.json
