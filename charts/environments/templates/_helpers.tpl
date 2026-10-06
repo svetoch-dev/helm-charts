@@ -1,20 +1,20 @@
 {{- define "infra.repoProvider" -}}
 {{- $repo := .Values.global.repo -}}
-{{- $repoType := $repo.type -}}
+{{- $repoType := required "global.repo.type is required" $repo.type -}}
 {{- $repoProvider := $repo.provider -}}
 {{- if eq $repoType "github" -}}
 {{- $repoProvider = default "github.com" $repoProvider -}}
 {{- else if eq $repoType "gitlab" -}}
 {{- $repoProvider = default "gitlab.com" $repoProvider -}}
 {{- end -}}
-{{- $repoProvider -}}
+{{- required "global.repo.provider is required" $repoProvider -}}
 {{- end -}}
 
 {{- define "infra.repoURL" -}}
 {{- $repo := .Values.global.repo -}}
 {{- $repoProvider := include "infra.repoProvider" . -}}
-{{- $repoGroup := $repo.group -}}
-{{- $repoName := $repo.name -}}
+{{- $repoGroup := required "global.repo.group is required" $repo.group -}}
+{{- $repoName := required "global.repo.name is required" $repo.name -}}
 {{- printf "git@%s:%s/%s.git" $repoProvider $repoGroup $repoName -}}
 {{- end -}}
 
