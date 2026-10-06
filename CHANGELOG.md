@@ -2,9 +2,15 @@
 
 New features:
 * `vedro`: add an optional infrastructure chart for the controller and provider, principal, and bucket resources
-* `chart_deps/vedro/vedro-controller` and `vedro-resources`: add reusable controller and cloud-resource charts
 * `crds/vedro`: add versioned Vedro CRDs
 * `environment`: register the optional Vedro Application, disabled by default
+
+BreakingChanges:
+* `vedro` 0.3.0: enabling resources now creates ProviderConfig `primary` from `global.env.cloud`, restricted to the release namespace and bucket name prefix. Managed principal names remain denied unless overridden. Set `vedro-resources.providers: null` to use an existing provider without creating one.
+* `vedro` 0.2.0: replace local Vedro copies with pinned OCI dependencies. Application charts using `file://.../chart_deps/vedro/vedro-resources` must depend on `vedro` from `oci://ghcr.io/svetoch-dev/charts` with alias `vedro-resources`. Existing stack values keep their aliases. Template behavior follows the upstream release, including its known limitations documented in `charts/vedro/README.md`.
+
+Fixes:
+* `vedro`: explicitly disable nested optional probes and Prometheus rules so enabling the controller does not render empty monitoring resources.
 
 # 11.7.0
 

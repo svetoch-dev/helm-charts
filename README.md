@@ -2,95 +2,27 @@
 
 ## Vedro charts
 
-`charts/vedro` combines the Vedro controller with an optional resource chart.
-Both dependencies are disabled by default. The resource chart is also available
-at `charts/chart_deps/vedro/vedro-resources` for use by an application chart.
+`charts/vedro` composes the published Vedro controller and resource charts from
+`oci://ghcr.io/svetoch-dev/charts`. Both are disabled by default. See the
+[chart README](charts/vedro/README.md) for Argo CD wiring, local validation, and a
+complete example with two buckets, service accounts, and access grants.
 
-For an environment managed by Argo CD, enable the CRDs first and wait until all
-five `vedro.svetoch.dev` definitions are established. Then enable the controller
-and wait until it is ready. Enable resource definitions only after those two
-steps. The generated Helm Applications set `skipCrds: true`, so the CRDs are
-managed through `crds.operators.vedro`, not through the Helm release.
-
-```yaml
-# In the environment's env.yaml; apply the three enablement steps separately.
-crds:
-  enabled: true
-  operators:
-    vedro:
-      enabled: true
-chart_apps:
-  vedro:
-    enabled: true
-    namespace: vedro-system
-```
-
-Put infrastructure chart values in the consuming GitOps repository at the
-environment values path configured by `repository.paths.env_from_charts`, for
-example `argocd/environments/<env>/vedro/values.yaml`:
-
-```yaml
-vedro-controller:
-  enabled: true
-vedro-resources:
-  enabled: true
-  providers:
-    primary:
-      type: gcp
-      projectId: my-project
-      region: europe-west1
-      method: WorkloadIdentity
-      usagePolicy:
-        allowedNamespaces:
-          names: [app]
-        bucketPolicy:
-          allowedNamePatterns: ["^app-.*$"]
-        principalPolicy:
-          allowedNamePatterns: ["^app-.*$"]
-  principals: {}
-  buckets: {}
-```
-
-To let an application own its principals and buckets, add this dependency to
-its `Chart.yaml` and configure the alias in its `values.yaml`:
+Applications that only need cloud resources can depend directly on the upstream
+resource chart; the controller and CRDs must already be available:
 
 ```yaml
 dependencies:
-  - name: vedro-resources
+  - name: vedro
     version: 0.1.0
-    repository: file://../chart_deps/vedro/vedro-resources
+    repository: oci://ghcr.io/svetoch-dev/charts
     alias: vedro-resources
     condition: vedro-resources.enabled
 ```
 
-```yaml
-vedro-resources:
-  enabled: true
-  providers: {}
-  principals:
-    app:
-      provider: primary
-      kind: ServiceAccount
-      type: Managed
-      managed:
-        name: app
-  buckets:
-    data:
-      provider: primary
-      location: europe-west1
-      prefixReleaseName: true
-      readers:
-        - name: app
-```
-
-The `file://` path is relative to the consuming chart. Adjust it to the
-location of `chart_deps/vedro/vedro-resources` in that repository's checkout,
-and update the consuming chart's dependency lock file.
-
-Set each object's `provider` to the exact name of an existing `ProviderConfig`.
-The provider is cluster scoped; principals and buckets default to the Helm
-release namespace. The chart values and full field descriptions are in
-`charts/chart_deps/vedro/vedro-resources/README.md`.
+Configure `vedro-resources.providers`, `principals`, and `buckets` in the
+application values. A shared ProviderConfig can be referenced by name without
+creating another one. Update the application's dependency lock after changing
+its dependencies.
 
 ## Environment chart behavior
 

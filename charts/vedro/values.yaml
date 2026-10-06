@@ -1,12 +1,33 @@
 # The operator's CRDs are applied separately from crds/vedro before enabling it.
 vedro-controller:
   enabled: false
+  controller:
+    probes:
+      enabled: false
+    prometheus-rules:
+      enabled: false
 
-# Resource names and cloud settings are environment-specific.
 vedro-resources:
   enabled: false
-  # SET THIS: define provider credentials and cloud settings when enabling resources.
-  providers: {}
+  # SET THIS: supply global.env.cloud.name, id and location.region via the environment.
+  # Upstream evaluates these strings with tpl when resources are enabled.
+  # ProviderConfig is cluster scoped: only one release may own the name primary.
+  # Set providers: null when using an existing provider without creating one.
+  providers:
+    primary:
+      type: "{{ .Values.global.env.cloud.name }}"
+      projectId: "{{ .Values.global.env.cloud.id }}"
+      region: "{{ .Values.global.env.cloud.location.region }}"
+      # SET THIS: override method and credentialsSecretRef for static credentials.
+      method: WorkloadIdentity
+      usagePolicy:
+        allowedNamespaces:
+          names: ["{{ .Release.Namespace }}"]
+        bucketPolicy:
+          allowedNamePatterns: ["^{{ .Release.Name }}-.*$"]
+        principalPolicy:
+          # SET THIS: allow managed principal names when defining principals.
+          allowedNamePatterns: []
   # SET THIS: define cloud principals when needed.
   principals: {}
   # SET THIS: define buckets and access grants when needed.
