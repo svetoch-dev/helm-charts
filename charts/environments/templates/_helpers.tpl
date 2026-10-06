@@ -79,10 +79,6 @@
 {{- define "infra.normalizeEnv" }}
 {{- $env := deepCopy .env }}
 {{- $env = unset $env "tf_backend" }}
-{{- range $app_name, $app_obj := $env.apps }}
-{{- $_ := unset (get $env.apps $app_name) "repo" }}
-{{- $_ = unset (get $env.apps $app_name) "cd" }}
-{{- end }}
 {{- toYaml $env }}
 {{- end }}
 
