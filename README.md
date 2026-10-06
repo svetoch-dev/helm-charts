@@ -59,7 +59,7 @@ externalEnvs:
 
 Entries under `global.envs.<key>.apps` generate application defaults for the
 `environment` chart. Generated applications are enabled by default, set
-`app: true`, grant the `admin` and `dev` roles, and use `global.ingress.class`
+`app: true`, grant the `owner` and `dev` roles, and use `global.ingress.class`
 as the ingress class.
 
 Generated application defaults are configured through `defaultAppsValues` in the
