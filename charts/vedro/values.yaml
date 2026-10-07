@@ -1,4 +1,3 @@
-# The operator's CRDs are applied separately from crds/vedro before enabling it.
 vedro-controller:
   enabled: false
   controller:
@@ -9,26 +8,6 @@ vedro-controller:
 
 vedro-resources:
   enabled: false
-  # SET THIS: supply global.env.cloud.name, id and location.region via the environment.
-  # Upstream evaluates these strings with tpl when resources are enabled.
-  # ProviderConfig is cluster scoped: only one release may own the name primary.
-  # Set providers: null when using an existing provider without creating one.
-  providers:
-    primary:
-      type: "{{ .Values.global.env.cloud.name }}"
-      projectId: "{{ .Values.global.env.cloud.id }}"
-      region: "{{ .Values.global.env.cloud.location.region }}"
-      # SET THIS: override method and credentialsSecretRef for static credentials.
-      method: WorkloadIdentity
-      usagePolicy:
-        allowedNamespaces:
-          names: ["{{ .Release.Namespace }}"]
-        bucketPolicy:
-          allowedNamePatterns: ["^{{ .Release.Name }}-.*$"]
-        principalPolicy:
-          # SET THIS: allow managed principal names when defining principals.
-          allowedNamePatterns: []
-  # SET THIS: define cloud principals when needed.
+  providers: {}
   principals: {}
-  # SET THIS: define buckets and access grants when needed.
   buckets: {}
