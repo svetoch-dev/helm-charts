@@ -1,29 +1,5 @@
 # Helm charts
 
-## Vedro charts
-
-`charts/vedro` composes the published Vedro controller and resource charts from
-`oci://ghcr.io/svetoch-dev/charts`. Both are disabled by default. See the
-[chart README](charts/vedro/README.md) for Argo CD wiring, local validation, and a
-complete example with two buckets, service accounts, and access grants.
-
-Applications that only need cloud resources can depend directly on the upstream
-resource chart; the controller and CRDs must already be available:
-
-```yaml
-dependencies:
-  - name: vedro
-    version: 0.1.0
-    repository: oci://ghcr.io/svetoch-dev/charts
-    alias: vedro-resources
-    condition: vedro-resources.enabled
-```
-
-Configure `vedro-resources.providers`, `principals`, and `buckets` in the
-application values. A shared ProviderConfig can be referenced by name without
-creating another one. Update the application's dependency lock after changing
-its dependencies.
-
 ## Environment chart behavior
 
 Environments are enabled by default. Set `global.envs.<key>.enabled: false`
@@ -121,10 +97,15 @@ application that includes the `dev` role. It is broader than listing individual
 users.
 
 ## Structure
+
 * there are highlevel charts and charts that are used as a dependency to highlevel charts
 * highlevel charts represent a service or stack (for example konghq, prometheus)
 * Chart that are used as dependencies (dependency charts) are placed in `charts/chart_deps` folder 
 * highlevel chart is a subset of external or dependency (the ones in `charts/chart_deps`) charts
+
+## Chart documentation
+
+- [Vedro](charts/vedro/README.md) — controller, cloud principals, buckets and application dependencies.
 
 ## TBD
 * Add docs for each chart
