@@ -2,7 +2,7 @@ apiVersion: v2
 name: vedro
 description: Vedro controller and cloud resource stack
 type: application
-version: 0.3.0
+version: 0.1.0
 dependencies:
   - name: vedro-controller
     version: 0.1.0

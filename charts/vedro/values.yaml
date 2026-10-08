@@ -1,10 +1,5 @@
 vedro-controller:
   enabled: false
-  controller:
-    probes:
-      enabled: false
-    prometheus-rules:
-      enabled: false
 
 vedro-resources:
   enabled: false
