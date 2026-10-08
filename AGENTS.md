@@ -1,124 +1,147 @@
-# AGENTS.md — helm-charts repo context
+# Repository Guidelines
 
-Purpose: this is an "infrared"-style GitOps Helm monorepo, deployed via ArgoCD
-App-of-Apps (`charts/environment` + `charts/environments`). Read this before
-adding/editing any chart.
+## Purpose and architecture
 
-## Repo layout
-```
-charts/
-  <highlevel-chart>/         # deployable "stack" chart (postgres, konghq, gitlab, ...)
-  chart_deps/<domain>/<dep>/ # reusable dependency charts, grouped by domain
-    app/core                 #   library chart: shared resource templates (_*.tpl)
-    app/common               #   generic app chart built from core (deployment/sts/etc.)
-    postgres|redis|rabbitmq|prometheus|grafana|fluent|konghq|security|blockchain
-  environment/                # per-env ArgoCD Application generator (chart_apps, crds, manifests)
-  environments/                # generates one `environment` Application per env + root app
-  globals.yaml                 # shared `global.*` defaults injected into every Application's values
-crds/<operator>/               # raw CRD yaml + update.sh fetch script, applied via environment/crds.yaml
-scripts/gcloud/                 # infra helper scripts
-```
+- This is a public Helm repository for reusable infrastructure stacks and application dependencies.
+- It supports the rod GitOps approach: shared charts, environment configuration in a consuming repository, and Argo CD App-of-Apps.
+- Compose existing charts and operator resources; keep environment-specific configuration outside reusable templates.
+- Do not introduce real company names, cloud IDs, credentials, or consumer-specific paths into reusable defaults or examples.
 
-- **Highlevel chart** = a service/stack. Its `Chart.yaml` `dependencies` list is a
-  subset of `chart_deps/*` charts (local, `repository: file://../chart_deps/...`)
-  plus optionally upstream/OCI charts (bitnami, prometheus-community, gitlab, etc).
-  Every dependency has `condition: <alias>.enabled` and usually an `alias:`.
-- **chart_deps** charts are never deployed standalone; they're building blocks.
-  Group by domain folder (e.g. `chart_deps/postgres/postgres-cluster`).
-- `charts/core` (`chart_deps/app/core`) is a **library chart** (`type: library`,
-  no rendered templates) with reusable partials: `_deployment.tpl`,
-  `_statefulset.tpl`, `_service.tpl`, `_ingress.tpl` (`core.ingress`), `_pvc.tpl`,
-  `_pv.tpl`, `_secret.tpl`, `_job.tpl`, `_role.tpl`, `_clusterrole.tpl`, `_sa.tpl`,
-  `_podTemplate.tpl`, plus `_helpers.tpl` with:
-  - `core.obj.enricher` — defaults `namespace` (Release.Namespace) and `enabled` (true) on an object.
-  - `core.labels.constructor` — merges chart labels + `.Values.labels` (global) + object-level `.labels`.
-  Any chart that needs a generic resource (ingress, deployment, secret, ...)
-  should depend on `core` and call these templates rather than hand-rolling yaml.
-- `chart_deps/app/common` is a full generic-app chart built on `core` (deployment,
-  statefulset, service, ingress, hpa, pvc/pv, rbac, serviceaccount, secret,
-  servicemonitor, job, additionalservices) — reuse it for simple apps instead of
-  writing a new chart from scratch when possible.
-- **Own resources over subchart magic**: when wrapping a large upstream chart
-  (gitlab, kube-prometheus-stack, thanos, redis-operator, ...), disable its
-  built-in bundled sub-components (postgres/redis/ingress/cert-manager/etc.) via
-  values and instead attach our own `chart_deps` resources (own postgres-cluster,
-  own ingress via `core.ingress`, own prometheus-rules/servicemonitor/podmonitor).
-  See `charts/gitlab/values.yaml` for the canonical example (`postgresql.install:
-  false`, `redis.install: false`, `installCertmanager: false`, own
-  `postgres-gitlab` / `redis-gitlab` / `ingresses.webservice` instead).
+## Repository structure
 
-## Standard chart structure (every chart should follow this)
-```
-<chart>/
-  Chart.yaml       # apiVersion: v2, name, version (0.1.0 for internal charts,
-                    # bump on changes), dependencies with alias+condition
-  Chart.lock        # committed; charts/*.tgz vendored deps also committed
-  values.yaml        # values.yaml with sane defaults, `enabled: false` for
-                     # optional deps, comments for cross-cutting notes
-  templates/
-    _helpers.tpl      # <chart>.name / .fullname / .chart / .labels / .selectorLabels
-                       # (copy of the standard Helm boilerplate, prefixed with chart name)
-    ingresses.yaml     # `range .Values.ingresses` -> `core.ingress` (see charts/gitlab, charts/prometheus)
-    <resource>.yaml    # one file per resource kind, plural/kebab named
-```
-Observability sidecar convention used across `chart_deps` (postgres-cluster,
-prometheus-operated, alertmanager-operated, ...): optional `podMonitor`/
-`servicemonitor`, `prometheus-rules` (with `PrometheusAlerts.*.AbsentMetricCritical`),
-and `fluentbit` log shipping, each gated by its own `.enabled` + `condition:` in Chart.yaml.
+- `charts/<name>/`: deployable service or stack charts, such as `postgres`, `redis`, `prometheus`, and `vedro`.
+- `charts/chart_deps/<domain>/<name>/`: reusable building blocks grouped by domain.
+  - `app/core`: library chart with shared Kubernetes resource templates.
+  - `app/common`: application chart composing `core` templates for generic workloads.
+  - Other domains contain operator resources, monitoring, logging, and service-specific dependencies.
+- `charts/environments/`: generates the root and per-environment Argo CD Applications; can read Terraform-generated globals.
+- `charts/environment/`: generates chart Applications, a CRD Application, and an Application for raw manifests.
+- `charts/globals.yaml`: shared global values skeleton and defaults.
+- `crds/<operator>/`: upstream CRD manifests and an `update.sh` download script.
+- `scripts/`: operational helpers; inspect their effects before running them.
+- `CHANGELOG.md`: repository releases and changes grouped by affected chart.
+- Environment overrides and application charts normally belong to the consuming repository, not this one.
 
-## Naming & values conventions
-- Dependency alias = `<name>-<purpose>`, e.g. `postgres-gitlab`, `redis-gitlab`,
-  `prometheus-main`, `alertmanager-main`. Top-level values key must match the alias.
-- `global.*` values (company, domain, env, cloud, ingress.class, access, alerts,
-  bucket, registry) come from `charts/globals.yaml` and are injected by
-  `charts/environment` into every ArgoCD Application — don't redefine them per
-  chart, only read `.Values.global.*`.
-- Anything user-facing but environment-specific must have a `# SET THIS:` comment
-  in values.yaml (see `charts/gitlab/values.yaml`).
-- Ingress: define under a top-level `ingresses:` map (name -> ingress spec with
-  `name`, `service.name/port`, `className`, `annotations`, `hosts`, `tls`), rendered
-  via `templates/ingresses.yaml` looping and calling `core.ingress`. Values commonly
-  use `{{ ... }}` Go-template strings evaluated with `tpl` inside the templates
-  (e.g. `"gl.{{ .Values.global.company.domain.env }}"`).
-- Kubernetes version compat is handled inside `core.ingress` (networking.k8s.io
-  v1/v1beta1/extensions fallback) — don't duplicate that logic per chart.
+## Task workflow
 
-## ArgoCD wiring (`charts/environment`, `charts/environments`)
-- One ArgoCD `Application` per entry in `environment`'s `.Values.chart_apps.<name>`;
-  path defaults to `charts/<name>` (or `charts/app/<name>` if `app: true`), values
-  come from `globals.yaml` + `environments/<env>/<name>/values.yaml`.
-- `crds.operators.<name>.enabled` wires `crds/<name>` similarly.
-- `manifests` wires raw manifest directories per env.
-- When adding a new highlevel chart meant to be deployed, add a matching entry to
-  `charts/environment/values.yaml` `chart_apps` (mirrors existing entries like
-  `gitlab`, `postgres`, `konghq`).
+1. Read the relevant files and inspect the branch and working tree before proposing changes.
+2. Present a short implementation plan: goal, affected paths, approach, checks, and material risks.
+3. Obtain user agreement before implementation.
+   - Read-only investigation may precede agreement.
+   - Continue within an approved plan without repeatedly requesting permission.
+   - Agree material scope changes before implementing them.
+4. Make the smallest change that satisfies the task; preserve unrelated user edits.
+5. Inspect the diff and run relevant checks before considering the work complete.
+6. Report what changed, what was checked, and any unresolved limitations.
 
-## Repo hygiene
-- Pre-commit: `yamllint` (relaxed, 2-space indent, templates/*.yaml excluded).
-  Run `pre-commit install` after cloning; `pip install pre-commit` first.
-- Root `CHANGELOG.md` tracks every release with sections: `BreakingChanges`,
-  `New features`, `Enhancements`, `Fixes`, grouped by chart name. Update it for
-  non-trivial changes.
-- Vendored/local dependency `.tgz` archives under `charts/**/charts/` are
-  committed to git — after changing a local dependency (e.g. `core`), run
-  `helm dependency update` in every chart that (transitively) depends on it and
-  commit the regenerated `.tgz` (Helm does not do this recursively — see
-  `chart_deps/app/common/README.md`).
-- CRDs live under `crds/<operator>/` as raw yaml plus an `update.sh` fetch script;
-  update via the script, don't hand-edit.
+## Collaboration for complex decisions
 
-## When creating/modifying a chart, checklist
-1. Decide: highlevel chart (`charts/<name>`) vs dependency (`charts/chart_deps/<domain>/<name>`).
-2. Chart.yaml: `apiVersion: v2`, `version: 0.1.0`, deps use `file://../chart_deps/...`
-   with `alias` + `condition: <alias>.enabled`.
-3. Copy the standard `_helpers.tpl` boilerplate, renamed to `<chart>.*`.
-4. Prefer composing `core`/`common` templates over new raw manifests; only write a
-   bespoke template when no `core` partial fits.
-5. Add `enabled` gating + sensible defaults in `values.yaml`; mark
-   environment-specific fields with `# SET THIS:`.
-6. If it needs monitoring/logging, wire optional `podMonitor`/`servicemonitor` +
-   `prometheus-rules` + `fluentbit` deps like `postgres-cluster` does.
-7. Register it in `charts/environment/values.yaml` (`chart_apps`) if it should be
-   deployable per environment.
-8. Update `Chart.lock`/vendored `.tgz`s via `helm dependency update` and update
-   root `CHANGELOG.md`.
+- For architectural questions, difficult reasoning, or complex tasks, use exactly two assisting agents when available.
+- Form a short, evidence-based discussion between three roles:
+  - Lead agent: experienced DevOps engineer; owns architecture, GitOps behavior, and operational impact.
+  - Programmer: `gpt-6-sol` with `medium` reasoning; checks interfaces, templates, and implementation simplicity.
+  - Tester: `gpt-6-luna` with `high` reasoning; checks failure cases, compatibility, and meaningful verification.
+- Give both agents the same question, relevant paths, constraints, and proposed approach.
+- Ask each for a recommendation, supporting file references, and the main objection or risk.
+- Share both reports and the lead's position for one short round of cross-review.
+- The lead combines the evidence into a decision, checks disputed facts, and presents unresolved choices to the user.
+- Default agent work to read-only; assign disjoint files explicitly if parallel editing is needed.
+- Do not turn routine edits into a multi-agent process or treat majority agreement as proof.
+
+## Chart design: KISS
+
+- Find the closest existing chart before designing a new interface.
+  - `charts/postgres` and `charts/redis`: operator and resource composition.
+  - `charts/gha-runner` and `charts/vedro`: upstream dependencies with focused local configuration.
+  - `charts/chart_deps/app/common`: generic workload composition.
+- Prefer a small wrapper around a pinned upstream chart over copying its templates.
+- Reuse `common` for ordinary workloads and `core` partials for individual Kubernetes resources.
+- Write custom templates only where an existing dependency or partial does not cover the requirement.
+- Do not add unused helpers, empty template files, duplicate switches, or speculative fallback logic.
+- Do not duplicate upstream defaults unless the wrapper intentionally changes behavior; explain necessary overrides.
+- Add local abstractions only when they remove concrete duplication and keep the values interface understandable.
+- Separate controller installation from resource declarations when applications share an operator.
+- Add monitoring and logging only when applicable; follow the nearest chart's optional dependency pattern.
+
+## Dependencies and chart files
+
+- Use `apiVersion: v2` and `Chart.yaml`; add `values.yaml` for configurable defaults and templates when the chart owns rendered resources.
+- Keep library charts as `type: library`; do not give them deployment switches merely for uniformity.
+- Local dependencies use paths relative to `Chart.yaml`, for example `file://../chart_deps/app/common`.
+- Pin external chart versions and preserve the existing versioning convention; do not bump unrelated charts.
+- Gate optional deployable dependencies with `condition: <values-key>.enabled`.
+- Match the values key to the dependency alias, or its name when there is no alias.
+- Use descriptive aliases when needed, such as `postgres-main`; do not invent another naming layer.
+- Keep `Chart.lock` consistent with dependency declarations.
+- Dependency archives live in the consuming chart's `charts/` directory.
+  - Most such directories are ignored; `.gitignore` allows selected dependency-chart archives to be tracked.
+  - Check `.gitignore` and `git ls-files` before staging generated archives; do not force-add ignored packages.
+- After changing a local dependency, refresh affected consumers from the inner dependency outward.
+  - Helm dependency updates are not recursive.
+  - Rebuild tracked archives, including `app/common/charts/core-*.tgz` when changing `core`.
+  - Use `helm dependency build <chart-path>` to rebuild dependencies from an existing lock; use `helm dependency update <chart-path>` when intentionally refreshing the lock.
+
+## Values and template conventions
+
+- YAML uses two-space indentation; follow adjacent files for sequence indentation and template layout.
+- Preserve existing values keys, resource names, labels, and selectors unless the task explicitly changes the interface.
+- Keep optional stack components disabled by default where the existing interface follows that pattern.
+- Helm treats missing, `false`, empty, and zero values differently: preserve explicit choices when implementing defaults.
+- Read shared environment data from `.Values.global.*`; introduce per-chart overrides only for a concrete need.
+- `global` data is combined from shared defaults and consuming environment configuration; the App-of-Apps charts propagate it.
+- Use `tpl` only for fields whose interface supports templated strings; pass the appropriate root context.
+- Use `deepCopy` before mutating shared maps; avoid cross-application effects while merging values.
+- Reuse labels and naming helpers; namespace helper names to avoid collisions.
+- For stack ingress resources, follow `ingresses:` and `core.ingress` where that interface is already used.
+  - `common` has its own `ingress` interface; do not rename it for stylistic consistency.
+- Document required values, meaningful overrides, and upstream links concisely; comments should explain reasons or constraints.
+
+## App-of-Apps and CRDs
+
+- `environment` merges generated application defaults with explicit `chart_apps` entries; explicit entries override generated ones.
+- Register a new environment-deployable stack in `charts/environment/values.yaml`, normally disabled initially.
+- `chart_apps.<name>.app` selects the consuming repository's application-chart path; it does not enable the application.
+- Paths come from `repository.paths`; inspect these settings instead of assuming charts or overrides live locally.
+- Check each generated `targetRevision`; changing the parent Application's revision alone does not guarantee matching child revisions.
+- Chart Applications set `helm.skipCrds: true`; CRD sources are selected through `crds.enabled` and `crds.operators.<operator>.enabled`.
+- Update upstream CRDs through their download script with a pinned version; review the resulting diff.
+- Respect each CRD's scope: cluster-scoped names must be unique across namespaces.
+- Plan operator lifecycle ordering: install CRDs before custom resources and keep the controller and credentials until cleanup finishes.
+- Do not remove finalizers or enable destructive pruning as part of an unrelated chart change.
+
+## Verification and pre-commit
+
+- Install repository hooks after cloning: `pre-commit install`.
+- Run `pre-commit run --files <changed-files>` before a commit; use `--all-files` for intentionally broad checks.
+- The configured hook runs strict-mode yamllint with relaxed rules and two-space indentation.
+  - CRD YAML and Helm YAML templates are excluded, so the hook does not validate rendered manifests.
+- For chart changes, run local checks with representative values:
+  - `helm lint <chart-path> -f charts/globals.yaml -f /tmp/example-values.yaml`
+  - `helm template example <chart-path> --namespace example -f charts/globals.yaml -f /tmp/example-values.yaml > /tmp/rendered.yaml`
+- Supply neutral fixture values for required globals; empty defaults are not necessarily a working environment.
+- Check changed behavior enabled and disabled, required resource fields, names, namespaces, references, and unexpected resources.
+- For `core`, `common`, or App-of-Apps changes, check representative affected consumers and generated Applications.
+- A successful lint or template run does not prove deployment or cloud reconciliation works.
+- No dedicated test suite is currently tracked; add focused regression checks only when they address a concrete risk.
+- Do not run `helm install/upgrade/uninstall`, Kubernetes writes, Argo CD sync, or cloud-changing scripts without explicit authorization.
+- If a required check is unavailable or fails, report it and resolve the issue before committing; do not bypass hooks silently.
+
+## Git, commits, and pull requests
+
+- Do not push without explicit user authorization; a requested local change or commit does not authorize a push.
+- Before committing, inspect the complete staged diff and run the checks appropriate to its contents.
+- Stage only task-related paths; do not include existing user changes or generated artifacts blindly.
+- Do not amend, rebase, force-push, or discard user changes without authorization for that operation.
+- New commit subjects use `<fix|add|remove> - <short description>`.
+  - `fix - preserve explicit ingress settings`
+  - `add - compose vedro resource chart`
+  - `remove - duplicate dependency defaults`
+- Keep commits focused; describe the result rather than the work process.
+- For meaningful chart changes, update the appropriate release entry in `CHANGELOG.md`.
+- Create a PR only when requested; use a concise title and this short description structure:
+  - **Problem:** what was missing or incorrect; link an issue if one exists.
+  - **Solution:** what changed and why.
+  - **Affected modules:** charts, dependencies, CRDs, or App-of-Apps templates touched.
+  - **Impact:** effects on consumers, defaults, resource identity, compatibility, and any migration needed.
+  - **Checks:** commands run, results, and any remaining verification gap.
+- Do not claim checks, compatibility, or deployment results that were not verified.
