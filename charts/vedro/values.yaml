@@ -1,0 +1,8 @@
+vedro-controller:
+  enabled: false
+
+vedro-resources:
+  enabled: false
+  providers: {}
+  principals: {}
+  buckets: {}

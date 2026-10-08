@@ -97,10 +97,15 @@ application that includes the `dev` role. It is broader than listing individual
 users.
 
 ## Structure
+
 * there are highlevel charts and charts that are used as a dependency to highlevel charts
 * highlevel charts represent a service or stack (for example konghq, prometheus)
 * Chart that are used as dependencies (dependency charts) are placed in `charts/chart_deps` folder 
 * highlevel chart is a subset of external or dependency (the ones in `charts/chart_deps`) charts
+
+## Chart documentation
+
+- [Vedro](charts/vedro/README.md) — controller, cloud principals, buckets and application dependencies.
 
 ## TBD
 * Add docs for each chart

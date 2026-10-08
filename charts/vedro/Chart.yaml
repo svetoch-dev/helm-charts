@@ -1,0 +1,16 @@
+apiVersion: v2
+name: vedro
+description: Vedro controller and cloud resource stack
+type: application
+version: 0.1.0
+dependencies:
+  - name: vedro-controller
+    version: 0.1.0
+    repository: oci://ghcr.io/svetoch-dev/charts
+    alias: vedro-controller
+    condition: vedro-controller.enabled
+  - name: vedro
+    version: 0.1.0
+    repository: oci://ghcr.io/svetoch-dev/charts
+    alias: vedro-resources
+    condition: vedro-resources.enabled
