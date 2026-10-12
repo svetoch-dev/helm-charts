@@ -38,23 +38,37 @@
 
 ## Collaboration for complex decisions
 
-- For architectural questions, difficult reasoning, or complex tasks, use exactly two assisting agents when available.
 - The lead acts as an experienced DevOps engineer and owns architecture, GitOps behavior, and operational impact.
 - Choose two assistant specialties suited to the question; together, they must cover implementation and failure cases:
   - Programmer: checks interfaces, templates, and implementation simplicity.
   - Tester: checks failure cases, compatibility, and meaningful verification.
   - Security reviewer: checks permissions, credentials, trust boundaries, and exposure.
   - Architect: checks composition, ownership, lifecycle, and effects on consumers.
-- Either assistant can use an available model from this list, selected for task complexity:
-  - `gpt-6.1-sol`: `medium` or `high` reasoning.
-  - `gpt-6-luna`: `high` or `xhigh` reasoning.
 - Form a short, evidence-based discussion between the lead and both assistants.
-- Give both agents the same question, relevant paths, constraints, and proposed approach.
 - Ask each for a recommendation, supporting file references, and the main objection or risk.
-- Share both reports and the lead's position for one short round of cross-review.
 - The lead combines the evidence into a decision, checks disputed facts, and presents unresolved choices to the user.
 - Default agent work to read-only; assign disjoint files explicitly if parallel editing is needed.
-- Do not turn routine edits into a multi-agent process or treat majority agreement as proof.
+- Do not treat majority agreement as proof.
+
+## Model selection
+
+- Assisting agents must never use flagship models.
+- Choose an available model below the flagship:
+  - Economical: bounded tasks, fact gathering, and focused checks.
+  - Balanced: substantial coding, analysis, and decisions across modules.
+- Reviewer specialty does not determine the model tier.
+- Choose supported reasoning effort according to task complexity:
+  - Low/medium: straightforward tasks with clear requirements.
+  - High: substantial reasoning, interacting components, or failure analysis.
+  - Extra high: particularly difficult questions with conflicting evidence or complex tradeoffs.
+- Use the lowest model tier and reasoning effort sufficient for the task.
+
+## Efficiency
+
+- Handle routine tasks without assistants; use exactly two assistants when available for architectural questions, difficult reasoning, or complex tasks.
+- Give both assistants the same question, relevant paths, constraints, and proposed approach; keep context focused and request brief reports.
+- Share both reports and the lead's position for one short cross-review round; escalate only a specific unresolved question within the permitted model tiers.
+- Prefer repository checks over repeated model reviews.
 
 ## Chart design: KISS
 
