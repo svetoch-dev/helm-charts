@@ -33,14 +33,22 @@
 4. Make the smallest change that satisfies the task; preserve unrelated user edits.
 5. Inspect the diff and run relevant checks before considering the work complete.
 6. Report what changed, what was checked, and any unresolved limitations.
+7. Report material, confirmed problems noticed during the task, including unrelated ones; give file references, reasons, and possible impact.
+   - List unrelated findings separately; agree any expansion of implementation scope before fixing them.
 
 ## Collaboration for complex decisions
 
 - For architectural questions, difficult reasoning, or complex tasks, use exactly two assisting agents when available.
-- Form a short, evidence-based discussion between three roles:
-  - Lead agent: experienced DevOps engineer; owns architecture, GitOps behavior, and operational impact.
-  - Programmer: `gpt-6-sol` with `medium` reasoning; checks interfaces, templates, and implementation simplicity.
-  - Tester: `gpt-6-luna` with `high` reasoning; checks failure cases, compatibility, and meaningful verification.
+- The lead acts as an experienced DevOps engineer and owns architecture, GitOps behavior, and operational impact.
+- Choose two assistant specialties suited to the question; together, they must cover implementation and failure cases:
+  - Programmer: checks interfaces, templates, and implementation simplicity.
+  - Tester: checks failure cases, compatibility, and meaningful verification.
+  - Security reviewer: checks permissions, credentials, trust boundaries, and exposure.
+  - Architect: checks composition, ownership, lifecycle, and effects on consumers.
+- Either assistant can use an available model from this list, selected for task complexity:
+  - `gpt-6.1-sol`: `medium` or `high` reasoning.
+  - `gpt-6-luna`: `high` or `xhigh` reasoning.
+- Form a short, evidence-based discussion between the lead and both assistants.
 - Give both agents the same question, relevant paths, constraints, and proposed approach.
 - Ask each for a recommendation, supporting file references, and the main objection or risk.
 - Share both reports and the lead's position for one short round of cross-review.
@@ -56,6 +64,7 @@
   - `charts/chart_deps/app/common`: generic workload composition.
 - Prefer a small wrapper around a pinned upstream chart over copying its templates.
 - Reuse `common` for ordinary workloads and `core` partials for individual Kubernetes resources.
+- Check other domain libraries before writing custom templates, including `charts/chart_deps/prometheus/lib` and `charts/chart_deps/fluent/fluentbit/lib`; reuse partials whose interfaces fit the requirement.
 - Write custom templates only where an existing dependency or partial does not cover the requirement.
 - Do not add unused helpers, empty template files, duplicate switches, or speculative fallback logic.
 - Do not duplicate upstream defaults unless the wrapper intentionally changes behavior; explain necessary overrides.
@@ -107,7 +116,16 @@
 - Update upstream CRDs through their download script with a pinned version; review the resulting diff.
 - Respect each CRD's scope: cluster-scoped names must be unique across namespaces.
 - Plan operator lifecycle ordering: install CRDs before custom resources and keep the controller and credentials until cleanup finishes.
+
+## Restrictions
+
+- Do not use `dig` in Helm templates.
+- Do not hand-edit downloaded upstream CRD manifests in `crds/`; update them through the pinned source and download script.
+  - Any necessary local patch requires explicit agreement, documented provenance and reason, and a reproducible update process with verification.
 - Do not remove finalizers or enable destructive pruning as part of an unrelated chart change.
+- Do not run `helm install/upgrade/uninstall`, Kubernetes writes, Argo CD sync, or cloud-changing scripts without explicit authorization.
+- Do not push without explicit user authorization; a requested local change or commit does not authorize a push.
+- Do not amend, rebase, force-push, or discard user changes without authorization for that operation.
 
 ## Verification and pre-commit
 
@@ -123,15 +141,12 @@
 - For `core`, `common`, or App-of-Apps changes, check representative affected consumers and generated Applications.
 - A successful lint or template run does not prove deployment or cloud reconciliation works.
 - No dedicated test suite is currently tracked; add focused regression checks only when they address a concrete risk.
-- Do not run `helm install/upgrade/uninstall`, Kubernetes writes, Argo CD sync, or cloud-changing scripts without explicit authorization.
 - If a required check is unavailable or fails, report it and resolve the issue before committing; do not bypass hooks silently.
 
 ## Git, commits, and pull requests
 
-- Do not push without explicit user authorization; a requested local change or commit does not authorize a push.
 - Before committing, inspect the complete staged diff and run the checks appropriate to its contents.
 - Stage only task-related paths; do not include existing user changes or generated artifacts blindly.
-- Do not amend, rebase, force-push, or discard user changes without authorization for that operation.
 - New commit subjects use `<fix|add|remove> - <short description>`.
   - `fix - preserve explicit ingress settings`
   - `add - compose vedro resource chart`
