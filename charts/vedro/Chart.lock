@@ -1,0 +1,9 @@
+dependencies:
+- name: vedro-controller
+  repository: oci://ghcr.io/svetoch-dev/charts
+  version: 0.1.0
+- name: vedro
+  repository: oci://ghcr.io/svetoch-dev/charts
+  version: 0.1.0
+digest: sha256:4c751bc3d342810af96ac574ad0983673889f2d867c9e1853bc0c03fcb11a1fa
+generated: "2026-10-06T23:47:35.461421048+03:00"

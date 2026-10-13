@@ -1,3 +1,10 @@
+# 11.8.0
+
+New features:
+* `vedro`: add an optional stack chart for the controller and cloud resources using pinned upstream OCI charts.
+* `crds/vedro`: add the versioned upstream CRD bundle and its update script.
+* `environment`: register the optional Vedro Application, disabled by default.
+
 # 11.7.0
 
 Features:
