@@ -1,6 +1,16 @@
+# 11.8.1
+
+Enhancements:
+* `grafana`:
+  * `operator` chart and crds update 5.24.0 -> 5.25.0
+  * image update v12.4.4 -> v13.2.4
+
+Fixes:
+* fix `postgres panels` errors on `grafana dashboard`
+
 # 11.8.0
 
-New features:
+Features:
 * `vedro`: add an optional stack chart for the controller and cloud resources using pinned upstream OCI charts.
 * `crds/vedro`: add the versioned upstream CRD bundle and its update script.
 * `environment`: register the optional Vedro Application, disabled by default.
