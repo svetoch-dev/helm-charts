@@ -3,7 +3,7 @@
 Enhancements:
 * `grafana`:
   * `operator` chart and crds update 5.24.0 -> 5.25.0
-  * image update v12.4.4 -> v13.2.4
+  * image update v12.4.4 -> v12.4.13
 
 Fixes:
 * fix `postgres panels` errors on `grafana dashboard`

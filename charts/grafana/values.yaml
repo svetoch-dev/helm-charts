@@ -73,7 +73,8 @@ grafana-operator:
 
 grafana-main:
   enabled: false
-  version: "13.2.4"
+  # in version 13.2.4, the display of the pods/replicas panel does not work, grafana incorrectly processes different queries (selects only one, it seems the last one)
+  version: "12.4.13"
   selector:
     grafana: main
   config:
