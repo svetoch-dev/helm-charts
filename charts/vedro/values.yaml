@@ -1,5 +1,9 @@
 vedro-controller:
   enabled: false
+  controller:
+    serviceAccount:
+      create: false
+      name: vedrosa
 
 vedro-resources:
   enabled: false
