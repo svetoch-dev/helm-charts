@@ -1,3 +1,8 @@
+# 11.8.2
+
+Enhancements:
+* set `vedro-controller` sa name and disable creating default sa
+
 # 11.8.1
 
 Enhancements:
