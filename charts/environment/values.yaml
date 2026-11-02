@@ -233,7 +233,7 @@ chart_apps:
                 bucket_name: "{{ .Values.global.company.name }}-{{ .Release.Name }}"
               {{- else if eq .Values.global.env.cloud.name "yc" }}
               s3:
-                endpoint: "https://storage.yandexcloud.net"
+                endpoint: "storage.yandexcloud.net"
                 region: {{ .Values.global.env.cloud.location.region }}
               {{- end }}
           schemaConfig:
