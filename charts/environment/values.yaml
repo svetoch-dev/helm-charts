@@ -215,7 +215,6 @@ chart_apps:
 
   loki:
     enabled: false
-    globalValues:
     values: |
       loki:
         nameOverride: "loki-{{ .Values.global.env.cloud_short_name }}"

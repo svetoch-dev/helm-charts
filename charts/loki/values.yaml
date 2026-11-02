@@ -104,7 +104,6 @@ loki:
     enabled: false
   serviceAccount:
     create: true
-    #name: grafana-loki
   loki:
     analytics:
       reporting_enabled: false

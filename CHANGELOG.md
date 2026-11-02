@@ -1,3 +1,10 @@
+# 12.0.0
+BrakingChanges:
+* loki
+  * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
+  * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
+
+
 # 11.8.2
 
 Enhancements:
