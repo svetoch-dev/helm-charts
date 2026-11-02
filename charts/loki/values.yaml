@@ -81,7 +81,7 @@ vedro:
   buckets:
     loki:
       name: '{{ printf "%s-%s" .Values.global.company.name .Release.Name }}'
-      provider: primary
+      provider: loki
       location: "{{ .Values.global.env.cloud.location.region }}"
       deletionPolicy: Retain
       objAdmins:
