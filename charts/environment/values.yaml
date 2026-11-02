@@ -224,12 +224,18 @@ chart_apps:
           storage:
             type: "{{ .Values.global.env.cloud.buckets.type }}"
             bucketNames:
-              chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
-              ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
+              chunks: "{{ .Values.global.company.name }}-{{ .Release.Name }}"
+              ruler: "{{ .Values.global.company.name }}-{{ .Release.Name }}"
             object_store:
               type: "{{ .Values.global.env.cloud.buckets.type }}"
+              {{- if eq .Values.global.env.cloud.buckets.type "gcs" }}
               gcs:
-                bucket_name: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
+                bucket_name: "{{ .Values.global.company.name }}-{{ .Release.Name }}"
+              {{- else if eq .Values.global.env.cloud.buckets.type "s3" }}
+              s3:
+                endpoint: {{ .Values.global.env.cloud.buckets.endpoint }}
+                region: {{ .Values.global.env.cloud.location.region }}
+              {{- end }}
           schemaConfig:
             configs:
               - from: 2025-05-01
@@ -239,7 +245,12 @@ chart_apps:
                 index:
                   prefix: index_
                   period: 24h
-
+      {{- if has .Values.global.env.cloud.name (list "yc") }}
+      defaults:
+        extraEnvFrom:
+          - secretRef:
+              name: loki-bucket
+      {{- end }}
   gl-runner:
     enabled: false
   gl-runner-app:

@@ -2,11 +2,14 @@ dependencies:
 - name: loki
   repository: https://grafana.github.io/helm-charts
   version: 6.51.0
+- name: vedro
+  repository: oci://ghcr.io/svetoch-dev/charts
+  version: 0.2.0
 - name: kong-plugins
   repository: file://../chart_deps/konghq/plugins
   version: 0.1.0
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:61fdb7d393050a4ece05b78e171991e60b2ee1081ffc5a24b44933ccc2ecb512
-generated: "2026-01-28T17:22:40.133940964+03:00"
+digest: sha256:eac22bac840b0b6d86fd08306ba7182ed950d96380fae7ec97940257d765953b
+generated: "2026-11-02T14:39:08.112805132+03:00"

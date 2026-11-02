@@ -30,6 +30,56 @@ kong-plugins:
         allow:
           - "{{ .Values.global.env.cloud.network.int_nat_gw }}"
 
+vedro:
+  enabled: false
+  providers:
+    loki:
+      type: "{{ .Values.global.env.cloud.name }}"
+      projectId: "{{ .Values.global.env.cloud.id }}"
+      region: "{{ .Values.global.env.cloud.location.region }}"
+      method: WorkloadIdentity
+      usagePolicy:
+        allowedNamespaces:
+          names: ["{{ .Release.Namespace }}"]
+        bucketPolicy:
+          allowedNamePatterns:
+            - '^{{ printf "%s-%s" .Values.global.company.name .Release.Name }}.*$'
+        principalPolicy:
+          allowReferences: false
+          allowedNamePatterns:
+            - '^{{ .Release.Name}}.*$'
+
+  principals:
+    loki:
+      provider: loki
+      kind: ServiceAccount
+      type: Managed
+      managed:
+        name: "{{ .Release.Name }}"
+      auth: |-
+        {{- if has .Values.global.env.cloud.name (list "yc") }}
+        method: StaticCredentials
+        staticCredentials:
+          secretRef:
+            name: loki-bucket
+        {{- else if has .Values.global.env.cloud.name (list "gcp") }}
+        method: WorkloadIdentity
+        workloadIdentity:
+          serviceAccountRef:
+            name: "{{ .Release.Name }}"
+        {{- else }}
+        {{- fail "Wrong .Values.global.env.cloud.name" }}
+        {{- end }}
+
+  buckets:
+    loki:
+      name: '{{ printf "%s-%s" .Values.global.company.name .Release.name }}'
+      provider: primary
+      location: "{{ .Values.global.env.cloud.location.region }}"
+      deletionPolicy: Retain
+      objAdmins:
+        - name: loki
+
 loki:
   enabled: false
   deploymentMode: SimpleScalable
@@ -46,8 +96,8 @@ loki:
   lokiCanary:
     enabled: false
   serviceAccount:
-    create: false
-    name: grafana-loki
+    create: true
+    #name: grafana-loki
   loki:
     analytics:
       reporting_enabled: false
