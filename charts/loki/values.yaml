@@ -35,7 +35,14 @@ vedro:
   providers:
     loki:
       type: "{{ .Values.global.env.cloud.name }}"
-      projectId: "{{ .Values.global.env.cloud.id }}"
+      projectId: |-
+        {{- if eq .Values.global.env.cloud.name "gcp" }}
+        {{- .Values.global.env.cloud.id }}
+        {{- else if eq .Values.global.env.cloud.name "yc" }}
+        {{- .Values.global.env.cloud.folder_id }}
+        {{- else }}
+        {{- fail "Wrong .Values.global.env.cloud.name" }}
+        {{- end }}
       region: "{{ .Values.global.env.cloud.location.region }}"
       method: WorkloadIdentity
       usagePolicy:
