@@ -246,7 +246,7 @@ chart_apps:
                   prefix: index_
                   period: 24h
       {{- if has .Values.global.env.cloud.name (list "yc") }}
-      defaults:
+      global:
         extraEnvFrom:
           - secretRef:
               name: loki-bucket
