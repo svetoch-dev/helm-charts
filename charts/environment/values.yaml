@@ -228,12 +228,12 @@ chart_apps:
               ruler: "{{ .Values.global.company.name }}-{{ .Release.Name }}"
             object_store:
               type: "{{ .Values.global.env.cloud.buckets.type }}"
-              {{- if eq .Values.global.env.cloud.buckets.type "gcs" }}
+              {{- if eq .Values.global.env.cloud.name "gcp" }}
               gcs:
                 bucket_name: "{{ .Values.global.company.name }}-{{ .Release.Name }}"
-              {{- else if eq .Values.global.env.cloud.buckets.type "s3" }}
+              {{- else if eq .Values.global.env.cloud.name "yc" }}
               s3:
-                endpoint: {{ .Values.global.env.cloud.buckets.endpoint }}
+                endpoint: "https://storage.yandexcloud.net"
                 region: {{ .Values.global.env.cloud.location.region }}
               {{- end }}
           schemaConfig:

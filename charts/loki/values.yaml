@@ -73,7 +73,7 @@ vedro:
 
   buckets:
     loki:
-      name: '{{ printf "%s-%s" .Values.global.company.name .Release.name }}'
+      name: '{{ printf "%s-%s" .Values.global.company.name .Release.Name }}'
       provider: primary
       location: "{{ .Values.global.env.cloud.location.region }}"
       deletionPolicy: Retain
