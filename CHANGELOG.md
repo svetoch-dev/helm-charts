@@ -1,4 +1,4 @@
-# 12.0.0
+# 12.0.0-alpha
 BrakingChanges:
 * loki
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
