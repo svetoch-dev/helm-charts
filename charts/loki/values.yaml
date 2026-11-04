@@ -35,14 +35,7 @@ vedro:
   providers:
     loki:
       type: "{{ .Values.global.env.cloud.name }}"
-      projectId: |-
-        {{- if eq .Values.global.env.cloud.name "gcp" }}
-        {{- .Values.global.env.cloud.id }}
-        {{- else if eq .Values.global.env.cloud.name "yc" }}
-        {{- .Values.global.env.cloud.folder_id }}
-        {{- else }}
-        {{- fail "Wrong .Values.global.env.cloud.name" }}
-        {{- end }}
+      projectId: "{{ tpl .Values.global.vedro.providers.default.projectId $ }}"
       region: "{{ .Values.global.env.cloud.location.region }}"
       method: WorkloadIdentity
       usagePolicy:
@@ -63,20 +56,7 @@ vedro:
       type: Managed
       managed:
         name: "{{ .Release.Name }}"
-      auth: |-
-        {{- if has .Values.global.env.cloud.name (list "yc") }}
-        method: StaticCredentials
-        staticCredentials:
-          secretRef:
-            name: loki-bucket
-        {{- else if has .Values.global.env.cloud.name (list "gcp") }}
-        method: WorkloadIdentity
-        workloadIdentity:
-          serviceAccountRef:
-            name: "{{ .Release.Name }}"
-        {{- else }}
-        {{- fail "Wrong .Values.global.env.cloud.name" }}
-        {{- end }}
+      auth: "{{ tpl .Values.global.vedro.principals.default.auth $ | indent 2 }}"
 
   buckets:
     loki:
