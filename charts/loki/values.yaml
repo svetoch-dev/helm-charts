@@ -1,9 +1,9 @@
 ingresses:
   loki-read:
     enabled: false
-    name: '{{ include "loki.fullname" . }}-read'
+    name: '{{ include "loki-stack.fullname" . }}-read'
     service:
-      name: '{{ include "loki.fullname" . }}-read'
+      name: '{{ include "loki.readFullname" (index .Subcharts "loki") }}'
       port: 3100
     className: konghq
     annotations:
@@ -69,6 +69,7 @@ vedro:
 
 loki:
   enabled: false
+  nameOverride: "loki-{{ .Values.global.env.cloud_short_name }}"
   deploymentMode: SimpleScalable
   global:
     extraArgs:

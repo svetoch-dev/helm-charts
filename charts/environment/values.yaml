@@ -217,7 +217,6 @@ chart_apps:
     enabled: false
     values: |
       loki:
-        nameOverride: "loki-{{ .Values.global.env.cloud_short_name }}"
         loki:
           storage:
             type: "{{ .Values.global.env.cloud.buckets.type }}"
