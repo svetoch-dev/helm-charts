@@ -91,7 +91,7 @@ loki:
     extraMemberlistConfig:
       rejoin_interval: 10m
     compactor:
-      delete_request_store: ""
+      delete_request_store: "{{ .Values.global.env.cloud.buckets.type }}"
       retention_enabled: true
     querier:
       max_concurrent: 4
@@ -110,12 +110,25 @@ loki:
       # logs retention = 60 days
       retention_period: 1440h
     schemaConfig:
-      configs: []
+      configs:
+        - from: 2025-05-01
+          object_store: "{{ .Values.global.env.cloud.buckets.type }}"
+          store: tsdb
+          schema: v13
+          index:
+            prefix: index_
+            period: 24h
     server:
       grpc_server_max_recv_msg_size: 33554432 #32Mb
       grpc_server_max_send_msg_size: 33554432 #32Mb
     storage:
       use_thanos_objstore: true
+      type: "{{ .Values.global.env.cloud.buckets.type }}"
+      bucketNames:
+        chunks: '{{ printf "%s-loki-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}'
+        ruler: '{{ printf "%s-loki-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}'
+      object_store:
+        type: "{{ .Values.global.env.cloud.buckets.type }}"
   gateway:
     enabled: false
   ingress:

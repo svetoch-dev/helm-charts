@@ -224,13 +224,8 @@ chart_apps:
       loki:
         nameOverride: "loki-{{ .Values.global.env.cloud_short_name }}"
         loki:
-          compactor:
-            delete_request_store: "{{ .Values.global.env.cloud.buckets.type }}"
           storage:
             type: "{{ .Values.global.env.cloud.buckets.type }}"
-            bucketNames:
-              chunks: '{{ printf "%s-loki-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}'
-              ruler: '{{ printf "%s-loki-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}'
             object_store:
               type: "{{ .Values.global.env.cloud.buckets.type }}"
               {{- if eq .Values.global.env.cloud.name "gcp" }}
@@ -241,15 +236,6 @@ chart_apps:
                 endpoint: "storage.yandexcloud.net"
                 region: {{ .Values.global.env.cloud.location.region }}
               {{- end }}
-          schemaConfig:
-            configs:
-              - from: 2025-05-01
-                object_store: "{{ .Values.global.env.cloud.buckets.type }}"
-                store: tsdb
-                schema: v13
-                index:
-                  prefix: index_
-                  period: 24h
         read:
           {{- if has $.Values.global.env.cloud.name (list "yc") }}
           extraEnvFrom:
