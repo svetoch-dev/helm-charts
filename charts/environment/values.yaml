@@ -230,24 +230,24 @@ chart_apps:
                 endpoint: "storage.yandexcloud.net"
                 region: {{ .Values.global.env.cloud.location.region }}
               {{- end }}
+        {{- if has $.Values.global.env.cloud.name (list "yc") }}
         read:
-          {{- if has $.Values.global.env.cloud.name (list "yc") }}
           extraEnvFrom:
             - secretRef:
                 name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
-          {{- end }}
+        {{- end }}
+        {{- if has $.Values.global.env.cloud.name (list "yc") }}
         backend:
-          {{- if has $.Values.global.env.cloud.name (list "yc") }}
           extraEnvFrom:
             - secretRef:
                 name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
-          {{- end }}
+        {{- end }}
+        {{- if has $.Values.global.env.cloud.name (list "yc") }}
         write:
-          {{- if has $.Values.global.env.cloud.name (list "yc") }}
           extraEnvFrom:
             - secretRef:
                 name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
-          {{- end }}
+        {{- end }}
   gl-runner:
     enabled: false
   gl-runner-app:
