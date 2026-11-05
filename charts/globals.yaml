@@ -49,7 +49,7 @@ global:
           method: StaticCredentials
           staticCredentials:
             secretRef:
-              name: {{ .Values.global.vedro.principals.default.secretName }}
+              name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
           {{- else if has .Values.global.env.cloud.name (list "gcp") }}
           method: WorkloadIdentity
           workloadIdentity:
