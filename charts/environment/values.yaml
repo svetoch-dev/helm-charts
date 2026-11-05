@@ -215,6 +215,11 @@ chart_apps:
 
   loki:
     enabled: false
+    globalValues:
+      vedro:
+        principals:
+          default:
+            secretName: bucket
     values: |
       loki:
         nameOverride: "loki-{{ .Values.global.env.cloud_short_name }}"
@@ -249,19 +254,19 @@ chart_apps:
           {{- if has $.Values.global.env.cloud.name (list "yc") }}
           extraEnvFrom:
             - secretRef:
-                name: loki-bucket
+                name: {{ .Values.global.vedro.principals.default.secretName }}
           {{- end }}
         backend:
           {{- if has $.Values.global.env.cloud.name (list "yc") }}
           extraEnvFrom:
             - secretRef:
-                name: loki-bucket
+                name: {{ .Values.global.vedro.principals.default.secretName }}
           {{- end }}
         write:
           {{- if has $.Values.global.env.cloud.name (list "yc") }}
           extraEnvFrom:
             - secretRef:
-                name: loki-bucket
+                name: {{ .Values.global.vedro.principals.default.secretName }}
           {{- end }}
   gl-runner:
     enabled: false

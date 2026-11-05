@@ -49,7 +49,7 @@ global:
           method: StaticCredentials
           staticCredentials:
             secretRef:
-              name: loki-bucket
+              name: {{ .Values.global.vedro.principals.default.secretName }}
           {{- else if has .Values.global.env.cloud.name (list "gcp") }}
           method: WorkloadIdentity
           workloadIdentity:
