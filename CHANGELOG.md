@@ -4,7 +4,6 @@ BrakingChanges:
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
   * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
 
-
 Fixes:
 * `loki`: namespace wrapper helpers to preserve upstream templated `nameOverride` support and resolve the read ingress backend through the upstream service naming helper
 
