@@ -11,6 +11,11 @@ dependencies:
     repository: https://grafana.github.io/helm-charts
     alias: loki
     condition: loki.enabled
+  - name: vedro
+    version: 0.2.2
+    repository: oci://ghcr.io/svetoch-dev/charts
+    alias: vedro
+    condition: vedro.enabled
   - name: kong-plugins
     version: 0.1.0
     repository: file://../chart_deps/konghq/plugins

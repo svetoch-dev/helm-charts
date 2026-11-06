@@ -217,29 +217,37 @@ chart_apps:
     enabled: false
     values: |
       loki:
-        nameOverride: "loki-{{ .Values.global.env.cloud_short_name }}"
         loki:
-          compactor:
-            delete_request_store: "{{ .Values.global.env.cloud.buckets.type }}"
           storage:
             type: "{{ .Values.global.env.cloud.buckets.type }}"
-            bucketNames:
-              chunks: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
-              ruler: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
             object_store:
               type: "{{ .Values.global.env.cloud.buckets.type }}"
+              {{- if eq .Values.global.env.cloud.name "gcp" }}
               gcs:
-                bucket_name: "{{ .Values.global.company.name }}-loki-{{ .Values.global.env.short_name }}"
-          schemaConfig:
-            configs:
-              - from: 2025-05-01
-                object_store: "{{ .Values.global.env.cloud.buckets.type }}"
-                store: tsdb
-                schema: v13
-                index:
-                  prefix: index_
-                  period: 24h
-
+                bucket_name: '{{ printf "%s-loki-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}'
+              {{- else if eq .Values.global.env.cloud.name "yc" }}
+              s3:
+                endpoint: "storage.yandexcloud.net"
+                region: {{ .Values.global.env.cloud.location.region }}
+              {{- end }}
+        {{- if has $.Values.global.env.cloud.name (list "yc") }}
+        read:
+          extraEnvFrom:
+            - secretRef:
+                name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
+        {{- end }}
+        {{- if has $.Values.global.env.cloud.name (list "yc") }}
+        backend:
+          extraEnvFrom:
+            - secretRef:
+                name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
+        {{- end }}
+        {{- if has $.Values.global.env.cloud.name (list "yc") }}
+        write:
+          extraEnvFrom:
+            - secretRef:
+                name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
+        {{- end }}
   gl-runner:
     enabled: false
   gl-runner-app:

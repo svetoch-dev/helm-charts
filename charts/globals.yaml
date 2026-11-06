@@ -31,6 +31,41 @@ global:
   access:
     roles: ["owner"]
   alerts: {}
+  vedro:
+    buckets:
+      default:
+        cloudSpecificConfig: |-
+          {{- if eq .Values.global.env.cloud.name "gcp" }}
+          gcp:
+            softDeletePolicy:
+              retentionDuration: "0s"
+          {{- end }}
+    providers:
+      default:
+        projectId: |-
+          {{- if eq .Values.global.env.cloud.name "gcp" }}
+          {{- .Values.global.env.cloud.id }}
+          {{- else if eq .Values.global.env.cloud.name "yc" }}
+          {{- .Values.global.env.cloud.folder_id }}
+          {{- else }}
+          {{- fail "Wrong .Values.global.env.cloud.name" }}
+          {{- end }}
+    principals:
+      default:
+        auth: |-
+          {{- if has .Values.global.env.cloud.name (list "yc") }}
+          method: StaticCredentials
+          staticCredentials:
+            secretRef:
+              name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
+          {{- else if has .Values.global.env.cloud.name (list "gcp") }}
+          method: WorkloadIdentity
+          workloadIdentity:
+            serviceAccountRef:
+              name: "{{ .Release.Name }}"
+          {{- else }}
+          {{- fail "Wrong .Values.global.env.cloud.name" }}
+          {{- end }}
   pomerium:
     policy:
       default: |

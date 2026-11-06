@@ -1,9 +1,9 @@
 ingresses:
   loki-read:
     enabled: false
-    name: '{{ include "loki.fullname" . }}-read'
+    name: '{{ include "loki-stack.fullname" . }}-read'
     service:
-      name: '{{ include "loki.fullname" . }}-read'
+      name: '{{ include "loki.readFullname" (index .Subcharts "loki") }}'
       port: 3100
     className: konghq
     annotations:
@@ -30,8 +30,47 @@ kong-plugins:
         allow:
           - "{{ .Values.global.env.cloud.network.int_nat_gw }}"
 
+vedro:
+  enabled: false
+  providers:
+    loki:
+      type: "{{ .Values.global.env.cloud.name }}"
+      projectId: "{{ tpl .Values.global.vedro.providers.default.projectId $ }}"
+      region: "{{ .Values.global.env.cloud.location.region }}"
+      method: WorkloadIdentity
+      usagePolicy:
+        allowedNamespaces:
+          names: ["{{ .Release.Namespace }}"]
+        bucketPolicy:
+          allowedNamePatterns:
+            - '^{{ printf "%s-%s" .Values.global.company.name .Release.Name }}.*$'
+        principalPolicy:
+          allowReferences: false
+          allowedNamePatterns:
+            - '^{{ .Release.Name}}.*$'
+
+  principals:
+    loki:
+      provider: loki
+      kind: ServiceAccount
+      type: Managed
+      managed:
+        name: "{{ .Release.Name }}"
+      auth: "{{ tpl .Values.global.vedro.principals.default.auth $ | indent 2 }}"
+
+  buckets:
+    loki:
+      name: '{{ printf "%s-%s" .Values.global.company.name .Release.Name }}'
+      provider: loki
+      location: "{{ .Values.global.env.cloud.location.region }}"
+      deletionPolicy: Retain
+      cloudSpecificConfig: "{{ tpl .Values.global.vedro.buckets.default.cloudSpecificConfig $ }}"
+      objAdmins:
+        - name: loki
+
 loki:
   enabled: false
+  nameOverride: "loki-{{ .Values.global.env.cloud_short_name }}"
   deploymentMode: SimpleScalable
   global:
     extraArgs:
@@ -46,8 +85,7 @@ loki:
   lokiCanary:
     enabled: false
   serviceAccount:
-    create: false
-    name: grafana-loki
+    create: true
   loki:
     analytics:
       reporting_enabled: false
@@ -55,7 +93,7 @@ loki:
     extraMemberlistConfig:
       rejoin_interval: 10m
     compactor:
-      delete_request_store: ""
+      delete_request_store: "{{ .Values.global.env.cloud.buckets.type }}"
       retention_enabled: true
     querier:
       max_concurrent: 4
@@ -74,12 +112,25 @@ loki:
       # logs retention = 60 days
       retention_period: 1440h
     schemaConfig:
-      configs: []
+      configs:
+        - from: 2025-05-01
+          object_store: "{{ .Values.global.env.cloud.buckets.type }}"
+          store: tsdb
+          schema: v13
+          index:
+            prefix: index_
+            period: 24h
     server:
       grpc_server_max_recv_msg_size: 33554432 #32Mb
       grpc_server_max_send_msg_size: 33554432 #32Mb
     storage:
       use_thanos_objstore: true
+      type: "{{ .Values.global.env.cloud.buckets.type }}"
+      bucketNames:
+        chunks: '{{ printf "%s-loki-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}'
+        ruler: '{{ printf "%s-loki-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}'
+      object_store:
+        type: "{{ .Values.global.env.cloud.buckets.type }}"
   gateway:
     enabled: false
   ingress:
