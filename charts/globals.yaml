@@ -38,7 +38,7 @@ global:
           {{- if eq .Values.global.env.cloud.name "gcp" }}
           gcp:
             softDeletePolicy:
-              retentionDuration: 0
+              retentionDuration: "0s"
           {{- end }}
     providers:
       default:
