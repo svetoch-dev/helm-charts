@@ -4,12 +4,12 @@ dependencies:
   version: 6.51.0
 - name: vedro
   repository: oci://ghcr.io/svetoch-dev/charts
-  version: 0.2.1
+  version: 0.2.2
 - name: kong-plugins
   repository: file://../chart_deps/konghq/plugins
   version: 0.1.0
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:800e558d5853598d69cc3ca3681a27fe3972b1deb6934980b1ab9ed97b6e1af3
-generated: "2026-11-02T18:43:12.271655837+03:00"
+digest: sha256:79c03c75f754b179bbdb88521478d6df5634df2b6637c7c7a305e5f9748666d5
+generated: "2026-11-06T13:23:43.053444411+03:00"

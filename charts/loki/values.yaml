@@ -64,6 +64,7 @@ vedro:
       provider: loki
       location: "{{ .Values.global.env.cloud.location.region }}"
       deletionPolicy: Retain
+      cloudSpecificConfig: "{{ tpl .Values.global.vedro.buckets.default.cloudSpecificConfig $ }}"
       objAdmins:
         - name: loki
 

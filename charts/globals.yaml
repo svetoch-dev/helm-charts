@@ -32,6 +32,14 @@ global:
     roles: ["owner"]
   alerts: {}
   vedro:
+    buckets:
+      default:
+        cloudSpecificConfig: |-
+          {{- if eq .Values.global.env.cloud.name "gcp" }}
+          gcp:
+            softDeletePolicy:
+              retentionDuration: 0
+          {{- end }}
     providers:
       default:
         projectId: |-
