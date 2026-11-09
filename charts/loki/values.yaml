@@ -78,6 +78,8 @@ loki:
   test:
     enabled: false
   monitoring:
+    # Preserve the release label used by existing dashboards and alerts.
+    appInstanceLabelName: cluster
     serviceMonitor:
       enabled: true
       labels:
@@ -121,6 +123,7 @@ loki:
             prefix: index_
             period: 24h
     server:
+      graceful_shutdown_timeout: 30s
       grpc_server_max_recv_msg_size: 33554432 #32Mb
       grpc_server_max_send_msg_size: 33554432 #32Mb
     storage:
