@@ -1,7 +1,8 @@
 global:
   image:
     repository: ghcr.io/svetoch-dev/pomerium-ingress-controller
-    tag: v0.34.0-svetoch.2
+    tag: v0.34.0@sha256:a3eec8c456ece08fc0760d5cbce15e355811cfe6f01eeca0964f8b8c1701c39c
+
 
 ingressClassName: '{{ .Values.global.ingress.class }}'
 
