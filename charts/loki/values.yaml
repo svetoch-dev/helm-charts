@@ -3,7 +3,7 @@ ingresses:
     enabled: false
     name: '{{ include "loki-stack.fullname" . }}-read'
     service:
-      name: '{{ include "loki.readFullname" (index .Subcharts "loki") }}'
+      name: '{{ include "loki.resourceName" (dict "ctx" (index .Subcharts "loki") "component" "read") }}'
       port: 3100
     className: konghq
     annotations:
