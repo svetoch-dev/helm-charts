@@ -162,6 +162,20 @@ controller:
     runAsGroup: 65532
     runAsNonRoot: true
     runAsUser: 65532
+  role:
+    enabled: true
+    rules:
+    - apiGroups:
+      - coordination.k8s.io
+      resources:
+      - leases
+      verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
   clusterRole:
     enabled: true
     rules:
@@ -170,6 +184,13 @@ controller:
       resources:
       - services
       - endpoints
+      verbs:
+      - get
+      - list
+      - watch
+    - apiGroups:
+      - ""
+      resources:
       - secrets
       verbs:
       - get
@@ -200,6 +221,7 @@ controller:
       - get
       - list
       - watch
+      - patch
     - apiGroups:
       - networking.k8s.io
       resources:
@@ -231,3 +253,15 @@ controller:
       verbs:
       - create
       - patch
+    - apiGroups:
+      - cert-manager.io
+      resources:
+      - certificates
+      verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete

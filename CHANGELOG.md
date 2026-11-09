@@ -13,6 +13,7 @@ Features:
 * `pomerium` - update to 0.34.0
 
 Fixes:
+* `pomerium`: align controller RBAC with 0.34.0 for certificate management and resource patching; add namespaced lease permissions
 * `loki`: namespace wrapper helpers to preserve upstream templated `nameOverride` support and resolve the read ingress backend through the upstream service naming helper
 
 # 11.8.2
