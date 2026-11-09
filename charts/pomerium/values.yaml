@@ -1,7 +1,7 @@
 global:
   image:
-    repository: pomerium/ingress-controller
-    tag: v0.34.0
+    repository: ghcr.io/svetoch-dev/pomerium-ingress-controller
+    tag: v0.34.0-svetoch.2
 
 ingressClassName: '{{ .Values.global.ingress.class }}'
 
