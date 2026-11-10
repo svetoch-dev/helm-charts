@@ -1,16 +1,12 @@
 # 12.0.0-alpha
 BrakingChanges:
 * `loki`
-  * upgrade the upstream chart from 6.51.0 to grafana-community 21.0.0 (Loki 3.7.9), pulled from `oci://ghcr.io/grafana-community/helm-charts`; Kubernetes 1.25+ is required
-    * consumer overrides must follow the [upstream migration notes](https://github.com/grafana-community/helm-charts/tree/loki-21.0.0/charts/loki#upgrading): removed options (including bundled MinIO and self-monitoring) are rejected by the stricter values schema
-    * preserve the `cluster` monitoring release label for existing dashboards and alerts, and retain a 30-second server graceful shutdown timeout
-    * preserve SimpleScalable mode and update the optional read ingress to use the new upstream service naming helper
-    * upstream service naming now includes the release name when it differs from the chart fullname; compare rendered Services and StatefulSet `spec.serviceName` before rollout, as existing StatefulSets may require a planned recreation for this immutable field
+  * upgrade the upstream chart from 6.51.0 to grafana-community 21.0.0 (Loki 3.7.9), pulled from `oci://ghcr.io/grafana-community/helm-charts`
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
   * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
 
 Features:
-* `pomerium` - update to 0.34.0
+* `pomerium` - update to 0.34.0; now uses ghcr.io/svetoch-dev/pomerium-ingress-controller
 * `argocd` - update to 3.6.1 and upstream chart 10.17.1 (from 10.9.6), pulled from `oci://ghcr.io/argoproj/argo-helm`
 
 Fixes:
