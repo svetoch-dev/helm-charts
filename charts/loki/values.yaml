@@ -36,7 +36,7 @@ vedro:
     loki:
       type: "{{ .Values.global.env.cloud.name }}"
       projectId: "{{ tpl .Values.global.vedro.providers.default.projectId $ }}"
-      region: "{{ .Values.global.env.cloud.location.region }}"
+      region: "{{ tpl .Values.global.vedro.providers.default.region $ }}"
       method: WorkloadIdentity
       usagePolicy:
         allowedNamespaces:
@@ -63,7 +63,7 @@ vedro:
       name: '{{ printf "%s-%s" .Values.global.company.name .Release.Name }}'
       provider: loki
       labels: "{{ tpl .Values.global.vedro.buckets.default.labels $ }}"
-      location: "{{ .Values.global.env.cloud.location.region }}"
+      location: "{{ tpl .Values.global.vedro.buckets.default.location $ }}"
       deletionPolicy: Retain
       cloudSpecificConfig: "{{ tpl .Values.global.vedro.buckets.default.cloudSpecificConfig $ }}"
       objAdmins:

@@ -17,7 +17,7 @@ dependencies:
   #  alias: vedro
   #  condition: vedro.enabled
   - name: vedro
-    version: 0.2.1
+    version: 0.2.3
     repository: file://../../../vedro/helm/vedro/
     alias: vedro
     condition: vedro.enabled

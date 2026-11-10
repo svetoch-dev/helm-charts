@@ -34,6 +34,12 @@ global:
   vedro:
     buckets:
       default:
+        location: |-
+          {{- if eq .Values.global.env.cloud.buckets.multi_regional "false" }}
+          {{- .Values.global.env.cloud.location.region }}
+          {{- else }}
+          {{- .Values.global.env.cloud.location.multi_region }}
+          {{- end }}
         labels: |-
           bucket_name: {{ printf "%s-%s" .Values.global.company.name .Release.Name }}
         cloudSpecificConfig: |-
@@ -44,6 +50,12 @@ global:
           {{- end }}
     providers:
       default:
+        region: |-
+          {{- if eq .Values.global.env.cloud.buckets.multi_regional "false" }}
+          {{- .Values.global.env.cloud.location.region }}
+          {{- else }}
+          {{- .Values.global.env.cloud.location.multi_region }}
+          {{- end }}
         projectId: |-
           {{- if eq .Values.global.env.cloud.name "gcp" }}
           {{- .Values.global.env.cloud.id }}
