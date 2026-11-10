@@ -6,7 +6,7 @@ BrakingChanges:
   * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
 
 Features:
-* `pomerium` - update to 0.34.0; now uses ghcr.io/svetoch-dev/pomerium-ingress-controller
+* `pomerium` - update to 0.34.0; because of how pomerium is licensed now uses ghcr.io/svetoch-dev/pomerium-ingress-controller
 * `argocd` - update to 3.6.1 and upstream chart 10.17.1 (from 10.9.6), pulled from `oci://ghcr.io/argoproj/argo-helm`
 
 Fixes:
