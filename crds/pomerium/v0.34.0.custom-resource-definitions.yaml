@@ -178,6 +178,11 @@ spec:
                 items:
                   type: string
                 type: array
+              allowUpgrades:
+                description: AllowUpgrades sets the allowed upgrade types.
+                items:
+                  type: string
+                type: array
               authenticate:
                 description: |-
                   Authenticate sets authenticate service parameters.
@@ -212,6 +217,7 @@ spec:
                 - default
                 - idp_access_token
                 - idp_identity_token
+                - jwt
                 type: string
               caSecrets:
                 description: CASecret should refer to k8s secrets with key <code>ca.crt</code>
@@ -219,6 +225,28 @@ spec:
                 items:
                   type: string
                 type: array
+              certificateAutoProvision:
+                description: |-
+                  CertificateAutoProvision sets the certificate auto provision settings.
+                  This is a fallback for routes that are not defined via Ingress or
+                  Gateway resources. When configured, cert-manager certificate resources
+                  will be created for any routes which have no matching TLS certificate.
+                properties:
+                  clusterIssuer:
+                    description: |-
+                      The cert-manager ClusterIssuer that will be used for new certificates.
+                      Certificates will be created in the same namespace as the controller
+                      pod.
+                    minLength: 1
+                    type: string
+                  issuer:
+                    description: |-
+                      The cert-manager Issuer that will be used for new certificates.
+                      Certificates will be created in the same namespace as the Issuer.
+                    format: namespace/name
+                    minLength: 1
+                    type: string
+                type: object
               certificates:
                 description: Certificates is a list of secrets of type TLS to use
                 format: namespace/name
@@ -408,6 +436,22 @@ spec:
                     format: int32
                     type: integer
                 type: object
+              envoyDynamicExtensions:
+                description: EnvoyDynamicExtensions file paths to the extensions to
+                  be loaded by Envoy at runtime.
+                items:
+                  type: string
+                type: array
+              headersWithUnderscoresAction:
+                description: |-
+                  HeadersWithUnderscoresAction controls the behavior for a request with a
+                  header name containing an underscore character. The default behavior is
+                  reject_request.
+                enum:
+                - allow
+                - reject_request
+                - drop_header
+                type: string
               identityProvider:
                 description: |-
                   IdentityProvider configure single-sign-on authentication and user identity details
@@ -418,11 +462,14 @@ spec:
                       Provider is the short-hand name of a built-in OpenID Connect (oidc) identity provider to be used for authentication.
                       To use a generic provider, set to <code>oidc</code>.
                     enum:
+                    - apple
                     - auth0
                     - azure
+                    - cognito
                     - github
                     - gitlab
                     - google
+                    - hosted
                     - oidc
                     - okta
                     - onelogin
@@ -486,8 +533,92 @@ spec:
                     type: string
                 required:
                 - provider
-                - secret
                 type: object
+                x-kubernetes-validations:
+                - fieldPath: .secret
+                  message: secret is required unless provider is 'hosted'
+                  reason: FieldValueRequired
+                  rule: 'self.provider != ''hosted'' ? has(self.secret) : true'
+              identityProviders:
+                additionalProperties:
+                  description: |-
+                    JWTIdentityProvider declares an identity provider whose JWTs are accepted as
+                    bearer tokens on routes with <code>bearerTokenFormat: jwt</code>. It is meant for
+                    non-interactive workloads that already hold a JWT - Kubernetes projected
+                    ServiceAccount tokens, GitHub Actions OIDC tokens, SPIFFE JWT-SVIDs - and does
+                    not replace the interactive single-sign-on <code>identityProvider</code>.
+                    Authorization on the verified claims is left to policy (<code>claim/...</code>).
+                  properties:
+                    audiences:
+                      description: |-
+                        Audiences accepted on tokens from this provider. At least one of them must appear
+                        in the token's <code>aud</code> claim. Matching is fail-closed: a provider with no
+                        audiences would reject every token.
+                      items:
+                        type: string
+                      minItems: 1
+                      type: array
+                    issuer:
+                      description: |-
+                        Issuer is the <code>iss</code> claim tokens must carry, and must be unique across providers.
+                        It is also where the signing keys are fetched from, unless <code>jwksUrl</code> is set.
+                        <p>
+                        The special value <code>kubernetes:///</code> selects the API server of the cluster
+                        Pomerium runs in: the actual issuer and JWKS URL are read from Pomerium's own
+                        ServiceAccount token at runtime, so tokens projected by this cluster verify
+                        without naming the issuer here.
+                        </p>
+                      minLength: 1
+                      type: string
+                    jwksUrl:
+                      description: |-
+                        JWKSURL, when set, skips OpenID Connect discovery and fetches the signing keys
+                        from this URL directly. Useful when the issuer URL is not routable from Pomerium.
+                        It must not be set together with a <code>kubernetes:///</code> issuer, as the JWKS
+                        URL is then the API server's own endpoint.
+                      format: uri
+                      pattern: ^https://
+                      type: string
+                    supportedAlgs:
+                      description: |-
+                        SupportedAlgs is the allowlist of JWT signing algorithms.
+                        Defaults to <code>RS256</code>, <code>ES256</code> and <code>EdDSA</code>.
+                        Symmetric (<code>HS*</code>) algorithms and <code>none</code> are not accepted.
+                      items:
+                        enum:
+                        - RS256
+                        - RS384
+                        - RS512
+                        - PS256
+                        - PS384
+                        - PS512
+                        - ES256
+                        - ES384
+                        - ES512
+                        - EdDSA
+                        type: string
+                      type: array
+                  required:
+                  - audiences
+                  - issuer
+                  type: object
+                  x-kubernetes-validations:
+                  - fieldPath: .jwksUrl
+                    message: jwksUrl must not be set with a kubernetes:// issuer,
+                      as the JWKS URL is then the API server's own endpoint
+                    reason: FieldValueForbidden
+                    rule: 'self.issuer.startsWith(''kubernetes://'') ? !has(self.jwksUrl)
+                      : true'
+                description: |-
+                  IdentityProviders declares the identity providers whose JWTs are accepted as bearer
+                  tokens on routes with <code>bearerTokenFormat: jwt</code>. The map key is the provider
+                  name, referenced from the <code>identity_providers</code> Ingress annotation to narrow
+                  a route to a subset of the providers; a route that names none accepts all of them.
+                type: object
+                x-kubernetes-validations:
+                - message: identity provider names must be non-empty, lowercase and
+                    must not contain '/'
+                  rule: self.all(k, k != '' && k == k.lowerAscii() && !k.contains('/'))
               idpAccessTokenAllowedAudiences:
                 description: |-
                   IDPAccessTokenAllowedAudiences specifies the
@@ -506,6 +637,16 @@ spec:
                   <a href="https://www.pomerium.com/docs/capabilities/getting-users-identity">
                   Getting User Identity</a> guide.
                 type: object
+              mcpAllowedAsMetadataDomains:
+                description: |-
+                  MCPAllowedASMetadataDomains specifies the allowed domains for upstream AS/PRM metadata URLs.
+                  Supports wildcard patterns like "*.example.com".
+                  This restricts which domains Pomerium will contact during upstream OAuth discovery
+                  (resource_metadata from WWW-Authenticate, authorization_servers from PRM).
+                  See <a href="https://www.pomerium.com/docs/reference/mcp">MCP Settings</a>.
+                items:
+                  type: string
+                type: array
               mcpAllowedClientIdDomains:
                 description: |-
                   MCPAllowedClientIDDomains specifies the allowed domains for MCP client ID metadata URLs.
@@ -514,6 +655,16 @@ spec:
                 items:
                   type: string
                 type: array
+              mergeSlashes:
+                description: |-
+                  MergeSlashes controls whether adjacent slashes in the request URI path
+                  will be merged into one. Defaults to true.
+                type: boolean
+              normalizePath:
+                description: |-
+                  NormalizePath controls whether request URI paths will be normalized
+                  according to RFC 3986. Defaults to true.
+                type: boolean
               otel:
                 description: OTEL sets the <a href="https://www.pomerium.com/docs/reference/tracing">OpenTelemetry
                   Tracing</a>.
@@ -575,6 +726,18 @@ spec:
                 description: PassIdentityHeaders sets the <a href="https://www.pomerium.com/docs/reference/pass-identity-headers">pass
                   identity headers</a> option.
                 type: boolean
+              pathWithEscapedSlashesAction:
+                description: |-
+                  PathWithEscapedSlashesAction controls the behavior for a request with an
+                  escaped slash or backslash character in the URI path. This operation will
+                  occur before path normalization and the merge slashes operation. The
+                  default behavior is reject_request.
+                enum:
+                - keep_unchanged
+                - reject_request
+                - unescape_and_redirect
+                - unescape_and_forward
+                type: string
               programmaticRedirectDomains:
                 description: |-
                   ProgrammaticRedirectDomains specifies a list of domains that can be used for
@@ -702,15 +865,31 @@ spec:
                     type: string
                 type: object
               useProxyProtocol:
-                description: UseProxyProtocol enables <a href="https://www.pomerium.com/docs/reference/use-proxy-protocol">Proxy
-                  Protocol</a> support.
+                description: UseProxyProtocol enables <a href="https://www.pomerium.com/docs/reference/use-proxy-protocol">PROXY
+                  protocol</a> support.
                 type: boolean
             required:
             - secrets
             type: object
+            x-kubernetes-validations:
+            - fieldPath: .authenticate
+              message: authenticate is required if identityProvider is set
+              reason: FieldValueRequired
+              rule: '!has(self.identityProvider) || has(self.authenticate)'
+            - fieldPath: .identityProvider
+              message: identityProvider is required if authenticate is set
+              reason: FieldValueRequired
+              rule: '!has(self.authenticate) || has(self.identityProvider)'
           status:
             description: PomeriumStatus represents configuration and Ingress status.
             properties:
+              certificateAutoProvisionStatus:
+                description: Status of certificate auto provisioning.
+                properties:
+                  dataBrokerLastUpdated:
+                    format: date-time
+                    type: string
+                type: object
               ingress:
                 additionalProperties:
                   description: |-

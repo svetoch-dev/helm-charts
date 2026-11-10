@@ -1,7 +1,8 @@
 global:
   image:
-    repository: pomerium/ingress-controller
-    tag: v0.32.9@sha256:e72d8e3b557fc068db502a8b2a8b281a7433e67c74250a906ef0fb0e33ef016d
+    repository: ghcr.io/svetoch-dev/pomerium-ingress-controller
+    tag: v0.34.0@sha256:a3eec8c456ece08fc0760d5cbce15e355811cfe6f01eeca0964f8b8c1701c39c
+
 
 ingressClassName: '{{ .Values.global.ingress.class }}'
 
@@ -45,6 +46,8 @@ certificates:
 pomerium:
   name: global
   spec:
+    runtimeFlags:
+      product_analytics: false
     authenticate:
       url: "https://authn.{{ .Values.global.env.dns.domain }}"
     certificates:
@@ -160,6 +163,20 @@ controller:
     runAsGroup: 65532
     runAsNonRoot: true
     runAsUser: 65532
+  role:
+    enabled: true
+    rules:
+    - apiGroups:
+      - coordination.k8s.io
+      resources:
+      - leases
+      verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
   clusterRole:
     enabled: true
     rules:
@@ -168,6 +185,13 @@ controller:
       resources:
       - services
       - endpoints
+      verbs:
+      - get
+      - list
+      - watch
+    - apiGroups:
+      - ""
+      resources:
       - secrets
       verbs:
       - get
@@ -198,6 +222,7 @@ controller:
       - get
       - list
       - watch
+      - patch
     - apiGroups:
       - networking.k8s.io
       resources:
@@ -229,3 +254,15 @@ controller:
       verbs:
       - create
       - patch
+    - apiGroups:
+      - cert-manager.io
+      resources:
+      - certificates
+      verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
