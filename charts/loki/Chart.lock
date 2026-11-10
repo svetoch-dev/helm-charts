@@ -4,12 +4,12 @@ dependencies:
   version: 21.0.0
 - name: vedro
   repository: file://../../../vedro/helm/vedro/
-  version: 0.2.1
+  version: 0.2.3
 - name: kong-plugins
   repository: file://../chart_deps/konghq/plugins
   version: 0.1.0
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:86d878a2705e51e3074e0a515dcc3e0e863ee93e385546846fb677eaf0687765
-generated: "2026-11-10T17:31:46.771444801+03:00"
+digest: sha256:88e306430ad0246f3451a043302d1996c0d40603abd870bcc4fb0ee85f85e625
+generated: "2026-11-10T20:11:24.507162672+03:00"
