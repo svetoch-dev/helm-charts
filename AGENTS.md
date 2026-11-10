@@ -167,6 +167,7 @@
   - `remove - duplicate dependency defaults`
 - Keep commits focused; describe the result rather than the work process.
 - For meaningful chart changes, update the appropriate release entry in `CHANGELOG.md`.
+- Whenever updating a dependency, explicitly state its version change in `CHANGELOG.md` using `<from_version> -> <to_version>`, for example `v3.5.1 -> v3.6.1`.
 - Create a PR only when requested; use a concise title and this short description structure:
   - **Problem:** what was missing or incorrect; link an issue if one exists.
   - **Solution:** what changed and why.
