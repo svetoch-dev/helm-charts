@@ -169,7 +169,7 @@ chart_apps:
         global:
           image:
             repository: "{{ .Values.global.env.registry.url }}/argocd"
-            tag: v3.5.3
+            tag: v3.6.1
         externalRedis:
           host: "argocd-{{ .Values.global.env.cloud_short_name }}-redis-cluster-master"
   prometheus:
@@ -222,28 +222,13 @@ chart_apps:
             type: "{{ .Values.global.env.cloud.buckets.type }}"
             object_store:
               type: "{{ .Values.global.env.cloud.buckets.type }}"
-              {{- if eq .Values.global.env.cloud.name "gcp" }}
-              gcs:
-                bucket_name: '{{ printf "%s-loki-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}'
-              {{- else if eq .Values.global.env.cloud.name "yc" }}
+              {{- if eq .Values.global.env.cloud.name "yc" }}
               s3:
                 endpoint: "storage.yandexcloud.net"
                 region: {{ .Values.global.env.cloud.location.region }}
               {{- end }}
         {{- if has $.Values.global.env.cloud.name (list "yc") }}
-        read:
-          extraEnvFrom:
-            - secretRef:
-                name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
-        {{- end }}
-        {{- if has $.Values.global.env.cloud.name (list "yc") }}
-        backend:
-          extraEnvFrom:
-            - secretRef:
-                name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
-        {{- end }}
-        {{- if has $.Values.global.env.cloud.name (list "yc") }}
-        write:
+        defaults:
           extraEnvFrom:
             - secretRef:
                 name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
