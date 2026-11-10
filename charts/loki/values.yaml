@@ -62,6 +62,7 @@ vedro:
     loki:
       name: '{{ printf "%s-%s" .Values.global.company.name .Release.Name }}'
       provider: loki
+      labels: "{{ tpl .Values.global.vedro.buckets.default.labels $ }}"
       location: "{{ .Values.global.env.cloud.location.region }}"
       deletionPolicy: Retain
       cloudSpecificConfig: "{{ tpl .Values.global.vedro.buckets.default.cloudSpecificConfig $ }}"

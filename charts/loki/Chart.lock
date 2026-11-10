@@ -3,13 +3,13 @@ dependencies:
   repository: oci://ghcr.io/grafana-community/helm-charts
   version: 21.0.0
 - name: vedro
-  repository: oci://ghcr.io/svetoch-dev/charts
-  version: 0.2.2
+  repository: file://../../../vedro/helm/vedro/
+  version: 0.2.1
 - name: kong-plugins
   repository: file://../chart_deps/konghq/plugins
   version: 0.1.0
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:86ae448d4e1552dc3dcc55492c79b0acebb0631487c9fd0f527dfef1716526c5
-generated: "2026-11-09T14:24:03.535940728+03:00"
+digest: sha256:86d878a2705e51e3074e0a515dcc3e0e863ee93e385546846fb677eaf0687765
+generated: "2026-11-10T17:31:46.771444801+03:00"
