@@ -34,6 +34,8 @@ global:
   vedro:
     buckets:
       default:
+        labels: |-
+          bucket_name: {{ printf "%s-%s" .Values.global.company.name .Release.Name }}
         cloudSpecificConfig: |-
           {{- if eq .Values.global.env.cloud.name "gcp" }}
           gcp:
