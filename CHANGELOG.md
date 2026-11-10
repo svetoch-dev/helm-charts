@@ -11,7 +11,7 @@ BrakingChanges:
 
 Features:
 * `pomerium` - update to 0.34.0
-* `argocd` - update to 3.6.1
+* `argocd` - update to 3.6.1 and upstream chart 10.17.1 (from 10.9.6), pulled from `oci://ghcr.io/argoproj/argo-helm`
 
 Fixes:
 * `pomerium`: align controller RBAC with 0.34.0 for certificate management and resource patching; add namespaced lease permissions
