@@ -2,11 +2,26 @@ dependencies:
 - name: kong-plugins
   repository: file://../chart_deps/konghq/plugins
   version: 0.1.0
-- name: thanos-services
-  repository: file://services
+- name: thanos-service
+  repository: file://../chart_deps/thanos/service
+  version: 0.1.0
+- name: thanos-service
+  repository: file://../chart_deps/thanos/service
+  version: 0.1.0
+- name: thanos-service
+  repository: file://../chart_deps/thanos/service
+  version: 0.1.0
+- name: thanos-service
+  repository: file://../chart_deps/thanos/service
+  version: 0.1.0
+- name: thanos-service
+  repository: file://../chart_deps/thanos/service
+  version: 0.1.0
+- name: thanos-service
+  repository: file://../chart_deps/thanos/service
   version: 0.1.0
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:0d7abf45cdd630ff5f7d5cd2b5b16f785163fad64e1504d2c634af0cd3dd73c7
-generated: "2026-11-11T16:29:09.009832621+03:00"
+digest: sha256:ed0c5a2a7ed59ee4306fcec7fa011b2ae43a4a3effae09e046b35b4604408ab4
+generated: "2026-11-11T17:06:47.232184376+03:00"

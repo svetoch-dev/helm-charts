@@ -1,13 +1,13 @@
 # 12.0.0-alpha
 BrakingChanges:
-* `thanos`: service configuration now uses `app/common`; see `charts/thanos/README.md` for image, monitoring, and storage value migration.
+* `thanos`: move enablement to `<service>.enabled` and workload configuration to `<service>.common.*`; remove `thanos.enabled`. See `charts/thanos/README.md` for the values migration.
 * `loki`
   * upgrade the upstream chart from 6.51.0 to grafana-community 21.0.0 (Loki 3.7.9), pulled from `oci://ghcr.io/grafana-community/helm-charts`
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
   * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
 
 Features:
-* `thanos`: replace the Bitnami dependency with local service composition (v17.3.1 -> v0.1.0); preserve resource identities and existing service enablement paths.
+* `thanos`: replace the Bitnami dependency with six direct `chart_deps/thanos/service` instances wrapping `app/common` (v17.3.1 -> v0.1.0); preserve resource identities.
 * `chart_deps/app/common`: support ConfigMaps, PodDisruptionBudgets, NetworkPolicies, and explicit workload selectors and PVC names.
 * `chart_deps/app/core`: support StatefulSet service identity and update settings, and templated YAML argument lists.
 * `pomerium` - update v0.32.9 -> v0.34.0; because of how pomerium is licensed now uses ghcr.io/svetoch-dev/pomerium-ingress-controller

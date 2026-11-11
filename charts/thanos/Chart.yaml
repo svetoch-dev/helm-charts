@@ -23,11 +23,36 @@ dependencies:
     repository: file://../chart_deps/konghq/plugins
     alias: kong-plugins
     condition: kong-plugins.enabled
-  - name: thanos-services
-    repository: file://services
+  - name: thanos-service
     version: 0.1.0
-    alias: thanos
-    condition: thanos.enabled
+    repository: file://../chart_deps/thanos/service
+    alias: query
+    condition: query.enabled
+  - name: thanos-service
+    version: 0.1.0
+    repository: file://../chart_deps/thanos/service
+    alias: queryFrontend
+    condition: queryFrontend.enabled
+  - name: thanos-service
+    version: 0.1.0
+    repository: file://../chart_deps/thanos/service
+    alias: compactor
+    condition: compactor.enabled
+  - name: thanos-service
+    version: 0.1.0
+    repository: file://../chart_deps/thanos/service
+    alias: storegateway
+    condition: storegateway.enabled
+  - name: thanos-service
+    version: 0.1.0
+    repository: file://../chart_deps/thanos/service
+    alias: ruler
+    condition: ruler.enabled
+  - name: thanos-service
+    version: 0.1.0
+    repository: file://../chart_deps/thanos/service
+    alias: recieve
+    condition: recieve.enabled
   - name: core
     version: 0.1.0
     repository: file://../chart_deps/app/core
