@@ -1,7 +1,11 @@
-{{- $serviceMonitor := .Values.serviceMonitor }}
+{{- $serviceMonitor := deepCopy .Values.serviceMonitor }}
 {{- $labels := include "common.labels" . | fromYaml }}
+{{- if not (hasKey $serviceMonitor "jobLabel") }}
 {{- $serviceMonitor = set $serviceMonitor "jobLabel" (include "common.fullname" . ) }}
+{{- end }}
+{{- if not $serviceMonitor.selectorLabels }}
 {{- $serviceMonitor = set $serviceMonitor "selectorLabels" (include "common.selectorLabels" . | fromYaml ) }}
+{{- end }}
 {{- $serviceMonitor = set $serviceMonitor "name" (include "common.fullname" . ) }}
 
 {{- include "prometheus.serviceMonitor" (list $ $labels $serviceMonitor) }}

@@ -1,0 +1,6 @@
+{{- range $name, $configMap := .Values.configMaps }}
+{{- $obj := deepCopy $configMap }}
+{{- $labels := include "common.labels" $ | fromYaml }}
+{{- $_ := set $obj "name" ($obj.name | default (printf "%s-%s" (include "common.fullname" $) $name)) }}
+{{- include "core.configMap" (list $ $labels $obj) }}
+{{- end }}

@@ -12,7 +12,7 @@ If release name contains chart name it will be used as a full name.
 */}}
 {{- define "common.fullname" -}}
 {{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- tpl .Values.fullnameOverride . | trunc 63 | trimSuffix "-" }}
 {{- else }}
 {{- $name := default .Chart.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
@@ -46,8 +46,12 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "common.selectorLabels" -}}
+{{- if .Values.selectorLabels }}
+{{- tpl (toYaml .Values.selectorLabels) . }}
+{{- else }}
 app.kubernetes.io/name: {{ include "common.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
 {{- end }}
 
 {{/*
@@ -114,7 +118,7 @@ volumes:
   {{- range $name, $pvc := .Values.pvcs }}
   - name: {{ $name }}
     persistentVolumeClaim:
-      claimName: {{ include "common.fullname" $ }}-{{ $name }}
+      claimName: {{ tpl ($pvc.name | default (printf "%s-%s" (include "common.fullname" $) $name)) $ }}
   {{- end }}
   {{- with .Values.volumes }}
   {{- tpl (toYaml .) $ | nindent 2 }}
