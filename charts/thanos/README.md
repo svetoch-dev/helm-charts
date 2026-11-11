@@ -1,70 +1,63 @@
 # Thanos
 
-The stack uses six instances of [`app/common`](../chart_deps/app/common), grouped
-under `thanos` so existing service enablement and query store paths still work:
+The stack declares six direct dependencies on
+[`thanos/service`](../chart_deps/thanos/service), aliased as `query`,
+`queryFrontend`, `compactor`, `storegateway`, `ruler`, and `recieve`.
+Each wrapper uses [`app/common`](../chart_deps/app/common) and supplies shared
+Thanos defaults. This stack sets only service-specific overrides.
 
 ```yaml
-thanos:
+query:
   enabled: true
-  query:
-    enabled: true
+  common:
     stores:
       - prometheus-thanos:10901
-  compactor:
-    enabled: true
-  storegateway:
-    enabled: true
+compactor:
+  enabled: true
+storegateway:
+  enabled: true
 ```
 
-Build local dependencies from the chart directory, from the inner chart outward:
+Each service is disabled by default. `<service>.enabled` gates the entire service
+dependency; `<service>.common.*` configures its workload. There is no separate
+`thanos.enabled` master switch. The `recieve` alias retains the wrapper's spelling;
+its workload and Thanos command use `receive`.
+
+Build dependencies from the chart directory, from the inner chart outward:
 
 ```sh
-helm dependency build services
+helm dependency build ../chart_deps/thanos/service
 helm dependency build .
 ```
 
-Services are `query`, `queryFrontend`, `compactor`, `storegateway`, `ruler`, and
-`recieve`. The `recieve` values key retains the wrapper's spelling; its workload
-and Thanos command use `receive`. Each service is disabled by default.
+Migration from the previous grouping chart:
 
-Each service accepts the common chart's workload, service, service account,
-storage, security, scheduling, and monitoring values. Deployment services also
-support the common chart's autoscaling values. The grouping
-chart keeps `thanos.enabled` as the master switch. Stack ingresses, Kong plugins,
-and the shared object-store Secret remain configured at the stack level.
+- Move `thanos.<service>.enabled` to `<service>.enabled`.
+- Move other `thanos.<service>.*` settings to `<service>.common.*`, for example
+  `thanos.query.stores` becomes `query.common.stores`.
+- Remove `thanos.enabled`. If it was false, keep every service disabled.
+- Shared defaults now live in the reusable service chart; override them through
+  `<service>.common.image`, `.serviceMonitor`, `.securityContext`, and other
+  common chart values.
 
-The object-store Secret requires `global.company.name`, `global.env.short_name`,
-and `global.env.cloud.buckets.type`. Compactor and storegateway retain the existing
-external service account named `thanos`; consumers must provision that account
-and its object-store permissions.
+Stack ingresses, Kong plugins, and the shared object-store Secret remain at the
+stack level. The Secret requires `global.company.name`, `global.env.short_name`,
+and `global.env.cloud.buckets.type`. Compactor and storegateway retain the external
+service account named `thanos`; consumers must provide it and its object-store
+permissions.
 
-Migration from the Bitnami dependency:
+Compactor storage is configured with `compactor.common.pvcs.data.storage`.
+StatefulSet storage uses `<service>.common.volumeClaimTemplates.data.storage`.
+Ruler requires `ruler.common.config` (a YAML rules string) and a nonempty
+`ruler.common.alertmanagers` URL list. Receive renders its ConfigMap from
+`recieve.common.hashrings`; configure both `args` and `hashrings` before scaling
+past its default single-replica local endpoint.
 
-- Configure the image separately with `thanos.<service>.image.repository` (including
-  the registry), `.tag`, and `.pullPolicy`, replacing `thanos.image`.
-- Configure monitoring with `thanos.<service>.serviceMonitor`, replacing
-  `thanos.metrics`. Existing ServiceMonitor names and selectors are retained.
-- Configure compactor storage with `thanos.compactor.pvcs.data.storage`, replacing
-  `thanos.compactor.persistence.size`. The existing PVC name is retained.
-- Configure StatefulSet storage with
-  `thanos.<service>.volumeClaimTemplates.data.storage`. Keep the existing `data`
-  claim name and metadata when upgrading an existing StatefulSet.
-- `args` accepts a list or a templated YAML list string. The default helper uses
-  `logLevel`, `logFormat`, and `extraFlags`, plus query `stores`/`replicaLabel`,
-  compactor retention settings, ruler `alertmanagers`, and receive retention and
-  replication settings. Override `args` for other Thanos flags.
-- Ruler requires `thanos.ruler.config` (a YAML rules string) and a nonempty
-  `thanos.ruler.alertmanagers` URL list. It renders a rules ConfigMap.
-- Receive renders a hashring ConfigMap from `thanos.recieve.hashrings`. Its default
-  local endpoint and ring describe a single replica; configure both `args` and
-  `hashrings` before using multiple replicas.
-- The legacy `minio`, `volumePermissions`, stack `networkPolicy`, and
-  `receiveDistributor` interfaces are omitted. Per-service generic NetworkPolicy
-  resources preserve the existing policies and can be configured under each
-  service's `networkPolicy` values.
+The legacy `minio`, `volumePermissions`, stack `networkPolicy`, and
+`receiveDistributor` interfaces remain omitted. Generic per-service policies use
+`<service>.common.networkPolicy`. Deployment services support common autoscaling.
 
-Workload names, selectors, data claims, and service ports retain the previous
-identities. Chart/version labels reflect the common dependency. This migration
-retains the old StatefulSet governing service names; the upstream configuration
-did not render the corresponding headless Services for the default unsharded
-storegateway, ruler, or receive workloads.
+Resource names, selectors, data claims, and service ports retain their identities.
+Chart labels reflect the common dependency. The existing StatefulSet governing
+service names are retained; the prior configuration did not render corresponding
+headless Services for the default unsharded storegateway, ruler, or receive.

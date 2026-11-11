@@ -1,5 +1,5 @@
 {{/* Keep the stack prefix independent of the common dependency aliases. */}}
-{{- define "thanos.servicePrefix" -}}
+{{- define "thanos-service.prefix" -}}
 {{- if contains "thanos" .Release.Name -}}
 {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -8,11 +8,11 @@
 {{- end -}}
 
 {{/* A YAML argument list lets variable-length stores and alertmanagers use tpl. */}}
-{{- define "thanos.serviceArgs" -}}
+{{- define "thanos-service.args" -}}
 {{- $component := .Values.containerName -}}
 {{- $commands := dict "query" "query" "query-frontend" "query-frontend" "compactor" "compact" "storegateway" "store" "ruler" "rule" "receive" "receive" -}}
 {{- $args := list (index $commands $component) (printf "--log.level=%s" .Values.logLevel) (printf "--log.format=%s" .Values.logFormat) -}}
-{{- $prefix := include "thanos.servicePrefix" . -}}
+{{- $prefix := include "thanos-service.prefix" . -}}
 {{- $query := printf "%s-query" $prefix -}}
 {{- if eq $component "query-frontend" -}}
   {{- $args = concat $args (list "--http-address=0.0.0.0:9090" (printf "--query-frontend.downstream-url=http://%s:9090" $query)) -}}
@@ -31,7 +31,7 @@
   {{- else if eq $component "ruler" -}}
     {{- $args = concat $args (list "--data-dir=/data" "--eval-interval=1m") -}}
     {{- if not .Values.alertmanagers -}}
-      {{- fail "thanos.ruler.alertmanagers is required when ruler is enabled" -}}
+      {{- fail "ruler.common.alertmanagers is required when ruler is enabled" -}}
     {{- end -}}
     {{- range .Values.alertmanagers -}}
       {{- $args = append $args (printf "--alertmanagers.url=%s" (tpl . $)) -}}
