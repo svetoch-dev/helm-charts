@@ -101,16 +101,9 @@ chart_apps:
                 requests:
                   cpu: '1'
                   memory: 4Gi
-              env:
-                - name: GIT_SSH_COMMAND
-                  value: >-
-                    ssh -i /home/runner/infra-ssh/id_ed25519 -o IdentitiesOnly=yes
-                    -o HostKeyAlgorithms=ssh-ed25519
-                    -o StrictHostKeyChecking=yes
-                    -o UserKnownHostsFile=/home/runner/infra-ssh/known_hosts
               volumeMounts:
                 - name: infrastructure-ssh
-                  mountPath: /home/runner/infra-ssh
+                  mountPath: /home/runner/.ssh
           volumes:
             - name: infrastructure-ssh
               secret:
