@@ -1,0 +1,38 @@
+apiVersion: v2
+name: thanos-services
+description: Thanos services composed from the common workload chart
+type: application
+version: 0.1.0
+appVersion: v0.41.0
+
+dependencies:
+  - name: common
+    version: 0.1.0
+    repository: file://../../chart_deps/app/common
+    alias: query
+    condition: query.enabled
+  - name: common
+    version: 0.1.0
+    repository: file://../../chart_deps/app/common
+    alias: queryFrontend
+    condition: queryFrontend.enabled
+  - name: common
+    version: 0.1.0
+    repository: file://../../chart_deps/app/common
+    alias: compactor
+    condition: compactor.enabled
+  - name: common
+    version: 0.1.0
+    repository: file://../../chart_deps/app/common
+    alias: storegateway
+    condition: storegateway.enabled
+  - name: common
+    version: 0.1.0
+    repository: file://../../chart_deps/app/common
+    alias: ruler
+    condition: ruler.enabled
+  - name: common
+    version: 0.1.0
+    repository: file://../../chart_deps/app/common
+    alias: recieve
+    condition: recieve.enabled

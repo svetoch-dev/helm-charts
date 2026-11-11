@@ -2,11 +2,11 @@ dependencies:
 - name: kong-plugins
   repository: file://../chart_deps/konghq/plugins
   version: 0.1.0
-- name: thanos
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 17.3.1
+- name: thanos-services
+  repository: file://services
+  version: 0.1.0
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:4d3b9fb416516cde1de6e939ae64af9fbaf01d4a8512359c4230b8dd4e9f4166
-generated: "2025-08-28T12:46:22.329842771Z"
+digest: sha256:0d7abf45cdd630ff5f7d5cd2b5b16f785163fad64e1504d2c634af0cd3dd73c7
+generated: "2026-11-11T16:29:09.009832621+03:00"

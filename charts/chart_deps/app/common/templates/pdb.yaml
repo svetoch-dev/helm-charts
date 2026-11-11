@@ -1,0 +1,5 @@
+{{- $obj := deepCopy .Values.podDisruptionBudget }}
+{{- $labels := include "common.labels" . | fromYaml }}
+{{- $_ := set $obj "name" ($obj.name | default (include "common.fullname" .)) }}
+{{- $_ := set $obj "selectorLabels" (include "common.selectorLabels" . | fromYaml) }}
+{{- include "core.podDisruptionBudget" (list $ $labels $obj) }}

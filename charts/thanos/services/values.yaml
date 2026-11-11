@@ -1,0 +1,13 @@
+# Workload configuration is supplied by the parent chart under thanos.<service>.
+query:
+  enabled: false
+queryFrontend:
+  enabled: false
+compactor:
+  enabled: false
+storegateway:
+  enabled: false
+ruler:
+  enabled: false
+recieve:
+  enabled: false

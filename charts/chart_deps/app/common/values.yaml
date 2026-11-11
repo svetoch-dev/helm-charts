@@ -15,6 +15,7 @@ image:
 
 imagePullSecrets: []
 nameOverride: ""
+# Supports templated names, for example one derived from .Release.Name.
 fullnameOverride: ""
 
 deploymentEnabled: true
@@ -163,6 +164,7 @@ readinessProbe: {}
 
 command: []
 
+# A list of arguments or a templated string containing a YAML list.
 args: []
 
 serviceMonitor:
@@ -228,3 +230,15 @@ prometheus-rules:
             enabled: false
             source: '{{ .Values.global.app.name }}-api probes'
 #            query: '{instance="https://{{ .Values.global.app.name }}-api.{{ .Values.global.env.dns.domain }}/api/health/db"}'
+
+# Optional overrides for workloads that must keep existing names and selectors.
+selectorLabels: {}
+containerName: ""
+
+configMaps: {}
+
+podDisruptionBudget:
+  enabled: false
+
+networkPolicy:
+  enabled: false

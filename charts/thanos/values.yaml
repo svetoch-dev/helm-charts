@@ -1,3 +1,5 @@
+# Each thanos service is an instance of chart_deps/app/common.
+# Keep service defaults disabled; configure workloads through their common values.
 ingresses:
   query:
     enabled: false
@@ -5,20 +7,20 @@ ingresses:
     service:
       name: '{{ include "thanos.fullname" . }}-query'
       port: 9090
-    className: "{{ .Values.global.ingress.class }}"
+    className: '{{ .Values.global.ingress.class }}'
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-pomerium
       ingress.pomerium.io/policy: |
         {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
     hosts:
-      - host: "tq.{{ .Values.global.env.dns.domain }}"
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
+    - host: tq.{{ .Values.global.env.dns.domain }}
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
     tls:
-      - secretName: tq-tls
-        hosts:
-          - "tq.{{ .Values.global.env.dns.domain }}"
+    - secretName: tq-tls
+      hosts:
+      - tq.{{ .Values.global.env.dns.domain }}
   storegateway:
     enabled: false
     name: '{{ include "thanos.fullname" . }}-storegateway-grpc'
@@ -31,27 +33,24 @@ ingresses:
       konghq.com/protocols: grpc,grpcs
       konghq.com/plugins: thanos-store-main-ip-restriction
     hosts:
-      - host: "thanos-store.{{ .Values.global.env.dns.domain }}"
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
+    - host: thanos-store.{{ .Values.global.env.dns.domain }}
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
     tls:
-      - secretName: thanos-store-tls
-        hosts:
-          - "thanos-store.{{ .Values.global.env.dns.domain }}"
-
-
+    - secretName: thanos-store-tls
+      hosts:
+      - thanos-store.{{ .Values.global.env.dns.domain }}
 kong-plugins:
   enabled: false
   plugins:
-    - name: thanos-store-main-ip-restriction
-      plugin_name: ip-restriction
-      annotations:
-        kubernetes.io/ingress.class: konghq
-      config:
-        allow:
-          - "{{ .Values.global.env.cloud.network.int_nat_gw }}"
-
+  - name: thanos-store-main-ip-restriction
+    plugin_name: ip-restriction
+    annotations:
+      kubernetes.io/ingress.class: konghq
+    config:
+      allow:
+      - '{{ .Values.global.env.cloud.network.int_nat_gw }}'
 secrets:
   thanos:
     name: thanos
@@ -60,84 +59,729 @@ secrets:
         type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
         config:
           bucket: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.short_name }}"
-
 thanos:
   enabled: false
-  global:
-    security:
-      allowInsecureImages: true
-  image:
-    registry: quay.io
-    repository: thanos/thanos
-    tag: v0.41.0
-  existingObjstoreSecret: '{{ include "thanos.fullname" . }}-thanos'
-  metrics:
-    enabled: true
-    serviceMonitor:
-      enabled: true
-      labels:
-        prometheus: main
   query:
     enabled: false
-    logFormat: json
-    dnsDiscovery:
+    probes:
       enabled: false
+    prometheus-rules:
+      enabled: false
+    fullnameOverride: '{{ include "thanos.servicePrefix" . }}-query'
+    containerName: query
+    selectorLabels: &selectorLabels
+      app.kubernetes.io/name: thanos
+      app.kubernetes.io/instance: '{{ .Release.Name }}'
+      app.kubernetes.io/component: '{{ .Values.containerName }}'
+    image: &thanosImage
+      repository: quay.io/thanos/thanos
+      tag: v0.41.0
+      pullPolicy: IfNotPresent
+    deploymentEnabled: true
+    statefulsetEnabled: false
+    replicaCount: 1
+    revisionHistoryLimit: 10
+    logLevel: info
+    logFormat: json
+    args: '{{ include "thanos.serviceArgs" . }}'
+    extraFlags: []
+    ports:
+    - name: http
+      containerPort: 10902
+      protocol: TCP
+    - name: grpc
+      containerPort: 10901
+      protocol: TCP
+    livenessProbe: &livenessProbe
+      failureThreshold: 6
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 30
+      httpGet:
+        path: /-/healthy
+        port: http
+        scheme: HTTP
+    readinessProbe: &readinessProbe
+      failureThreshold: 6
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 30
+      httpGet:
+        path: /-/ready
+        port: http
+        scheme: HTTP
     resources:
-      requests:
-        cpu: 10m
-        memory: 50Mi
       limits:
         cpu: '2'
         memory: 2Gi
-  queryFrontend:
-    enabled: false
-  bucketweb:
-    enabled: false
-  compactor:
-    enabled: false
-    extraFlags:
-      - --delete-delay=48h
-    logFormat: json
-    persistence:
-      size: 15Gi
-    resources:
-      requests:
-        cpu: 20m
-        memory: 45Mi
-      limits:
-        cpu: 1500m
-        memory: 1Gi
-    retentionResolutionRaw: 30d
-    retentionResolution5m: 60d
-    retentionResolution1h: 90d
-    serviceAccount:
-      create: false
-      name: thanos
-  storegateway:
-    enabled: false
-    logFormat: json
-    resources:
       requests:
         cpu: 10m
         memory: 50Mi
-      limits:
-        cpu: 1000m
-        memory: 3Gi
+    podSecurityContext: &podSecurityContext
+      fsGroup: 1001
+      fsGroupChangePolicy: Always
+      supplementalGroups: []
+      sysctls: []
+    securityContext: &securityContext
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      privileged: false
+      readOnlyRootFilesystem: true
+      runAsGroup: 1001
+      runAsNonRoot: true
+      runAsUser: 1001
+      seLinuxOptions: {}
+      seccompProfile:
+        type: RuntimeDefault
+    automountServiceAccountToken: true
+    disableGlobalEnvironment: true
+    disableGlobalEnvironmentFromSecrets: true
+    affinity: &affinity
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 1
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: thanos
+                app.kubernetes.io/instance: '{{ .Release.Name }}'
+                app.kubernetes.io/component: '{{ .Values.containerName }}'
+            topologyKey: kubernetes.io/hostname
+    podLabels:
+      app.kubernetes.io/managed-by: '{{ .Release.Service }}'
+    serviceAccount:
+      create: true
+      name: ''
+      automountServiceAccountToken: false
+    strategy:
+      type: RollingUpdate
     service:
-      annotations:
-        konghq.com/protocol: grpc
+      enabled: true
+      name: '{{ include "common.fullname" . }}'
+      type: ClusterIP
+      ports:
+      - port: 9090
+        targetPort: http
+        protocol: TCP
+        name: http
+      labels:
+        prometheus-operator/monitor: 'true'
+    serviceMonitor:
+      enabled: true
+      jobLabel: ''
+      prometheusSelector:
+        prometheus: main
+      selectorLabels:
+        app.kubernetes.io/name: thanos
+        app.kubernetes.io/instance: '{{ .Release.Name }}'
+        app.kubernetes.io/component: '{{ .Values.containerName }}'
+        prometheus-operator/monitor: 'true'
+      endpoints:
+      - port: http
+    podDisruptionBudget:
+      enabled: true
+      maxUnavailable: 1
+    networkPolicy:
+      enabled: true
+      policyTypes:
+      - Ingress
+      - Egress
+      egress:
+      - {}
+      ingress:
+      - ports:
+        - port: 10902
+        - port: 10901
+        - port: 9090
+        - port: 10901
+    stores: []
+    replicaLabel: replica
+    additionalServices:
+    - name: '{{ include "common.fullname" . }}-grpc'
+      enabled: true
+      type: ClusterIP
+      ports:
+      - name: grpc
+        port: 10901
+        targetPort: grpc
+        protocol: TCP
+  queryFrontend:
+    enabled: false
+    probes:
+      enabled: false
+    prometheus-rules:
+      enabled: false
+    fullnameOverride: '{{ include "thanos.servicePrefix" . }}-query-frontend'
+    containerName: query-frontend
+    selectorLabels: *selectorLabels
+    image: *thanosImage
+    deploymentEnabled: true
+    statefulsetEnabled: false
+    replicaCount: 1
+    revisionHistoryLimit: 10
+    logLevel: info
+    logFormat: logfmt
+    args: '{{ include "thanos.serviceArgs" . }}'
+    extraFlags: []
+    ports:
+    - name: http
+      containerPort: 9090
+      protocol: TCP
+    livenessProbe: *livenessProbe
+    readinessProbe: *readinessProbe
+    resources:
+      limits:
+        cpu: 150m
+        ephemeral-storage: 2Gi
+        memory: 192Mi
+      requests:
+        cpu: 100m
+        ephemeral-storage: 50Mi
+        memory: 128Mi
+    podSecurityContext: *podSecurityContext
+    securityContext: *securityContext
+    automountServiceAccountToken: true
+    disableGlobalEnvironment: true
+    disableGlobalEnvironmentFromSecrets: true
+    affinity: *affinity
+    podLabels:
+      app.kubernetes.io/managed-by: '{{ .Release.Service }}'
+    serviceAccount:
+      create: true
+      name: ''
+      automountServiceAccountToken: false
+    strategy:
+      type: RollingUpdate
+    service:
+      enabled: true
+      name: '{{ include "common.fullname" . }}'
+      type: ClusterIP
+      ports:
+      - port: 9090
+        targetPort: http
+        protocol: TCP
+        name: http
+      labels:
+        prometheus-operator/monitor: 'true'
+    serviceMonitor:
+      enabled: true
+      jobLabel: ''
+      prometheusSelector:
+        prometheus: main
+      selectorLabels:
+        app.kubernetes.io/name: thanos
+        app.kubernetes.io/instance: '{{ .Release.Name }}'
+        app.kubernetes.io/component: '{{ .Values.containerName }}'
+        prometheus-operator/monitor: 'true'
+      endpoints:
+      - port: http
+    podDisruptionBudget:
+      enabled: true
+      maxUnavailable: 1
+    networkPolicy:
+      enabled: true
+      policyTypes:
+      - Ingress
+      - Egress
+      egress:
+      - {}
+      ingress:
+      - ports:
+        - port: 9090
+        - port: 9090
+  compactor:
+    enabled: false
+    probes:
+      enabled: false
+    prometheus-rules:
+      enabled: false
+    fullnameOverride: '{{ include "thanos.servicePrefix" . }}-compactor'
+    containerName: compactor
+    selectorLabels: *selectorLabels
+    image: *thanosImage
+    deploymentEnabled: true
+    statefulsetEnabled: false
+    replicaCount: 1
+    revisionHistoryLimit: 10
+    logLevel: info
+    logFormat: json
+    args: '{{ include "thanos.serviceArgs" . }}'
+    extraFlags:
+    - --delete-delay=48h
+    ports:
+    - name: http
+      containerPort: 10902
+      protocol: TCP
+    livenessProbe: *livenessProbe
+    readinessProbe: *readinessProbe
+    resources:
+      limits:
+        cpu: 1500m
+        memory: 1Gi
+      requests:
+        cpu: 20m
+        memory: 45Mi
+    podSecurityContext: *podSecurityContext
+    securityContext: *securityContext
+    automountServiceAccountToken: true
+    disableGlobalEnvironment: true
+    disableGlobalEnvironmentFromSecrets: true
+    affinity: *affinity
+    podLabels:
+      app.kubernetes.io/managed-by: '{{ .Release.Service }}'
     serviceAccount:
       create: false
       name: thanos
+      automountServiceAccountToken: true
+    strategy:
+      type: Recreate
+    service:
+      enabled: true
+      name: '{{ include "common.fullname" . }}'
+      type: ClusterIP
+      ports:
+      - port: 9090
+        targetPort: http
+        protocol: TCP
+        name: http
+      labels:
+        prometheus-operator/monitor: 'true'
+    serviceMonitor:
+      enabled: true
+      jobLabel: ''
+      prometheusSelector:
+        prometheus: main
+      selectorLabels:
+        app.kubernetes.io/name: thanos
+        app.kubernetes.io/instance: '{{ .Release.Name }}'
+        app.kubernetes.io/component: '{{ .Values.containerName }}'
+        prometheus-operator/monitor: 'true'
+      endpoints:
+      - port: http
+    networkPolicy:
+      enabled: true
+      policyTypes:
+      - Ingress
+      - Egress
+      egress:
+      - {}
+      ingress:
+      - ports:
+        - port: 10902
+        - port: 9090
+    volumes:
+    - name: objstore-config
+      secret:
+        secretName: '{{ include "thanos.servicePrefix" . }}-thanos'
+    volumeMounts:
+    - name: objstore-config
+      mountPath: /conf
+    retentionResolutionRaw: 30d
+    retentionResolution5m: 60d
+    retentionResolution1h: 90d
+    pvcs:
+      data:
+        name: '{{ include "common.fullname" . }}'
+        storage: 15Gi
+        mountPath: /data
+  storegateway:
+    enabled: false
+    probes:
+      enabled: false
+    prometheus-rules:
+      enabled: false
+    fullnameOverride: '{{ include "thanos.servicePrefix" . }}-storegateway'
+    containerName: storegateway
+    selectorLabels: *selectorLabels
+    image: *thanosImage
+    deploymentEnabled: false
+    statefulsetEnabled: true
+    replicaCount: 1
+    revisionHistoryLimit: 10
+    logLevel: info
+    logFormat: json
+    args: '{{ include "thanos.serviceArgs" . }}'
+    extraFlags: []
+    ports:
+    - name: http
+      containerPort: 10902
+      protocol: TCP
+    - name: grpc
+      containerPort: 10901
+      protocol: TCP
+    livenessProbe: *livenessProbe
+    readinessProbe: *readinessProbe
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 3Gi
+      requests:
+        cpu: 10m
+        memory: 50Mi
+    podSecurityContext: *podSecurityContext
+    securityContext: *securityContext
+    automountServiceAccountToken: true
+    disableGlobalEnvironment: true
+    disableGlobalEnvironmentFromSecrets: true
+    affinity: *affinity
+    podLabels:
+      app.kubernetes.io/managed-by: '{{ .Release.Service }}'
+    serviceAccount:
+      create: false
+      name: thanos
+      automountServiceAccountToken: true
+    serviceName: '{{ include "common.fullname" . }}-headless'
+    podManagementPolicy: OrderedReady
+    updateStrategy:
+      type: RollingUpdate
+    volumeClaimTemplates:
+      data:
+        metadata:
+          name: data
+        storage: 8Gi
+        accessModes:
+        - ReadWriteOnce
+    service:
+      enabled: true
+      name: '{{ include "common.fullname" . }}'
+      type: ClusterIP
+      ports:
+      - port: 9090
+        targetPort: http
+        protocol: TCP
+        name: http
+      - port: 10901
+        targetPort: grpc
+        protocol: TCP
+        name: grpc
+      labels:
+        prometheus-operator/monitor: 'true'
+      annotations:
+        konghq.com/protocol: grpc
+    serviceMonitor:
+      enabled: true
+      jobLabel: ''
+      prometheusSelector:
+        prometheus: main
+      selectorLabels:
+        app.kubernetes.io/name: thanos
+        app.kubernetes.io/instance: '{{ .Release.Name }}'
+        app.kubernetes.io/component: '{{ .Values.containerName }}'
+        prometheus-operator/monitor: 'true'
+      endpoints:
+      - port: http
+    podDisruptionBudget:
+      enabled: true
+      maxUnavailable: 1
+    networkPolicy:
+      enabled: true
+      policyTypes:
+      - Ingress
+      - Egress
+      egress:
+      - {}
+      ingress:
+      - ports:
+        - port: 10902
+        - port: 9090
+        - port: 10901
+        - port: 10901
+    volumes:
+    - name: objstore-config
+      secret:
+        secretName: '{{ include "thanos.servicePrefix" . }}-thanos'
+    volumeMounts:
+    - name: objstore-config
+      mountPath: /conf
+    - name: data
+      mountPath: /data
   ruler:
     enabled: false
+    probes:
+      enabled: false
+    prometheus-rules:
+      enabled: false
+    fullnameOverride: '{{ include "thanos.servicePrefix" . }}-ruler'
+    containerName: ruler
+    selectorLabels: *selectorLabels
+    image: *thanosImage
+    deploymentEnabled: false
+    statefulsetEnabled: true
+    replicaCount: 1
+    revisionHistoryLimit: 10
+    logLevel: info
+    logFormat: logfmt
+    args: '{{ include "thanos.serviceArgs" . }}'
+    extraFlags: []
+    ports:
+    - name: http
+      containerPort: 10902
+      protocol: TCP
+    - name: grpc
+      containerPort: 10901
+      protocol: TCP
+    livenessProbe: *livenessProbe
+    readinessProbe: *readinessProbe
+    resources:
+      limits:
+        cpu: 150m
+        ephemeral-storage: 2Gi
+        memory: 192Mi
+      requests:
+        cpu: 100m
+        ephemeral-storage: 50Mi
+        memory: 128Mi
+    podSecurityContext: *podSecurityContext
+    securityContext: *securityContext
+    automountServiceAccountToken: true
+    disableGlobalEnvironment: true
+    disableGlobalEnvironmentFromSecrets: true
+    affinity: *affinity
+    podLabels:
+      app.kubernetes.io/managed-by: '{{ .Release.Service }}'
+    serviceAccount:
+      create: true
+      name: ''
+      automountServiceAccountToken: false
+    serviceName: '{{ include "common.fullname" . }}-headless'
+    podManagementPolicy: OrderedReady
+    updateStrategy:
+      type: RollingUpdate
+    volumeClaimTemplates:
+      data:
+        metadata:
+          name: data
+        storage: 8Gi
+        accessModes:
+        - ReadWriteOnce
+    service:
+      enabled: true
+      name: '{{ include "common.fullname" . }}'
+      type: ClusterIP
+      ports:
+      - port: 9090
+        targetPort: http
+        protocol: TCP
+        name: http
+      - port: 10901
+        targetPort: grpc
+        protocol: TCP
+        name: grpc
+      labels:
+        prometheus-operator/monitor: 'true'
+    serviceMonitor:
+      enabled: true
+      jobLabel: ''
+      prometheusSelector:
+        prometheus: main
+      selectorLabels:
+        app.kubernetes.io/name: thanos
+        app.kubernetes.io/instance: '{{ .Release.Name }}'
+        app.kubernetes.io/component: '{{ .Values.containerName }}'
+        prometheus-operator/monitor: 'true'
+      endpoints:
+      - port: http
+    podDisruptionBudget:
+      enabled: true
+      maxUnavailable: 1
+    networkPolicy:
+      enabled: true
+      policyTypes:
+      - Ingress
+      - Egress
+      egress:
+      - {}
+      ingress:
+      - ports:
+        - port: 10902
+        - port: 9090
+        - port: 10901
+        - port: 10901
+    volumes:
+    - name: ruler-config
+      configMap:
+        name: '{{ include "thanos.servicePrefix" . }}-ruler'
+    - name: objstore-config
+      secret:
+        secretName: '{{ include "thanos.servicePrefix" . }}-thanos'
+    volumeMounts:
+    - name: ruler-config
+      mountPath: /conf/rules
+    - name: objstore-config
+      mountPath: /conf/objstore
+    - name: data
+      mountPath: /data
+    environment:
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+    config: ''
+    alertmanagers: []
+    configMaps:
+      rules:
+        name: '{{ include "common.fullname" . }}'
+        data:
+          ruler.yml: '{{ required "thanos.ruler.config is required when ruler is enabled" .Values.config }}'
+    podAnnotations:
+      checksum/rules: '{{ .Values.config | sha256sum }}'
   recieve:
     enabled: false
-  receiveDistributor:
-    enabled: false
-  volumePermissions:
-    enabled: false
-  minio:
-    enabled: false
-  networkPolicy:
-    enabled: false
+    probes:
+      enabled: false
+    prometheus-rules:
+      enabled: false
+    fullnameOverride: '{{ include "thanos.servicePrefix" . }}-receive'
+    containerName: receive
+    selectorLabels: *selectorLabels
+    image: *thanosImage
+    deploymentEnabled: false
+    statefulsetEnabled: true
+    replicaCount: 1
+    revisionHistoryLimit: 10
+    logLevel: info
+    logFormat: logfmt
+    args: '{{ include "thanos.serviceArgs" . }}'
+    extraFlags: []
+    ports:
+    - containerPort: 10901
+      name: grpc
+      protocol: TCP
+    - containerPort: 10902
+      name: http
+      protocol: TCP
+    - containerPort: 19291
+      name: remote-write
+      protocol: TCP
+    - containerPort: 19391
+      name: capnproto
+      protocol: TCP
+    livenessProbe: *livenessProbe
+    readinessProbe: *readinessProbe
+    resources:
+      limits:
+        cpu: 150m
+        ephemeral-storage: 2Gi
+        memory: 192Mi
+      requests:
+        cpu: 100m
+        ephemeral-storage: 50Mi
+        memory: 128Mi
+    podSecurityContext: *podSecurityContext
+    securityContext: *securityContext
+    automountServiceAccountToken: true
+    disableGlobalEnvironment: true
+    disableGlobalEnvironmentFromSecrets: true
+    affinity: *affinity
+    podLabels:
+      app.kubernetes.io/managed-by: '{{ .Release.Service }}'
+    serviceAccount:
+      create: true
+      name: ''
+      automountServiceAccountToken: false
+    serviceName: '{{ include "common.fullname" . }}-headless'
+    podManagementPolicy: OrderedReady
+    updateStrategy:
+      type: RollingUpdate
+    volumeClaimTemplates:
+      data:
+        metadata:
+          name: data
+        storage: 8Gi
+        accessModes:
+        - ReadWriteOnce
+    service:
+      enabled: true
+      name: '{{ include "common.fullname" . }}'
+      type: ClusterIP
+      ports:
+      - port: 10902
+        targetPort: http
+        protocol: TCP
+        name: http
+      - port: 10901
+        targetPort: grpc
+        protocol: TCP
+        name: grpc
+      - port: 19291
+        targetPort: remote-write
+        protocol: TCP
+        name: remote
+      - port: 19391
+        targetPort: capnproto
+        protocol: TCP
+        name: capnproto
+      labels:
+        prometheus-operator/monitor: 'true'
+    serviceMonitor:
+      enabled: true
+      jobLabel: ''
+      prometheusSelector:
+        prometheus: main
+      selectorLabels:
+        app.kubernetes.io/name: thanos
+        app.kubernetes.io/instance: '{{ .Release.Name }}'
+        app.kubernetes.io/component: '{{ .Values.containerName }}'
+        prometheus-operator/monitor: 'true'
+      endpoints:
+      - port: http
+    podDisruptionBudget:
+      enabled: true
+      maxUnavailable: 1
+    networkPolicy:
+      enabled: true
+      policyTypes:
+      - Ingress
+      - Egress
+      egress:
+      - {}
+      ingress:
+      - ports:
+        - port: 10902
+        - port: 10902
+        - port: 10901
+        - port: 10901
+        - port: 19291
+        - port: 19291
+        - port: 19391
+        - port: 19391
+    volumes:
+    - name: hashring-config
+      configMap:
+        name: '{{ include "thanos.servicePrefix" . }}-receive'
+    volumeMounts:
+    - name: hashring-config
+      mountPath: /var/lib/thanos-receive
+    - name: data
+      mountPath: /var/thanos/receive
+    environment:
+    - name: NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+    - name: NAMESPACE
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.namespace
+    - name: OBJSTORE_CONFIG
+      valueFrom:
+        secretKeyRef:
+          key: objstore.yml
+          name: '{{ include "thanos.servicePrefix" . }}-thanos'
+    hashrings:
+    - endpoints:
+      - address: 127.0.0.1:10901
+        capnproto_address: 127.0.0.1:19391
+    configMaps:
+      hashrings:
+        name: '{{ include "common.fullname" . }}'
+        data:
+          hashrings.json: '{{ toPrettyJson .Values.hashrings }}'
+    podAnnotations:
+      checksum/hashrings: '{{ toJson .Values.hashrings | sha256sum }}'
+    replicationFactor: 1
+    retention: 15d

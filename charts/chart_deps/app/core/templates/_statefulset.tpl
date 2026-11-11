@@ -13,6 +13,16 @@ metadata:
   namespace: "{{ $obj.namespace }}"
 spec:
   replicas: {{ $obj.replicaCount }}
+  {{- with $obj.serviceName }}
+  serviceName: {{ tpl . $ }}
+  {{- end }}
+  {{- with $obj.podManagementPolicy }}
+  podManagementPolicy: {{ . }}
+  {{- end }}
+  {{- with $obj.updateStrategy }}
+  updateStrategy:
+    {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
   {{- with $obj.persistentVolumeClaimRetentionPolicy }}
   persistentVolumeClaimRetentionPolicy:
   {{- tpl (toYaml .) $ | nindent 4 }}
@@ -22,7 +32,11 @@ spec:
   {{- range $name, $pvcTemplate :=  $obj.volumeClaimTemplates }}
   {{- $pvcTemplate = set $pvcTemplate "name" $name }}
   {{- $pvcTemplate = set $pvcTemplate "volumeClaimTampleate" true }}
-  - {{ (include "core.pvc" (list $ $labels $pvcTemplate )) | nindent 4 | trim }} 
+  {{- $pvc := include "core.pvc" (list $ $labels $pvcTemplate) | fromYaml }}
+  {{- if hasKey $pvcTemplate "metadata" }}
+  {{- $_ := set $pvc "metadata" (tpl (toYaml $pvcTemplate.metadata) $ | fromYaml) }}
+  {{- end }}
+  - {{ toYaml $pvc | nindent 4 | trim }}
   {{- end }}
   {{- end }}
   {{- if $obj.revisionHistoryLimit  }}
