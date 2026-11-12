@@ -48,11 +48,6 @@ dependencies:
     repository: file://../chart_deps/thanos/service
     alias: ruler
     condition: ruler.enabled
-  - name: thanos-service
-    version: 0.1.0
-    repository: file://../chart_deps/thanos/service
-    alias: recieve
-    condition: recieve.enabled
   - name: core
     version: 0.1.0
     repository: file://../chart_deps/app/core

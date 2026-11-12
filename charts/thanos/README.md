@@ -1,18 +1,18 @@
 # Thanos
 
-The stack declares six direct dependencies on
+The stack declares five direct dependencies on
 [`thanos/service`](../chart_deps/thanos/service): `query`, `queryFrontend`,
-`compactor`, `storegateway`, `ruler`, and `recieve`. Each wrapper uses
-[`app/common`](../chart_deps/app/common) under its original dependency name `common` for Helm 3 compatibility.
+`compactor`, `storegateway`, and `ruler`. Each wrapper uses
+[`app/common`](../chart_deps/app/common) under its original dependency name `common`
+for Helm 3 compatibility.
 
 ```yaml
 query:
   enabled: true
   common:
     thanos:
-      logLevel: info
       stores:
-        - prometheus-thanos:10901
+      - prometheus-thanos:10901
     resources:
       requests:
         cpu: 10m
@@ -24,36 +24,22 @@ storegateway:
 ```
 
 Each component is disabled by default. `<component>.enabled` gates its dependency.
-Native common/core resource settings live under `<component>.common`, including
-`image`, `resources`, `ports`, `args`, `command`, storage, security, and monitoring.
-Thanos CLI and application settings live under `<component>.common.thanos`.
-The `recieve` alias retains its existing spelling; its workload and command use
-`receive`. There is no separate stack-level `thanos.enabled` switch.
+Native resource settings live under `<component>.common`, including `image`,
+`resources`, `ports`, `args`, `command`, storage, security, and monitoring.
+Thanos settings live under `<component>.common.thanos`. Shared logging and
+`extraFlags` defaults belong to the service chart; component defaults and argument
+defines belong to this stack. Templated CLI references use `.Values.thanos.*`
+within each component's local common context.
 
-Build dependencies from this chart directory, from the inner chart outward:
+The `common` dependency name is intentional: Helm 3.22 mishandles a renamed nested
+dependency when its wrapper is included repeatedly under aliases.
+
+Build dependencies from the inner chart outward:
 
 ```sh
 helm dependency build ../chart_deps/thanos/service
 helm dependency build .
 ```
-
-Migration from the previous flat `common` layout:
-
-- Keep native resource settings at `<component>.common.*`.
-- Move Thanos settings such as `logLevel`, `logFormat`, `extraFlags`, `stores`,
-  `containerPorts`, retention, configuration, and discovery inputs beneath
-  `<component>.common.thanos`.
-- Custom arguments remain `query.common.args`, not `query.common.thanos.args`.
-- Common's Kubernetes Service interface stays at `<component>.common.service`,
-  including its ports list and annotations. The Thanos argument option
-  `additionalHeadless` belongs to `<component>.common.thanos.service`.
-- Update templated CLI references to `.Values.thanos.*`. Resource references such
-  as `.Values.service.ports` and `.Values.resources` remain unchanged.
-- Keep the enablement paths `<component>.enabled` unchanged.
-
-The original `common` dependency name is intentional: Helm 3.22 mishandles a
-renamed nested dependency when its wrapper is included repeatedly under aliases.
-Using `common.thanos` avoids that nested alias and supports the Helm 3 renderer.
 
 Stack ingresses, Kong plugins, and the shared object-store Secret stay at the
 stack level. The Secret requires `global.company.name`, `global.env.short_name`,
@@ -61,47 +47,30 @@ and `global.env.cloud.buckets.type`. Compactor and storegateway use the external
 service account named `thanos`; consumers must provide it and its object-store
 permissions.
 
+HTTP listeners use container port 10902; Services expose port 9090 and target the
+named `http` container port. QueryFrontend sends downstream requests to the Query
+Service on 9090. gRPC listeners use 10901. Custom listeners require matching
+`common.args`, `common.ports`, Service ports, and NetworkPolicy rules.
+
 Compactor storage uses `compactor.common.pvcs.data.storage`; StatefulSet storage
-uses `<component>.common.volumeClaimTemplates.data.storage`. Ruler requires
-`ruler.common.thanos.config` (a YAML rules string) and a nonempty
-`ruler.common.thanos.alertmanagers` URL list.
-Receive renders its ConfigMap from `recieve.common.thanos.hashrings`; configure
-its ring and args before scaling past its default single-replica local endpoint.
+uses `<component>.common.volumeClaimTemplates.data.storage`. Compactor's
+`common.thanos.dataDir` and Ruler's `common.thanos.dataPath` also set data mount paths.
+Ruler requires `ruler.common.thanos.config` (a YAML rules string) and a nonempty
+`ruler.common.thanos.alertmanagers` URL list. Its templated `queryURL` defaults to
+`https://tq.<global.env.dns.domain>` for alert links to the Query UI.
 
-The six defines in `templates/args/` adapt Bitnami Thanos chart 17.3.1. Each
-component's `common.args` calls its matching define. Override that field with a
-list or a templated YAML list to replace generated arguments; `common.command`
-remains a normal resource override. The reusable service chart supplies shared
-`common.thanos` defaults for logging, extra flags, and the HTTPS downstream scheme; this
-stack keeps per-component overrides and argument defines.
-
-Inside each define, `.Values.thanos` is the local component's application config.
-Inputs such as `query.common.thanos.storegateway` and
-`ruler.common.thanos.query` describe discovery targets explicitly; they do not
-read sibling dependency values automatically. No parent-values adapter is used.
-
-For configurable listeners, `thanos.containerPorts` also supplies pod port numbers.
-Query keeps the upstream fixed HTTP/gRPC listeners; override its args and ports
-together when changing them. Compactor `thanos.dataDir`, ruler `thanos.dataPath`,
-and receive `thanos.tsdbPath` also supply their data mount paths. Receive retention
-uses `thanos.tsdbRetention`, and its replication protocol uses
-`thanos.replicationProtocol`.
-
-Optional gRPC TLS, cache, discovery, alertmanager, sharding, and CronJob options
-select upstream argument branches. Configure their matching Secrets, ConfigMaps,
-mounts, Services, and workload kinds through resource values. These arguments do
-not create those resources or turn a Deployment into a CronJob.
-HTTP server configuration and basic-auth setup are not generated. Custom HTTP
-configuration requires explicit arguments and resource mounts.
+The five argument defines adapt Bitnami Thanos chart 17.3.1. Override `common.args`
+with a list or templated YAML list to replace generated arguments; `common.command`
+is a normal resource override. `common.thanos.extraFlags` supports templated lists.
+Query accepts explicit endpoint addresses through `common.thanos.stores`.
+Compactor's `common.thanos.cronJob.enabled` controls `--wait` only; it does not
+change the workload kind. Custom TLS, HTTP, cache, or discovery configuration
+requires explicit arguments and matching resource mounts.
 
 The legacy `minio`, `volumePermissions`, stack `networkPolicy`, and
-`receiveDistributor` interfaces remain omitted. Per-component policies use
-`<component>.common.networkPolicy`. Deployment components support common autoscaling.
+`receiveDistributor` interfaces remain omitted. Receive is no longer a dependency.
+Per-component policies use `<component>.common.networkPolicy`.
+The existing StatefulSet headless Service references are retained; corresponding
+headless Services for storegateway and ruler are not generated by this stack.
 
-Resource names, selectors, claims, and service ports retain their identities.
-Chart labels reflect the `common` dependency. The existing StatefulSet
-headless Service references are retained; the prior unsharded configuration did
-not render corresponding headless Services for storegateway, ruler, or receive.
-
-The upstream source and license are recorded in `licenses/`. Run the focused
-render regressions with `python3 tests/test_args.py` (requires Helm and PyYAML).
+Run render regressions with `python3 tests/test_args.py` (requires Helm and PyYAML).

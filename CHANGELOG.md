@@ -9,14 +9,15 @@ BrakingChanges:
   * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
 
 Features:
-* `thanos`: move CLI generation into six per-service defines following Bitnami Thanos 17.3.1 argument branches; keep resource and shared `common.thanos` defaults in `thanos/service`, with per-component overrides in the stack chart. Add configurable ports/data paths, gRPC TLS/cache/discovery options, and conditional compactor `--wait`.
-* `thanos`: replace the Bitnami dependency with six direct `chart_deps/thanos/service` instances wrapping `app/common` (v17.3.1 -> v0.1.0); preserve resource identities.
+* `thanos`: move CLI generation into five per-service defines adapted from Bitnami Thanos 17.3.1; keep resource and shared `common.thanos` defaults in `thanos/service`, with per-component overrides in the stack chart. Support data paths, extra flags, and conditional compactor `--wait`.
+* `thanos`: replace the Bitnami dependency with five direct `chart_deps/thanos/service` instances wrapping `app/common` (v17.3.1 -> v0.1.0); preserve resource identities.
 * `chart_deps/app/common`: support ConfigMaps, PodDisruptionBudgets, NetworkPolicies, and explicit workload selectors and PVC names.
 * `chart_deps/app/core`: support StatefulSet service identity and update settings, and templated YAML argument lists.
 * `pomerium` - update v0.32.9 -> v0.34.0; because of how pomerium is licensed now uses ghcr.io/svetoch-dev/pomerium-ingress-controller
 * `argocd` - update v3.5.1 -> v3.6.1 and upstream chart 10.9.6 -> 10.17.1 , pulled from `oci://ghcr.io/argoproj/argo-helm`
 
 Fixes:
+* `thanos`: remove the stale receive dependency that duplicated query resources; align HTTP container ports and policies with listeners, expand Ruler query URLs, and refresh five-service render regressions.
 * `pomerium`: align controller RBAC with 0.34.0 for certificate management and resource patching; add namespaced lease permissions
 * `loki`: namespace wrapper helpers to preserve upstream templated `nameOverride` support and resolve the read ingress backend through the upstream service naming helper
 

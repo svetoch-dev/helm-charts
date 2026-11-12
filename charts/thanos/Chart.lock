@@ -17,11 +17,8 @@ dependencies:
 - name: thanos-service
   repository: file://../chart_deps/thanos/service
   version: 0.1.0
-- name: thanos-service
-  repository: file://../chart_deps/thanos/service
-  version: 0.1.0
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
-digest: sha256:ed0c5a2a7ed59ee4306fcec7fa011b2ae43a4a3effae09e046b35b4604408ab4
-generated: "2026-11-11T17:06:47.232184376+03:00"
+digest: sha256:0d1778a7759dff6b5497e44916c7c251c065ae374491b1f78aceabe0d3000aab
+generated: "2026-11-12T13:12:13.248307368+03:00"
