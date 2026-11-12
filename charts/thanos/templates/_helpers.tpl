@@ -49,3 +49,12 @@ Selector labels
 app.kubernetes.io/name: {{ include "thanos.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+
+{{- define "thanos.args.render" -}}
+{{- $value := .value -}}
+{{- if not (kindIs "string" $value) -}}
+  {{- $value = toYaml $value -}}
+{{- end -}}
+{{- tpl $value .context -}}
+{{- end -}}
