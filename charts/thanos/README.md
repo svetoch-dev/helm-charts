@@ -41,7 +41,11 @@ helm dependency build ../chart_deps/thanos/service
 helm dependency build .
 ```
 
-Stack ingresses, Kong plugins, and the shared object-store Secret stay at the
+Query and Store Gateway ingresses use `query.common.ingress` and
+`storegateway.common.ingress`. Move overrides from `ingresses.query` and
+`ingresses.storegateway` to those paths. Both the component and its ingress must
+be enabled. Ingress labels follow common; names, routing, TLS, and annotations
+retain their defaults. Kong plugins and the shared object-store Secret stay at the
 stack level. The Secret requires `global.company.name`, `global.env.short_name`,
 and `global.env.cloud.buckets.type`. Compactor and storegateway use the external
 service account named `thanos`; consumers must provide it and its object-store

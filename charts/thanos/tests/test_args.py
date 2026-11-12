@@ -15,6 +15,8 @@ SERVICES = ("query", "queryFrontend", "compactor", "storegateway", "ruler")
 def render(thanos_overrides=None, check=True, resource_overrides=None, enabled=None):
     values = {
         "global": {
+            "ingress": {"class": "example"},
+            "pomerium": {"policy": {"default": "allow: []\n"}},
             "company": {"name": "example"},
             "env": {
                 "short_name": "test", "cloud": {"buckets": {"type": "gcs"}},
@@ -152,6 +154,36 @@ class ArgumentTests(unittest.TestCase):
                 self.assertEqual(len(workloads(docs)), 1)
         docs = render(enabled={**dict.fromkeys(SERVICES, False), "recieve": True})
         self.assertEqual([d["kind"] for d in docs], ["Secret"])
+
+    def test_service_ingresses(self):
+        overrides = {s: {"ingress": {"enabled": True}} for s in ("query", "storegateway")}
+        docs = render(resource_overrides=overrides)
+        ingresses = {d["metadata"]["name"]: d for d in docs if d["kind"] == "Ingress"}
+        self.assertEqual(set(ingresses), {"example-thanos-query", "example-thanos-storegateway-grpc"})
+        for name, service, port, host, ingress_class, secret in (
+            ("example-thanos-query", "query", 9090, "tq.example.test", "example", "tq-tls"),
+            ("example-thanos-storegateway-grpc", "storegateway", 10901,
+             "thanos-store.example.test", "konghq", "thanos-store-tls"),
+        ):
+            ingress = ingresses[name]
+            self.assertEqual(ingress["metadata"]["namespace"], "example")
+            self.assertEqual(ingress["spec"]["ingressClassName"], ingress_class)
+            self.assertEqual(ingress["spec"]["tls"], [{"hosts": [host], "secretName": secret}])
+            rule = ingress["spec"]["rules"][0]
+            self.assertEqual(rule["host"], host)
+            self.assertEqual(rule["http"]["paths"], [{
+                "path": "/", "pathType": "ImplementationSpecific",
+                "backend": {"service": {"name": "example-thanos-" + service, "port": {"number": port}}},
+            }])
+        annotations = ingresses["example-thanos-query"]["metadata"]["annotations"]
+        self.assertEqual(yaml.safe_load(annotations["ingress.pomerium.io/policy"]), {"allow": []})
+        self.assertEqual(annotations["cert-manager.io/cluster-issuer"], "letsencrypt-pomerium")
+        annotations = ingresses["example-thanos-storegateway-grpc"]["metadata"]["annotations"]
+        self.assertEqual(annotations["konghq.com/protocols"], "grpc,grpcs")
+        self.assertEqual(annotations["konghq.com/plugins"], "thanos-store-main-ip-restriction")
+        self.assertFalse(any(d["kind"] == "Ingress" for d in render()))
+        disabled = render(resource_overrides=overrides, enabled={"query": False, "storegateway": False})
+        self.assertFalse(any(d["kind"] == "Ingress" for d in disabled))
 
     def test_ruler_configuration_validation(self):
         for options in ({"config": ""}, {"alertmanagers": []}):

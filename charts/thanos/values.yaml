@@ -1,44 +1,5 @@
-ingresses:
-  query:
-    enabled: false
-    name: '{{ include "thanos.fullname" . }}-query'
-    service:
-      name: '{{ include "thanos.fullname" . }}-query'
-      port: 9090
-    className: '{{ .Values.global.ingress.class }}'
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-pomerium
-      ingress.pomerium.io/policy: |
-        {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
-    hosts:
-    - host: tq.{{ .Values.global.env.dns.domain }}
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
-    tls:
-    - secretName: tq-tls
-      hosts:
-      - tq.{{ .Values.global.env.dns.domain }}
-  storegateway:
-    enabled: false
-    name: '{{ include "thanos.fullname" . }}-storegateway-grpc'
-    service:
-      name: '{{ include "thanos.fullname" . }}-storegateway'
-      port: 10901
-    className: konghq
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-konghq
-      konghq.com/protocols: grpc,grpcs
-      konghq.com/plugins: thanos-store-main-ip-restriction
-    hosts:
-    - host: thanos-store.{{ .Values.global.env.dns.domain }}
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
-    tls:
-    - secretName: thanos-store-tls
-      hosts:
-      - thanos-store.{{ .Values.global.env.dns.domain }}
+additional_ingress: {}
+
 kong-plugins:
   enabled: false
   plugins:
@@ -60,6 +21,24 @@ secrets:
 query:
   enabled: false
   common:
+    ingress:
+      enabled: false
+      service:
+        port: 9090
+      className: '{{ .Values.global.ingress.class }}'
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-pomerium
+        ingress.pomerium.io/policy: |
+          {{- tpl .Values.global.pomerium.policy.default $ | nindent 2 }}
+      hosts:
+      - host: tq.{{ .Values.global.env.dns.domain }}
+        paths:
+        - path: /
+          pathType: ImplementationSpecific
+      tls:
+      - secretName: tq-tls
+        hosts:
+        - tq.{{ .Values.global.env.dns.domain }}
     thanos:
       replicaLabel:
       - replica
@@ -179,6 +158,25 @@ compactor:
 storegateway:
   enabled: false
   common:
+    ingress:
+      enabled: false
+      name: '{{ include "common.fullname" . }}-grpc'
+      service:
+        port: 10901
+      className: konghq
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-konghq
+        konghq.com/protocols: grpc,grpcs
+        konghq.com/plugins: thanos-store-main-ip-restriction
+      hosts:
+      - host: thanos-store.{{ .Values.global.env.dns.domain }}
+        paths:
+        - path: /
+          pathType: ImplementationSpecific
+      tls:
+      - secretName: thanos-store-tls
+        hosts:
+        - thanos-store.{{ .Values.global.env.dns.domain }}
     containerName: storegateway
     deploymentEnabled: false
     statefulsetEnabled: true
