@@ -90,7 +90,7 @@ env:
 volumeMounts:
   {{- range $name, $pvc := .Values.pvcs }}
   - name: {{ $name }}
-    mountPath: {{ $pvc.mountPath }}
+    mountPath: {{ tpl $pvc.mountPath $ | quote }}
   {{- end }}
   {{- with .Values.volumeMounts }}
   {{- tpl (toYaml .) $ | nindent 2 }}

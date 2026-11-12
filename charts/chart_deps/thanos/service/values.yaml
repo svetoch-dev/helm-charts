@@ -1,4 +1,4 @@
-# Shared Thanos settings. Set service-specific overrides under common.
+# Shared resource settings only. The consuming chart supplies command/args.
 # StatefulSet settings take effect when common.statefulsetEnabled is true.
 common:
   fullnameOverride: '{{ include "thanos-service.prefix" . }}-{{ .Values.containerName }}'
@@ -10,8 +10,6 @@ common:
     repository: quay.io/thanos/thanos
     tag: v0.41.0
   revisionHistoryLimit: 10
-  logLevel: info
-  args: '{{ include "thanos-service.args" . }}'
   livenessProbe:
     failureThreshold: 6
     initialDelaySeconds: 30
@@ -99,10 +97,6 @@ common:
   - name: grpc
     containerPort: 10901
     protocol: TCP
-  logFormat: json
-  extraFlags: []
-  stores: []
-  replicaLabel: replica
   serviceAccount:
     automountServiceAccountToken: false
   serviceName: '{{ include "common.fullname" . }}-headless'
