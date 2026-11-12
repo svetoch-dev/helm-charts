@@ -5,9 +5,10 @@ original name `common`: Helm 3 can mishandle a nested alias when this wrapper is
 used repeatedly under different parent aliases.
 
 Configure native Kubernetes resources under `common`. The consuming chart supplies
-`common.command` and `common.args`; this wrapper has no CLI defaults. Thanos
-application settings used by argument defines live under `common.thanos`, exposed
-to the nested chart as `.Values.thanos`.
+`common.command` and `common.args`. Shared Thanos defaults live under
+`common.thanos`, exposed to argument defines as `.Values.thanos`. They cover
+logging (`info`/`json`), empty extra flags, and a disabled HTTPS downstream scheme. Consumers override these per component; the wrapper
+does not generate CLI arguments.
 
 ```yaml
 common:

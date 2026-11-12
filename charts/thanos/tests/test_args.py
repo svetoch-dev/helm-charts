@@ -59,7 +59,7 @@ class ArgumentTests(unittest.TestCase):
             "containerPorts": {"http": 12000}, "dataDir": "/compact/data",
             "retentionResolutionRaw": "7d", "retentionResolution5m": "14d",
             "retentionResolution1h": "30d", "consistencyDelay": "15m", "concurrency": 0,
-            "existingHttpConfigSecret": "http-config", "extraFlags": ["--delete-delay=72h"],
+            "extraFlags": ["--delete-delay=72h"],
             "cronJob": {"enabled": True},
         }})["compactor"]
         self.assertEqual(container["args"], [
@@ -67,7 +67,7 @@ class ArgumentTests(unittest.TestCase):
             "--http-address=0.0.0.0:12000", "--data-dir=/compact/data",
             "--retention.resolution-raw=7d", "--retention.resolution-5m=14d",
             "--retention.resolution-1h=30d", "--consistency-delay=15m", "--compact.concurrency=0",
-            "--objstore.config-file=/conf/objstore.yml", "--http.config=/conf/http/http-config.yml",
+            "--objstore.config-file=/conf/objstore.yml",
             "--delete-delay=72h",
         ])
         self.assertEqual(container["ports"][0]["containerPort"], 12000)
@@ -122,6 +122,8 @@ class ArgumentTests(unittest.TestCase):
             "ruler": {"dataPath": "/ruler/data", "evalInterval": "5m", "queries": ["http://query.example:9090"],
                       "alertmanagers": [], "alertmanagersConfig": {"alertmanagers": []}},
         })
+        for container in containers.values():
+            self.assertFalse(any(arg.startswith("--http.config=") for arg in container["args"]))
         self.assertIn("--query-frontend.downstream-url=https://example-thanos-query:9090", containers["query-frontend"]["args"])
         self.assertIn("--query-range.response-cache-config-file=/conf/cache/config.yml", containers["query-frontend"]["args"])
         self.assertIn("--index-cache.config-file=/conf/cache/index-cache.yml", containers["storegateway"]["args"])

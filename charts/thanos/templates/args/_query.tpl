@@ -10,9 +10,6 @@ Changes: common.thanos-scoped inputs, helper names, and list indentation.
 - --log.format={{ .Values.thanos.logFormat }}
 - --grpc-address=0.0.0.0:10901
 - --http-address=0.0.0.0:10902
-{{- if (include "thanos.args.httpConfigEnabled" .) }}
-- --http.config=/conf/http/http-config.yml
-{{- end }}
 {{- if kindIs "string" .Values.thanos.replicaLabel }}
 - --query.replica-label={{ .Values.thanos.replicaLabel }}
 {{- else }}

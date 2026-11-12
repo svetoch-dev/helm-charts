@@ -70,7 +70,6 @@ query:
         sidecarsNamespace: ''
         sidecarsService: ''
       existingSDConfigmap: ''
-      extraFlags: []
       grpc:
         client:
           serverName: ''
@@ -83,8 +82,6 @@ query:
             clientAuthEnabled: true
             enabled: false
             existingSecret: {}
-      logFormat: json
-      logLevel: info
       replicaLabel:
       - replica
       stores: []
@@ -111,12 +108,6 @@ query:
           - min: ''
             max: ''
         useEndpointGroup: false
-      httpConfig: ''
-      existingHttpConfigSecret: ''
-      https:
-        enabled: false
-      auth:
-        basicAuthUsers: {}
       queryFrontend:
         enabled: false
         ingress:
@@ -158,8 +149,6 @@ queryFrontend:
   enabled: false
   common:
     thanos:
-      https:
-        enabled: false
       query:
         service:
           ports:
@@ -168,13 +157,7 @@ queryFrontend:
       containerPorts:
         http: 9090
       existingConfigmap: ''
-      extraFlags: []
       logFormat: logfmt
-      logLevel: info
-      httpConfig: ''
-      existingHttpConfigSecret: ''
-      auth:
-        basicAuthUsers: {}
     containerName: query-frontend
     ports: |
       - name: http
@@ -213,17 +196,9 @@ compactor:
       dataDir: /data
       extraFlags:
       - --delete-delay=48h
-      logFormat: json
-      logLevel: info
       retentionResolution1h: 90d
       retentionResolution5m: 60d
       retentionResolutionRaw: 30d
-      httpConfig: ''
-      existingHttpConfigSecret: ''
-      https:
-        enabled: false
-      auth:
-        basicAuthUsers: {}
     containerName: compactor
     ports: |
       - name: http
@@ -271,21 +246,12 @@ storegateway:
         grpc: 10901
         http: 10902
       existingConfigmap: ''
-      extraFlags: []
       grpc:
         server:
           tls:
             clientAuthEnabled: true
             enabled: false
             existingSecret: {}
-      logFormat: json
-      logLevel: info
-      httpConfig: ''
-      existingHttpConfigSecret: ''
-      https:
-        enabled: false
-      auth:
-        basicAuthUsers: {}
     containerName: storegateway
     deploymentEnabled: false
     statefulsetEnabled: true
@@ -359,18 +325,10 @@ ruler:
       dnsDiscovery:
         enabled: true
       evalInterval: 1m
-      extraFlags: []
       logFormat: logfmt
-      logLevel: info
       queries: []
       replicaLabel: replica
       ruleFile: /conf/rules/*.yml
-      httpConfig: ''
-      existingHttpConfigSecret: ''
-      https:
-        enabled: false
-      auth:
-        basicAuthUsers: {}
       queryFrontend:
         enabled: false
         ingress:
@@ -459,7 +417,6 @@ recieve:
         grpc: 10901
         http: 10902
         remote: 19291
-      extraFlags: []
       grpc:
         server:
           tls:
@@ -467,19 +424,12 @@ recieve:
             enabled: false
             existingSecret: {}
       logFormat: logfmt
-      logLevel: info
       mode: standalone
       replicaLabel: replica
       replicationFactor: 1
       replicationProtocol: capnproto
       tsdbPath: ''
       tsdbRetention: 15d
-      httpConfig: ''
-      existingHttpConfigSecret: ''
-      https:
-        enabled: false
-      auth:
-        basicAuthUsers: {}
       hashrings:
       - endpoints:
         - address: 127.0.0.1:10901

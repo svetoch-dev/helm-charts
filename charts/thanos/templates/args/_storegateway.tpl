@@ -12,9 +12,6 @@ Changes: common.thanos-scoped inputs, helper names, and list indentation.
 - --http-address=0.0.0.0:{{ .Values.thanos.containerPorts.http }}
 - --data-dir=/data
 - --objstore.config-file=/conf/objstore.yml
-{{- if (include "thanos.args.httpConfigEnabled" .) }}
-- --http.config=/conf/http/http-config.yml
-{{- end }}
 {{- if .Values.thanos.indexCacheConfig }}
 - --index-cache.config-file=/conf/cache/index-cache.yml
 {{- end }}

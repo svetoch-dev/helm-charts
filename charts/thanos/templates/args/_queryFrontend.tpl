@@ -10,9 +10,6 @@ Changes: common.thanos-scoped inputs, helper names, and list indentation.
 - --log.format={{ .Values.thanos.logFormat }}
 - --http-address=0.0.0.0:{{ .Values.thanos.containerPorts.http }}
 - --query-frontend.downstream-url={{ ternary "https" "http" .Values.thanos.https.enabled }}://{{ printf "%s-query" (include "thanos-service.prefix" .) }}:{{ .Values.thanos.query.service.ports.http }}
-{{- if (include "thanos.args.httpConfigEnabled" .) }}
-- --http.config=/conf/http/http-config.yml
-{{- end }}
 {{- if or .Values.thanos.config .Values.thanos.existingConfigmap }}
 - --query-range.response-cache-config-file=/conf/cache/config.yml
 {{- end }}

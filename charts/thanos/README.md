@@ -68,10 +68,12 @@ uses `<component>.common.volumeClaimTemplates.data.storage`. Ruler requires
 Receive renders its ConfigMap from `recieve.common.thanos.hashrings`; configure
 its ring and args before scaling past its default single-replica local endpoint.
 
-The six defines in `templates/args/` follow Bitnami Thanos chart 17.3.1. Each
+The six defines in `templates/args/` adapt Bitnami Thanos chart 17.3.1. Each
 component's `common.args` calls its matching define. Override that field with a
 list or a templated YAML list to replace generated arguments; `common.command`
-remains a normal resource override. The reusable service chart has no CLI defaults.
+remains a normal resource override. The reusable service chart supplies shared
+`common.thanos` defaults for logging, extra flags, and the HTTPS downstream scheme; this
+stack keeps per-component overrides and argument defines.
 
 Inside each define, `.Values.thanos` is the local component's application config.
 Inputs such as `query.common.thanos.storegateway` and
@@ -85,10 +87,12 @@ and receive `thanos.tsdbPath` also supply their data mount paths. Receive retent
 uses `thanos.tsdbRetention`, and its replication protocol uses
 `thanos.replicationProtocol`.
 
-Optional HTTP/TLS, cache, discovery, alertmanager, sharding, and CronJob options
+Optional gRPC TLS, cache, discovery, alertmanager, sharding, and CronJob options
 select upstream argument branches. Configure their matching Secrets, ConfigMaps,
 mounts, Services, and workload kinds through resource values. These arguments do
 not create those resources or turn a Deployment into a CronJob.
+HTTP server configuration and basic-auth setup are not generated. Custom HTTP
+configuration requires explicit arguments and resource mounts.
 
 The legacy `minio`, `volumePermissions`, stack `networkPolicy`, and
 `receiveDistributor` interfaces remain omitted. Per-component policies use

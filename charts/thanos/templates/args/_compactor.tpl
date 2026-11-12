@@ -16,9 +16,6 @@ Changes: common.thanos-scoped inputs, helper names, and list indentation.
 - --consistency-delay={{ .Values.thanos.consistencyDelay }}
 - --compact.concurrency={{ .Values.thanos.concurrency }}
 - --objstore.config-file=/conf/objstore.yml
-{{- if (include "thanos.args.httpConfigEnabled" .) }}
-- --http.config=/conf/http/http-config.yml
-{{- end }}
 {{- if .Values.thanos.extraFlags }}
 {{- .Values.thanos.extraFlags | toYaml | nindent 0 }}
 {{- end }}
