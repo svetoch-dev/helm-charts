@@ -95,6 +95,20 @@ chart_apps:
       workflowConfigMap:
         spec:
           serviceAccountName: runner-app
+          containers:
+            - name: "$job"
+              resources:
+                requests:
+                  cpu: '1'
+                  memory: 4Gi
+              volumeMounts:
+                - name: infrastructure-ssh
+                  mountPath: /home/runner/.ssh
+          volumes:
+            - name: infrastructure-ssh
+              secret:
+                secretName: infrastructure-ssh
+                defaultMode: 0440
       gha-runner:
         listenerTemplate:
           metadata:
