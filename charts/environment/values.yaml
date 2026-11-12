@@ -119,7 +119,7 @@ chart_apps:
       access:
         roles: ["owner", "dev", "pm", "qa", "support"]
     values: |
-      {{- if .Values.externalEnvs }}
+      {{- if .Values.global.externalEnvs }}
       datasource:
         datasources:
           {{- range $env_name, $env_obj := .Values.global.externalEnvs }}
