@@ -1,5 +1,6 @@
 # 12.0.0-alpha
 BrakingChanges:
+* `thanos`: remove unsupported file-based Alertmanager configuration; Ruler now requires a nonempty Alertmanager URL list.
 * `thanos`: remove unsupported HTTP server configuration values and automatic `--http.config` flags, including the now-unused basic-auth default.
 * `thanos`: keep `<component>.enabled` and `<component>.common.*` for native resources; move Thanos application settings under `<component>.common.thanos.*`. Keep the original common dependency name for Helm 3 compatibility. See `charts/thanos/README.md` for migration.
 * `loki`

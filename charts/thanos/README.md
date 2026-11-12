@@ -63,8 +63,8 @@ permissions.
 
 Compactor storage uses `compactor.common.pvcs.data.storage`; StatefulSet storage
 uses `<component>.common.volumeClaimTemplates.data.storage`. Ruler requires
-`ruler.common.thanos.config` (a YAML rules string) and either
-`ruler.common.thanos.alertmanagers` or `ruler.common.thanos.alertmanagersConfig`.
+`ruler.common.thanos.config` (a YAML rules string) and a nonempty
+`ruler.common.thanos.alertmanagers` URL list.
 Receive renders its ConfigMap from `recieve.common.thanos.hashrings`; configure
 its ring and args before scaling past its default single-replica local endpoint.
 

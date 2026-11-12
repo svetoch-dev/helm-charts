@@ -1,12 +1,8 @@
-# Shared resource and Thanos defaults. The consuming chart supplies command/args.
-# StatefulSet settings take effect when common.statefulsetEnabled is true.
 common:
   thanos:
     logLevel: info
     logFormat: json
     extraFlags: []
-    https:
-      enabled: false
   fullnameOverride: '{{ include "thanos-service.prefix" . }}-{{ .Values.containerName }}'
   selectorLabels:
     app.kubernetes.io/name: thanos
@@ -15,6 +11,13 @@ common:
   image:
     repository: quay.io/thanos/thanos
     tag: v0.41.0
+  ports:
+  - name: http
+    containerPort: 9090
+    protocol: TCP
+  - name: grpc
+    containerPort: 10901
+    protocol: TCP
   revisionHistoryLimit: 10
   livenessProbe:
     failureThreshold: 6
@@ -95,16 +98,8 @@ common:
     - Egress
     egress:
     - {}
-  containerName: query
-  ports:
-  - name: http
-    containerPort: 10902
-    protocol: TCP
-  - name: grpc
-    containerPort: 10901
-    protocol: TCP
   serviceAccount:
-    automountServiceAccountToken: false
+    automountServiceAccountToken: true
   serviceName: '{{ include "common.fullname" . }}-headless'
   podManagementPolicy: OrderedReady
   updateStrategy:

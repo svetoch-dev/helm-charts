@@ -8,7 +8,7 @@ Changes: common.thanos-scoped inputs, helper names, and list indentation.
 - compact
 - --log.level={{ .Values.thanos.logLevel }}
 - --log.format={{ .Values.thanos.logFormat }}
-- --http-address=0.0.0.0:{{ .Values.thanos.containerPorts.http }}
+- --http-address=0.0.0.0:10902
 - --data-dir={{ .Values.thanos.dataDir }}
 - --retention.resolution-raw={{ .Values.thanos.retentionResolutionRaw }}
 - --retention.resolution-5m={{ .Values.thanos.retentionResolution5m }}
@@ -17,7 +17,7 @@ Changes: common.thanos-scoped inputs, helper names, and list indentation.
 - --compact.concurrency={{ .Values.thanos.concurrency }}
 - --objstore.config-file=/conf/objstore.yml
 {{- if .Values.thanos.extraFlags }}
-{{- .Values.thanos.extraFlags | toYaml | nindent 0 }}
+{{- include "thanos.args.render" (dict "value" .Values.thanos.extraFlags "context" $) | nindent 0 }}
 {{- end }}
 {{- if not .Values.thanos.cronJob.enabled }}
 - --wait
