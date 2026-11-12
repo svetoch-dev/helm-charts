@@ -11,8 +11,15 @@
 - --query.replica-label={{ . }}
 {{- end }}
 {{- end }}
-{{- range .Values.thanos.stores }}
+{{- if kindIs "string" .Values.thanos.stores }}
+{{- $stores := tpl .Values.thanos.stores $ | fromYamlArray }}
+{{- range $stores }}
 - --endpoint={{ . }}
+{{- end }}
+{{- else }}
+{{- range .Values.thanos.stores }}
+- --endpoint={{ tpl . $ }}
+{{- end }}
 {{- end }}
 {{- if .Values.thanos.extraFlags }}
 {{- include "thanos.args.render" (dict "value" .Values.thanos.extraFlags "context" $) | nindent 0 }}

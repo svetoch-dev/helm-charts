@@ -63,7 +63,14 @@ query:
     thanos:
       replicaLabel:
       - replica
-      stores: []
+      stores: |-
+        {{- if eq .Values.global.env.type "internal" }}
+        - {{ printf "thanos-%s-storegateway:10901" .Values.global.env.cloud_short_name }}
+        - {{ printf "prometheus-%s-prometheus-main-thanos:8080" .Values.global.env.cloud_short_name }}
+        {{- if .Values.global.externalEnvs }}
+        - {{ printf "thanos-external-%s-query-grpc:10901" .Values.global.env.cloud_short_name }}
+        {{- end }}
+        {{- end }}
     containerName: query
     ports:
     - name: http

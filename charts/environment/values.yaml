@@ -122,7 +122,7 @@ chart_apps:
       {{- if .Values.externalEnvs }}
       datasource:
         datasources:
-          {{- range $env_name, $env_obj := .Values.externalEnvs }}
+          {{- range $env_name, $env_obj := .Values.global.externalEnvs }}
           loki-{{ tpl $env_name $ }}:
             enabled: true
             uid: loki-{{ tpl $env_name $ }}
@@ -187,28 +187,16 @@ chart_apps:
       {{- end }}
   thanos:
     enabled: false
-    values: |
-      {{- if eq .Values.global.env.type "internal" }}
-      thanos:
-        query:
-          stores:
-            - {{ printf "thanos-%s-storegateway:10901" .Values.global.env.cloud_short_name }}
-            - {{ printf "prometheus-%s-prometheus-main-thanos:8080" .Values.global.env.cloud_short_name }}
-            {{- if .Values.externalEnvs }}
-            - {{ printf "thanos-external-%s-query-grpc:10901" .Values.global.env.cloud_short_name }}
-            {{- end }}
-      {{- end }}
   thanos-external:
     enabled: false
     chart: '{{ .Values.repository.paths.charts }}/thanos'
     values: |
-      thanos:
-        query:
-          stores:
-            {{- range $env_name, $env_obj := .Values.externalEnvs }}
-            - {{ printf "thanos.%s:443" $env_obj.domain }}
-            - {{ printf "thanos-store.%s:443" $env_obj.domain }}
-            {{- end }}
+      query:
+        stores:
+          {{- range $env_name, $env_obj := .Values.global.externalEnvs }}
+          - {{ printf "thanos.%s:443" $env_obj.domain }}
+          - {{ printf "thanos-store.%s:443" $env_obj.domain }}
+          {{- end }}
       secrets:
         thanos:
           enabled: false
