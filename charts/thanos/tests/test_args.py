@@ -120,7 +120,7 @@ class ArgumentTests(unittest.TestCase):
             "queryFrontend": {"https": {"enabled": True}, "config": "{}"},
             "storegateway": {"indexCacheConfig": "{}", "bucketCacheConfig": "{}", "existingConfigmap": "cache"},
             "ruler": {"dataPath": "/ruler/data", "evalInterval": "5m", "queries": ["http://query.example:9090"],
-                      "alertmanagers": [], "alertmanagersConfig": {"alertmanagers": []}},
+                      "alertmanagers": ["http://alerts-one.example:9093", "http://alerts-two.example:9093"]},
         })
         for container in containers.values():
             self.assertFalse(any(arg.startswith("--http.config=") for arg in container["args"]))
@@ -130,7 +130,9 @@ class ArgumentTests(unittest.TestCase):
         self.assertIn("--store.caching-bucket.config-file=/conf/cache/bucket-cache.yml", containers["storegateway"]["args"])
         self.assertIn("--index-cache.config-file=/conf/cache/config.yml", containers["storegateway"]["args"])
         ruler = containers["ruler"]
-        self.assertIn("--alertmanagers.config-file=/conf/alertmanagers/alertmanagers_config.yml", ruler["args"])
+        self.assertIn("--alertmanagers.url=http://alerts-one.example:9093", ruler["args"])
+        self.assertIn("--alertmanagers.url=http://alerts-two.example:9093", ruler["args"])
+        self.assertFalse(any(arg.startswith("--alertmanagers.config") for arg in ruler["args"]))
         self.assertIn("--eval-interval=5m", ruler["args"])
         self.assertIn("--query=http://query.example:9090", ruler["args"])
         self.assertIn({"name": "data", "mountPath": "/ruler/data"}, ruler["volumeMounts"])
@@ -151,14 +153,11 @@ class ArgumentTests(unittest.TestCase):
         self.assertFalse(any(a.startswith("--objstore.config=") or a.startswith("--receive.hashrings-file=") for a in args))
 
     def test_ruler_configuration_validation(self):
-        for options in ({"config": ""}, {"alertmanagers": [], "alertmanagersConfig": {}}):
+        for options in ({"config": ""}, {"alertmanagers": []}):
             with self.subTest(options=options):
                 result = render({"ruler": options}, check=False)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn("is required", result.stderr)
-        result = render({"ruler": {"alertmanagersConfig": {"alertmanagers": []}}}, check=False)
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("mutually exclusive", result.stderr)
 
 
 if __name__ == "__main__":
