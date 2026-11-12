@@ -15,12 +15,6 @@ common.thanos values directly. Sibling discovery settings are explicit inputs.
 {{- tpl $value .context -}}
 {{- end -}}
 
-{{- define "thanos.args.httpConfigEnabled" -}}
-{{- if or .Values.thanos.existingHttpConfigSecret .Values.thanos.https.enabled .Values.thanos.auth.basicAuthUsers .Values.thanos.httpConfig -}}
-true
-{{- end -}}
-{{- end -}}
-
 {{- define "thanos.args.createSDConfigmap" -}}
 {{- if and .Values.thanos.sdConfig (not .Values.thanos.existingSDConfigmap) -}}
 true

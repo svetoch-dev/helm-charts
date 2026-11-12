@@ -22,9 +22,6 @@ Changes: common.thanos-scoped inputs, helper names, and list indentation.
 - --data-dir=/data
 {{- end }}
 - --eval-interval={{ .Values.thanos.evalInterval }}
-{{- if (include "thanos.args.httpConfigEnabled" .) }}
-- --http.config=/conf/http/http-config.yml
-{{- end }}
 {{- range .Values.thanos.alertmanagers }}
 - --alertmanagers.url={{ . }}
 {{- end }}

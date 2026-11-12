@@ -1,5 +1,6 @@
 # 12.0.0-alpha
 BrakingChanges:
+* `thanos`: remove unsupported HTTP server configuration values and automatic `--http.config` flags, including the now-unused basic-auth default.
 * `thanos`: keep `<component>.enabled` and `<component>.common.*` for native resources; move Thanos application settings under `<component>.common.thanos.*`. Keep the original common dependency name for Helm 3 compatibility. See `charts/thanos/README.md` for migration.
 * `loki`
   * upgrade the upstream chart from 6.51.0 to grafana-community 21.0.0 (Loki 3.7.9), pulled from `oci://ghcr.io/grafana-community/helm-charts`
@@ -7,7 +8,7 @@ BrakingChanges:
   * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
 
 Features:
-* `thanos`: move CLI generation into six per-service defines following Bitnami Thanos 17.3.1 argument branches; keep `thanos/service` limited to resource defaults. Add configurable ports/data paths, HTTP/TLS/cache/discovery options, and conditional compactor `--wait`.
+* `thanos`: move CLI generation into six per-service defines following Bitnami Thanos 17.3.1 argument branches; keep resource and shared `common.thanos` defaults in `thanos/service`, with per-component overrides in the stack chart. Add configurable ports/data paths, gRPC TLS/cache/discovery options, and conditional compactor `--wait`.
 * `thanos`: replace the Bitnami dependency with six direct `chart_deps/thanos/service` instances wrapping `app/common` (v17.3.1 -> v0.1.0); preserve resource identities.
 * `chart_deps/app/common`: support ConfigMaps, PodDisruptionBudgets, NetworkPolicies, and explicit workload selectors and PVC names.
 * `chart_deps/app/core`: support StatefulSet service identity and update settings, and templated YAML argument lists.

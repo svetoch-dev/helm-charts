@@ -1,6 +1,12 @@
-# Shared resource settings only. The consuming chart supplies command/args.
+# Shared resource and Thanos defaults. The consuming chart supplies command/args.
 # StatefulSet settings take effect when common.statefulsetEnabled is true.
 common:
+  thanos:
+    logLevel: info
+    logFormat: json
+    extraFlags: []
+    https:
+      enabled: false
   fullnameOverride: '{{ include "thanos-service.prefix" . }}-{{ .Values.containerName }}'
   selectorLabels:
     app.kubernetes.io/name: thanos

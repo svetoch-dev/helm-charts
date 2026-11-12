@@ -15,9 +15,6 @@ Changes: common.thanos-scoped inputs, helper names, and list indentation.
 {{- if or .Values.thanos.objstoreConfig .Values.thanos.existingObjstoreSecret }}
 - --objstore.config=$(OBJSTORE_CONFIG)
 {{- end }}
-{{- if (include "thanos.args.httpConfigEnabled" .) }}
-- --http.config=/conf/http/http-config.yml
-{{- end }}
 {{- if .Values.thanos.tsdbPath }}
 - --tsdb.path={{ .Values.thanos.tsdbPath }}
 {{- else }}
