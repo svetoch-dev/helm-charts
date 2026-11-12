@@ -100,14 +100,5 @@ common:
     - {}
   serviceAccount:
     automountServiceAccountToken: true
-  serviceName: '{{ include "common.fullname" . }}-headless'
-  podManagementPolicy: OrderedReady
-  updateStrategy:
+  strategy:
     type: RollingUpdate
-  volumeClaimTemplates:
-    data:
-      metadata:
-        name: data
-      storage: 8Gi
-      accessModes:
-      - ReadWriteOnce
