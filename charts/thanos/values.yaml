@@ -110,6 +110,7 @@ queryFrontend:
     networkPolicy:
       ingress:
       - ports:
+        - port: 10902
         - port: 9090
     resources:
       limits:
@@ -236,7 +237,7 @@ ruler:
       queries: []
       replicaLabel: replica
       ruleFile: /conf/rules/*.yml
-      queryURL: 'tq.{{ .Values.global.env.dns.domain }}'
+      queryURL: https://tq.{{ .Values.global.env.dns.domain }}
     containerName: ruler
     deploymentEnabled: false
     statefulsetEnabled: true

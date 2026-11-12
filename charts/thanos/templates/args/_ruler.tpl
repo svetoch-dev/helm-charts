@@ -22,7 +22,7 @@ Changes: common.thanos-scoped inputs, helper names, and list indentation.
 {{- range .Values.thanos.alertmanagers }}
 - --alertmanagers.url={{ . }}
 {{- end }}
-- --alert.query-url={{ .Values.thanos.queryURL }}
+- --alert.query-url={{ tpl .Values.thanos.queryURL . }}
 - --label={{ .Values.thanos.replicaLabel }}="$(POD_NAME)"
 - --label=ruler_cluster="{{ .Values.thanos.clusterName }}"
 - --alert.label-drop={{ .Values.thanos.replicaLabel }}

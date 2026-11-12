@@ -13,7 +13,7 @@ common:
     tag: v0.41.0
   ports:
   - name: http
-    containerPort: 9090
+    containerPort: 10902
     protocol: TCP
   - name: grpc
     containerPort: 10901
