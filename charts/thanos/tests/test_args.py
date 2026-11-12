@@ -12,7 +12,7 @@ CHART = Path(__file__).resolve().parents[1]
 SERVICES = ("query", "queryFrontend", "compactor", "storegateway", "ruler")
 
 
-def render(thanos_overrides=None, check=True, resource_overrides=None, enabled=None):
+def render(thanos_overrides=None, check=True, resource_overrides=None, enabled=None, shared_overrides=None, global_overrides=None):
     values = {
         "global": {
             "ingress": {"class": "example"},
@@ -25,13 +25,15 @@ def render(thanos_overrides=None, check=True, resource_overrides=None, enabled=N
         },
         **{name: {"enabled": True} for name in SERVICES},
     }
-    values["ruler"]["common"] = {"thanos": {
+    values["common"] = shared_overrides or {}
+    values["global"].update(global_overrides or {})
+    values["ruler"]["thanos"] = {
         "config": "groups: []", "alertmanagers": ["http://alertmanager.example:9093"],
-    }}
+    }
     for service, options in (thanos_overrides or {}).items():
-        values[service].setdefault("common", {}).setdefault("thanos", {}).update(options)
+        values[service].setdefault("thanos", {}).update(options)
     for service, options in (resource_overrides or {}).items():
-        values[service].setdefault("common", {}).update(options)
+        values[service].update(options)
     for service, flag in (enabled or {}).items():
         values.setdefault(service, {})["enabled"] = flag
     with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml") as fixture:
@@ -184,6 +186,55 @@ class ArgumentTests(unittest.TestCase):
         self.assertFalse(any(d["kind"] == "Ingress" for d in render()))
         disabled = render(resource_overrides=overrides, enabled={"query": False, "storegateway": False})
         self.assertFalse(any(d["kind"] == "Ingress" for d in disabled))
+
+    def test_shared_defaults_overrides_and_component_isolation(self):
+        docs = render(shared_overrides={
+            "thanos": {"logLevel": "warn"}, "replicaCount": 2,
+            "image": {"tag": "example"},
+        }, resource_overrides={"query": {
+            "thanos": {"logLevel": "debug"}, "replicaCount": 0,
+            "automountServiceAccountToken": False,
+            "networkPolicy": {"enabled": False},
+            "serviceAccount": {"automountServiceAccountToken": False},
+        }})
+        for workload in workloads(docs):
+            pod = workload["spec"]["template"]["spec"]
+            container = pod["containers"][0]
+            query = container["name"] == "query"
+            self.assertEqual(workload["spec"]["replicas"], 0 if query else 2)
+            self.assertEqual(pod["automountServiceAccountToken"], not query)
+            self.assertEqual(container["image"], "quay.io/thanos/thanos:example")
+            self.assertIn("--log.level=" + ("debug" if query else "warn"), container["args"])
+        self.assertFalse(any(d["kind"] == "NetworkPolicy" and d["metadata"]["name"] == "example-thanos-query" for d in docs))
+        account = next(d for d in docs if d["kind"] == "ServiceAccount" and d["metadata"]["name"] == "example-thanos-query")
+        self.assertIs(account["automountServiceAccountToken"], False)
+        self.assertEqual([d["metadata"]["name"] for d in docs if d["kind"] == "Secret"], ["example-thanos-thanos"])
+
+    def test_global_scheduling_env_init_storage_and_autoscaling(self):
+        docs = render(global_overrides={
+            "nodeSelector": {"example": "shared"}, "tolerations": [{"key": "example", "operator": "Exists"}],
+            "environment": [{"name": "SHARED", "value": "shared"}],
+        }, resource_overrides={"query": {
+            "nodeSelector": {}, "tolerations": [], "disableGlobalEnvironment": False,
+            "environment": [{"name": "LOCAL", "value": "{{ .Release.Name }}"}],
+            "pvcs": {"cache": {"storage": "1Gi", "accessModes": ["ReadWriteOnce"], "mountPath": "/cache"}},
+            "initContainers": {"setup": {"image": "busybox:example", "command": ["true"]}},
+            "autoscaling": {"enabled": True, "minReplicas": 2, "maxReplicas": 4},
+        }})
+        query = next(d for d in workloads(docs) if d["metadata"]["name"] == "example-thanos-query")
+        self.assertNotIn("replicas", query["spec"])
+        pod = query["spec"]["template"]["spec"]
+        self.assertNotIn("nodeSelector", pod)
+        self.assertNotIn("tolerations", pod)
+        self.assertEqual(pod["initContainers"][0]["env"], [{"name": "LOCAL", "value": "example"}, {"name": "SHARED", "value": "shared"}])
+        self.assertEqual(pod["initContainers"][0]["volumeMounts"], [{"name": "cache", "mountPath": "/cache"}])
+        self.assertIn({"name": "cache", "persistentVolumeClaim": {"claimName": "example-thanos-query-cache"}}, pod["volumes"])
+        frontend = next(d for d in workloads(docs) if d["metadata"]["name"] == "example-thanos-query-frontend")
+        self.assertEqual(frontend["spec"]["template"]["spec"]["nodeSelector"], {"example": "shared"})
+        hpa = next(d for d in docs if d["kind"] == "HorizontalPodAutoscaler")
+        self.assertEqual(hpa["spec"]["scaleTargetRef"]["name"], query["metadata"]["name"])
+        self.assertEqual((hpa["spec"]["minReplicas"], hpa["spec"]["maxReplicas"]), (2, 4))
+        self.assertEqual(hpa["spec"]["metrics"][0]["resource"]["target"]["averageUtilization"], 80)
 
     def test_ruler_configuration_validation(self):
         for options in ({"config": ""}, {"alertmanagers": []}):
