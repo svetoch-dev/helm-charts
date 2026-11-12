@@ -1,37 +1,32 @@
-# Thanos service
+# Thanos service resources
 
-A reusable wrapper around [`app/common`](../../app/common). It sets the shared
-Thanos image, command builder, probes, security, selectors, scheduling preference,
-service ports, monitoring, NetworkPolicy settings, and StatefulSet storage defaults.
-It renders workloads through common; it does not copy workload templates.
+A reusable wrapper around [`app/common`](../../app/common). Keep that dependency's
+original name `common`: Helm 3 can mishandle a nested alias when this wrapper is
+used repeatedly under different parent aliases.
 
-Configure the workload under `common`. The default component is `query`.
-Supported `common.containerName` values are `query`, `query-frontend`, `compactor`,
-`storegateway`, `ruler`, and `receive`. The stack chart selects the component,
-workload kind, storage mounts, arguments, and other service-specific overrides.
+Configure native Kubernetes resources under `common`. The consuming chart supplies
+`common.command` and `common.args`; this wrapper has no CLI defaults. Thanos
+application settings used by argument defines live under `common.thanos`, exposed
+to the nested chart as `.Values.thanos`.
 
 ```yaml
 common:
   containerName: query
-  stores:
-    - prometheus-thanos:10901
+  args:
+    - query
+    - --http-address=0.0.0.0:10902
 ```
 
-The default args helper accepts `logLevel`, `logFormat`, and `extraFlags` under
-`common`. It also reads query `stores`/`replicaLabel`, compactor retention settings,
-ruler `alertmanagers`, and receive retention/replication settings. Override
-`common.args` with a list or a templated YAML list for other Thanos flags.
-
 StatefulSet defaults apply when `common.statefulsetEnabled` is true; disable
-`common.deploymentEnabled` in that case. Keep existing selectors, service names,
-and claim-template metadata when upgrading workloads.
+`common.deploymentEnabled` in that case. Preserve selectors, governing Service
+names, and claim-template metadata when upgrading workloads.
 
 The common chart's optional probes and Prometheus rules remain disabled by
-default. ServiceMonitors and per-service NetworkPolicies are enabled for the stack.
-Configure NetworkPolicy ingress rules for the service's ports in the consuming
-chart. Resource requests and limits belong to the consuming service configuration.
+default. ServiceMonitors and NetworkPolicies are enabled for the stack. Configure
+ingress policy, resource requests/limits, and storage mounts per component.
+Kubernetes Service configuration is under `common.service`.
 
-Build this chart's dependencies before rebuilding consumers:
+Build dependencies before rebuilding consumers:
 
 ```sh
 helm dependency build charts/chart_deps/thanos/service

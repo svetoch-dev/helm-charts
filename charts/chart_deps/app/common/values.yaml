@@ -147,6 +147,7 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+# A list of ports or a templated string containing a YAML list.
 ports: []
 #  - name: http
 #    containerPort: 3001

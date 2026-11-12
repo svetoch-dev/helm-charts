@@ -81,7 +81,11 @@ template:
         {{- end }}
         {{- with $obj.ports }}
         ports:
+        {{- if kindIs "string" . }}
+        {{- tpl . $ | nindent 10 }}
+        {{- else }}
         {{- tpl (toYaml .) $ | nindent 10 }}
+        {{- end }}
         {{- end }}
         {{- with $obj.livenessProbe }}
         livenessProbe:
