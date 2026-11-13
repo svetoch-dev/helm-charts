@@ -48,11 +48,11 @@ common:
     logLevel: info
     logFormat: json
     extraFlags: []
-  fullnameOverride: '{{ include "thanos.fullname" . }}-{{ .Values.containerName }}'
+  fullnameOverride: '{{ include "thanos.fullname" . }}-{{ .component }}'
   selectorLabels:
     app.kubernetes.io/name: thanos
     app.kubernetes.io/instance: '{{ .Release.Name }}'
-    app.kubernetes.io/component: '{{ .Values.containerName }}'
+    app.kubernetes.io/component: '{{ .component }}'
   ports:
   - name: http
     containerPort: 10902
@@ -111,7 +111,7 @@ common:
             matchLabels:
               app.kubernetes.io/name: thanos
               app.kubernetes.io/instance: '{{ .Release.Name }}'
-              app.kubernetes.io/component: '{{ .Values.containerName }}'
+              app.kubernetes.io/component: '{{ .component }}'
           topologyKey: kubernetes.io/hostname
   podLabels:
     app.kubernetes.io/managed-by: '{{ .Release.Service }}'
@@ -278,7 +278,7 @@ compactor:
     data:
       name: '{{ include "thanos.stackFullName" . }}'
       storage: 15Gi
-      mountPath: '{{ .Values.thanos.dataDir }}'
+      mountPath: '{{ .Values.compactor.thanos.dataDir }}'
   args: '{{ include "thanos.compactor.args" . }}'
 storegateway:
   enabled: false
@@ -405,7 +405,7 @@ ruler:
   - name: objstore-config
     mountPath: /conf/objstore
   - name: data
-    mountPath: '{{ .Values.thanos.dataPath | default "/data" }}'
+    mountPath: '{{ .Values.ruler.thanos.dataPath | default "/data" }}'
   environment:
   - name: POD_NAME
     valueFrom:
@@ -415,9 +415,9 @@ ruler:
     rules:
       name: '{{ include "thanos.stackFullName" . }}'
       data:
-        ruler.yml: '{{ required "ruler.thanos.config is required when ruler is enabled" .Values.thanos.config }}'
+        ruler.yml: '{{ required "ruler.thanos.config is required when ruler is enabled" .Values.ruler.thanos.config }}'
   podAnnotations:
-    checksum/rules: '{{ .Values.thanos.config | sha256sum }}'
+    checksum/rules: '{{ .Values.ruler.thanos.config | sha256sum }}'
   resources:
     limits:
       cpu: 150m
@@ -428,7 +428,7 @@ ruler:
       ephemeral-storage: 50Mi
       memory: 128Mi
   # Ruler has no per-pod DNS dependency; use its existing Service.
-  serviceName: '{{ tpl .Values.service.name . }}'
+  serviceName: '{{ tpl (.Values.ruler.service.name | default .Values.common.service.name) . }}'
   podManagementPolicy: OrderedReady
   updateStrategy:
     type: RollingUpdate

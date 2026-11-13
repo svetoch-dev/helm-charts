@@ -1,14 +1,16 @@
 {{- define "thanos.service" }}
 {{- $root := deepCopy .root }}
 {{- $_ := set $root "component" .component }}
+{{- $_ := set $root "serviceKey" .serviceKey }}
 {{- $defaults := deepCopy $root.Values.common.service }}
 {{- $overrides := deepCopy (.service | default dict) }}
 {{- $service := mustMergeOverwrite $defaults $overrides }}
-{{- $context := deepCopy $root }}
-{{- include "thanos.component.context" (dict "root" $context "settings" .settings) }}
-{{- $labels := include "thanos.labels" $context | fromYaml }}
+{{- $labels := include "thanos.labels" $root | fromYaml }}
 {{- if not $service.selectorLabels }}
-{{- $_ := set $service "selectorLabels" (include "thanos.selectorLabels" $context | fromYaml) }}
+{{- $_ := set $service "selectorLabels" (include "thanos.selectorLabels" $root | fromYaml) }}
 {{- end }}
-{{- include "core.service" (list $context $labels $service) }}
+{{- if not (hasKey $service "namespace") }}
+{{- $_ := set $service "namespace" (include "thanos.namespace" $root) }}
+{{- end }}
+{{- include "core.service" (list $root $labels $service) }}
 {{- end }}

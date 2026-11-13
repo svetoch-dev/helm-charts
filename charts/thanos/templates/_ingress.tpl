@@ -1,11 +1,13 @@
 {{- define "thanos.ingress" }}
 {{- $root := deepCopy .root }}
 {{- $_ := set $root "component" .component }}
+{{- $_ := set $root "serviceKey" .serviceKey }}
 {{- $defaults := deepCopy ($root.Values.common.ingress | default dict) }}
 {{- $overrides := deepCopy (.ingress | default dict) }}
 {{- $obj := mustMergeOverwrite $defaults $overrides }}
-{{- $context := deepCopy $root }}
-{{- include "thanos.component.context" (dict "root" $context "settings" .settings) }}
-{{- $labels := include "thanos.labels" $context | fromYaml }}
-{{- include "core.ingress" (list $context $labels $obj) }}
+{{- $labels := include "thanos.labels" $root | fromYaml }}
+{{- if not (hasKey $obj "namespace") }}
+{{- $_ := set $obj "namespace" (include "thanos.namespace" $root) }}
+{{- end }}
+{{- include "core.ingress" (list $root $labels $obj) }}
 {{- end }}

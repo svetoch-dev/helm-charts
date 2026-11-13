@@ -2,7 +2,7 @@
 {{- $settings := get $.Values $svc }}
 {{- if $settings.enabled }}
 {{- $component := $settings.containerName | default $svc }}
-{{- $inputs := dict "podDisruptionBudget" $settings.podDisruptionBudget "settings" $settings "root" $ "component" $component }}
+{{- $inputs := dict "podDisruptionBudget" $settings.podDisruptionBudget "root" $ "component" $component "serviceKey" $svc }}
 {{- include "thanos.podDisruptionBudget" $inputs }}
 {{- end }}
 {{- end }}

@@ -2,7 +2,7 @@
 {{- $service := get $.Values $svc }}
 {{- if $service.enabled }}
 {{- $component := $service.containerName | default $svc }}
-{{- $inputs := dict "service" $service.service "settings" $service "root" $ "component" $component }}
+{{- $inputs := dict "service" $service.service "root" $ "component" $component "serviceKey" $svc }}
 {{- include "thanos.service" $inputs }}
 {{- end }}
 {{- end }}
