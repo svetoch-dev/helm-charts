@@ -23,6 +23,11 @@ dependencies:
     repository: file://../chart_deps/konghq/plugins
     alias: kong-plugins
     condition: kong-plugins.enabled
+  - name: vedro
+    version: 0.2.3
+    repository: oci://ghcr.io/svetoch-dev/charts
+    alias: vedro
+    condition: vedro.enabled
   - name: core
     version: 0.1.0
     repository: file://../chart_deps/app/core
