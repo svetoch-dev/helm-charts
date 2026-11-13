@@ -1,0 +1,8 @@
+{{- range $svc := list "query" "queryFrontend" "compactor" "storegateway" "ruler" }}
+{{- $settings := get $.Values $svc }}
+{{- if $settings.enabled }}
+{{- $component := $settings.containerName | default $svc }}
+{{- $inputs := dict "configMaps" $settings.configMaps "settings" $settings "root" $ "component" $component }}
+{{- include "thanos.configMaps" $inputs }}
+{{- end }}
+{{- end }}

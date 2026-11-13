@@ -2,7 +2,7 @@
 Copyright Broadcom, Inc. All Rights Reserved.
 SPDX-License-Identifier: APACHE-2.0
 Adapted from Bitnami Thanos 17.3.1: templates/compactor/_pod-template.tpl
-Changes: common.thanos-scoped inputs, helper names, and list indentation.
+Changes: component-scoped thanos inputs, helper names, and list indentation.
 */}}
 {{- define "thanos.compactor.args" -}}
 - compact

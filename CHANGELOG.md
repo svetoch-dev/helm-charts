@@ -1,5 +1,7 @@
 # 12.0.0-alpha
 BrakingChanges:
+* `thanos`: use per-resource helpers and renderer loops; Query, Query Frontend, and Compactor are Deployments, Store Gateway and Ruler are StatefulSets. Remove `deploymentEnabled` and `statefulsetEnabled`; give Ruler an explicit data claim and use its existing Service as its governing Service.
+* `thanos`: render services directly through `app/core` and ServiceMonitors through `prometheus/lib`; remove `chart_deps/thanos/service`. Move `<component>.common.*` to `<component>.*` and shared service defaults to top-level `common`; service overrides take precedence. Resource identities and selectors are preserved; chart metadata labels now identify Thanos.
 * `thanos`: move `ingresses.query` and `ingresses.storegateway` to `query.common.ingress` and `storegateway.common.ingress`; each ingress now follows service enablement and common labels. Correct Query policy annotation whitespace.
 * `thanos`: remove unsupported file-based Alertmanager configuration; Ruler now requires a nonempty Alertmanager URL list.
 * `thanos`: remove unsupported HTTP server configuration values and automatic `--http.config` flags, including the now-unused basic-auth default.
