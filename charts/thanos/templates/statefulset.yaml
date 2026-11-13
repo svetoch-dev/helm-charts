@@ -2,7 +2,7 @@
 {{- $settings := get $.Values $svc }}
 {{- if $settings.enabled }}
 {{- $component := $settings.containerName | default $svc }}
-{{- $inputs := dict "settings" $settings "root" $ "component" $component }}
+{{- $inputs := dict "settings" $settings "root" $ "component" $component "serviceKey" $svc }}
 {{- include "thanos.statefulset" $inputs }}
 {{- end }}
 {{- end }}

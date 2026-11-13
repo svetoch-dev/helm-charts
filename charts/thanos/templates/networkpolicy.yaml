@@ -2,7 +2,7 @@
 {{- $settings := get $.Values $svc }}
 {{- if $settings.enabled }}
 {{- $component := $settings.containerName | default $svc }}
-{{- $inputs := dict "networkPolicy" $settings.networkPolicy "settings" $settings "root" $ "component" $component }}
+{{- $inputs := dict "networkPolicy" $settings.networkPolicy "root" $ "component" $component "serviceKey" $svc }}
 {{- include "thanos.networkPolicy" $inputs }}
 {{- end }}
 {{- end }}

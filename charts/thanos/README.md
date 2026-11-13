@@ -42,8 +42,10 @@ now identify the Thanos chart. Rebuild dependencies with `helm dependency build 
 
 Resource settings include `<component>.image`, `resources`, `ports`, `args`,
 `command`, storage, security, and monitoring. Thanos settings use
-`<component>.thanos`. Argument defines and templated resource fields receive the
-merged component as `.Values`, with shared globals available at `.Values.global`.
+`<component>.thanos`. Argument defines and templated resource fields use the original
+chart values: for example, `.Values.query.thanos.stores` and `.Values.compactor.thanos.dataDir`.
+Shared defaults remain at `.Values.common.*`, and globals at `.Values.global.*`.
+Resource helpers merge defaults into resource objects without replacing `.Values`.
 
 Query and Store Gateway ingresses use `query.ingress` and `storegateway.ingress`.
 Both the component and its ingress must be enabled. Extra stack ingresses use
