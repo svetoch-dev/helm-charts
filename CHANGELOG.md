@@ -1,29 +1,19 @@
 # 12.0.0-alpha
 BrakingChanges:
-* `thanos`: stop rendering HPAs and ConfigMaps, remove autoscaling settings, and use configured Deployment replicas. Ruler rules must come from an externally supplied ConfigMap.
-* `thanos`: group pod and workload settings under `common.workload` and `<component>.workload`; keep resource and Thanos application settings separate. Concatenate workload environment lists, and configure PVC pod volumes/mounts explicitly under workload settings.
-* `thanos`: remove the component values context; templated values and CLI defines now use root paths such as `.Values.query.thanos.*`, with shared defaults under `.Values.common.*`. Update any custom templates using component-local `.Values` paths.
-* `thanos`: use per-resource helpers and renderer loops; Query, Query Frontend, and Compactor are Deployments, Store Gateway and Ruler are StatefulSets. Remove `deploymentEnabled` and `statefulsetEnabled`; give Ruler an explicit data claim and use its existing Service as its governing Service.
-* `thanos`: render services directly through `app/core` and ServiceMonitors through `prometheus/lib`; remove `chart_deps/thanos/service`. Move `<component>.common.*` to `<component>.*` and shared service defaults to top-level `common`; service overrides take precedence. Resource identities and selectors are preserved; chart metadata labels now identify Thanos.
-* `thanos`: move `ingresses.query` and `ingresses.storegateway` to `query.common.ingress` and `storegateway.common.ingress`; each ingress now follows service enablement and common labels. Correct Query policy annotation whitespace.
-* `thanos`: remove unsupported file-based Alertmanager configuration; Ruler now requires a nonempty Alertmanager URL list.
-* `thanos`: remove unsupported HTTP server configuration values and automatic `--http.config` flags, including the now-unused basic-auth default.
-* `thanos`: keep `<component>.enabled` and `<component>.common.*` for native resources; move Thanos application settings under `<component>.common.thanos.*`. Keep the original common dependency name for Helm 3 compatibility. See `charts/thanos/README.md` for migration.
+* `thanos`:
+  * self made chart with new interface
 * `loki`
   * upgrade the upstream chart from 6.51.0 to grafana-community 21.0.0 (Loki 3.7.9), pulled from `oci://ghcr.io/grafana-community/helm-charts`
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
   * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
 
 Features:
-* `thanos`: move CLI generation into five per-service defines adapted from Bitnami Thanos 17.3.1; keep resource and shared `common.thanos` defaults in `thanos/service`, with per-component overrides in the stack chart. Support data paths, extra flags, and conditional compactor `--wait`.
-* `thanos`: replace the Bitnami dependency with five direct `chart_deps/thanos/service` instances wrapping `app/common` (v17.3.1 -> v0.1.0); preserve resource identities.
 * `chart_deps/app/common`: support ConfigMaps, PodDisruptionBudgets, NetworkPolicies, and explicit workload selectors and PVC names.
 * `chart_deps/app/core`: support StatefulSet service identity and update settings, and templated YAML argument lists.
 * `pomerium` - update v0.32.9 -> v0.34.0; because of how pomerium is licensed now uses ghcr.io/svetoch-dev/pomerium-ingress-controller
 * `argocd` - update v3.5.1 -> v3.6.1 and upstream chart 10.9.6 -> 10.17.1 , pulled from `oci://ghcr.io/argoproj/argo-helm`
 
 Fixes:
-* `thanos`: remove the stale receive dependency that duplicated query resources; align HTTP container ports and policies with listeners, expand Ruler query URLs, and refresh five-service render regressions.
 * `pomerium`: align controller RBAC with 0.34.0 for certificate management and resource patching; add namespaced lease permissions
 * `loki`: namespace wrapper helpers to preserve upstream templated `nameOverride` support and resolve the read ingress backend through the upstream service naming helper
 
