@@ -1,3 +1,42 @@
+vedro:
+  enabled: false
+  providers:
+    thanos:
+      type: "{{ .Values.global.env.cloud.name }}"
+      projectId: "{{ tpl .Values.global.vedro.providers.default.projectId $ }}"
+      region: "{{ tpl .Values.global.vedro.providers.default.region $ }}"
+      method: WorkloadIdentity
+      usagePolicy:
+        allowedNamespaces:
+          names: ["{{ .Release.Namespace }}"]
+        bucketPolicy:
+          allowedNamePatterns:
+          - '^{{ printf "%s-%s" .Values.global.company.name .Release.Name }}.*$'
+        principalPolicy:
+          allowReferences: false
+          allowedNamePatterns:
+          - '^{{ .Release.Name}}.*$'
+
+  principals:
+    thanos:
+      provider: thanos
+      kind: ServiceAccount
+      type: Managed
+      managed:
+        name: "{{ .Release.Name }}"
+      auth: "{{ tpl .Values.global.vedro.principals.default.auth $ | indent 2 }}"
+
+  buckets:
+    thanos:
+      name: '{{ printf "%s-%s" .Values.global.company.name .Release.Name }}'
+      provider: loki
+      labels: "{{ tpl .Values.global.vedro.buckets.default.labels $ }}"
+      location: "{{ tpl .Values.global.vedro.buckets.default.location $ }}"
+      deletionPolicy: Retain
+      cloudSpecificConfig: "{{ tpl .Values.global.vedro.buckets.default.cloudSpecificConfig $ }}"
+      objAdmins:
+      - name: thanos
+
 common:
   workload:
     replicaCount: 1
