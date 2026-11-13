@@ -35,7 +35,7 @@ global:
     buckets:
       default:
         location: |-
-          {{- if eq .Values.global.env.cloud.buckets.multi_regional "false" }}
+          {{- if eq .Values.global.env.cloud.buckets.multi_regional false }}
           {{- .Values.global.env.cloud.location.region }}
           {{- else }}
           {{- .Values.global.env.cloud.location.multi_region }}
