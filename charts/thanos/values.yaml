@@ -37,6 +37,26 @@ vedro:
       objAdmins:
       - name: thanos
 
+kong-plugins:
+  enabled: false
+  plugins:
+  - name: thanos-store-main-ip-restriction
+    plugin_name: ip-restriction
+    annotations:
+      kubernetes.io/ingress.class: konghq
+    config:
+      allow:
+      - '{{ .Values.global.env.cloud.network.int_nat_gw }}'
+secrets:
+  thanos:
+    name: thanos
+    data:
+      objstore.yml: |
+        type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
+        config:
+          bucket: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.short_name }}"
+additional_ingress: {}
+
 common:
   workload:
     replicaCount: 1
@@ -153,25 +173,7 @@ common:
     - Egress
     egress:
     - {}
-additional_ingress: {}
-kong-plugins:
-  enabled: false
-  plugins:
-  - name: thanos-store-main-ip-restriction
-    plugin_name: ip-restriction
-    annotations:
-      kubernetes.io/ingress.class: konghq
-    config:
-      allow:
-      - '{{ .Values.global.env.cloud.network.int_nat_gw }}'
-secrets:
-  thanos:
-    name: thanos
-    data:
-      objstore.yml: |
-        type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
-        config:
-          bucket: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.short_name }}"
+
 query:
   enabled: false
   workload:
