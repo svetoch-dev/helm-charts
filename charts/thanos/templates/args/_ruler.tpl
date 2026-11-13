@@ -2,11 +2,11 @@
 Copyright Broadcom, Inc. All Rights Reserved.
 SPDX-License-Identifier: APACHE-2.0
 Adapted from Bitnami Thanos 17.3.1: templates/ruler/statefulset.yaml
-Changes: common.thanos-scoped inputs, helper names, and list indentation.
+Changes: component-scoped thanos inputs, helper names, and list indentation.
 */}}
 {{- define "thanos.ruler.args" -}}
 {{- if not .Values.thanos.alertmanagers -}}
-{{- fail "ruler.common.thanos.alertmanagers is required when ruler is enabled" -}}
+{{- fail "ruler.thanos.alertmanagers is required when ruler is enabled" -}}
 {{- end -}}
 - rule
 - --log.level={{ .Values.thanos.logLevel }}

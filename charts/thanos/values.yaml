@@ -1,14 +1,12 @@
 common:
   replicaCount: 1
-  deploymentEnabled: true
-  statefulsetEnabled: false
   image:
     pullPolicy: IfNotPresent
     repository: quay.io/thanos/thanos
     tag: v0.41.0
   service:
     enabled: true
-    name: '{{ include "thanos.component.fullname" . }}'
+    name: '{{ include "thanos.stackFullName" . }}'
     type: ClusterIP
     labels:
       prometheus-operator/monitor: 'true'
@@ -23,9 +21,9 @@ common:
     automountServiceAccountToken: true
   ingress:
     enabled: false
-    name: '{{ include "thanos.component.fullname" . }}'
+    name: '{{ include "thanos.stackFullName" . }}'
     service:
-      name: '{{ include "thanos.component.fullname" . }}'
+      name: '{{ include "thanos.stackFullName" . }}'
     className: ''
     annotations: {}
     hosts: []
@@ -41,9 +39,6 @@ common:
     enabled: true
     jobLabel: ''
     selectorLabels:
-      app.kubernetes.io/name: thanos
-      app.kubernetes.io/instance: '{{ .Release.Name }}'
-      app.kubernetes.io/component: '{{ .Values.containerName }}'
       prometheus-operator/monitor: 'true'
     endpoints:
     - port: http
@@ -53,7 +48,7 @@ common:
     logLevel: info
     logFormat: json
     extraFlags: []
-  fullnameOverride: '{{ include "thanos.stackFullname" . }}-{{ .Values.containerName }}'
+  fullnameOverride: '{{ include "thanos.fullname" . }}-{{ .Values.containerName }}'
   selectorLabels:
     app.kubernetes.io/name: thanos
     app.kubernetes.io/instance: '{{ .Release.Name }}'
@@ -207,7 +202,7 @@ query:
       - port: 9090
       - port: 10901
   additionalServices:
-  - name: '{{ include "thanos.component.fullname" . }}-grpc'
+  - name: '{{ include "thanos.stackFullName" . }}-grpc'
     enabled: true
     type: ClusterIP
     ports:
@@ -275,13 +270,13 @@ compactor:
   volumes:
   - name: objstore-config
     secret:
-      secretName: '{{ include "thanos.stackFullname" . }}-thanos'
+      secretName: '{{ include "thanos.fullname" . }}-thanos'
   volumeMounts:
   - name: objstore-config
     mountPath: /conf
   pvcs:
     data:
-      name: '{{ include "thanos.component.fullname" . }}'
+      name: '{{ include "thanos.stackFullName" . }}'
       storage: 15Gi
       mountPath: '{{ .Values.thanos.dataDir }}'
   args: '{{ include "thanos.compactor.args" . }}'
@@ -289,7 +284,7 @@ storegateway:
   enabled: false
   ingress:
     enabled: false
-    name: '{{ include "thanos.component.fullname" . }}-grpc'
+    name: '{{ include "thanos.stackFullName" . }}-grpc'
     service:
       port: 10901
     className: konghq
@@ -307,8 +302,6 @@ storegateway:
       hosts:
       - thanos-store.{{ .Values.global.env.dns.domain }}
   containerName: storegateway
-  deploymentEnabled: false
-  statefulsetEnabled: true
   resources:
     limits:
       cpu: 1000m
@@ -343,13 +336,13 @@ storegateway:
   volumes:
   - name: objstore-config
     secret:
-      secretName: '{{ include "thanos.stackFullname" . }}-thanos'
+      secretName: '{{ include "thanos.fullname" . }}-thanos'
   volumeMounts:
   - name: objstore-config
     mountPath: /conf
   - name: data
     mountPath: /data
-  serviceName: '{{ include "thanos.component.fullname" . }}-headless'
+  serviceName: '{{ include "thanos.stackFullName" . }}-headless'
   podManagementPolicy: OrderedReady
   updateStrategy:
     type: RollingUpdate
@@ -379,8 +372,6 @@ ruler:
     ruleFile: /conf/rules/*.yml
     queryURL: https://tq.{{ .Values.global.env.dns.domain }}
   containerName: ruler
-  deploymentEnabled: false
-  statefulsetEnabled: true
   service:
     ports:
     - port: 9090
@@ -404,10 +395,10 @@ ruler:
   volumes:
   - name: ruler-config
     configMap:
-      name: '{{ include "thanos.stackFullname" . }}-ruler'
+      name: '{{ include "thanos.fullname" . }}-ruler'
   - name: objstore-config
     secret:
-      secretName: '{{ include "thanos.stackFullname" . }}-thanos'
+      secretName: '{{ include "thanos.fullname" . }}-thanos'
   volumeMounts:
   - name: ruler-config
     mountPath: /conf/rules
@@ -422,10 +413,9 @@ ruler:
         fieldPath: metadata.name
   configMaps:
     rules:
-      name: '{{ include "thanos.component.fullname" . }}'
+      name: '{{ include "thanos.stackFullName" . }}'
       data:
-        ruler.yml: '{{ required "ruler.thanos.config is required when ruler is enabled" .Values.thanos.config
-          }}'
+        ruler.yml: '{{ required "ruler.thanos.config is required when ruler is enabled" .Values.thanos.config }}'
   podAnnotations:
     checksum/rules: '{{ .Values.thanos.config | sha256sum }}'
   resources:
@@ -437,4 +427,16 @@ ruler:
       cpu: 100m
       ephemeral-storage: 50Mi
       memory: 128Mi
+  # Ruler has no per-pod DNS dependency; use its existing Service.
+  serviceName: '{{ tpl .Values.service.name . }}'
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+    data:
+      metadata:
+        name: data
+      storage: 8Gi
+      accessModes:
+      - ReadWriteOnce
   args: '{{ include "thanos.ruler.args" . }}'
