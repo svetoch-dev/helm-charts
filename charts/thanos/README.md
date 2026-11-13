@@ -13,10 +13,11 @@ query:
   thanos:
     stores:
     - prometheus-thanos:10901
-  resources:
-    requests:
-      cpu: 10m
-      memory: 50Mi
+  workload:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 50Mi
 compactor:
   enabled: true
 storegateway:
@@ -24,7 +25,8 @@ storegateway:
 ```
 
 Each component is disabled by default. `<component>.enabled` gates all its
-resources. Shared defaults live under `common`; component settings override them.
+resources. Resource defaults live under `common.<resource>` and workload defaults
+under `common.workload`; component settings override them.
 Maps merge recursively, lists replace shared lists, and explicit false or zero
 values are preserved. Each component gets an independent copy of the defaults.
 Query, Query Frontend, and Compactor render Deployments; Store Gateway and Ruler
@@ -33,19 +35,29 @@ render StatefulSets. Workload kinds are fixed by their renderer loops;
 Each resource has a helper and a YAML renderer following the Service pattern.
 ServiceMonitor selectors combine component selectors with `serviceMonitor.selectorLabels`.
 
-Migration: move `<component>.common.*` to `<component>.*`. Shared settings formerly
-in `chart_deps/thanos/service/values.yaml` now live in this chart's `common` map.
+Migration: move pod and workload settings (image, resources, args, ports,
+environment, volumes, security, scheduling, and StatefulSet settings) into
+`common.workload` and `<component>.workload`. Separate resource settings such as
+`service`, `ingress`, `serviceAccount`, `pvcs`, and `autoscaling` remain siblings
+of `workload`. Thanos application settings remain under `common.thanos` and
+`<component>.thanos`. Shared defaults formerly in `chart_deps/thanos/service`
+now live in this chart.
 Update overrides and templated references from `common.fullname` to
 `thanos.stackFullName`, and from `thanos-service.prefix` to
 `thanos.fullname`. Names and selectors are preserved; chart metadata labels
 now identify the Thanos chart. Rebuild dependencies with `helm dependency build .`.
 
-Resource settings include `<component>.image`, `resources`, `ports`, `args`,
-`command`, storage, security, and monitoring. Thanos settings use
-`<component>.thanos`. Argument defines and templated resource fields use the original
-chart values: for example, `.Values.query.thanos.stores` and `.Values.compactor.thanos.dataDir`.
+Workload settings include `<component>.workload.image`, `resources`, `ports`,
+`args`, `command`, volumes, and pod security. Argument defines and templated
+resource fields use the original chart values: for example,
+`.Values.query.thanos.stores` and `.Values.compactor.workload.resources`.
 Shared defaults remain at `.Values.common.*`, and globals at `.Values.global.*`.
 Resource helpers merge defaults into resource objects without replacing `.Values`.
+
+All workload containers, including init containers and sidecars, receive environment
+variables only from `common.workload.environment` followed by
+`<component>.workload.environment`.
+These lists are concatenated independently of the normal values merge.
 
 Query and Store Gateway ingresses use `query.ingress` and `storegateway.ingress`.
 Both the component and its ingress must be enabled. Extra stack ingresses use
@@ -58,18 +70,20 @@ it and its object-store permissions.
 HTTP listeners use container port 10902; Services expose port 9090 and target the
 named `http` container port. Query Frontend sends downstream requests to the Query
 Service on 9090. gRPC listeners use 10901. Custom listeners require matching
-`args`, `ports`, Service ports, and NetworkPolicy rules.
+`workload.args`, `workload.ports`, Service ports, and NetworkPolicy rules.
 
 Compactor storage uses `compactor.pvcs.data.storage`; StatefulSet storage uses
-`<component>.volumeClaimTemplates.data.storage`. Compactor's `thanos.dataDir` and
+`<component>.workload.volumeClaimTemplates.data.storage`. PVC volumes and mount
+paths belong to `workload.volumes` and `workload.volumeMounts`; the standalone PVC
+map only configures the claim resource. Compactor's `thanos.dataDir` and
 Ruler's `thanos.dataPath` also set data mount paths. Ruler requires
 `ruler.thanos.config` (a YAML rules string) and a nonempty
 `ruler.thanos.alertmanagers` URL list. Its templated `queryURL` defaults to
 `https://tq.<global.env.dns.domain>` for alert links to the Query UI.
 
 The five argument defines adapt Bitnami Thanos chart 17.3.1. Override a component's
-`args` with a list or templated YAML list to replace generated arguments;
-`command` is a normal resource override. `thanos.extraFlags` supports templated
+`workload.args` with a list or templated YAML list to replace generated arguments;
+`workload.command` is a normal workload override. `thanos.extraFlags` supports templated
 lists. Query accepts explicit endpoints through `query.thanos.stores`.
 Compactor's `thanos.cronJob.enabled` controls `--wait` only; it does not change the
 workload kind. Custom TLS, HTTP, cache, or discovery configuration requires

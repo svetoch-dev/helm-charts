@@ -14,37 +14,31 @@
 {{- $_ := set $workload $key (index $global $key) }}
 {{- end }}
 {{- end }}
-{{- $env := list }}
-{{- if not $workload.disableGlobalEnvironmentFromSecrets }}
-{{- $env = concat $env ($global.environmentFromSecrets | default list) }}
-{{- end }}
-{{- $env = concat $env ($workload.environmentFromSecrets | default list) ($workload.environment | default list) }}
-{{- if not $workload.disableGlobalEnvironment }}
-{{- $env = concat $env ($global.environment | default list) }}
-{{- end }}
-{{- $_ := set $workload "env" $env }}
-{{- $mounts := list }}
-{{- $volumes := list }}
-{{- range $key, $claim := $workload.pvcs }}
-{{- $mounts = append $mounts (dict "name" $key "mountPath" (tpl $claim.mountPath $root)) }}
-{{- $claimName := $claim.name | default (printf "%s-%s" $name $key) }}
-{{- $volumes = append $volumes (dict "name" $key "persistentVolumeClaim" (dict "claimName" (tpl $claimName $root))) }}
-{{- end }}
-{{- $mounts = concat $mounts ($workload.volumeMounts | default list) }}
-{{- $_ := set $workload "volumeMounts" $mounts }}
-{{- $_ := set $workload "volumes" (concat $volumes ($workload.volumes | default list)) }}
+{{- $settings := get $root.Values $root.serviceKey }}
+{{- $defaults := $root.Values.common.workload.environment | default list }}
+{{- $service := $settings.workload.environment | default list }}
+{{- $environment := concat $defaults $service }}
+{{- $_ := set $workload "env" $environment }}
+{{- $mounts := $workload.volumeMounts | default list }}
 {{- $initContainers := list }}
 {{- range $key, $container := $workload.initContainers }}
 {{- $item := deepCopy $container }}
 {{- $_ := set $item "name" ($item.name | default $key) }}
-{{- if and $env (not (hasKey $item "env")) }}
-{{- $_ := set $item "env" $env }}
-{{- end }}
+{{- $_ := set $item "env" $environment }}
+{{- $_ := unset $item "envFrom" }}
 {{- if and $mounts (not (hasKey $item "volumeMounts")) }}
 {{- $_ := set $item "volumeMounts" $mounts }}
 {{- end }}
 {{- $initContainers = append $initContainers $item }}
 {{- end }}
 {{- $_ := set $workload "initContainers" $initContainers }}
+{{- $sidecars := list }}
+{{- range $container := $workload.sidecars }}
+{{- $item := deepCopy $container }}
+{{- $_ := set $item "env" $environment }}
+{{- $_ := unset $item "envFrom" }}
+{{- $sidecars = append $sidecars $item }}
+{{- end }}
+{{- $_ := set $workload "sidecars" $sidecars }}
 {{- toYaml $workload }}
 {{- end }}

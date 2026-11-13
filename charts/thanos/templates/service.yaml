@@ -1,7 +1,7 @@
 {{- range $svc := list "query" "queryFrontend" "compactor" "storegateway" "ruler" }}
 {{- $service := get $.Values $svc }}
 {{- if $service.enabled }}
-{{- $component := $service.containerName | default $svc }}
+{{- $component := $service.workload.containerName | default $svc }}
 {{- $inputs := dict "service" $service.service "root" $ "component" $component }}
 {{- include "thanos.service" $inputs }}
 {{- end }}

@@ -1,5 +1,6 @@
 # 12.0.0-alpha
 BrakingChanges:
+* `thanos`: group pod and workload settings under `common.workload` and `<component>.workload`; keep resource and Thanos application settings separate. Concatenate workload environment lists, and configure PVC pod volumes/mounts explicitly under workload settings.
 * `thanos`: remove the component values context; templated values and CLI defines now use root paths such as `.Values.query.thanos.*`, with shared defaults under `.Values.common.*`. Update any custom templates using component-local `.Values` paths.
 * `thanos`: use per-resource helpers and renderer loops; Query, Query Frontend, and Compactor are Deployments, Store Gateway and Ruler are StatefulSets. Remove `deploymentEnabled` and `statefulsetEnabled`; give Ruler an explicit data claim and use its existing Service as its governing Service.
 * `thanos`: render services directly through `app/core` and ServiceMonitors through `prometheus/lib`; remove `chart_deps/thanos/service`. Move `<component>.common.*` to `<component>.*` and shared service defaults to top-level `common`; service overrides take precedence. Resource identities and selectors are preserved; chart metadata labels now identify Thanos.

@@ -1,7 +1,7 @@
 {{- range $svc := list "query" "queryFrontend" "compactor" }}
 {{- $settings := get $.Values $svc }}
 {{- if $settings.enabled }}
-{{- $component := $settings.containerName | default $svc }}
+{{- $component := $settings.workload.containerName | default $svc }}
 {{- $inputs := dict "autoscaling" $settings.autoscaling "root" $ "component" $component }}
 {{- include "thanos.autoscaling" $inputs }}
 {{- end }}
