@@ -192,11 +192,12 @@ chart_apps:
     chart: '{{ .Values.repository.paths.charts }}/thanos'
     values: |
       query:
-        stores:
-          {{- range $env_name, $env_obj := .Values.global.externalEnvs }}
-          - {{ printf "thanos.%s:443" $env_obj.domain }}
-          - {{ printf "thanos-store.%s:443" $env_obj.domain }}
-          {{- end }}
+        thanos:
+          stores:
+            {{- range $env_name, $env_obj := .Values.global.externalEnvs }}
+            - {{ printf "thanos.%s:443" $env_obj.domain }}
+            - {{ printf "thanos-store.%s:443" $env_obj.domain }}
+            {{- end }}
       secrets:
         thanos:
           enabled: false
