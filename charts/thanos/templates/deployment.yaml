@@ -1,8 +1,8 @@
 {{- range $svc := list "query" "queryFrontend" "compactor" }}
 {{- $settings := get $.Values $svc }}
 {{- if $settings.enabled }}
-{{- $component := $settings.containerName | default $svc }}
-{{- $inputs := dict "settings" $settings "root" $ "component" $component "serviceKey" $svc }}
+{{- $component := $settings.workload.containerName | default $svc }}
+{{- $inputs := dict "workload" $settings.workload "root" $ "component" $component "serviceKey" $svc }}
 {{- include "thanos.deployment" $inputs }}
 {{- end }}
 {{- end }}

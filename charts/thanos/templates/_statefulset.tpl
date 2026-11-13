@@ -2,8 +2,8 @@
 {{- $root := deepCopy .root }}
 {{- $_ := set $root "component" .component }}
 {{- $_ := set $root "serviceKey" .serviceKey }}
-{{- $defaults := deepCopy $root.Values.common }}
-{{- $overrides := deepCopy .settings }}
+{{- $defaults := deepCopy $root.Values.common.workload }}
+{{- $overrides := deepCopy (.workload | default dict) }}
 {{- $workload := mustMergeOverwrite $defaults $overrides }}
 {{- $labels := include "thanos.labels" $root | fromYaml }}
 {{- $workload = include "thanos.workload" (dict "root" $root "workload" $workload) | fromYaml }}
