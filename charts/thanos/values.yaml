@@ -29,7 +29,7 @@ vedro:
   buckets:
     thanos:
       name: '{{ printf "%s-%s" .Values.global.company.name .Release.Name }}'
-      provider: loki
+      provider: thanos
       labels: "{{ tpl .Values.global.vedro.buckets.default.labels $ }}"
       location: "{{ tpl .Values.global.vedro.buckets.default.location $ }}"
       deletionPolicy: Retain
