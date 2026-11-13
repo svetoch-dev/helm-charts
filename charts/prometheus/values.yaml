@@ -409,8 +409,7 @@ prometheus-main:
     enabled: true
 
   serviceAccount:
-    create: false
-    name: thanos
+    create: true
 
   servicemonitor:
     enabled: true

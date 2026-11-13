@@ -8,3 +8,8 @@ dependencies:
   - name: core
     version: 0.1.0
     repository: file://../../app/core
+  - name: vedro
+    version: 0.2.3
+    repository: oci://ghcr.io/svetoch-dev/charts
+    alias: vedro
+    condition: vedro.enabled

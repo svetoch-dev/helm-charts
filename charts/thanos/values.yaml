@@ -140,7 +140,6 @@ common:
       name: http
   serviceAccount:
     create: true
-    name: ''
     automountServiceAccountToken: true
   ingress:
     enabled: false
@@ -306,7 +305,6 @@ compactor:
     retentionResolutionRaw: 30d
   serviceAccount:
     create: false
-    name: thanos
   networkPolicy:
     ingress:
     - ports:
@@ -369,7 +367,6 @@ storegateway:
       - thanos-store.{{ .Values.global.env.dns.domain }}
   serviceAccount:
     create: false
-    name: thanos
   service:
     ports:
     - port: 9090

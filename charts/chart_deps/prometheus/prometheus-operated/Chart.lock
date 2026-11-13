@@ -2,5 +2,8 @@ dependencies:
 - name: core
   repository: file://../../app/core
   version: 0.1.0
-digest: sha256:3f3ccc6d25698c7438c01002e73645e46387f68b6c3643a0050d71e0c0c450db
-generated: "2026-02-22T20:22:08.43049129Z"
+- name: vedro
+  repository: oci://ghcr.io/svetoch-dev/charts
+  version: 0.2.3
+digest: sha256:aaeb7d7ea0b6de4c0789eef3571f47932d4fd106a3896ef5b1f90fa864fc394e
+generated: "2026-11-13T18:07:09.949923058+03:00"
