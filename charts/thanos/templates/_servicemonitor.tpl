@@ -1,7 +1,6 @@
 {{- define "thanos.serviceMonitor" }}
 {{- $root := deepCopy .root }}
 {{- $_ := set $root "component" .component }}
-{{- $_ := set $root "serviceKey" .serviceKey }}
 {{- $defaults := deepCopy ($root.Values.common.serviceMonitor | default dict) }}
 {{- $overrides := deepCopy (.serviceMonitor | default dict) }}
 {{- $obj := mustMergeOverwrite $defaults $overrides }}
@@ -12,7 +11,7 @@
 {{- $monitorSelectors := deepCopy ($obj.selectorLabels | default dict) }}
 {{- $_ := set $obj "selectorLabels" (mustMergeOverwrite $selectors $monitorSelectors) }}
 {{- if not (hasKey $obj "namespace") }}
-{{- $_ := set $obj "namespace" (include "thanos.namespace" $root) }}
+{{- $_ := set $obj "namespace" ($root.Values.namespaceOverride | default $root.Release.Namespace) }}
 {{- end }}
 {{- include "prometheus.serviceMonitor" (list $root $labels $obj) }}
 {{- end }}

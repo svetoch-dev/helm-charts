@@ -1,7 +1,6 @@
 {{- define "thanos.autoscaling" }}
 {{- $root := deepCopy .root }}
 {{- $_ := set $root "component" .component }}
-{{- $_ := set $root "serviceKey" .serviceKey }}
 {{- $defaults := deepCopy ($root.Values.common.autoscaling | default dict) }}
 {{- $overrides := deepCopy (.autoscaling | default dict) }}
 {{- $obj := mustMergeOverwrite $defaults $overrides }}
@@ -16,8 +15,5 @@
 {{- end }}
 {{- end }}
 {{- $_ := set $obj "metrics" $metrics }}
-{{- if not (hasKey $obj "namespace") }}
-{{- $_ := set $obj "namespace" (include "thanos.namespace" $root) }}
-{{- end }}
 {{- include "core.horizontalPodAutoscaler" (list $root $labels $obj) }}
 {{- end }}

@@ -8,8 +8,5 @@
 {{- $labels := include "thanos.labels" $root | fromYaml }}
 {{- $workload = include "thanos.workload" (dict "root" $root "workload" $workload) | fromYaml }}
 {{- $_ := set $workload "enabled" true }}
-{{- if not (hasKey $workload "namespace") }}
-{{- $_ := set $workload "namespace" (include "thanos.namespace" $root) }}
-{{- end }}
 {{- include "core.statefulset" (list $root $labels $workload) }}
 {{- end }}
