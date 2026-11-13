@@ -1,13 +1,30 @@
-# Thanos
+# Thanos Chart
 
-The stack renders Query, Query Frontend, Compactor, Store Gateway, and Ruler
-through [`app/core`](../chart_deps/app/core). ServiceMonitors use
-[`prometheus/lib`](../chart_deps/prometheus/lib). There are no service subcharts.
+Creates Query, Query Frontend, Compactor, Store Gateway, and Ruler workloads with
+Services, storage, access policies, monitoring, and optional ingress resources.
+Kubernetes resources use [`app/core`](../chart_deps/app/core); ServiceMonitors use
+[`prometheus/lib`](../chart_deps/prometheus/lib).
+
+## Usage
 
 ```yaml
+global:
+  company:
+    name: example
+  env:
+    short_name: test
+    cloud:
+      buckets:
+        type: gcs
+
 common:
   thanos:
     logLevel: info
+  workload:
+    environment:
+    - name: TZ
+      value: UTC
+
 query:
   enabled: true
   thanos:
@@ -18,83 +35,194 @@ query:
       requests:
         cpu: 10m
         memory: 50Mi
-compactor:
-  enabled: true
-storegateway:
+
+queryFrontend:
   enabled: true
 ```
 
-Each component is disabled by default. `<component>.enabled` gates all its
-resources. Resource defaults live under `common.<resource>` and workload defaults
-under `common.workload`; component settings override them.
-Maps merge recursively, lists replace shared lists, and explicit false or zero
-values are preserved. Each component gets an independent copy of the defaults.
-Query, Query Frontend, and Compactor render Deployments; Store Gateway and Ruler
-render StatefulSets. Workload kinds are fixed by their renderer loops;
-`deploymentEnabled` and `statefulsetEnabled` are no longer used.
-Each resource has a helper and a YAML renderer following the Service pattern.
-ServiceMonitor selectors combine component selectors with `serviceMonitor.selectorLabels`.
+Set `query.thanos.stores` to existing Thanos StoreAPI endpoints. Save the example as
+`values-example.yaml`, then build dependencies and render from this chart directory:
 
-Migration: move pod and workload settings (image, resources, args, ports,
-environment, volumes, security, scheduling, and StatefulSet settings) into
-`common.workload` and `<component>.workload`. Separate resource settings such as
-`service`, `ingress`, `serviceAccount`, and `pvcs` remain siblings
-of `workload`. Thanos application settings remain under `common.thanos` and
-`<component>.thanos`. Shared defaults formerly in `chart_deps/thanos/service`
-now live in this chart.
-Update overrides and templated references from `common.fullname` to
-`thanos.stackFullName`, and from `thanos-service.prefix` to
-`thanos.fullname`. Names and selectors are preserved; chart metadata labels
-now identify the Thanos chart. Rebuild dependencies with `helm dependency build .`.
+```sh
+helm dependency build .
+helm template example . --namespace monitoring -f values-example.yaml
+```
 
-Workload settings include `<component>.workload.image`, `resources`, `ports`,
-`args`, `command`, volumes, and pod security. Argument defines and templated
-resource fields use the original chart values: for example,
-`.Values.query.thanos.stores` and `.Values.compactor.workload.resources`.
-Shared defaults remain at `.Values.common.*`, and globals at `.Values.global.*`.
-Resource helpers merge defaults into resource objects without replacing `.Values`.
+## Requirements
 
-All workload containers, including init containers and sidecars, receive environment
-variables only from `common.workload.environment` followed by
-`<component>.workload.environment`.
-These lists are concatenated independently of the normal values merge.
+| Name | Requirement |
+|------|-------------|
+| Helm | Helm 3 or Helm 4 with the local dependencies in `Chart.yaml` built. |
+| Prometheus Operator | The `ServiceMonitor` CRD is required by default; disable `common.serviceMonitor.enabled` if it is unavailable. |
+| Object storage | An existing bucket and access credentials for components that use object storage. |
+| ServiceAccount | Compactor and Store Gateway default to an existing account named `thanos`; configure its object-store permissions. |
+| Persistent storage | Storage provisioning for Compactor PVCs and Store Gateway/Ruler StatefulSet claims. |
+| Ruler rules | An externally supplied rules ConfigMap when Ruler is enabled. |
+| Ingress controllers | Controllers matching enabled ingress classes; TLS issuers or Secrets for their TLS configuration. |
+| Kong | Kong CRDs and controller when `kong-plugins.enabled` is enabled. |
 
-Query and Store Gateway ingresses use `query.ingress` and `storegateway.ingress`.
-Both the component and its ingress must be enabled. Extra stack ingresses use
-`additional_ingress`. Kong plugins and the shared object-store Secret remain at
-the stack level. The Secret requires `global.company.name`,
-`global.env.short_name`, and `global.env.cloud.buckets.type`. Compactor and Store
-Gateway use the external service account named `thanos`; consumers must provide
-it and its object-store permissions.
+The chart does not create object-storage buckets, cloud permissions, or the
+external `thanos` ServiceAccount.
 
-HTTP listeners use container port 10902; Services expose port 9090 and target the
-named `http` container port. Query Frontend sends downstream requests to the Query
-Service on 9090. gRPC listeners use 10901. Custom listeners require matching
-`workload.args`, `workload.ports`, Service ports, and NetworkPolicy rules.
+## Inputs
 
-Compactor storage uses `compactor.pvcs.data.storage`; StatefulSet storage uses
-`<component>.workload.volumeClaimTemplates.data.storage`. PVC volumes and mount
-paths belong to `workload.volumes` and `workload.volumeMounts`; the standalone PVC
-map only configures the claim resource. Compactor's `thanos.dataDir` and
-Ruler's `thanos.dataPath` also set data mount paths. Ruler requires an externally
-provided rules ConfigMap (by default `<stack-fullname>-ruler`) and a nonempty
-`ruler.thanos.alertmanagers` URL list. Its templated `queryURL` defaults to
-`https://tq.<global.env.dns.domain>` for alert links to the Query UI.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| `common` | Shared workload, resource, and Thanos defaults. | `object` | See `values.yaml` | no |
+| `query` | Query workload and related resource settings. | `object` | `enabled: false` with component defaults | no |
+| `queryFrontend` | Query Frontend workload and related resource settings. | `object` | `enabled: false` with component defaults | no |
+| `compactor` | Compactor workload and related resource settings. | `object` | `enabled: false` with component defaults | no |
+| `storegateway` | Store Gateway workload and related resource settings. | `object` | `enabled: false` with component defaults | no |
+| `ruler` | Ruler workload and related resource settings. | `object` | `enabled: false` with component defaults | no |
+| `global` | Shared environment information used by templated values. | `object` | Unset | for the default object-store Secret |
+| `additional_ingress` | Additional stack ingress resources, keyed by entry name. | `map(object)` | `{}` | no |
+| `secrets` | Stack Secret resources, keyed by entry name. | `map(object)` | Shared `thanos` object-store configuration | no |
+| `kong-plugins.enabled` | Enable the Kong plugin dependency. | `bool` | `false` | no |
+| `nameOverride` | Override the chart name used in naming and labels. | `string` | Chart name | no |
+| `fullnameOverride` | Override the stack name prefix. | `string` | Derived from release and chart names | no |
+| `namespaceOverride` | Override the namespace for chart resources. | `string` | Release namespace | no |
 
-The five argument defines adapt Bitnami Thanos chart 17.3.1. Override a component's
-`workload.args` with a list or templated YAML list to replace generated arguments;
-`workload.command` is a normal workload override. `thanos.extraFlags` supports templated
-lists. Query accepts explicit endpoints through `query.thanos.stores`.
-Compactor's `thanos.cronJob.enabled` controls `--wait` only; it does not change the
-workload kind. Custom TLS, HTTP, cache, or discovery configuration requires
-explicit arguments and matching resource mounts.
+## Notes
 
-The legacy `minio`, `volumePermissions`, stack `networkPolicy`, and
-`receiveDistributor` interfaces remain omitted. Receive is not rendered.
-HPAs and ConfigMaps are not rendered; Deployments use `workload.replicaCount`.
-Per-component policies use `<component>.networkPolicy`. Store Gateway retains
-its existing headless Service reference; that headless Service is not generated
-by this stack. Ruler uses its primary Service as its governing Service and has an
-8 GiB data claim by default; its configuration does not require per-pod DNS.
+- Each component's `enabled` flag gates its workload and related resources.
+- Component settings override the matching `common` settings. Maps merge recursively; lists replace shared lists, except environment lists, which are concatenated.
+- Environment variables come only from `common.workload.environment` followed by `<component>.workload.environment`. Main containers, init containers, and sidecars receive the combined list.
+- HTTP listeners use container port `10902`; Services expose port `9090` and target the named `http` container port. gRPC listeners use `10901`.
+- ServiceMonitor selectors combine component selectors with `serviceMonitor.selectorLabels`.
 
-Run render regressions with `python3 tests/test_args.py` (requires Helm and PyYAML).
+## Type Details
+
+### `global`
+
+| Field | Type | Required | Description |
+|-------|------|:--------:|-------------|
+| `company.name` | `string` | for the default Secret | Company prefix in the object-store bucket name. |
+| `env.short_name` | `string` | for the default Secret | Environment suffix in the object-store bucket name. |
+| `env.cloud.buckets.type` | `string` | for the default Secret | Object-store type, converted to uppercase in `objstore.yml`. |
+| `env.dns.domain` | `string` | for ingress or the default Ruler query URL | Domain used by ingress hosts and alert links. |
+| `ingress.class` | `string` | for the default Query ingress | Query ingress controller class. |
+| `pomerium.policy.default` | YAML `string` | for the default Query ingress | Templated policy annotation. |
+| `env.cloud.network.int_nat_gw` | `string` | for the default Kong plugin | Address permitted by the Store Gateway IP restriction plugin. |
+| `env.type` | `string` | for default Query discovery | The default stores template generates endpoints for `internal`. |
+| `env.cloud_short_name` | `string` | for default internal Query discovery | Name segment used in generated StoreAPI endpoints. |
+| `externalEnvs` | `any` | no | A nonempty value adds the external Query endpoint to default internal discovery. |
+
+The default bucket name is `<company.name>-thanos-<env.short_name>`. The shared
+Secret is named `<stack-fullname>-thanos` and contains `objstore.yml`.
+
+### `<component>`
+
+`<component>` is `query`, `queryFrontend`, `compactor`, `storegateway`, or `ruler`.
+
+| Field | Type | Required | Description |
+|-------|------|:--------:|-------------|
+| `enabled` | `bool` | no | Enable the component; defaults to `false`. |
+| `workload` | `object` | no | Pod and Deployment/StatefulSet settings; overrides `common.workload`. |
+| `thanos` | `object` | no | CLI settings; overrides `common.thanos`. |
+| `service` | `object` | no | Primary Service settings; overrides `common.service`. |
+| `additionalServices` | `list(object)` | no | Extra Services; Query defaults to an additional gRPC Service. |
+| `serviceAccount` | `object` | no | Account creation and name; overrides `common.serviceAccount`. |
+| `ingress` | `object` | no | Query or Store Gateway ingress settings; overrides `common.ingress`. |
+| `networkPolicy` | `object` | no | Pod traffic policy; enabled by default through `common.networkPolicy`. |
+| `podDisruptionBudget` | `object` | no | Disruption budget; enabled by default for Query, Query Frontend, Store Gateway, and Ruler. |
+| `serviceMonitor` | `object` | no | Prometheus metrics discovery; enabled by default through `common.serviceMonitor`. |
+| `pvcs` | `map(object)` | no | Standalone PVC declarations; Compactor defaults to a 15 GiB data claim. |
+| `secrets` | `map(object)` | no | Component Secret declarations; merged with `common.secrets`. |
+
+Query and Store Gateway ingresses are disabled by default. Their default hosts are
+`tq.<global.env.dns.domain>` and `thanos-store.<global.env.dns.domain>` respectively.
+Their backend Service ports are `9090` and `10901`.
+
+### `common.workload` and `<component>.workload`
+
+| Field | Type | Required | Description |
+|-------|------|:--------:|-------------|
+| `replicaCount` | `integer` | no | Workload replicas; shared default is `1`. |
+| `containerName` | `string` | no | Component container name; defaults are set per component, including `query-frontend`. Also determines the component name suffix and label. |
+| `image` | `object` | no | Repository, tag, and pull policy; shared defaults are `quay.io/thanos/thanos`, `v0.41.0`, and `IfNotPresent`. |
+| `resources` | `object` | no | Container resource requests and limits; component defaults are in `values.yaml`. |
+| `ports` | `list(object)` or YAML `string` | no | Container ports; defaults are HTTP `10902` and gRPC `10901`, with component overrides. |
+| `args` | `list(string)` or YAML `string` | no | Replace the component's generated argument list. Strings support Helm templating. |
+| `command` | `list(string)` | no | Override the container command. |
+| `environment` | `list(object)` | no | Kubernetes environment entries, including `valueFrom`; concatenated with shared entries. |
+| `volumes` | `list(object)` | no | Pod volumes, including explicit Secret, ConfigMap, and PVC references. |
+| `volumeMounts` | `list(object)` | no | Container mounts; separate from PVC resource declarations. |
+| `initContainers` | `map(object)` | no | Named init containers; receive the workload environment and inherit mounts unless explicitly set. |
+| `sidecars` | `list(object)` | no | Extra containers; receive the workload environment. |
+| `livenessProbe`, `readinessProbe` | `object` | no | HTTP probes using the named `http` port by default. |
+| `podSecurityContext`, `securityContext` | `object` | no | Pod and container security; defaults use user/group `1001` and a read-only container root filesystem. |
+| `automountServiceAccountToken` | `bool` | no | Pod token automount; shared default is `true`. Separate from the ServiceAccount's token setting. |
+| `affinity`, `nodeSelector`, `tolerations` | `object` / `list(object)` | no | Pod scheduling settings; shared defaults include preferred pod anti-affinity. |
+| `podLabels`, `podAnnotations` | `map(string)` | no | Additional pod metadata; generated selector labels are retained. |
+| `revisionHistoryLimit` | `integer` | no | Retained workload revisions; shared default is `10`. |
+| `strategy` | `object` | no | Deployment strategy; defaults to `RollingUpdate`, with `Recreate` for Compactor. |
+| `serviceName`, `podManagementPolicy`, `updateStrategy` | `string` / `object` | no | StatefulSet identity and update settings; defaults are set per StatefulSet component. |
+| `volumeClaimTemplates` | `map(object)` | no | StatefulSet claims; Store Gateway and Ruler default to an 8 GiB `data` claim. |
+
+### `common.thanos` and `<component>.thanos`
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `logLevel` | `string` | `info` | Logging level. |
+| `logFormat` | `string` | `json` | Logging format. |
+| `extraFlags` | `list(string)` or YAML `string` | `[]` | Additional templated CLI arguments; Compactor overrides this with `--delete-delay=48h`. |
+
+Component settings override shared settings before the argument define is rendered.
+An explicit `extraFlags: []` clears inherited flags. The five argument defines are
+adapted from Bitnami Thanos chart 17.3.1.
+
+### `query.thanos`
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `replicaLabel` | `string` or `list(string)` | `[replica]` | Labels identifying replicated series. |
+| `stores` | `list(string)` or YAML `string` | Templated internal discovery | StoreAPI endpoints. Supply a list to replace discovery; both forms support Helm templating. |
+
+### `compactor.thanos`
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `dataDir` | `string` | `/data` | Compaction data directory and data mount path. |
+| `retentionResolutionRaw` | `string` | `30d` | Raw-resolution retention. |
+| `retentionResolution5m` | `string` | `60d` | Five-minute-resolution retention. |
+| `retentionResolution1h` | `string` | `90d` | One-hour-resolution retention. |
+| `consistencyDelay` | `string` | `30m` | Delay before processing uploaded blocks. |
+| `concurrency` | `integer` | `1` | Compaction concurrency. |
+| `cronJob.enabled` | `bool` | `false` | Omit `--wait` when enabled; does not change the Deployment into a CronJob. |
+
+### `ruler.thanos`
+
+| Field | Type | Required | Description |
+|-------|------|:--------:|-------------|
+| `alertmanagers` | `list(string)` | yes | Nonempty Alertmanager URL list. |
+| `queries` | `list(string)` | no | Query endpoints used for rule evaluation; defaults to `[]`. |
+| `queryURL` | `string` | no | Query UI URL used in alert links; defaults to `https://tq.<global.env.dns.domain>`. Supports Helm templating. |
+| `dataPath` | `string` | no | Rule data directory and mount path; defaults to `/data` when empty. |
+| `evalInterval` | `string` | no | Rule evaluation interval; defaults to `1m`. |
+| `replicaLabel` | `string` | no | Replica label; defaults to `replica`. |
+| `clusterName` | `string` | no | Ruler cluster label; defaults to an empty string. |
+| `ruleFile` | `string` | no | Rule-file pattern; defaults to `/conf/rules/*.yml`. |
+
+Provide the rules ConfigMap separately. Its default name is
+`<stack-fullname>-ruler`, and it is mounted at `/conf/rules`. The chart does not
+create this ConfigMap or generate a checksum annotation for its contents.
+
+## Outputs
+
+The chart renders Kubernetes resources rather than Helm output values.
+
+| Resource | Created from |
+|----------|--------------|
+| `Deployment` | Enabled Query, Query Frontend, and Compactor components. |
+| `StatefulSet` | Enabled Store Gateway and Ruler components. |
+| `Service` | Each enabled component's primary Service and enabled `additionalServices` entries. |
+| `ServiceAccount` | Enabled components whose effective `serviceAccount.create` is `true`. |
+| `Secret` | Stack `secrets` and enabled components' Secret declarations. |
+| `PersistentVolumeClaim` | Enabled components' `pvcs`; StatefulSets also provision claims through their claim templates. |
+| `NetworkPolicy` | Enabled components with their effective policy enabled. |
+| `PodDisruptionBudget` | Enabled components with their effective budget enabled. |
+| `ServiceMonitor` | Enabled components with their effective monitoring enabled. |
+| `Ingress` | Enabled Query/Store Gateway ingresses and enabled `additional_ingress` entries. |
+| `KongPlugin` / `KongClusterPlugin` | Plugin definitions when the Kong dependency is enabled. |
+
+HPAs, ConfigMaps, object-storage buckets, and Receive workloads are not generated.
