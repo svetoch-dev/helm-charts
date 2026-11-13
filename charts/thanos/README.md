@@ -38,7 +38,7 @@ ServiceMonitor selectors combine component selectors with `serviceMonitor.select
 Migration: move pod and workload settings (image, resources, args, ports,
 environment, volumes, security, scheduling, and StatefulSet settings) into
 `common.workload` and `<component>.workload`. Separate resource settings such as
-`service`, `ingress`, `serviceAccount`, `pvcs`, and `autoscaling` remain siblings
+`service`, `ingress`, `serviceAccount`, and `pvcs` remain siblings
 of `workload`. Thanos application settings remain under `common.thanos` and
 `<component>.thanos`. Shared defaults formerly in `chart_deps/thanos/service`
 now live in this chart.
@@ -76,8 +76,8 @@ Compactor storage uses `compactor.pvcs.data.storage`; StatefulSet storage uses
 `<component>.workload.volumeClaimTemplates.data.storage`. PVC volumes and mount
 paths belong to `workload.volumes` and `workload.volumeMounts`; the standalone PVC
 map only configures the claim resource. Compactor's `thanos.dataDir` and
-Ruler's `thanos.dataPath` also set data mount paths. Ruler requires
-`ruler.thanos.config` (a YAML rules string) and a nonempty
+Ruler's `thanos.dataPath` also set data mount paths. Ruler requires an externally
+provided rules ConfigMap (by default `<stack-fullname>-ruler`) and a nonempty
 `ruler.thanos.alertmanagers` URL list. Its templated `queryURL` defaults to
 `https://tq.<global.env.dns.domain>` for alert links to the Query UI.
 
@@ -91,6 +91,7 @@ explicit arguments and matching resource mounts.
 
 The legacy `minio`, `volumePermissions`, stack `networkPolicy`, and
 `receiveDistributor` interfaces remain omitted. Receive is not rendered.
+HPAs and ConfigMaps are not rendered; Deployments use `workload.replicaCount`.
 Per-component policies use `<component>.networkPolicy`. Store Gateway retains
 its existing headless Service reference; that headless Service is not generated
 by this stack. Ruler uses its primary Service as its governing Service and has an

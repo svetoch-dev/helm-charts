@@ -92,11 +92,6 @@ common:
     annotations: {}
     hosts: []
     tls: []
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
   serviceMonitor:
     prometheusSelector:
       prometheus: main
@@ -378,8 +373,6 @@ ruler:
       valueFrom:
         fieldRef:
           fieldPath: metadata.name
-    podAnnotations:
-      checksum/rules: '{{ .Values.ruler.thanos.config | sha256sum }}'
     resources:
       limits:
         cpu: 150m
@@ -437,9 +430,3 @@ ruler:
       - port: 9090
       - port: 10901
       - port: 10901
-  configMaps:
-    rules:
-      name: '{{ include "thanos.stackFullName" . }}'
-      data:
-        ruler.yml: '{{ required "ruler.thanos.config is required when ruler is enabled" .Values.ruler.thanos.config
-          }}'
