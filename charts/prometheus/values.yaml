@@ -405,6 +405,9 @@ kong-plugins:
 
 prometheus-main:
   enabled: true
+  vedro:
+    enabled: true
+
   service:
     enabled: true
 
