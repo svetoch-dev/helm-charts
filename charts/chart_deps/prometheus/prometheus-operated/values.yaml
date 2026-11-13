@@ -305,3 +305,14 @@ secrets:
         type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
         config:
           bucket: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.short_name }}"
+
+
+vedro:
+  principals:
+    prometheus:
+      provider: thanos
+      kind: ServiceAccount
+      type: Managed
+      managed:
+        name: "{{ .Release.Name }}"
+      auth: "{{ tpl .Values.global.vedro.principals.default.auth $ | indent 2 }}"
