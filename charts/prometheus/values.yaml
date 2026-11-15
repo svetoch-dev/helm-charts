@@ -6,6 +6,12 @@ global:
 
   imagePullSecrets: []
 
+  vedro:
+    principals:
+      default:
+        k8sServiceAccount: "{{ .Release.Name }}-prometheus-main"
+
+
 ingresses:
   alertmanager-main:
     enabled: false
