@@ -53,6 +53,7 @@ vedro:
       cloudSpecificConfig: "{{ tpl .Values.global.vedro.buckets.default.cloudSpecificConfig $ }}"
       objAdmins:
       - name: compactor
+      - name: prometheus-main
       readers:
       - name: storegateway
 
