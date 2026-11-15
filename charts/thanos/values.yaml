@@ -1,3 +1,9 @@
+global:
+  vedro:
+    principals:
+      default:
+        k8sServiceAccount: '{{ .Release.Name }}-{{ .component }}'
+
 vedro:
   enabled: false
   providers:
@@ -18,13 +24,24 @@ vedro:
           - '^{{ .Release.Name}}.*$'
 
   principals:
-    thanos:
+    compactor:
       provider: thanos
       kind: ServiceAccount
       type: Managed
       managed:
-        name: "{{ .Release.Name }}"
-      auth: "{{ tpl .Values.global.vedro.principals.default.auth $ | indent 2 }}"
+        name: "{{ .Release.Name }}-compactor"
+      auth: |-
+        {{- $_ := set $ "component" "compactor" }}
+        {{ tpl .Values.global.vedro.principals.default.auth $ | indent 2 }}
+    storegateway:
+      provider: thanos
+      kind: ServiceAccount
+      type: Managed
+      managed:
+        name: "{{ .Release.Name }}-storegateway"
+      auth: |-
+        {{- $_ := set $ "component" "storegateway" }}
+        {{ tpl .Values.global.vedro.principals.default.auth $ | indent 2 }}
 
   buckets:
     thanos:
@@ -35,7 +52,9 @@ vedro:
       deletionPolicy: Retain
       cloudSpecificConfig: "{{ tpl .Values.global.vedro.buckets.default.cloudSpecificConfig $ }}"
       objAdmins:
-      - name: thanos
+      - name: compactor
+      readers:
+      - name: storegateway
 
 kong-plugins:
   enabled: false

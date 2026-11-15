@@ -76,7 +76,7 @@ global:
           method: WorkloadIdentity
           workloadIdentity:
             serviceAccountRef:
-              name: "{{ .Release.Name }}"
+              name: {{ tpl ( .Values.global.vedro.principals.default.k8sServiceAccount | default .Release.Name ) $ | quote }}
           {{- else }}
           {{- fail "Wrong .Values.global.env.cloud.name" }}
           {{- end }}
