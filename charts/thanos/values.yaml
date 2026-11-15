@@ -74,6 +74,7 @@ secrets:
         type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
         config:
           bucket: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.short_name }}"
+
 additional_ingress: {}
 
 common:
@@ -322,8 +323,6 @@ compactor:
     retentionResolution1h: 90d
     retentionResolution5m: 60d
     retentionResolutionRaw: 30d
-  serviceAccount:
-    create: false
   networkPolicy:
     ingress:
     - ports:
@@ -384,8 +383,6 @@ storegateway:
     - secretName: thanos-store-tls
       hosts:
       - thanos-store.{{ .Values.global.env.dns.domain }}
-  serviceAccount:
-    create: false
   service:
     ports:
     - port: 9090
