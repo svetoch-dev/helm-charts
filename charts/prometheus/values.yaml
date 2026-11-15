@@ -7,6 +7,9 @@ global:
   imagePullSecrets: []
 
   vedro:
+    buckets:
+      default:
+        name: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.cloud_short_name }}"
     principals:
       default:
         k8sServiceAccount: "{{ .Release.Name }}-prometheus-main"
