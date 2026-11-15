@@ -75,7 +75,7 @@ secrets:
       objstore.yml: |
         type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
         config:
-          bucket: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.short_name }}"
+          bucket: "{{ .Values.global.company.name }}-{{ .Release.Name }}"
 
 additional_ingress: {}
 
