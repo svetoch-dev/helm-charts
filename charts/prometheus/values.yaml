@@ -413,6 +413,9 @@ prometheus-main:
   enabled: true
   vedro:
     enabled: true
+    principals:
+      prometheus:
+        name: "prometheus-main"
 
   service:
     enabled: true
