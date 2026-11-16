@@ -226,7 +226,7 @@ chart_apps:
             objstore.yml: |-
               type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
               config:
-                bucket: {{ printf "%s-%s" .Values.global.company.name .Release.Name }}
+                bucket: {{ printf "%s-thanos-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}
                 {{- if eq .Values.global.env.cloud.name "yc" }}
                 endpoint: "storage.yandexcloud.net"
                 region: {{ .Values.global.env.cloud.location.region }}
