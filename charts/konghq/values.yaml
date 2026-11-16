@@ -52,8 +52,6 @@ certificates:
 
 kong:
   enabled: false
-  image:
-    tag: "3.9.4"
   env:
     admin_listen: "127.0.0.1:8444 http2 ssl"
     database: "off"
@@ -99,8 +97,6 @@ kong:
       #set in environment/values.yaml
       external-dns.alpha.kubernetes.io/ttl: "60"
   ingressController:
-    image:
-      tag: "3.5.14"
     args:
     - '--log-format=json'
     resources:
