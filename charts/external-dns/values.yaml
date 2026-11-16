@@ -209,6 +209,7 @@ deployment:
     - --interval=1m
     - --log-level=info
     - --log-format=json
+    # Remove this on the next release '--enable-legacy-annotation-prefix'
     - --enable-legacy-annotation-prefix
     - --metrics-address=:7979
     - --source=service
