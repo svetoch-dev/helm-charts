@@ -2,6 +2,7 @@
 BrakingChanges:
 * `thanos`:
   * self made chart with new interface
+  * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
 * `loki`
   * upgrade the upstream chart from 6.51.0 to grafana-community 21.0.0 (Loki 3.7.9), pulled from `oci://ghcr.io/grafana-community/helm-charts`
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
