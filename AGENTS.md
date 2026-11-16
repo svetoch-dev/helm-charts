@@ -13,24 +13,25 @@ Find local task entry paths under [Repository structure](#repository-structure).
 
 ## Purpose and architecture
 
-- This is a public Helm repository for reusable infrastructure stacks and application dependencies.
-- It supports the rod GitOps approach: shared charts, environment configuration in a consuming repository, and Argo CD App-of-Apps.
-- Compose existing charts and operator resources; keep environment-specific configuration outside reusable templates.
+The main integration path is Argo CD App-of-Apps. It composes shared infrastructure charts, product charts, and manifests into Kubernetes environments. Service and stack charts can also be used separately with their values, dependencies, and any required CRDs. Keep environment configuration in the consuming repository.
 
 ## Repository structure
 
-- `charts/<name>/`: deployable service or stack charts, such as `postgres`, `redis`, `prometheus`, and `vedro`.
-- `charts/chart_deps/<domain>/<name>/`: reusable building blocks grouped by domain.
-  - `app/core`: library chart with shared Kubernetes resource templates.
-  - `app/common`: application chart composing `core` templates for generic workloads.
-  - Other domains contain operator resources, monitoring, logging, and service-specific dependencies.
-- `charts/environments/`: generates the root and per-environment Argo CD Applications; can read Terraform-generated globals.
-- `charts/environment/`: generates chart Applications, a CRD Application, and an Application for raw manifests.
+### Argo CD App-of-Apps
+
+- Start in the consuming repository at `envs.yaml`. Follow `repository.paths` to the configured chart locations. When enabled, the plural chart also reads its configured Terraform JSON as a source of globals.
+- [`charts/environments/`](charts/environments/) (plural) renders the optional `root` Application, which points back to this chart, and one Application per enabled entry in `global.envs`. Each environment Application selects the singular chart and passes its `environments/<cloud_short_name>/env.yaml` and environment globals.
+- [`charts/environment/`](charts/environment/) (singular) composes **one** environment. It generates defaults from `envApps`, overlays explicit `chart_apps`, and renders Applications for enabled entries. It can also render separate Applications for CRDs and raw manifests. Follow each Application's configured chart source and Helm values. By default, per-chart overrides come from `environments/<cloud_short_name>/<app>/values.yaml` in the consumer.
+- [`charts/argocd/`](charts/argocd/) packages Argo CD itself and supporting components. An environment can select it as one of its chart Applications.
+
+### Service charts and shared components
+
+- `charts/<name>/`: reusable service and stack charts, such as `postgres`, `redis`, `prometheus`, and `vedro`. For a single chart, start with its `Chart.yaml` and `values.yaml`.
+- `charts/chart_deps/<domain>/<name>/`: reusable dependencies. `app/core` is a library chart for Kubernetes resources. `app/common` is an application chart for generic workloads built with `core`.
 - `charts/globals.yaml`: shared global values skeleton and defaults.
 - `crds/<operator>/`: upstream CRD manifests and an `update.sh` download script.
 - `scripts/`: operational helpers.
 - `CHANGELOG.md`: repository releases and changes grouped by affected chart.
-- Environment overrides and product application charts normally belong to the consuming repository.
 
 ## Helm specialist review
 
