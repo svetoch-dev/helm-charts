@@ -9,6 +9,7 @@ global:
   vedro:
     principals:
       default:
+        secretName: bucket-prom
         k8sServiceAccount: "{{ .Release.Name }}-prometheus-main"
 
 
