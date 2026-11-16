@@ -1,11 +1,21 @@
 # Repository Guidelines
 
+## Shared Rod context
+
+Before repository work, read the shared [AGENTS.md](https://github.com/svetoch-dev/rod-docs/blob/docs/rep-7-context-map/docs/ai/AGENTS.md), [map.md](https://github.com/svetoch-dev/rod-docs/blob/docs/rep-7-context-map/docs/ai/map.md), and [repositories.md](https://github.com/svetoch-dev/rod-docs/blob/docs/rep-7-context-map/docs/ai/repositories.md) on `rod-docs` branch `docs/rep-7-context-map`. Use a local copy only after verifying that it matches the linked ref. Pause work that depends on any required file you cannot access. A separate update will replace these branch links with links to the shared context tag.
+
+```text
+rod / consuming repository
+└─ helm-charts [you are here] — shared Kubernetes charts and Argo CD App-of-Apps templates
+```
+
+Find local task entry paths under [Repository structure](#repository-structure).
+
 ## Purpose and architecture
 
 - This is a public Helm repository for reusable infrastructure stacks and application dependencies.
 - It supports the rod GitOps approach: shared charts, environment configuration in a consuming repository, and Argo CD App-of-Apps.
 - Compose existing charts and operator resources; keep environment-specific configuration outside reusable templates.
-- Do not introduce real company names, cloud IDs, credentials, or consumer-specific paths into reusable defaults or examples.
 
 ## Repository structure
 
@@ -18,59 +28,17 @@
 - `charts/environment/`: generates chart Applications, a CRD Application, and an Application for raw manifests.
 - `charts/globals.yaml`: shared global values skeleton and defaults.
 - `crds/<operator>/`: upstream CRD manifests and an `update.sh` download script.
-- `scripts/`: operational helpers; inspect their effects before running them.
+- `scripts/`: operational helpers.
 - `CHANGELOG.md`: repository releases and changes grouped by affected chart.
-- Environment overrides and application charts normally belong to the consuming repository, not this one.
+- Environment overrides and product application charts normally belong to the consuming repository.
 
-## Task workflow
+## Helm specialist review
 
-1. Read the relevant files and inspect the branch and working tree before proposing changes.
-2. Present a short implementation plan: goal, affected paths, approach, checks, and material risks.
-3. Obtain user agreement before implementation.
-   - Read-only investigation may precede agreement.
-   - Continue within an approved plan without repeatedly requesting permission.
-   - Agree material scope changes before implementing them.
-4. Make the smallest change that satisfies the task; preserve unrelated user edits.
-5. Inspect the diff and run relevant checks before considering the work complete.
-6. Report what changed, what was checked, and any unresolved limitations.
-7. Report material, confirmed problems noticed during the task, including unrelated ones; give file references, reasons, and possible impact.
-   - List unrelated findings separately; agree any expansion of implementation scope before fixing them.
+For architectural questions, difficult reasoning, or complex Helm tasks, use two complementary specialists when available and authorized under the shared workflow and within the session's reasoning limits. The lead owns the architecture, GitOps behavior, and operational impact. Include the lead's position in the shared cross-review.
 
-## Collaboration for complex decisions
+Choose reasoning effort by complexity independently of reviewer specialty. Use low or medium for straightforward tasks, high for interacting components or failure analysis, and extra high for conflicting evidence or complex tradeoffs. Prefer repository checks over additional model reviews.
 
-- The lead acts as an experienced DevOps engineer and owns architecture, GitOps behavior, and operational impact.
-- Choose two assistant specialties suited to the question; together, they must cover implementation and failure cases:
-  - Programmer: checks interfaces, templates, and implementation simplicity.
-  - Tester: checks failure cases, compatibility, and meaningful verification.
-  - Security reviewer: checks permissions, credentials, trust boundaries, and exposure.
-  - Architect: checks composition, ownership, lifecycle, and effects on consumers.
-- Form a short, evidence-based discussion between the lead and both assistants.
-- Ask each for a recommendation, supporting file references, and the main objection or risk.
-- The lead combines the evidence into a decision, checks disputed facts, and presents unresolved choices to the user.
-- Default agent work to read-only; assign disjoint files explicitly if parallel editing is needed.
-- Do not treat majority agreement as proof.
-
-## Model selection
-
-- Assisting agents must never use flagship models.
-- Choose an available model below the flagship:
-  - Economical: bounded tasks, fact gathering, and focused checks.
-  - Balanced: substantial coding, analysis, and decisions across modules.
-- Reviewer specialty does not determine the model tier.
-- Choose supported reasoning effort according to task complexity:
-  - Low/medium: straightforward tasks with clear requirements.
-  - High: substantial reasoning, interacting components, or failure analysis.
-  - Extra high: particularly difficult questions with conflicting evidence or complex tradeoffs.
-- Use the lowest model tier and reasoning effort sufficient for the task.
-
-## Efficiency
-
-- Handle routine tasks without assistants; use exactly two assistants when available for architectural questions, difficult reasoning, or complex tasks.
-- Give both assistants the same question, relevant paths, constraints, and proposed approach; keep context focused and request brief reports.
-- Share both reports and the lead's position for one short cross-review round; escalate only a specific unresolved question within the permitted model tiers.
-- Prefer repository checks over repeated model reviews.
-
-## Chart design: KISS
+## Chart design
 
 - Find the closest existing chart before designing a new interface.
   - `charts/postgres` and `charts/redis`: operator and resource composition.
@@ -80,7 +48,7 @@
 - Reuse `common` for ordinary workloads and `core` partials for individual Kubernetes resources.
 - Check other domain libraries before writing custom templates, including `charts/chart_deps/prometheus/lib` and `charts/chart_deps/fluent/fluentbit/lib`; reuse partials whose interfaces fit the requirement.
 - Write custom templates only where an existing dependency or partial does not cover the requirement.
-- Do not add unused helpers, empty template files, duplicate switches, or speculative fallback logic.
+- Do not add empty template files or duplicate values switches.
 - Do not duplicate upstream defaults unless the wrapper intentionally changes behavior; explain necessary overrides.
 - Add local abstractions only when they remove concrete duplication and keep the values interface understandable.
 - Separate controller installation from resource declarations when applications share an operator.
@@ -137,9 +105,6 @@
 - Do not hand-edit downloaded upstream CRD manifests in `crds/`; update them through the pinned source and download script.
   - Any necessary local patch requires explicit agreement, documented provenance and reason, and a reproducible update process with verification.
 - Do not remove finalizers or enable destructive pruning as part of an unrelated chart change.
-- Do not run `helm install/upgrade/uninstall`, Kubernetes writes, Argo CD sync, or cloud-changing scripts without explicit authorization.
-- Do not push without explicit user authorization; a requested local change or commit does not authorize a push.
-- Do not amend, rebase, force-push, or discard user changes without authorization for that operation.
 
 ## Verification and pre-commit
 
@@ -159,19 +124,11 @@
 
 ## Git, commits, and pull requests
 
-- Before committing, inspect the complete staged diff and run the checks appropriate to its contents.
-- Stage only task-related paths; do not include existing user changes or generated artifacts blindly.
 - New commit subjects use `<fix|add|remove> - <short description>`.
   - `fix - preserve explicit ingress settings`
   - `add - compose vedro resource chart`
   - `remove - duplicate dependency defaults`
-- Keep commits focused; describe the result rather than the work process.
+- Describe the result in the commit subject.
 - For meaningful chart changes, update the appropriate release entry in `CHANGELOG.md`.
 - Whenever updating a dependency, explicitly state its version change in `CHANGELOG.md` using `<from_version> -> <to_version>`, for example `v3.5.1 -> v3.6.1`.
-- Create a PR only when requested; use a concise title and this short description structure:
-  - **Problem:** what was missing or incorrect; link an issue if one exists.
-  - **Solution:** what changed and why.
-  - **Affected modules:** charts, dependencies, CRDs, or App-of-Apps templates touched.
-  - **Impact:** effects on consumers, defaults, resource identity, compatibility, and any migration needed.
-  - **Checks:** commands run, results, and any remaining verification gap.
-- Do not claim checks, compatibility, or deployment results that were not verified.
+- For an authorized PR, use a concise title and link the issue if one exists. Name the affected charts, dependencies, CRDs, or App-of-Apps templates. Explain the impact on consumers, defaults, resource identity, and compatibility, along with any necessary migration and gaps in compatibility or deployment verification.
