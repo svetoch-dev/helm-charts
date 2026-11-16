@@ -195,7 +195,7 @@ chart_apps:
       prometheus-main:
         prometheus:
           spec:
-            containers:
+            containers: |-
               - name: thanos-sidecar
                 envFrom:
                   - secretRef:

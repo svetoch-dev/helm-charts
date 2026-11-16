@@ -154,7 +154,11 @@ spec:
   listenLocal: {{ .Values.prometheus.spec.listenLocal }}
   {{- with .Values.prometheus.spec.containers }}
   containers:
+  {{- if kindIs "string" . }}
+  {{- tpl . $ | nindent 4 }}
+  {{- else }}
   {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
   {{- end }}
   {{- with .Values.prometheus.spec.initContainers }}
   initContainers:
