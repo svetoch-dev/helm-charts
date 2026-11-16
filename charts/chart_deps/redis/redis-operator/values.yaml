@@ -7,8 +7,8 @@ operator:
   containerName: redis-operator
   serviceAccountName: '{{ include "redis-operator.fullname" . }}'
   image: quay.io/opstree/redis-operator
-  tag: v0.25.0
-  initContainerImageTag: v0.25.0
+  tag: v0.27.0
+  initContainerImageTag: v0.27.0
   imagePullPolicy: Always
   imagePullSecrets: []
   replicaCount: 1
