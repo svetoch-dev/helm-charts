@@ -11,6 +11,11 @@ Features:
 * `cert-manager`: update chart and CRDs v1.19.2 -> v1.21.3; use the upstream OCI chart repository.
 * `external-dns`: update image and CRD v0.21.0 -> v0.24.0.
 * `gha-operator`/`gha-runner`: update charts and CRDs 0.14.2 -> 0.15.1.
+* `konghq`:
+  * update chart `3.0.1` -> `3.4.1`.
+  * pin Gateway image `3.9` -> `3.9.4`.
+  * pin Ingress Controller image `3.5` -> `3.5.14`.
+  * update CRDs `v3.5.0` -> `v3.5.14`.
 * `pomerium`: update v0.32.9 -> v0.34.0; because of how pomerium is licensed now uses ghcr.io/svetoch-dev/pomerium-ingress-controller
 * `argocd`: update v3.5.1 -> v3.6.1 and upstream chart 10.9.6 -> 10.17.1 , pulled from `oci://ghcr.io/argoproj/argo-helm`
 
