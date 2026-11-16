@@ -1,0 +1,5 @@
+# Child Applications in one environment
+
+- Start with the consumer's `environments/<cloud_short_name>/env.yaml`. [`chart_apps.yaml`](templates/chart_apps.yaml) overlays explicit `chart_apps` on defaults generated from `envApps`. `enabled` controls inclusion. `app: true` selects default product chart and values paths. Follow explicit `chart` and `helm` settings and the actual `targetRevision`. Default new shared stack registrations to disabled unless the task changes that contract. See [generated application defaults](../../README.md#generated-application-defaults).
+- The chart Application templates emit `helm.skipCrds: true` before custom `helm` settings, which can repeat that key. `crds.enabled` turns on the separate CRD Application and `crds.operators.<operator>.enabled` selects its sources. `manifests.enabled` controls the separate manifest Application. For upstream CRD changes, load [CRD source rules](../../crds/AGENTS.md).
+- Render with the globals passed by `environments` and the relevant `env.yaml`. Check child and release names, chart and values paths, target revisions, enabled and disabled entries, and duplicate Helm keys.
