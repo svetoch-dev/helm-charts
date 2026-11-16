@@ -2,6 +2,7 @@ apiVersion: v2
 name: external-dns
 version: 0.1.0
 description: Chart for configuring and installing external-dns
+appVersion: "0.24.0"
 
 dependencies:
   - name: core
