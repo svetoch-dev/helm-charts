@@ -68,14 +68,8 @@ kong-plugins:
     config:
       allow:
       - '{{ .Values.global.env.cloud.network.int_nat_gw }}'
-secrets:
-  thanos:
-    name: thanos
-    data:
-      objstore.yml: |
-        type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
-        config:
-          bucket: "{{ .Values.global.company.name }}-{{ .Release.Name }}"
+
+secrets: {}
 
 additional_ingress: {}
 
@@ -83,6 +77,10 @@ common:
   workload:
     replicaCount: 1
     environment: []
+    # Shared entries precede <component>.workload.envFrom; both apply to main, init, and sidecar containers.
+    envFrom: []
+    # - secretRef:
+    #     name: thanos-aws-credentials
     image:
       pullPolicy: IfNotPresent
       repository: quay.io/thanos/thanos

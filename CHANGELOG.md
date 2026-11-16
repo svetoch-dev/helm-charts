@@ -9,15 +9,8 @@ BrakingChanges:
   * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
 
 Features:
-* `environment`: mount the infrastructure SSH Secret at `/home/runner/.ssh` for `gha-runner-app` workflows.
-* `thanos`: replace the Bitnami dependency with local service composition (v17.3.1 -> v0.1.0); preserve resource identities and existing service enablement paths.
-* `thanos`: move CLI generation into six per-service defines following Bitnami Thanos 17.3.1 argument branches; keep `thanos/service` limited to resource defaults. Add configurable ports/data paths, HTTP/TLS/cache/discovery options, and conditional compactor `--wait`.
-* `thanos`: move CLI generation into six per-service defines following Bitnami Thanos 17.3.1 argument branches; keep resource and shared `common.thanos` defaults in `thanos/service`, with per-component overrides in the stack chart. Add configurable ports/data paths, gRPC TLS/cache/discovery options, and conditional compactor `--wait`.
-* `thanos`: replace the Bitnami dependency with six direct `chart_deps/thanos/service` instances wrapping `app/common` (v17.3.1 -> v0.1.0); preserve resource identities.
-* `thanos`: move CLI generation into five per-service defines adapted from Bitnami Thanos 17.3.1; keep resource and shared `common.thanos` defaults in `thanos/service`, with per-component overrides in the stack chart. Support data paths, extra flags, and conditional compactor `--wait`.
-* `thanos`: replace the Bitnami dependency with five direct `chart_deps/thanos/service` instances wrapping `app/common` (v17.3.1 -> v0.1.0); preserve resource identities.
 * `chart_deps/app/common`: support ConfigMaps, PodDisruptionBudgets, NetworkPolicies, and explicit workload selectors and PVC names.
-* `chart_deps/app/core`: support StatefulSet service identity and update settings, and templated YAML argument lists.
+* `chart_deps/app/core`: support StatefulSet service identity and update settings, and templated YAML argument lists + envFrom support for podTemplate
 * `pomerium` - update v0.32.9 -> v0.34.0; because of how pomerium is licensed now uses ghcr.io/svetoch-dev/pomerium-ingress-controller
 * `argocd` - update v3.5.1 -> v3.6.1 and upstream chart 10.9.6 -> 10.17.1 , pulled from `oci://ghcr.io/argoproj/argo-helm`
 

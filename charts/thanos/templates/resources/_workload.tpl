@@ -19,13 +19,17 @@
 {{- $service := $settings.workload.environment | default list }}
 {{- $environment := concat $defaults $service }}
 {{- $_ := set $workload "env" $environment }}
+{{- $envFrom := concat ($root.Values.common.workload.envFrom | default list) ($settings.workload.envFrom | default list) }}
+{{- $_ := set $workload "envFrom" $envFrom }}
 {{- $mounts := $workload.volumeMounts | default list }}
 {{- $initContainers := list }}
 {{- range $key, $container := $workload.initContainers }}
 {{- $item := deepCopy $container }}
 {{- $_ := set $item "name" ($item.name | default $key) }}
 {{- $_ := set $item "env" $environment }}
-{{- $_ := unset $item "envFrom" }}
+{{- if $envFrom }}
+{{- $_ := set $item "envFrom" $envFrom }}
+{{- end }}
 {{- if and $mounts (not (hasKey $item "volumeMounts")) }}
 {{- $_ := set $item "volumeMounts" $mounts }}
 {{- end }}
@@ -36,7 +40,9 @@
 {{- range $container := $workload.sidecars }}
 {{- $item := deepCopy $container }}
 {{- $_ := set $item "env" $environment }}
-{{- $_ := unset $item "envFrom" }}
+{{- if $envFrom }}
+{{- $_ := set $item "envFrom" $envFrom }}
+{{- end }}
 {{- $sidecars = append $sidecars $item }}
 {{- end }}
 {{- $_ := set $workload "sidecars" $sidecars }}

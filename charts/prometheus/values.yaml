@@ -7,9 +7,6 @@ global:
   imagePullSecrets: []
 
   vedro:
-    buckets:
-      default:
-        name: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.cloud_short_name }}"
     principals:
       default:
         k8sServiceAccount: "{{ .Release.Name }}-prometheus-main"
@@ -476,6 +473,10 @@ prometheus-main:
             namespace: prometheus
             port: http
 
+      thanos:
+        objectStorageConfig:
+          name: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.cloud_short_name }}"
+          key: objstore.yml
       resources:
         limits:
           cpu: 500m

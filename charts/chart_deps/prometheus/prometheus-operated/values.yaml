@@ -272,9 +272,6 @@ prometheus:
       image: quay.io/thanos/thanos:v0.41.0@sha256:cf3e9b292e4302ad4a4955b56379703aea39516607d382a57604a3d003c35d10
       version: v0.41.0
       blockSize: "2h"
-      objectStorageConfig:
-        name: '{{ include "prometheus-operated.fullname" . }}-thanos'
-        key: objstore.yml
       resources:
         limits:
           cpu: 350m
@@ -297,14 +294,7 @@ prometheus:
       outOfOrderTimeWindow: 0s
 
 
-secrets:
-  thanos:
-    name: thanos
-    data:
-      objstore.yml: |
-        type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
-        config:
-          bucket: {{ tpl .Values.global.vedro.buckets.default.name $ }}
+secrets: {}
 
 vedro:
   principals:

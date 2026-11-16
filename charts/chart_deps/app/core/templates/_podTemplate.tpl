@@ -79,6 +79,10 @@ template:
         env:
         {{-  tpl (toYaml .) $ | nindent 10}}
         {{- end }}
+        {{- with $obj.envFrom }}
+        envFrom:
+        {{- tpl (toYaml .) $ | nindent 10 }}
+        {{- end }}
         {{- with $obj.ports }}
         ports:
         {{- if kindIs "string" . }}

@@ -201,6 +201,28 @@ chart_apps:
       {{- end }}
   thanos:
     enabled: false
+    values: |
+      {{- if has $.Values.global.env.cloud.name (list "yc") }}
+      common:
+        workload:
+          envFrom:
+            - secretRef:
+                name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
+      {{- end }}
+      secrets:
+        thanos:
+          name: thanos
+          data:
+            objstore.yml: |-
+              type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
+              config:
+                bucket: {{ printf "%s-%s" .Values.global.company.name .Release.Name }}
+                {{- if eq .Values.global.env.cloud.name "yc" }}
+                endpoint: "storage.yandexcloud.net"
+                region: {{ .Values.global.env.cloud.location.region }}
+                aws_sdk_auth: true
+                {{- end }}
+
   thanos-external:
     enabled: false
     chart: '{{ .Values.repository.paths.charts }}/thanos'
