@@ -7,6 +7,11 @@ BrakingChanges:
   * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
 
 Features:
+* `fluent`:
+  * update Fluent Operator v3.5.0 -> v3.11.0.
+  * update Fluent Bit v4.2.0 -> v5.2.0 for operated collectors, standalone workloads, and the PostgreSQL sidecar.
+  * update CRDs from upstream Helm chart v3.5.0 -> v4.4.0 (Fluent Operator v3.11.0).
+  * explicitly set the operator's containerd log path through `CONTAINER_LOG_PATH=/var/log/containers`.
 * `environment`: mount the infrastructure SSH Secret at `/home/runner/.ssh` for `gha-runner-app` workflows.
 * `cert-manager`: update chart and CRDs v1.19.2 -> v1.21.3; use the upstream OCI chart repository.
 * `external-dns`: update image and CRD v0.21.0 -> v0.24.0.
@@ -18,6 +23,7 @@ Features:
 * `argocd`: update v3.5.1 -> v3.6.1 and upstream chart 10.9.6 -> 10.17.1 , pulled from `oci://ghcr.io/argoproj/argo-helm`
 
 Fixes:
+* `fluent`: accept GCP log timestamps without fractional seconds in the JSON parser.
 * `pomerium`: align controller RBAC with 0.34.0 for certificate management and resource patching; add namespaced lease permissions
 * `loki`: namespace wrapper helpers to preserve upstream templated `nameOverride` support and resolve the read ingress backend through the upstream service naming helper
 
