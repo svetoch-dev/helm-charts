@@ -481,8 +481,8 @@ operator:
   environment:
     - name: NAMESPACE
       value: '{{ .Release.Namespace }}'
-    - name: CONTAINER_ROOT_DIR
-      value: /var/log
+    - name: CONTAINER_LOG_PATH
+      value: /var/log/containers
   args:
     - '-zap-encoder'
     - 'json'
