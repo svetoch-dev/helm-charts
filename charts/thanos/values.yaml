@@ -68,12 +68,7 @@ kong-plugins:
       kubernetes.io/ingress.class: konghq
     config:
       allow:
-      - |-
-        {{- if has .Values.global.env.cloud.network.int_nat_gw (list "0.0.0.0" "::") }}
-        {{ printf "%s/0" .Values.global.env.cloud.network.int_nat_gw }}
-        {{- else }}
-        {{ .Values.global.env.cloud.network.int_nat_gw }}
-        {{- end }}
+      - '{{ ternary "0.0.0.0/0" .Values.global.env.cloud.network.int_nat_gw (eq .Values.global.env.cloud.network.int_nat_gw "0.0.0.0") }}'
 
 secrets:
   thanos:
