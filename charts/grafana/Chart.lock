@@ -13,12 +13,12 @@ dependencies:
   version: 0.1.0
 - name: grafana-operator
   repository: oci://ghcr.io/grafana/helm-charts
-  version: 5.25.0
+  version: 5.26.0
 - name: core
   repository: file://../chart_deps/app/core
   version: 0.1.0
 - name: fluentbit-operated
   repository: file://../chart_deps/fluent/fluentbit/fluentbit-operated/
   version: 0.1.0
-digest: sha256:2c72593d772a2e8e7108b2256a0f0ffcce8b12673f35c14c9dbd6963d4469905
-generated: "2026-10-13T20:28:16.142918872Z"
+digest: sha256:2cb9cec8fc5ac5e8a93f9c5755892489f729cba802f40171688ae9e4a25bfe87
+generated: "2026-11-17T12:34:03.36938253Z"
