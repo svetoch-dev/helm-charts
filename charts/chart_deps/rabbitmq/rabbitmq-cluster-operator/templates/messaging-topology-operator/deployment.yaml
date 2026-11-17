@@ -99,6 +99,7 @@ spec:
           {{- else }}
           args:
             - --metrics-bind-address=:{{ .Values.msgTopologyOperator.containerPorts.metrics }}
+            - --metrics-secure=false
           {{- end }}
           env:
             - name: OPERATOR_NAMESPACE

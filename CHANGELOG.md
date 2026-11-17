@@ -23,6 +23,10 @@ Features:
 * `argocd`: update v3.5.1 -> v3.6.1 and upstream chart 10.9.6 -> 10.17.1 , pulled from `oci://ghcr.io/argoproj/argo-helm`
 
 Fixes:
+* `rabbitmq`: enable continuous membership reconciliation for quorum queues with a target of 3 replicas and a 60-second interval; applying this configuration can roll broker pods, so restore existing queue quorum redundancy first.
+* `rabbitmq`: explicitly serve Topology Operator metrics over HTTP without authentication to match the existing probes and ServiceMonitor.
+* `rabbitmq`: temporarily disable Cluster Operator admission webhooks until their TLS setup is configured; admission validation and defaulting are disabled.
+* `rabbitmq`: align Cluster Operator RBAC with upstream 2.23.3, adding missing patch permissions and deletion of roles and rolebindings.
 * `fluent`: accept GCP log timestamps without fractional seconds in the JSON parser.
 * `pomerium`: align controller RBAC with 0.34.0 for certificate management and resource patching; add namespaced lease permissions
 * `loki`: namespace wrapper helpers to preserve upstream templated `nameOverride` support and resolve the read ingress backend through the upstream service naming helper

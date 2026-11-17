@@ -361,7 +361,10 @@ clusterOperator:
   ##   - name: FOO
   ##     value: "bar"
   ##
-  extraEnvVars: []
+  # Disable admission validation/defaulting until Cluster Operator webhook TLS is configured.
+  extraEnvVars:
+    - name: ENABLE_WEBHOOKS
+      value: "false"
   ## @param clusterOperator.extraEnvVarsCM Name of existing ConfigMap containing extra env vars for RabbitMQ Cluster Operator nodes
   ##
   extraEnvVarsCM: ""
