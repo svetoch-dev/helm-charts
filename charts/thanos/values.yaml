@@ -297,7 +297,7 @@ compactor:
     containerName: compactor
     envFrom: |-
       {{- $_ := set $ "component" "compactor" }}
-      {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.statiCredsClouds }}
+      {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.staticCredsClouds }}
       - secretRef:
           name: {{ tpl .Values.global.vedro.principals.default.secretName $ }}
       {{- end }}
@@ -354,7 +354,7 @@ storegateway:
     containerName: storegateway
     envFrom: |-
       {{- $_ := set $ "component" "storegateway" }}
-      {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.statiCredsClouds }}
+      {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.staticCredsClouds }}
       - secretRef:
           name: {{ tpl .Values.global.vedro.principals.default.secretName $ }}
       {{- end }}

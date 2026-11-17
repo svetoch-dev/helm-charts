@@ -231,7 +231,7 @@ chart_apps:
                 endpoint: "storage.yandexcloud.net"
                 region: {{ .Values.global.env.cloud.location.region }}
               {{- end }}
-        {{- if has .Values.global.env.cloud.name .Values.global.vedro.principals.statiCredsClouds }}
+        {{- if has .Values.global.env.cloud.name .Values.global.vedro.principals.staticCredsClouds }}
         defaults:
           extraEnvFrom:
             - secretRef:

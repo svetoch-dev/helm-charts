@@ -71,7 +71,7 @@ global:
         - gcp
       default:
         auth: |-
-          {{- if has .Values.global.env.cloud.name .Values.global.vedro.principals.statiCredsClouds }}
+          {{- if has .Values.global.env.cloud.name .Values.global.vedro.principals.staticCredsClouds }}
           method: StaticCredentials
           staticCredentials:
             secretRef:

@@ -183,7 +183,7 @@ prometheus:
     listenLocal: false
 
     containers: |-
-      {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.statiCredsClouds }}
+      {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.staticCredsClouds }}
       - name: thanos-sidecar
         envFrom:
           - secretRef:
