@@ -87,6 +87,7 @@ external `thanos` ServiceAccount.
 - Each component's `enabled` flag gates its workload and related resources.
 - Component settings override the matching `common` settings. Maps merge recursively; lists replace shared lists, except environment lists, which are concatenated.
 - Environment variables come only from `common.workload.environment` followed by `<component>.workload.environment`. Main containers, init containers, and sidecars receive the combined list.
+- `common.workload.envFrom` entries precede `<component>.workload.envFrom` entries and apply to main, init, and sidecar containers. Both accept lists or templated YAML list strings; templates can use `.Values`, `.Release`, and `.component`.
 - HTTP listeners use container port `10902`; Services expose port `9090` and target the named `http` container port. gRPC listeners use `10901`.
 - ServiceMonitor selectors combine component selectors with `serviceMonitor.selectorLabels`.
 
@@ -145,6 +146,7 @@ Their backend Service ports are `9090` and `10901`.
 | `args` | `list(string)` or YAML `string` | no | Replace the component's generated argument list. Strings support Helm templating. |
 | `command` | `list(string)` | no | Override the container command. |
 | `environment` | `list(object)` | no | Kubernetes environment entries, including `valueFrom`; concatenated with shared entries. |
+| `envFrom` | `list(object)` or YAML `string` | no | Secret and ConfigMap environment sources; shared entries precede component entries. Strings support Helm templating. Defaults to `[]`. |
 | `volumes` | `list(object)` | no | Pod volumes, including explicit Secret, ConfigMap, and PVC references. |
 | `volumeMounts` | `list(object)` | no | Container mounts; separate from PVC resource declarations. |
 | `initContainers` | `map(object)` | no | Named init containers; receive the workload environment and inherit mounts unless explicitly set. |

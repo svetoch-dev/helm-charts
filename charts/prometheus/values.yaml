@@ -474,10 +474,6 @@ prometheus-main:
             namespace: prometheus
             port: http
 
-      thanos:
-        objectStorageConfig:
-          name: "thanos-{{ .Values.global.env.cloud_short_name }}-thanos"
-          key: objstore.yml
       resources:
         limits:
           cpu: 500m

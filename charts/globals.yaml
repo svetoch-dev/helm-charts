@@ -65,14 +65,18 @@ global:
           {{- fail "Wrong .Values.global.env.cloud.name" }}
           {{- end }}
     principals:
+      staticCredsClouds:
+        - yc
+      workloadIdentityClouds:
+        - gcp
       default:
         auth: |-
-          {{- if has .Values.global.env.cloud.name (list "yc") }}
+          {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.statiCredsClouds }}
           method: StaticCredentials
           staticCredentials:
             secretRef:
               name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
-          {{- else if has .Values.global.env.cloud.name (list "gcp") }}
+          {{- else if has .Values.global.env.cloud.name .Values.global.vedro.principals.workloadIdentityClouds ) }}
           method: WorkloadIdentity
           workloadIdentity:
             serviceAccountRef:

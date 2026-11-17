@@ -1,5 +1,7 @@
 # 12.0.0-alpha
 BrakingChanges:
+* `chart_deps/prometheus/prometheus-operated`
+  * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
 * `thanos`:
   * self made chart with new interface
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials

@@ -191,16 +191,7 @@ chart_apps:
       operator:
         prometheusOperator:
           fullnameOverride: "prometheus-{{ .Values.global.env.cloud_short_name }}-operator"
-      {{- if has $.Values.global.env.cloud.name (list "yc") }}
-      prometheus-main:
-        prometheus:
-          spec:
-            containers: |-
-              - name: thanos-sidecar
-                envFrom:
-                  - secretRef:
-                      name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
-      {{- end }}
+
   fluent:
     enabled: false
     values: |
@@ -210,27 +201,6 @@ chart_apps:
       {{- end }}
   thanos:
     enabled: false
-    values: |
-      {{- if has $.Values.global.env.cloud.name (list "yc") }}
-      common:
-        workload:
-          envFrom:
-            - secretRef:
-                name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
-      {{- end }}
-      secrets:
-        thanos:
-          name: thanos
-          data:
-            objstore.yml: |-
-              type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
-              config:
-                bucket: {{ printf "%s-thanos-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}
-                {{- if eq .Values.global.env.cloud.name "yc" }}
-                endpoint: "storage.yandexcloud.net"
-                region: {{ .Values.global.env.cloud.location.region }}
-                aws_sdk_auth: true
-                {{- end }}
 
   thanos-external:
     enabled: false
@@ -261,7 +231,7 @@ chart_apps:
                 endpoint: "storage.yandexcloud.net"
                 region: {{ .Values.global.env.cloud.location.region }}
               {{- end }}
-        {{- if has $.Values.global.env.cloud.name (list "yc") }}
+        {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.statiCredsClouds }}
         defaults:
           extraEnvFrom:
             - secretRef:

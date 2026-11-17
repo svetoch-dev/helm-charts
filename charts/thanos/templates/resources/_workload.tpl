@@ -19,7 +19,15 @@
 {{- $service := $settings.workload.environment | default list }}
 {{- $environment := concat $defaults $service }}
 {{- $_ := set $workload "env" $environment }}
-{{- $envFrom := concat ($root.Values.common.workload.envFrom | default list) ($settings.workload.envFrom | default list) }}
+{{- $sharedEnvFrom := $root.Values.common.workload.envFrom | default list }}
+{{- if kindIs "string" $sharedEnvFrom }}
+{{- $sharedEnvFrom = tpl $sharedEnvFrom $root | fromYamlArray }}
+{{- end }}
+{{- $componentEnvFrom := $settings.workload.envFrom | default list }}
+{{- if kindIs "string" $componentEnvFrom }}
+{{- $componentEnvFrom = tpl $componentEnvFrom $root | fromYamlArray }}
+{{- end }}
+{{- $envFrom := concat $sharedEnvFrom $componentEnvFrom }}
 {{- $_ := set $workload "envFrom" $envFrom }}
 {{- $mounts := $workload.volumeMounts | default list }}
 {{- $initContainers := list }}
