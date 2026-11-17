@@ -274,7 +274,7 @@ prometheus:
     remoteRead: []
 
     thanos:
-      image: quay.io/thanos/thanos:v0.41.0@sha256:cf3e9b292e4302ad4a4955b56379703aea39516607d382a57604a3d003c35d10
+      image: quay.io/thanos/thanos:v0.42.5@sha256:0a546b98a8dd47735456ab389983675ee363d68127e334937a9fceeea10da5e7
       version: v0.41.0
       blockSize: "2h"
       objectStorageConfig:
