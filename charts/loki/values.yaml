@@ -28,7 +28,7 @@ kong-plugins:
         kubernetes.io/ingress.class: konghq
       config:
         allow:
-          - "{{ .Values.global.env.cloud.network.int_nat_gw }}"
+          - '{{ ternary "0.0.0.0/0" .Values.global.env.cloud.network.int_nat_gw (eq .Values.global.env.cloud.network.int_nat_gw "0.0.0.0") }}'
 
 vedro:
   enabled: false
