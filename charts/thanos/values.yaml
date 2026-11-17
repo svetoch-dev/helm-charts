@@ -68,7 +68,12 @@ kong-plugins:
       kubernetes.io/ingress.class: konghq
     config:
       allow:
-      - '{{ .Values.global.env.cloud.network.int_nat_gw }}'
+      - |-
+        {{- if has .Values.global.env.cloud.network.int_nat_gw (list "0.0.0.0" "::") }}
+        {{ printf "%s/0" .Values.global.env.cloud.network.int_nat_gw }}
+        {{- else }}
+        {{ .Values.global.env.cloud.network.int_nat_gw }}
+        {{- end }}
 
 secrets:
   thanos:
@@ -320,8 +325,7 @@ compactor:
         secretName: '{{ include "thanos.fullname" . }}-thanos'
     - name: data
       persistentVolumeClaim:
-        claimName: '{{ tpl (.Values.compactor.pvcs.data.name | default (printf "%s-data" (include "thanos.stackFullName"
-          .))) . }}'
+        claimName: '{{ tpl (.Values.compactor.pvcs.data.name | default (printf "%s-data" (include "thanos.stackFullName" . ))) . }}'
     volumeMounts:
     - name: objstore-config
       mountPath: /conf
