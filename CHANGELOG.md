@@ -23,6 +23,7 @@ Features:
 * `argocd`: update v3.5.1 -> v3.6.1 and upstream chart 10.9.6 -> 10.17.1 , pulled from `oci://ghcr.io/argoproj/argo-helm`
 
 Fixes:
+* `rabbitmq`: default RabbitMQ clusters to 3 broker replicas; consumers needing a single broker must explicitly set `replicas: 1`.
 * `rabbitmq`: enable continuous membership reconciliation for quorum queues with a target of 3 replicas and a 60-second interval; applying this configuration can roll broker pods, so restore existing queue quorum redundancy first.
 * `rabbitmq`: explicitly serve Topology Operator metrics over HTTP without authentication to match the existing probes and ServiceMonitor.
 * `rabbitmq`: temporarily disable Cluster Operator admission webhooks until their TLS setup is configured; admission validation and defaulting are disabled.
