@@ -1,28 +1,25 @@
-# Source: https://raw.githubusercontent.com/rabbitmq/messaging-topology-operator/v{version}/config/crd/bases/rabbitmq.com_queues.yaml
-# Version: 1.17.4
-# VersionOf: rmq-messaging-topology-operator
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.17.1
-  name: queues.rabbitmq.com
+    controller-gen.kubebuilder.io/version: v0.22.0
+  name: bindings.rabbitmq.com
 spec:
   group: rabbitmq.com
   names:
     categories:
     - rabbitmq
-    kind: Queue
-    listKind: QueueList
-    plural: queues
-    singular: queue
+    kind: Binding
+    listKind: BindingList
+    plural: bindings
+    singular: binding
   scope: Namespaced
   versions:
   - name: v1beta1
     schema:
       openAPIV3Schema:
-        description: Queue is the Schema for the queues API
+        description: Binding is the Schema for the bindings API
         properties:
           apiVersion:
             description: |-
@@ -42,43 +39,24 @@ spec:
           metadata:
             type: object
           spec:
-            description: QueueSpec defines the desired state of Queue
+            description: BindingSpec defines the desired state of Binding
             properties:
               arguments:
-                description: |-
-                  Queue arguments in the format of KEY: VALUE. e.g. x-delivery-limit: 10000.
-                  Configuring queues through arguments is not recommended because they cannot be updated once set; we recommend configuring queues through policies instead.
+                description: Cannot be updated
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
-              autoDelete:
-                description: when set to true, queues that have had at least one consumer
-                  before are deleted after the last consumer unsubscribes.
-                type: boolean
-              deleteIfEmpty:
-                description: when set to true, queues are deleted only if empty.
-                type: boolean
-              deleteIfUnused:
-                description: when set to true, queues are delete only if they have
-                  no consumer.
-                type: boolean
-              deletionPolicy:
-                default: delete
-                description: |-
-                  DeletionPolicy defines the behavior of queue in the RabbitMQ cluster when the corresponding custom resource is deleted.
-                  Can be set to 'delete' or 'retain'. Default is 'delete'.
-                enum:
-                - delete
-                - retain
+              destination:
+                description: Cannot be updated
                 type: string
-              durable:
-                description: When set to false queues does not survive server restart.
-                type: boolean
-              name:
-                description: Name of the queue; required property.
+              destinationType:
+                description: Cannot be updated
+                enum:
+                - exchange
+                - queue
                 type: string
               rabbitmqClusterReference:
                 description: |-
-                  Reference to the RabbitmqCluster that the queue will be created in.
+                  Reference to the RabbitmqCluster that the binding will be created in.
                   Required property.
                 properties:
                   connectionSecret:
@@ -109,18 +87,21 @@ spec:
                       Defaults to the namespace of the requested resource if omitted.
                     type: string
                 type: object
-              type:
+              routingKey:
+                description: Cannot be updated
+                type: string
+              source:
+                description: Cannot be updated
                 type: string
               vhost:
                 default: /
-                description: Default to vhost '/'
+                description: Default to vhost '/'; cannot be updated
                 type: string
             required:
-            - name
             - rabbitmqClusterReference
             type: object
           status:
-            description: QueueStatus defines the observed state of Queue
+            description: BindingStatus defines the observed state of Binding
             properties:
               conditions:
                 items:
@@ -150,8 +131,8 @@ spec:
                 type: array
               observedGeneration:
                 description: |-
-                  observedGeneration is the most recent successful generation observed for this Queue. It corresponds to the
-                  Queue's generation, which is updated on mutation by the API Server.
+                  observedGeneration is the most recent successful generation observed for this Binding. It corresponds to the
+                  Binding's generation, which is updated on mutation by the API Server.
                 format: int64
                 type: integer
             type: object

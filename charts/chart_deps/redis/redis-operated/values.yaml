@@ -2,7 +2,7 @@ redis:
   enabled: true
   clusterSize: 3
   image: quay.io/opstree/redis
-  tag: v8.10.1
+  tag: v8.6.6
   imagePullPolicy: IfNotPresent
   imagePullSecrets: []
   serviceType: ClusterIP
@@ -114,7 +114,7 @@ sentinel:
   enabled: true
   clusterSize: 3
   image: quay.io/opstree/redis-sentinel
-  tag: v8.10.1
+  tag: v8.6.6
   imagePullPolicy: IfNotPresent
   imagePullSecrets: []
   serviceType: ClusterIP
