@@ -75,8 +75,8 @@ global:
           method: StaticCredentials
           staticCredentials:
             secretRef:
-              name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
-          {{- else if has .Values.global.env.cloud.name .Values.global.vedro.principals.workloadIdentityClouds ) }}
+              name: {{ tpl (.Values.global.vedro.principals.default.secretName | default "bucket") $ | quote }}
+          {{- else if has .Values.global.env.cloud.name .Values.global.vedro.principals.workloadIdentityClouds }}
           method: WorkloadIdentity
           workloadIdentity:
             serviceAccountRef:
