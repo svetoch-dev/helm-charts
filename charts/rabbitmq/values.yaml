@@ -28,7 +28,7 @@ rabbitmq-cluster-operator:
   rabbitmqImage:
     registry: docker.io
     repository: rabbitmq
-    tag: 4.4.0
+    tag: 4.4.1
   credentialUpdaterImage:
     registry: ghcr.io
     repository: rabbitmq/default-user-credential-updater
@@ -75,7 +75,7 @@ rabbitmq-main:
 #  annotations:
 #    rabbitmq.com/topology-allowed-namespaces: "namespace1,namespace2"
 #  replicas: 3
-#  image: docker.io/rabbitmq:4.2.0
+#  image: docker.io/rabbitmq:4.4.1
 #  override:
 #    statefulSet:
 #      spec:
