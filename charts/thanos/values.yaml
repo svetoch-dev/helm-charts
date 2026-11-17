@@ -299,7 +299,7 @@ compactor:
       {{- $_ := set $ "component" "compactor" }}
       {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.statiCredsClouds }}
       - secretRef:
-          name: {{ .Values.global.vedro.principals.default.secretName }}
+          name: {{ tpl .Values.global.vedro.principals.default.secretName $ }}
       {{- end }}
     ports:
     - name: http
@@ -356,7 +356,7 @@ storegateway:
       {{- $_ := set $ "component" "storegateway" }}
       {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.statiCredsClouds }}
       - secretRef:
-          name: {{ .Values.global.vedro.principals.default.secretName }}
+          name: {{ tpl .Values.global.vedro.principals.default.secretName $ }}
       {{- end }}
     resources:
       limits:
