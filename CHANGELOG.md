@@ -1,10 +1,11 @@
 # 12.0.0-alpha
 
-BrakingChanges:
+BreakingChanges:
 * `loki`
-  * upgrade the upstream chart from 6.51.0 to grafana-community 21.0.0 (Loki 3.7.9), pulled from `oci://ghcr.io/grafana-community/helm-charts`
+  * upgrade the upstream chart 6.51.0 -> grafana-community 21.3.1 (Loki 3.7.10), pulled from `oci://ghcr.io/grafana-community/helm-charts`; this branch updates 21.0.0 -> 21.3.1.
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
   * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
+* `rabbitmq`: default RabbitMQ clusters to 3 broker replicas instead of 1; consumers needing a single broker must explicitly set `replicas: 1`.
 
 Features:
 * `fluent`:
@@ -15,15 +16,34 @@ Features:
 * `environment`: mount the infrastructure SSH Secret at `/home/runner/.ssh` for `gha-runner-app` workflows.
 * `cert-manager`: update chart and CRDs v1.19.2 -> v1.21.3; use the upstream OCI chart repository.
 * `external-dns`: update image and CRD v0.21.0 -> v0.24.0.
+  * retain legacy annotation support with `--enable-legacy-annotation-prefix` during migration.
 * `gha-operator`/`gha-runner`: update charts and CRDs 0.14.2 -> 0.15.1.
 * `konghq`:
   * update chart `3.0.1` -> `3.4.1`.
   * update CRDs `v3.5.0` -> `v3.5.14`.
 * `pomerium`: update v0.32.9 -> v0.34.0; because of how pomerium is licensed now uses ghcr.io/svetoch-dev/pomerium-ingress-controller
-* `argocd`: update v3.5.1 -> v3.6.1 and upstream chart 10.9.6 -> 10.17.1 , pulled from `oci://ghcr.io/argoproj/argo-helm`
+* `argocd`: update v3.5.1 -> v3.6.1 and upstream chart 10.9.6 -> 10.18.0, pulled from `oci://ghcr.io/argoproj/argo-helm`; this branch updates the chart 10.17.1 -> 10.18.0.
+* `grafana`:
+  * update Grafana Operator chart and CRDs 5.25.0 -> 5.26.0, including the new GrafanaSilence CRD.
+  * update Grafana image 12.4.13 -> 12.4.15.
+* `prometheus`:
+  * migrate the remaining Prometheus Community dependencies to `oci://ghcr.io/prometheus-community/charts`.
+  * update `kube-prometheus-stack` 85.2.0 -> 93.3.1 and Prometheus Operator CRDs v0.91.0 -> v0.95.2.
+  * update exporter charts: PostgreSQL 8.0.0 -> 8.2.5, Blackbox 11.10.0 -> 11.21.3, Node 4.55.0 -> 5.1.0, and Stackdriver 4.12.2 -> 5.2.2.
+  * update `kube-state-metrics` chart 7.3.0 -> 9.0.1 and image v2.18.0 -> v2.20.0.
+  * update Prometheus v3.11.3 -> v3.16.0, Alertmanager v0.32.1 -> v0.35.0, and Thanos v0.41.0 -> v0.42.5.
+* `redis`:
+  * update Redis Operator and init-container images v0.25.0 -> v0.26.0; avoid v0.27.0 due to the known upstream issue referenced in values.
+  * update operator chart appVersion and CRDs v0.25.0 -> v0.27.0.
+  * update Redis and Sentinel v8.6.1 -> v8.6.6 and Redis Exporter v1.83.0 -> v1.89.0.
+* `rabbitmq`:
+  * update RabbitMQ broker image 4.2.3 -> 4.4.1.
+  * update Cluster Operator 2.19.0 -> 2.23.3, Messaging Topology Operator 1.18.2 -> 1.20.6, and credential updater 1.0.10 -> 1.0.19 in the stack.
+  * replace Bitnami image defaults in the operator dependency with official RabbitMQ images and allow them through the chart's image verification check.
+  * replace CRDs from Bitnami chart 4.4.37 with upstream Cluster Operator v2.23.3 and Messaging Topology Operator v1.20.6 CRDs; download directly from the upstream operator repositories.
+* `crds/pomerium`: update the CRD bundle source v0.34.0 -> v0.34.1; the manifest content is unchanged.
 
 Fixes:
-* `rabbitmq`: default RabbitMQ clusters to 3 broker replicas; consumers needing a single broker must explicitly set `replicas: 1`.
 * `rabbitmq`: enable continuous membership reconciliation for quorum queues with a target of 3 replicas and a 60-second interval; applying this configuration can roll broker pods, so restore existing queue quorum redundancy first.
 * `rabbitmq`: explicitly serve Topology Operator metrics over HTTP without authentication to match the existing probes and ServiceMonitor.
 * `rabbitmq`: temporarily disable Cluster Operator admission webhooks until their TLS setup is configured; admission validation and defaulting are disabled.
