@@ -31,6 +31,17 @@ global:
   access:
     roles: ["owner"]
   alerts: {}
+  thanos:
+    objectstore: |-
+      type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
+      config:
+        bucket: {{ printf "%s-thanos-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}
+        {{- if eq .Values.global.env.cloud.name "yc" }}
+        endpoint: "storage.yandexcloud.net"
+        region: {{ .Values.global.env.cloud.location.region }}
+        aws_sdk_auth: true
+        {{- end }}
+
   vedro:
     buckets:
       default:
