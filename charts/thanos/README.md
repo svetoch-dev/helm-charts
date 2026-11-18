@@ -61,8 +61,7 @@ helm template example . --namespace monitoring -f values-example.yaml
 | Ingress controllers | Controllers matching enabled ingress classes; TLS issuers or Secrets for their TLS configuration. |
 | Kong | Kong CRDs and controller when `kong-plugins.enabled` is enabled. |
 
-The chart does not create object-storage buckets, cloud permissions, or the
-external `thanos` ServiceAccount.
+The chart does not create object-storage buckets, cloud permissions, or the external `thanos` ServiceAccount.
 
 ## Inputs
 
@@ -169,9 +168,7 @@ Their backend Service ports are `9090` and `10901`.
 | `logFormat` | `string` | `json` | Logging format. |
 | `extraFlags` | `list(string)` | `[]` | Additional templated CLI arguments; Compactor overrides this with `--delete-delay=48h`. |
 
-Component settings override shared settings before the argument define is rendered.
-An explicit `extraFlags: []` clears inherited flags. The five argument defines are
-adapted from Bitnami Thanos chart 17.3.1.
+Component settings override shared settings before the argument define is rendered. An explicit `extraFlags: []` clears inherited flags. The five argument defines are adapted from Bitnami Thanos chart 17.3.1.
 
 ### `query.thanos`
 
@@ -205,9 +202,7 @@ adapted from Bitnami Thanos chart 17.3.1.
 | `clusterName` | `string` | no | Ruler cluster label; defaults to an empty string. |
 | `ruleFile` | `string` | no | Rule-file pattern; defaults to `/conf/rules/*.yml`. |
 
-Provide the rules ConfigMap separately. Its default name is
-`<stack-fullname>-ruler`, and it is mounted at `/conf/rules`. The chart does not
-create this ConfigMap or generate a checksum annotation for its contents.
+Provide the rules ConfigMap separately. Its default name is `<stack-fullname>-ruler`, and it is mounted at `/conf/rules`. The chart does not create this ConfigMap or generate a checksum annotation for its contents.
 
 ## Outputs
 
