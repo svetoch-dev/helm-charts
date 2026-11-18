@@ -69,7 +69,7 @@ thanos:
   image:
     registry: quay.io
     repository: thanos/thanos
-    tag: v0.41.0
+    tag: v0.42.5
   existingObjstoreSecret: '{{ include "thanos.fullname" . }}-thanos'
   metrics:
     enabled: true
