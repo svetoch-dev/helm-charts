@@ -275,7 +275,7 @@ prometheus:
 
     thanos:
       image: quay.io/thanos/thanos:v0.42.5@sha256:0a546b98a8dd47735456ab389983675ee363d68127e334937a9fceeea10da5e7
-      version: v0.41.0
+      version: v0.42.5
       blockSize: "2h"
       objectStorageConfig:
         name: '{{ include "prometheus-operated.fullname" . }}-thanos'
