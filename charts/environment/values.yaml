@@ -191,7 +191,6 @@ chart_apps:
       operator:
         prometheusOperator:
           fullnameOverride: "prometheus-{{ .Values.global.env.cloud_short_name }}-operator"
-
   fluent:
     enabled: false
     values: |
@@ -201,7 +200,6 @@ chart_apps:
       {{- end }}
   thanos:
     enabled: false
-
   thanos-external:
     enabled: false
     chart: '{{ .Values.repository.paths.charts }}/thanos'
@@ -216,7 +214,6 @@ chart_apps:
       secrets:
         thanos:
           enabled: false
-
   loki:
     enabled: false
     values: |
