@@ -32,7 +32,7 @@ global:
     roles: ["owner"]
   alerts: {}
   thanos:
-    objectstore: |-
+    objstore: |-
       type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
       config:
         bucket: {{ printf "%s-thanos-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}
