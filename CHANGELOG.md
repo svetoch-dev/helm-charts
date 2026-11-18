@@ -1,7 +1,5 @@
 # 12.0.0-alpha
 
-BreakingChanges:
-=======
 BrakingChanges:
 * `chart_deps/prometheus/prometheus-operated`
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
