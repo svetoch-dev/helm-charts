@@ -1,9 +1,3 @@
-{{/*
-Copyright Broadcom, Inc. All Rights Reserved.
-SPDX-License-Identifier: APACHE-2.0
-Adapted from Bitnami Thanos 17.3.1: templates/storegateway/statefulset.yaml
-Changes: explicit service values, helper names, and list indentation.
-*/}}
 {{- define "thanos.storegateway.args" -}}
 {{- $defaults := deepCopy .Values.common.thanos }}
 {{- $overrides := deepCopy (.Values.storegateway.thanos | default dict) }}
