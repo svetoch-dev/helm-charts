@@ -1,0 +1,8 @@
+{{- range $svc := list "query" "queryFrontend" "compactor" "storegateway" "ruler" }}
+{{- $settings := get $.Values $svc }}
+{{- if $settings.enabled }}
+{{- $component := $settings.workload.containerName | default $svc }}
+{{- $inputs := dict "podDisruptionBudget" $settings.podDisruptionBudget "root" $ "component" $component }}
+{{- include "thanos.podDisruptionBudget" $inputs }}
+{{- end }}
+{{- end }}

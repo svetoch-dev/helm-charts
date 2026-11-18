@@ -31,9 +31,28 @@ global:
   access:
     roles: ["owner"]
   alerts: {}
+  thanos:
+    objstore: |-
+      type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
+      config:
+        bucket: {{ printf "%s-thanos-%s" .Values.global.company.name .Values.global.env.cloud_short_name }}
+        {{- if eq .Values.global.env.cloud.name "yc" }}
+        endpoint: "storage.yandexcloud.net"
+        region: {{ .Values.global.env.cloud.location.region }}
+        aws_sdk_auth: true
+        {{- end }}
+
   vedro:
     buckets:
       default:
+        location: |-
+          {{- if eq .Values.global.env.cloud.buckets.multi_regional false }}
+          {{- .Values.global.env.cloud.location.region }}
+          {{- else }}
+          {{- .Values.global.env.cloud.location.multi_region }}
+          {{- end }}
+        labels: |-
+          bucket_name: {{ printf "%s-%s" .Values.global.company.name .Release.Name }}
         cloudSpecificConfig: |-
           {{- if eq .Values.global.env.cloud.name "gcp" }}
           gcp:
@@ -42,6 +61,12 @@ global:
           {{- end }}
     providers:
       default:
+        region: |-
+          {{- if eq .Values.global.env.cloud.buckets.multi_regional false }}
+          {{- .Values.global.env.cloud.location.region }}
+          {{- else }}
+          {{- .Values.global.env.cloud.location.multi_region }}
+          {{- end }}
         projectId: |-
           {{- if eq .Values.global.env.cloud.name "gcp" }}
           {{- .Values.global.env.cloud.id }}
@@ -51,18 +76,22 @@ global:
           {{- fail "Wrong .Values.global.env.cloud.name" }}
           {{- end }}
     principals:
+      staticCredsClouds:
+        - yc
+      workloadIdentityClouds:
+        - gcp
       default:
         auth: |-
-          {{- if has .Values.global.env.cloud.name (list "yc") }}
+          {{- if has .Values.global.env.cloud.name .Values.global.vedro.principals.staticCredsClouds }}
           method: StaticCredentials
           staticCredentials:
             secretRef:
-              name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
-          {{- else if has .Values.global.env.cloud.name (list "gcp") }}
+              name: {{ tpl (.Values.global.vedro.principals.default.secretName | default "bucket") $ | quote }}
+          {{- else if has .Values.global.env.cloud.name .Values.global.vedro.principals.workloadIdentityClouds }}
           method: WorkloadIdentity
           workloadIdentity:
             serviceAccountRef:
-              name: "{{ .Release.Name }}"
+              name: {{ tpl ( .Values.global.vedro.principals.default.k8sServiceAccount | default .Release.Name ) $ | quote }}
           {{- else }}
           {{- fail "Wrong .Values.global.env.cloud.name" }}
           {{- end }}

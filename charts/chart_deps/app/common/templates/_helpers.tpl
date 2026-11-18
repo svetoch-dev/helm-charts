@@ -12,7 +12,7 @@ If release name contains chart name it will be used as a full name.
 */}}
 {{- define "common.fullname" -}}
 {{- if .Values.fullnameOverride }}
-{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- tpl .Values.fullnameOverride . | trunc 63 | trimSuffix "-" }}
 {{- else }}
 {{- $name := default .Chart.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
@@ -86,7 +86,7 @@ env:
 volumeMounts:
   {{- range $name, $pvc := .Values.pvcs }}
   - name: {{ $name }}
-    mountPath: {{ $pvc.mountPath }}
+    mountPath: {{ tpl $pvc.mountPath $ | quote }}
   {{- end }}
   {{- with .Values.volumeMounts }}
   {{- tpl (toYaml .) $ | nindent 2 }}
@@ -114,7 +114,7 @@ volumes:
   {{- range $name, $pvc := .Values.pvcs }}
   - name: {{ $name }}
     persistentVolumeClaim:
-      claimName: {{ include "common.fullname" $ }}-{{ $name }}
+      claimName: {{ tpl ($pvc.name | default (printf "%s-%s" (include "common.fullname" $) $name)) $ }}
   {{- end }}
   {{- with .Values.volumes }}
   {{- tpl (toYaml .) $ | nindent 2 }}

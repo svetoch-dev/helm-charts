@@ -182,8 +182,13 @@ prometheus:
 
     listenLocal: false
 
-    containers: []
-
+    containers: |-
+      {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.staticCredsClouds }}
+      - name: thanos-sidecar
+        envFrom:
+          - secretRef:
+              name: {{ .Values.global.vedro.principals.default.secretName | default "bucket" }}
+      {{- end }}
     initContainers: []
 
     additionalScrapeConfigs: {}
@@ -269,8 +274,8 @@ prometheus:
     remoteRead: []
 
     thanos:
-      image: quay.io/thanos/thanos:v0.41.0@sha256:cf3e9b292e4302ad4a4955b56379703aea39516607d382a57604a3d003c35d10
-      version: v0.41.0
+      image: quay.io/thanos/thanos:v0.42.5@sha256:0a546b98a8dd47735456ab389983675ee363d68127e334937a9fceeea10da5e7
+      version: v0.42.5
       blockSize: "2h"
       objectStorageConfig:
         name: '{{ include "prometheus-operated.fullname" . }}-thanos'
@@ -301,7 +306,14 @@ secrets:
   thanos:
     name: thanos
     data:
-      objstore.yml: |
-        type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
-        config:
-          bucket: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.short_name }}"
+      objstore.yml: "{{ tpl .Values.global.thanos.objstore $ }}"
+
+vedro:
+  principals:
+    prometheus:
+      provider: thanos
+      kind: ServiceAccount
+      type: Managed
+      managed:
+        name: "{{ .Release.Name }}"
+      auth: "{{ tpl .Values.global.vedro.principals.default.auth $ | indent 2 }}"
