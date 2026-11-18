@@ -46,12 +46,8 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "common.selectorLabels" -}}
-{{- if .Values.selectorLabels }}
-{{- tpl (toYaml .Values.selectorLabels) . }}
-{{- else }}
 app.kubernetes.io/name: {{ include "common.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
 {{- end }}
 
 {{/*
