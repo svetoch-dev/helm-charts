@@ -21,7 +21,7 @@ Features:
 * `environment`: mount the infrastructure SSH Secret at `/home/runner/.ssh` for `gha-runner-app` workflows.
 * `cert-manager`: update chart and CRDs v1.19.2 -> v1.21.3; use the upstream OCI chart repository.
 * `external-dns`: update image and CRD v0.21.0 -> v0.24.0.
-  * retain legacy annotation support with `--enable-legacy-annotation-prefix` during migration.
+* `konghq` and `pomerium`: use the current `external-dns.kubernetes.io/` annotation prefix in chart values.
 * `gha-operator`/`gha-runner`: update charts and CRDs 0.14.2 -> 0.15.1.
 * `konghq`:
   * update chart `3.0.1` -> `3.4.1`.

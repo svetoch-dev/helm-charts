@@ -135,7 +135,7 @@ controller:
     name: pomerium-proxy
     type: LoadBalancer
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: "authn.{{ .Values.global.env.dns.domain }}."
+      external-dns.kubernetes.io/hostname: "authn.{{ .Values.global.env.dns.domain }}."
     externalTrafficPolicy: Local
     ports:
     - name: https
