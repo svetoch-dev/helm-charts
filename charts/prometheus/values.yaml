@@ -304,6 +304,9 @@ operator:
     enabled: true
     namespace: prometheus
     serviceMonitor:
+      # Use the Prometheus pod's projected token instead of the upstream chart's Prometheus Secret.
+      scrapeClass: kubelet-token
+      authorization: null
       cAdvisorMetricRelabelings:
         # Drop cgroup metrics with no pod.
         - sourceLabels: [id, pod]
@@ -447,6 +450,13 @@ prometheus-main:
 
   prometheus:
     spec:
+      # The kubelet monitor uses the rotating token mounted in the Prometheus pod.
+      scrapeClasses:
+        - name: kubelet-token
+          authorization:
+            type: Bearer
+            credentialsFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+
       enableAdminAPI: true
 
       externalLabels:

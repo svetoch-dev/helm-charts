@@ -109,6 +109,7 @@ prometheus:
 
     scrapeConfigSelector: {}
     scrapeConfigNamespaceSelector: {}
+    scrapeClasses: []
 
     paused: false
 
