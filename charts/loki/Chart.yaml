@@ -12,7 +12,7 @@ dependencies:
     alias: loki
     condition: loki.enabled
   - name: vedro
-    version: 0.2.2
+    version: 0.2.3
     repository: oci://ghcr.io/svetoch-dev/charts
     alias: vedro
     condition: vedro.enabled

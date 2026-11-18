@@ -1,6 +1,11 @@
 # 12.0.0-alpha
 
 BrakingChanges:
+* `chart_deps/prometheus/prometheus-operated`
+  * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
+* `thanos`:
+  * self made chart with new interface
+  * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
 * `loki`
   * upgrade the upstream chart from 6.51.0 to grafana-community 21.0.0 (Loki 3.7.9), pulled from `oci://ghcr.io/grafana-community/helm-charts`
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
@@ -8,6 +13,8 @@ BrakingChanges:
 
 Features:
 * `environment`: mount the infrastructure SSH Secret at `/home/runner/.ssh` for `gha-runner-app` workflows.
+* `chart_deps/app/common`: support ConfigMaps, PodDisruptionBudgets, NetworkPolicies, and explicit workload selectors and PVC names.
+* `chart_deps/app/core`: support StatefulSet service identity and update settings, and templated YAML argument lists + envFrom support for podTemplate
 * `pomerium` - update v0.32.9 -> v0.34.0; because of how pomerium is licensed now uses ghcr.io/svetoch-dev/pomerium-ingress-controller
 * `argocd` - update v3.5.1 -> v3.6.1 and upstream chart 10.9.6 -> 10.17.1 , pulled from `oci://ghcr.io/argoproj/argo-helm`
 

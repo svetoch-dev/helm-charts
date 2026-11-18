@@ -1,15 +1,7 @@
-{{/*
-Expand the name of the chart.
-*/}}
 {{- define "thanos.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-If release name contains chart name it will be used as a full name.
-*/}}
 {{- define "thanos.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
@@ -23,29 +15,44 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 
-{{/*
-Create chart name and version as used by the chart label.
-*/}}
+{{- define "thanos.stackFullName" }}
+{{- if .component }}
+{{- printf "%s-%s" (include "thanos.fullname" .) .component | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- include "thanos.fullname" . }}
+{{- end }}
+{{- end }}
+
 {{- define "thanos.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{/*
-Common labels
-*/}}
 {{- define "thanos.labels" -}}
-helm.sh/chart: {{ include "thanos.chart" . }}
-{{ include "thanos.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- $labels := include "thanos.selectorLabels" . | fromYaml }}
+{{- $_ := set $labels "helm.sh/chart" (include "thanos.chart" .) }}
+{{- $_ := set $labels "app.kubernetes.io/managed-by" .Release.Service }}
+{{- with .Chart.AppVersion }}
+{{- $_ := set $labels "app.kubernetes.io/version" . }}
 {{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- toYaml $labels }}
 {{- end }}
 
-{{/*
-Selector labels
-*/}}
 {{- define "thanos.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "thanos.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .component }}
+app.kubernetes.io/component: {{ .component }}
+{{- end }}
+{{- end }}
+
+{{- define "thanos.component.serviceAccountName" }}
+{{- $settings := get .Values .serviceKey }}
+{{- $defaults := deepCopy .Values.common.serviceAccount }}
+{{- $overrides := deepCopy ($settings.serviceAccount | default dict) }}
+{{- $account := mustMergeOverwrite $defaults $overrides }}
+{{- if $account.create }}
+{{- tpl ($account.name | default (include "thanos.stackFullName" .)) . }}
+{{- else }}
+{{- tpl ($account.name | default "default") . }}
+{{- end }}
 {{- end }}

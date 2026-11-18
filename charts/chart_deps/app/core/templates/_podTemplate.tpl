@@ -5,7 +5,7 @@ template:
   metadata:
     {{- with $obj.podAnnotations }}
     annotations:
-    {{- toYaml . | nindent 6 }}
+    {{- tpl (toYaml .) $ | nindent 6 }}
     {{- end }}
     {{- if or $obj.selectorLabels $obj.podLabels }}
     {{- $podLabels := mustDeepCopy ($obj.podLabels | default dict) }}
@@ -69,11 +69,19 @@ template:
         {{- end }}
         {{- with $obj.args }}
         args:
+        {{- if kindIs "string" . }}
+        {{- tpl . $ | nindent 10 }}
+        {{- else }}
         {{- tpl (toYaml .) $ | nindent 10 }}
+        {{- end }}
         {{- end }}
         {{- with $obj.env }}
         env:
         {{-  tpl (toYaml .) $ | nindent 10}}
+        {{- end }}
+        {{- with $obj.envFrom }}
+        envFrom:
+        {{- tpl (toYaml .) $ | nindent 10 }}
         {{- end }}
         {{- with $obj.ports }}
         ports:

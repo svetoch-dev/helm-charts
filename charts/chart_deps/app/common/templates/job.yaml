@@ -1,7 +1,8 @@
+{{- $globalImage := .Values.global.image | default dict }}
 {{- $labels := include "common.labels" $ | fromYaml }}
 {{- $job := mustDeepCopy .Values.job }}
-{{- $app_image_tag := $job.image.tag | default .Values.global.image.tag }}
-{{- $app_image_repo := $job.image.repository | default .Values.global.image.repository }}
+{{- $app_image_tag := $job.image.tag | default $globalImage.tag }}
+{{- $app_image_repo := $job.image.repository | default $globalImage.repository }}
 {{- $app_nodeSelector := $job.nodeSelector | default .Values.global.nodeSelector }}
 {{- $app_tolerations := $job.tolerations | default .Values.global.tolerations }}
 {{- $app_affinity := $job.affinity | default .Values.global.affinity }}
