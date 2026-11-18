@@ -168,7 +168,7 @@ Their backend Service ports are `9090` and `10901`.
 | `logFormat` | `string` | `json` | Logging format. |
 | `extraFlags` | `list(string)` | `[]` | Additional templated CLI arguments; Compactor overrides this with `--delete-delay=48h`. |
 
-Component settings override shared settings before the argument define is rendered. An explicit `extraFlags: []` clears inherited flags. The five argument defines are adapted from Bitnami Thanos chart 17.3.1.
+Component settings override shared settings before the argument define is rendered. An explicit `extraFlags: []` clears inherited flags. 
 
 ### `query.thanos`
 
