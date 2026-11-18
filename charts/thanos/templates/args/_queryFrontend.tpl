@@ -7,7 +7,7 @@
 - --log.format={{ $thanos.logFormat }}
 - --http-address=0.0.0.0:10902
 - --query-frontend.downstream-url=http://{{ printf "%s-query" (include "thanos.fullname" .) }}:9090
-{{- if $thanos.extraFlags }}
-{{- include "thanos.args.render" (dict "value" $thanos.extraFlags "context" $) | nindent 0 }}
+{{- range $thanos.extraFlags }}
+- {{ tpl . $ }}
 {{- end }}
 {{- end }}

@@ -13,8 +13,8 @@
 - --consistency-delay={{ $thanos.consistencyDelay }}
 - --compact.concurrency={{ $thanos.concurrency }}
 - --objstore.config-file=/conf/objstore.yml
-{{- if $thanos.extraFlags }}
-{{- include "thanos.args.render" (dict "value" $thanos.extraFlags "context" $) | nindent 0 }}
+{{- range $thanos.extraFlags }}
+- {{ tpl . $ }}
 {{- end }}
 {{- if not $thanos.cronJob.enabled }}
 - --wait

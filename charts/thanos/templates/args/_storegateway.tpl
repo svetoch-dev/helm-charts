@@ -9,7 +9,7 @@
 - --http-address=0.0.0.0:10902
 - --data-dir=/data
 - --objstore.config-file=/conf/objstore.yml
-{{- if $thanos.extraFlags }}
-{{- include "thanos.args.render" (dict "value" $thanos.extraFlags "context" $) | nindent 0 }}
+{{- range $thanos.extraFlags }}
+- {{ tpl . $ }}
 {{- end }}
 {{- end -}}

@@ -167,7 +167,7 @@ Their backend Service ports are `9090` and `10901`.
 |-------|------|---------|-------------|
 | `logLevel` | `string` | `info` | Logging level. |
 | `logFormat` | `string` | `json` | Logging format. |
-| `extraFlags` | `list(string)` or YAML `string` | `[]` | Additional templated CLI arguments; Compactor overrides this with `--delete-delay=48h`. |
+| `extraFlags` | `list(string)` | `[]` | Additional templated CLI arguments; Compactor overrides this with `--delete-delay=48h`. |
 
 Component settings override shared settings before the argument define is rendered.
 An explicit `extraFlags: []` clears inherited flags. The five argument defines are

@@ -24,7 +24,7 @@
 - --endpoint={{ tpl . $ }}
 {{- end }}
 {{- end }}
-{{- if $thanos.extraFlags }}
-{{- include "thanos.args.render" (dict "value" $thanos.extraFlags "context" $) | nindent 0 }}
+{{- range $thanos.extraFlags }}
+- {{ tpl . $ }}
 {{- end }}
 {{- end -}}
