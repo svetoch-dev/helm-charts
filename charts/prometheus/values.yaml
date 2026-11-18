@@ -6,6 +6,13 @@ global:
 
   imagePullSecrets: []
 
+  vedro:
+    principals:
+      default:
+        secretName: bucket-prom
+        k8sServiceAccount: "{{ .Release.Name }}-prometheus-main"
+
+
 ingresses:
   alertmanager-main:
     enabled: false
@@ -401,16 +408,21 @@ kong-plugins:
         kubernetes.io/ingress.class: konghq
       config:
         allow:
-          - "{{ .Values.global.env.cloud.network.int_nat_gw }}"
+          - '{{ ternary "0.0.0.0/0" .Values.global.env.cloud.network.int_nat_gw (eq .Values.global.env.cloud.network.int_nat_gw "0.0.0.0") }}'
 
 prometheus-main:
   enabled: true
+  vedro:
+    enabled: true
+    principals:
+      prometheus:
+        name: "prometheus-main"
+
   service:
     enabled: true
 
   serviceAccount:
-    create: false
-    name: thanos
+    create: true
 
   servicemonitor:
     enabled: true

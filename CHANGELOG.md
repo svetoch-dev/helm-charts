@@ -1,6 +1,13 @@
 # 12.0.0-alpha
 
 BreakingChanges:
+=======
+BrakingChanges:
+* `chart_deps/prometheus/prometheus-operated`
+  * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
+* `thanos`:
+  * self made chart with new interface
+  * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
 * `loki`
   * upgrade the upstream chart 6.51.0 -> grafana-community 21.3.1 (Loki 3.7.10), pulled from `oci://ghcr.io/grafana-community/helm-charts`; this branch updates 21.0.0 -> 21.3.1.
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
@@ -42,6 +49,10 @@ Features:
   * replace Bitnami image defaults in the operator dependency with official RabbitMQ images and allow them through the chart's image verification check.
   * replace CRDs from Bitnami chart 4.4.37 with upstream Cluster Operator v2.23.3 and Messaging Topology Operator v1.20.6 CRDs; download directly from the upstream operator repositories.
 * `crds/pomerium`: update the CRD bundle source v0.34.0 -> v0.34.1; the manifest content is unchanged.
+* `chart_deps/app/common`: support ConfigMaps, PodDisruptionBudgets, NetworkPolicies, and explicit workload selectors and PVC names.
+* `chart_deps/app/core`: support StatefulSet service identity and update settings, and templated YAML argument lists + envFrom support for podTemplate
+* `pomerium` - update v0.32.9 -> v0.34.0; because of how pomerium is licensed now uses ghcr.io/svetoch-dev/pomerium-ingress-controller
+* `argocd` - update v3.5.1 -> v3.6.1 and upstream chart 10.9.6 -> 10.17.1 , pulled from `oci://ghcr.io/argoproj/argo-helm`
 
 Fixes:
 * `rabbitmq`: enable continuous membership reconciliation for quorum queues with a target of 3 replicas and a 60-second interval; applying this configuration can roll broker pods, so restore existing queue quorum redundancy first.

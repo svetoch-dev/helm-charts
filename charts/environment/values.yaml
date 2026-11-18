@@ -133,10 +133,10 @@ chart_apps:
       access:
         roles: ["owner", "dev", "pm", "qa", "support"]
     values: |
-      {{- if .Values.externalEnvs }}
+      {{- if .Values.global.externalEnvs }}
       datasource:
         datasources:
-          {{- range $env_name, $env_obj := .Values.externalEnvs }}
+          {{- range $env_name, $env_obj := .Values.global.externalEnvs }}
           loki-{{ tpl $env_name $ }}:
             enabled: true
             uid: loki-{{ tpl $env_name $ }}
@@ -183,7 +183,6 @@ chart_apps:
         global:
           image:
             repository: "{{ .Values.global.env.registry.url }}/argocd"
-            tag: v3.6.1
         externalRedis:
           host: "argocd-{{ .Values.global.env.cloud_short_name }}-redis-cluster-master"
   prometheus:
@@ -201,32 +200,20 @@ chart_apps:
       {{- end }}
   thanos:
     enabled: false
-    values: |
-      {{- if eq .Values.global.env.type "internal" }}
-      thanos:
-        query:
-          stores:
-            - {{ printf "thanos-%s-storegateway:10901" .Values.global.env.cloud_short_name }}
-            - {{ printf "prometheus-%s-prometheus-main-thanos:8080" .Values.global.env.cloud_short_name }}
-            {{- if .Values.externalEnvs }}
-            - {{ printf "thanos-external-%s-query-grpc:10901" .Values.global.env.cloud_short_name }}
-            {{- end }}
-      {{- end }}
   thanos-external:
     enabled: false
     chart: '{{ .Values.repository.paths.charts }}/thanos'
     values: |
-      thanos:
-        query:
+      query:
+        thanos:
           stores:
-            {{- range $env_name, $env_obj := .Values.externalEnvs }}
+            {{- range $env_name, $env_obj := .Values.global.externalEnvs }}
             - {{ printf "thanos.%s:443" $env_obj.domain }}
             - {{ printf "thanos-store.%s:443" $env_obj.domain }}
             {{- end }}
       secrets:
         thanos:
           enabled: false
-
   loki:
     enabled: false
     values: |
@@ -241,7 +228,7 @@ chart_apps:
                 endpoint: "storage.yandexcloud.net"
                 region: {{ .Values.global.env.cloud.location.region }}
               {{- end }}
-        {{- if has $.Values.global.env.cloud.name (list "yc") }}
+        {{- if has .Values.global.env.cloud.name .Values.global.vedro.principals.staticCredsClouds }}
         defaults:
           extraEnvFrom:
             - secretRef:

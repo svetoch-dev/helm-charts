@@ -117,10 +117,10 @@ spec:
           alerts:
           {{- toYaml . | nindent 12 }}
           {{- end }}
-        {{- with $externalEnvs }}
-        externalEnvs:
-        {{- toYaml . | nindent 10 }}
-        {{- end }}
+          {{- with $externalEnvs }}
+          externalEnvs:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
   {{- with $env_obj.syncPolicy }}
   syncPolicy:
   {{- toYaml . | nindent 4 }}

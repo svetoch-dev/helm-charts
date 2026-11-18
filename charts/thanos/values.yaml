@@ -1,29 +1,385 @@
-ingresses:
-  query:
+global:
+  vedro:
+    principals:
+      default:
+        secretName: 'bucket-{{ .component }}'
+        k8sServiceAccount: '{{ .Release.Name }}-{{ .component }}'
+
+vedro:
+  enabled: false
+  providers:
+    thanos:
+      type: "{{ .Values.global.env.cloud.name }}"
+      projectId: "{{ tpl .Values.global.vedro.providers.default.projectId $ }}"
+      region: "{{ tpl .Values.global.vedro.providers.default.region $ }}"
+      method: WorkloadIdentity
+      usagePolicy:
+        allowedNamespaces:
+          names: ["{{ .Release.Namespace }}"]
+        bucketPolicy:
+          allowedNamePatterns:
+          - '^{{ printf "%s-%s" .Values.global.company.name .Release.Name }}.*$'
+        principalPolicy:
+          allowReferences: false
+          allowedNamePatterns:
+          - '^{{ .Release.Name}}.*$'
+          - '^prometheus-{{ .Values.global.env.cloud_short_name }}.*$'
+
+  principals:
+    compactor:
+      provider: thanos
+      kind: ServiceAccount
+      type: Managed
+      managed:
+        name: "{{ .Release.Name }}-compactor"
+      auth: |-
+        {{- $_ := set $ "component" "compactor" }}
+        {{ tpl .Values.global.vedro.principals.default.auth $ | indent 2 }}
+    storegateway:
+      provider: thanos
+      kind: ServiceAccount
+      type: Managed
+      managed:
+        name: "{{ .Release.Name }}-storegateway"
+      auth: |-
+        {{- $_ := set $ "component" "storegateway" }}
+        {{ tpl .Values.global.vedro.principals.default.auth $ | indent 2 }}
+
+  buckets:
+    thanos:
+      name: '{{ printf "%s-%s" .Values.global.company.name .Release.Name }}'
+      provider: thanos
+      labels: "{{ tpl .Values.global.vedro.buckets.default.labels $ }}"
+      location: "{{ tpl .Values.global.vedro.buckets.default.location $ }}"
+      deletionPolicy: Retain
+      cloudSpecificConfig: "{{ tpl .Values.global.vedro.buckets.default.cloudSpecificConfig $ }}"
+      objAdmins:
+      - name: compactor
+      - name: prometheus-main
+      readers:
+      - name: storegateway
+
+kong-plugins:
+  enabled: false
+  plugins:
+  - name: thanos-store-main-ip-restriction
+    plugin_name: ip-restriction
+    annotations:
+      kubernetes.io/ingress.class: konghq
+    config:
+      allow:
+      - '{{ ternary "0.0.0.0/0" .Values.global.env.cloud.network.int_nat_gw (eq .Values.global.env.cloud.network.int_nat_gw "0.0.0.0") }}'
+
+secrets:
+  thanos:
+    name: thanos
+    data:
+      objstore.yml: "{{ tpl .Values.global.thanos.objstore $ }}"
+
+additional_ingress: {}
+
+common:
+  workload:
+    replicaCount: 1
+    environment: []
+    envFrom: []
+    image:
+      pullPolicy: IfNotPresent
+      repository: quay.io/thanos/thanos
+      tag: v0.42.5@sha256:0a546b98a8dd47735456ab389983675ee363d68127e334937a9fceeea10da5e7
+    ports:
+    - name: http
+      containerPort: 10902
+      protocol: TCP
+    - name: grpc
+      containerPort: 10901
+      protocol: TCP
+    revisionHistoryLimit: 10
+    livenessProbe:
+      failureThreshold: 6
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 30
+      httpGet:
+        path: /-/healthy
+        port: http
+        scheme: HTTP
+    readinessProbe:
+      failureThreshold: 6
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 30
+      httpGet:
+        path: /-/ready
+        port: http
+        scheme: HTTP
+    podSecurityContext:
+      fsGroup: 1001
+      fsGroupChangePolicy: Always
+      supplementalGroups: []
+      sysctls: []
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      privileged: false
+      readOnlyRootFilesystem: true
+      runAsGroup: 1001
+      runAsNonRoot: true
+      runAsUser: 1001
+      seccompProfile:
+        type: RuntimeDefault
+      seLinuxOptions: {}
+    automountServiceAccountToken: true
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 1
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: '{{ include "thanos.name" $ }}'
+                app.kubernetes.io/instance: '{{ .Release.Name }}'
+                app.kubernetes.io/component: '{{ .component }}'
+            topologyKey: kubernetes.io/hostname
+    podLabels:
+      app.kubernetes.io/managed-by: '{{ .Release.Service }}'
+    strategy:
+      type: RollingUpdate
+  service:
+    enabled: true
+    name: '{{ include "thanos.stackFullName" . }}'
+    type: ClusterIP
+    labels:
+      prometheus-operator/monitor: 'true'
+    ports:
+    - port: 9090
+      targetPort: http
+      protocol: TCP
+      name: http
+  serviceAccount:
+    create: true
+    automountServiceAccountToken: true
+  ingress:
     enabled: false
-    name: '{{ include "thanos.fullname" . }}-query'
+    name: '{{ include "thanos.stackFullName" . }}'
     service:
-      name: '{{ include "thanos.fullname" . }}-query'
+      name: '{{ include "thanos.stackFullName" . }}'
+    className: ''
+    annotations: {}
+    hosts: []
+    tls: []
+  serviceMonitor:
+    prometheusSelector:
+      prometheus: main
+    enabled: true
+    jobLabel: ''
+    selectorLabels:
+      prometheus-operator/monitor: 'true'
+    endpoints:
+    - port: http
+  podDisruptionBudget:
+    enabled: false
+  thanos:
+    logLevel: info
+    logFormat: json
+    extraFlags: []
+  networkPolicy:
+    enabled: true
+    policyTypes:
+    - Ingress
+    - Egress
+    egress:
+    - {}
+
+query:
+  enabled: false
+  workload:
+    containerName: query
+    ports:
+    - name: http
+      containerPort: 10902
+      protocol: TCP
+    - name: grpc
+      containerPort: 10901
+    resources:
+      limits:
+        cpu: '2'
+        memory: 2Gi
+      requests:
+        cpu: 10m
+        memory: 50Mi
+    args: '{{ include "thanos.query.args" . }}'
+  ingress:
+    enabled: false
+    service:
       port: 9090
-    className: "{{ .Values.global.ingress.class }}"
+    className: '{{ .Values.global.ingress.class }}'
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-pomerium
       ingress.pomerium.io/policy: |
-        {{- tpl .Values.global.pomerium.policy.default $ | indent 2}}
+        {{- tpl .Values.global.pomerium.policy.default $ | nindent 2 }}
     hosts:
-      - host: "tq.{{ .Values.global.env.dns.domain }}"
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
+    - host: tq.{{ .Values.global.env.dns.domain }}
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
     tls:
-      - secretName: tq-tls
-        hosts:
-          - "tq.{{ .Values.global.env.dns.domain }}"
-  storegateway:
+    - secretName: tq-tls
+      hosts:
+      - tq.{{ .Values.global.env.dns.domain }}
+  thanos:
+    replicaLabel:
+    - replica
+    stores: |-
+      {{- if eq .Values.global.env.type "internal" }}
+      - {{ printf "thanos-%s-storegateway:10901" .Values.global.env.cloud_short_name }}
+      - {{ printf "prometheus-%s-prometheus-main-thanos:8080" .Values.global.env.cloud_short_name }}
+      {{- if .Values.global.externalEnvs }}
+      - {{ printf "thanos-external-%s-query-grpc:10901" .Values.global.env.cloud_short_name }}
+      {{- end }}
+      {{- end }}
+  podDisruptionBudget:
+    enabled: true
+    maxUnavailable: 1
+  networkPolicy:
+    ingress:
+    - ports:
+      - port: 10902
+      - port: 9090
+      - port: 10901
+  additionalServices:
+  - name: '{{ include "thanos.stackFullName" . }}-grpc'
+    enabled: true
+    type: ClusterIP
+    ports:
+    - name: grpc
+      port: 10901
+      targetPort: grpc
+      protocol: TCP
+queryFrontend:
+  enabled: false
+  workload:
+    containerName: query-frontend
+    resources:
+      limits:
+        cpu: 150m
+        ephemeral-storage: 2Gi
+        memory: 192Mi
+      requests:
+        cpu: 100m
+        ephemeral-storage: 50Mi
+        memory: 128Mi
+    args: '{{ include "thanos.queryFrontend.args" . }}'
+  podDisruptionBudget:
+    enabled: true
+    maxUnavailable: 1
+  networkPolicy:
+    ingress:
+    - ports:
+      - port: 10902
+      - port: 9090
+compactor:
+  enabled: false
+  workload:
+    containerName: compactor
+    envFrom: |-
+      {{- $_ := set $ "component" "compactor" }}
+      {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.staticCredsClouds }}
+      - secretRef:
+          name: {{ tpl .Values.global.vedro.principals.default.secretName $ }}
+      {{- end }}
+    ports:
+    - name: http
+      containerPort: 10902
+      protocol: TCP
+    resources:
+      limits:
+        cpu: 1500m
+        memory: 1Gi
+      requests:
+        cpu: 20m
+        memory: 45Mi
+    strategy:
+      type: Recreate
+    volumes:
+    - name: objstore-config
+      secret:
+        secretName: '{{ include "thanos.fullname" . }}-thanos'
+    - name: data
+      persistentVolumeClaim:
+        claimName: '{{ tpl (.Values.compactor.pvcs.data.name | default (printf "%s-data" (include "thanos.stackFullName" . ))) . }}'
+    volumeMounts:
+    - name: objstore-config
+      mountPath: /conf
+    - name: data
+      mountPath: '{{ .Values.compactor.thanos.dataDir }}'
+    args: '{{ include "thanos.compactor.args" . }}'
+  thanos:
+    concurrency: 1
+    consistencyDelay: 30m
+    cronJob:
+      enabled: false
+    dataDir: /data
+    extraFlags:
+    - --delete-delay=48h
+    retentionResolution1h: 90d
+    retentionResolution5m: 60d
+    retentionResolutionRaw: 30d
+  networkPolicy:
+    ingress:
+    - ports:
+      - port: 10902
+      - port: 9090
+  pvcs:
+    data:
+      name: '{{ include "thanos.stackFullName" . }}'
+      storage: 15Gi
+storegateway:
+  enabled: false
+  workload:
+    containerName: storegateway
+    envFrom: |-
+      {{- $_ := set $ "component" "storegateway" }}
+      {{- if has $.Values.global.env.cloud.name .Values.global.vedro.principals.staticCredsClouds }}
+      - secretRef:
+          name: {{ tpl .Values.global.vedro.principals.default.secretName $ }}
+      {{- end }}
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 3Gi
+      requests:
+        cpu: 10m
+        memory: 50Mi
+    volumes:
+    - name: objstore-config
+      secret:
+        secretName: '{{ include "thanos.fullname" . }}-thanos'
+    volumeMounts:
+    - name: objstore-config
+      mountPath: /conf
+    - name: data
+      mountPath: /data
+    serviceName: '{{ include "thanos.stackFullName" . }}-headless'
+    podManagementPolicy: OrderedReady
+    updateStrategy:
+      type: RollingUpdate
+    volumeClaimTemplates:
+      data:
+        metadata:
+          name: data
+        storage: 8Gi
+        accessModes:
+        - ReadWriteOnce
+    args: '{{ include "thanos.storegateway.args" . }}'
+  ingress:
     enabled: false
-    name: '{{ include "thanos.fullname" . }}-storegateway-grpc'
+    name: '{{ include "thanos.stackFullName" . }}-grpc'
     service:
-      name: '{{ include "thanos.fullname" . }}-storegateway'
       port: 10901
     className: konghq
     annotations:
@@ -31,113 +387,111 @@ ingresses:
       konghq.com/protocols: grpc,grpcs
       konghq.com/plugins: thanos-store-main-ip-restriction
     hosts:
-      - host: "thanos-store.{{ .Values.global.env.dns.domain }}"
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
+    - host: thanos-store.{{ .Values.global.env.dns.domain }}
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
     tls:
-      - secretName: thanos-store-tls
-        hosts:
-          - "thanos-store.{{ .Values.global.env.dns.domain }}"
-
-
-kong-plugins:
-  enabled: false
-  plugins:
-    - name: thanos-store-main-ip-restriction
-      plugin_name: ip-restriction
-      annotations:
-        kubernetes.io/ingress.class: konghq
-      config:
-        allow:
-          - "{{ .Values.global.env.cloud.network.int_nat_gw }}"
-
-secrets:
-  thanos:
-    name: thanos
-    data:
-      objstore.yml: |
-        type: "{{ .Values.global.env.cloud.buckets.type | upper }}"
-        config:
-          bucket: "{{ .Values.global.company.name }}-thanos-{{ .Values.global.env.short_name }}"
-
-thanos:
-  enabled: false
-  global:
-    security:
-      allowInsecureImages: true
-  image:
-    registry: quay.io
-    repository: thanos/thanos
-    tag: v0.42.5
-  existingObjstoreSecret: '{{ include "thanos.fullname" . }}-thanos'
-  metrics:
+    - secretName: thanos-store-tls
+      hosts:
+      - thanos-store.{{ .Values.global.env.dns.domain }}
+  service:
+    ports:
+    - port: 9090
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 10901
+      targetPort: grpc
+      protocol: TCP
+      name: grpc
+    annotations:
+      konghq.com/protocol: grpc
+  podDisruptionBudget:
     enabled: true
-    serviceMonitor:
-      enabled: true
-      labels:
-        prometheus: main
-  query:
-    enabled: false
-    logFormat: json
-    dnsDiscovery:
-      enabled: false
-    resources:
-      requests:
-        cpu: 10m
-        memory: 50Mi
-      limits:
-        cpu: '2'
-        memory: 2Gi
-  queryFrontend:
-    enabled: false
-  bucketweb:
-    enabled: false
-  compactor:
-    enabled: false
-    extraFlags:
-      - --delete-delay=48h
-    logFormat: json
-    persistence:
-      size: 15Gi
-    resources:
-      requests:
-        cpu: 20m
-        memory: 45Mi
-      limits:
-        cpu: 1500m
-        memory: 1Gi
-    retentionResolutionRaw: 30d
-    retentionResolution5m: 60d
-    retentionResolution1h: 90d
-    serviceAccount:
-      create: false
-      name: thanos
-  storegateway:
-    enabled: false
-    logFormat: json
-    resources:
-      requests:
-        cpu: 10m
-        memory: 50Mi
-      limits:
-        cpu: 1000m
-        memory: 3Gi
-    service:
-      annotations:
-        konghq.com/protocol: grpc
-    serviceAccount:
-      create: false
-      name: thanos
-  ruler:
-    enabled: false
-  recieve:
-    enabled: false
-  receiveDistributor:
-    enabled: false
-  volumePermissions:
-    enabled: false
-  minio:
-    enabled: false
+    maxUnavailable: 1
   networkPolicy:
-    enabled: false
+    ingress:
+    - ports:
+      - port: 10902
+      - port: 9090
+      - port: 10901
+ruler:
+  enabled: false
+  workload:
+    containerName: ruler
+    volumes:
+    - name: ruler-config
+      configMap:
+        name: '{{ include "thanos.fullname" . }}-ruler'
+    - name: objstore-config
+      secret:
+        secretName: '{{ include "thanos.fullname" . }}-thanos'
+    volumeMounts:
+    - name: ruler-config
+      mountPath: /conf/rules
+    - name: objstore-config
+      mountPath: /conf/objstore
+    - name: data
+      mountPath: '{{ .Values.ruler.thanos.dataPath | default "/data" }}'
+    environment:
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.name
+    resources:
+      limits:
+        cpu: 150m
+        ephemeral-storage: 2Gi
+        memory: 192Mi
+      requests:
+        cpu: 100m
+        ephemeral-storage: 50Mi
+        memory: 128Mi
+    # Ruler has no per-pod DNS dependency; use its existing Service.
+    serviceName: '{{ tpl (.Values.ruler.service.name | default .Values.common.service.name) . }}'
+    podManagementPolicy: OrderedReady
+    updateStrategy:
+      type: RollingUpdate
+    volumeClaimTemplates:
+      data:
+        metadata:
+          name: data
+        storage: 8Gi
+        accessModes:
+        - ReadWriteOnce
+    args: '{{ include "thanos.ruler.args" . }}'
+  thanos:
+    clusterDomain: cluster.local
+    alertmanagers: []
+    clusterName: ''
+    containerPorts:
+      grpc: 10901
+      http: 10902
+    dataPath: ''
+    dnsDiscovery:
+      enabled: true
+    evalInterval: 1m
+    queries: []
+    replicaLabel: replica
+    ruleFile: /conf/rules/*.yml
+    queryURL: https://tq.{{ .Values.global.env.dns.domain }}
+  service:
+    ports:
+    - port: 9090
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 10901
+      targetPort: grpc
+      protocol: TCP
+      name: grpc
+  podDisruptionBudget:
+    enabled: true
+    maxUnavailable: 1
+  networkPolicy:
+    ingress:
+    - ports:
+      - port: 10902
+      - port: 9090
+      - port: 10901
