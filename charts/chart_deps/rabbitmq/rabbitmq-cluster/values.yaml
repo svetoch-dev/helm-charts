@@ -1,4 +1,4 @@
-image: docker.io/rabbitmq:4.4.1
+image: docker.io/rabbitmq:4.4.1@sha256:183272aa2ff82718cabeef343de8d9a900931ea65fda4e563fed2a6d9efde578
 fullnameOverride: ""
 nameOverride: ""
 prometheusSelector: {}

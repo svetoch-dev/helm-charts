@@ -16,6 +16,7 @@ Features:
 * `fluent`:
   * update Fluent Operator v3.5.0 -> v3.11.0.
   * update Fluent Bit v4.2.0 -> v5.2.0 for operated collectors, standalone workloads, and the PostgreSQL sidecar.
+  * pin Fluent Bit image references to OCI index digests.
   * update CRDs from upstream Helm chart v3.5.0 -> v4.4.0 (Fluent Operator v3.11.0).
   * explicitly set the operator's containerd log path through `CONTAINER_LOG_PATH=/var/log/containers`.
 * `environment`: mount the infrastructure SSH Secret at `/home/runner/.ssh` for `gha-runner-app` workflows.
@@ -43,6 +44,7 @@ Features:
   * update Redis and Sentinel v8.6.1 -> v8.6.6 and Redis Exporter v1.83.0 -> v1.89.0.
 * `rabbitmq`:
   * update RabbitMQ broker image 4.2.3 -> 4.4.1.
+  * pin the broker, Cluster Operator, Messaging Topology Operator, and credential updater images to OCI index digests.
   * update Cluster Operator 2.19.0 -> 2.23.3, Messaging Topology Operator 1.18.2 -> 1.20.6, and credential updater 1.0.10 -> 1.0.19 in the stack.
   * replace Bitnami image defaults in the operator dependency with official RabbitMQ images and allow them through the chart's image verification check.
   * replace CRDs from Bitnami chart 4.4.37 with upstream Cluster Operator v2.23.3 and Messaging Topology Operator v1.20.6 CRDs; download directly from the upstream operator repositories.

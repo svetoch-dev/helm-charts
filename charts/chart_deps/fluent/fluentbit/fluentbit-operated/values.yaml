@@ -302,12 +302,12 @@ config:
 fluentbit:
   enabled: false
   fluentBitConfigName: '{{ include "fluentbit-operated.fullname" . }}'
-  image: 'ghcr.io/fluent/fluent-operator/fluent-bit:5.2.0'
+  image: 'ghcr.io/fluent/fluent-operator/fluent-bit:5.2.0@sha256:0cd0bc8a1106eb73657f08253a08a81edeabec90496b0c351dfe218096e9e804'
 
 collector:
   enabled: false
   fluentBitConfigName: '{{ include "fluentbit-operated.fullname" . }}'
-  image: 'ghcr.io/fluent/fluent-operator/fluent-bit:5.2.0'
+  image: 'ghcr.io/fluent/fluent-operator/fluent-bit:5.2.0@sha256:0cd0bc8a1106eb73657f08253a08a81edeabec90496b0c351dfe218096e9e804'
 
 
 pvs: {}
