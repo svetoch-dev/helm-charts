@@ -257,7 +257,6 @@ query:
     ingress:
     - ports:
       - port: 10902
-      - port: 10901
       - port: 9090
       - port: 10901
   additionalServices:
@@ -503,5 +502,4 @@ ruler:
     - ports:
       - port: 10902
       - port: 9090
-      - port: 10901
       - port: 10901
