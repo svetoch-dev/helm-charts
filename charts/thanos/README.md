@@ -1,9 +1,6 @@
 # Thanos Chart
 
-Creates Query, Query Frontend, Compactor, Store Gateway, and Ruler workloads with
-Services, storage, access policies, monitoring, and optional ingress resources.
-Kubernetes resources use [`app/core`](../chart_deps/app/core); ServiceMonitors use
-[`prometheus/lib`](../chart_deps/prometheus/lib).
+Creates Query, Query Frontend, Compactor, Store Gateway, and Ruler workloads with Services, storage, access policies, monitoring, and optional ingress resources. Kubernetes resources use [`app/core`](../chart_deps/app/core); ServiceMonitors use [`prometheus/lib`](../chart_deps/prometheus/lib).
 
 ## Usage
 
@@ -40,8 +37,7 @@ queryFrontend:
   enabled: true
 ```
 
-Set `query.thanos.stores` to existing Thanos StoreAPI endpoints. Save the example as
-`values-example.yaml`, then build dependencies and render from this chart directory:
+Set `query.thanos.stores` to existing Thanos StoreAPI endpoints. Save the example as `values-example.yaml`, then build dependencies and render from this chart directory:
 
 ```sh
 helm dependency build .
@@ -107,8 +103,7 @@ The chart does not create object-storage buckets, cloud permissions, or the exte
 | `env.cloud_short_name` | `string` | for default internal Query discovery | Name segment used in generated StoreAPI endpoints. |
 | `externalEnvs` | `any` | no | A nonempty value adds the external Query endpoint to default internal discovery. |
 
-The default bucket name is `<company.name>-thanos-<env.short_name>`. The shared
-Secret is named `<stack-fullname>-thanos` and contains `objstore.yml`.
+The default bucket name is `<company.name>-thanos-<env.short_name>`. The shared Secret is named `<stack-fullname>-thanos` and contains `objstore.yml`.
 
 ### `<component>`
 
@@ -129,9 +124,7 @@ Secret is named `<stack-fullname>-thanos` and contains `objstore.yml`.
 | `pvcs` | `map(object)` | no | Standalone PVC declarations; Compactor defaults to a 15 GiB data claim. |
 | `secrets` | `map(object)` | no | Component Secret declarations; merged with `common.secrets`. |
 
-Query and Store Gateway ingresses are disabled by default. Their default hosts are
-`tq.<global.env.dns.domain>` and `thanos-store.<global.env.dns.domain>` respectively.
-Their backend Service ports are `9090` and `10901`.
+Query and Store Gateway ingresses are disabled by default. Their default hosts are `tq.<global.env.dns.domain>` and `thanos-store.<global.env.dns.domain>` respectively. Their backend Service ports are `9090` and `10901`.
 
 ### `common.workload` and `<component>.workload`
 
