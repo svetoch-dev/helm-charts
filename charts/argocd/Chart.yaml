@@ -4,7 +4,7 @@ version: 1.0.0
 dependencies:
   #https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd
   - name: argo-cd
-    version: 10.18.0
+    version: 10.18.1
     repository: oci://ghcr.io/argoproj/argo-helm
     alias: argocd
     condition: argocd.enabled
