@@ -283,8 +283,8 @@ prometheus:
         key: objstore.yml
       resources:
         limits:
-          cpu: 500m
-          memory: 200Mi
+          cpu: '1'
+          memory: 500Mi
         requests:
           cpu: 10m
           memory: 35Mi
