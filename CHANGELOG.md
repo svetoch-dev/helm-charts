@@ -12,6 +12,7 @@ BreakingChanges:
   * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
 * `rabbitmq`:
   * default RabbitMQ clusters switch 1 -> 3 replicas.
+  * label existing Messaging Topology Operator credentials Secrets before upgrading from 1.18.2 to 1.20.6. See the [upgrade guide](UPGRADING.md#rabbitmq-messaging-topology-operator-secret-labels).
 
 Features:
 * `fluent`:
