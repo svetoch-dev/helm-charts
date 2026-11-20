@@ -7,9 +7,9 @@ dependencies:
   version: 0.1.0
 - name: kong
   repository: https://charts.konghq.com
-  version: 3.0.1
+  version: 3.4.1
 - name: prometheus-rules
   repository: file://../chart_deps/prometheus/prometheus-rules
   version: 0.1.0
-digest: sha256:41e805256e81d063731e4fb5143a7f188604c98b19df85a06673454fe7907b5e
-generated: "2026-06-03T13:14:35.599504066Z"
+digest: sha256:8df67cf6b634039363a184e9e5f5e088ef5b44da17e0c58f896a83a9a274def3
+generated: "2026-11-16T11:05:40.493689132Z"

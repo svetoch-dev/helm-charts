@@ -37,6 +37,7 @@ rules:
       - create
       - get
       - list
+      - patch
       - update
       - watch
   - apiGroups:
@@ -71,6 +72,7 @@ rules:
       - create
       - get
       - list
+      - patch
       - update
       - watch
   - apiGroups:
@@ -80,6 +82,7 @@ rules:
     verbs:
       - get
       - list
+      - patch
       - update
       - watch
   - apiGroups:
@@ -96,6 +99,7 @@ rules:
       - create
       - get
       - list
+      - patch
       - update
       - watch
   - apiGroups:
@@ -106,6 +110,7 @@ rules:
       - create
       - get
       - list
+      - patch
       - update
       - watch
   - apiGroups:
@@ -116,6 +121,7 @@ rules:
       - create
       - get
       - list
+      - patch
       - update
       - watch
   - apiGroups:
@@ -127,6 +133,7 @@ rules:
       - delete
       - get
       - list
+      - patch
       - update
       - watch
   - apiGroups:
@@ -137,6 +144,7 @@ rules:
       - create
       - get
       - list
+      - patch
       - update
       - watch
   - apiGroups:
@@ -151,6 +159,7 @@ rules:
       - rabbitmqclusters/status
     verbs:
       - get
+      - patch
       - update
   - apiGroups:
       - rbac.authorization.k8s.io
@@ -158,8 +167,10 @@ rules:
       - rolebindings
     verbs:
       - create
+      - delete
       - get
       - list
+      - patch
       - update
       - watch
   - apiGroups:
@@ -168,8 +179,10 @@ rules:
       - roles
     verbs:
       - create
+      - delete
       - get
       - list
+      - patch
       - update
       - watch
   {{- end }}

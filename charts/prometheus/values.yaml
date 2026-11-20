@@ -224,7 +224,7 @@ kube-state-metrics:
       cpu: 10m
       memory: 20Mi
   image:
-    tag: v2.18.0
+    tag: v2.20.0
   serviceAccount:
     automountServiceAccountToken: false
   extraArgs:
@@ -304,6 +304,9 @@ operator:
     enabled: true
     namespace: prometheus
     serviceMonitor:
+      # Use the Prometheus pod's projected token instead of the upstream chart's Prometheus Secret.
+      scrapeClass: kubelet-token
+      authorization: null
       cAdvisorMetricRelabelings:
         # Drop cgroup metrics with no pod.
         - sourceLabels: [id, pod]
@@ -331,7 +334,7 @@ operator:
   prometheusOperator:
     enabled: true
     thanosImage:
-      tag: v0.41.0
+      tag: v0.42.5
     kubeletEndpointsEnabled: false
     ## Create EndpointSlice objects for kubelet targets.
     kubeletEndpointSliceEnabled: true
@@ -447,6 +450,13 @@ prometheus-main:
 
   prometheus:
     spec:
+      # The kubelet monitor uses the rotating token mounted in the Prometheus pod.
+      scrapeClasses:
+        - name: kubelet-token
+          authorization:
+            type: Bearer
+            credentialsFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+
       enableAdminAPI: true
 
       externalLabels:
