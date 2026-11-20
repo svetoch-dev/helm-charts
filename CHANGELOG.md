@@ -36,7 +36,7 @@ Features:
   * update upstream chart 10.9.6 -> 10.18.1, pulled from `oci://ghcr.io/argoproj/argo-helm`.
 * `grafana`:
   * update Grafana Operator chart and CRDs 5.25.0 -> 5.26.0, including the new GrafanaSilence CRD.
-  * update Grafana image 12.4.13 -> 13.3.1.
+  * update Grafana image 12.4.13 -> 12.4.15.
   * add new `RMQ` panel `Quorum Queue Members per Queue`.
 * `prometheus`:
   * authenticate the kubelet ServiceMonitor with the Prometheus pod's rotating ServiceAccount token through a ScrapeClass.

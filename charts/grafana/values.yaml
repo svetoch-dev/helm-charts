@@ -44,7 +44,6 @@ ingresses:
         hosts:
           - "gf-mcp.{{ .Values.global.env.dns.domain }}"
 
-
 fluentbit-filters:
   enabled: false
   labels:
@@ -57,7 +56,6 @@ fluentbit-filters:
         - modify:
             rules:
               - remove: dsUID
-
 
 grafana-operator:
   enabled: false
@@ -73,8 +71,8 @@ grafana-operator:
 
 grafana-main:
   enabled: false
-  # in version 13.3.1, the display of the pods/replicas panel does not work, grafana incorrectly processes different queries (selects only one, it seems the last one)
-  version: "13.3.1"
+  # in version 13.*, a different mechanism is used for exporting JSON. Also some panels does not work
+  version: "12.4.15"
   selector:
     grafana: main
   config:
@@ -124,7 +122,6 @@ grafana-main:
       value: 'true'
   labels:
     app.kubernetes.io/instance: grafana-{{ .Values.global.env.cloud_short_name }}
-
 
 datasource:
   enabled: false
