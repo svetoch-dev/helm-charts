@@ -41,7 +41,7 @@ Features:
 * `prometheus`:
   * authenticate the kubelet ServiceMonitor with the Prometheus pod's rotating ServiceAccount token through a ScrapeClass.
   * migrate Prometheus Community charts to `oci://ghcr.io/prometheus-community/charts`.
-  * update `kube-prometheus-stack` 85.2.0 -> 93.4.0 and Prometheus Operator CRDs v0.91.0 -> v0.95.2.
+  * update `kube-prometheus-stack` 85.2.0 -> 93.5.0 and Prometheus Operator CRDs v0.91.0 -> v0.95.2.
   * update exporter charts: PostgreSQL 8.0.0 -> 8.3.0, Blackbox 11.10.0 -> 11.21.3, Node 4.55.0 -> 5.1.0, and Stackdriver 4.12.2 -> 5.2.2.
   * update `kube-state-metrics` chart 7.3.0 -> 9.0.1 and image v2.18.0 -> v2.20.0.
   * update Prometheus v3.11.3 -> v3.16.0, Alertmanager v0.32.1 -> v0.35.0, and Thanos v0.41.0 -> v0.42.5.
