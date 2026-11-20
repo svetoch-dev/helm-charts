@@ -70,6 +70,8 @@ Fixes:
   * align controller RBAC with 0.34.0 for certificate management and resource patching; add namespaced lease permissions/
 * `loki`:
   * namespace wrapper helpers to preserve upstream templated `nameOverride` support and resolve the read ingress backend through the upstream service naming helper/
+* `grafana`:
+  * fix `system` dashboard for grafana13 support (duration)
 
 # 11.8.2
 
