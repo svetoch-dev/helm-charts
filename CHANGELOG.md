@@ -29,6 +29,7 @@ Features:
 * `gitlab`: update chart 10.2.0 -> 10.6.1
 * `konghq`:
   * update chart `3.0.1` -> `3.4.1`.
+  * switch the Kong Gateway image from `kong:3.9` to `docker.io/kong/kong:3.9` and set its pull policy to `Always`.
   * update CRDs `v3.5.0` -> `v3.5.14`.
   * `external-dns.alpha.kubernetes.io/` -> `external-dns.kubernetes.io/` annotation prefix.
 * `pomerium`:

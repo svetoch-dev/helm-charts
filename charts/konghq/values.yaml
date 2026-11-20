@@ -52,6 +52,10 @@ certificates:
 
 kong:
   enabled: false
+  image:
+    repository: docker.io/kong/kong
+    tag: "3.9"
+    pullPolicy: Always
   env:
     admin_listen: "127.0.0.1:8444 http2 ssl"
     database: "off"
