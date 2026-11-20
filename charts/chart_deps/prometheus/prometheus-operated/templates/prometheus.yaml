@@ -59,6 +59,10 @@ spec:
   {{- else }}
   scrapeConfigNamespaceSelector: {}
   {{- end }}
+  {{- with .Values.prometheus.spec.scrapeClasses }}
+  scrapeClasses:
+  {{- tpl (toYaml .) $ | nindent 4 }}
+  {{- end }}
   paused: {{ .Values.prometheus.spec.paused }} 
   image: {{ .Values.prometheus.spec.image }}
   version: {{ .Values.prometheus.spec.version }}

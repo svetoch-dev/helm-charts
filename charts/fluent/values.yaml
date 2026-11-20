@@ -398,6 +398,7 @@ fluentbit-gcp:
       format: json
       time_key: timestamp
       time_format: '%Y-%m-%dT%H:%M:%S.%LZ'
+      time_strict: false
 
 
   fluentbit:
@@ -468,7 +469,7 @@ operator:
   enabled: false
   image:
     repository: ghcr.io/fluent/fluent-operator/fluent-operator
-    tag: v3.5.0@sha256:a5ace7bc1a33d33dfbda2136ccddb6f95bb4165f5f91daadb8f2dd8230854aa1
+    tag: v3.11.0@sha256:13af2f68887c442fcca787ad86d066d7403d43744dcebcc9dfd65830fdb8b55a
   service:
     enabled: false
   resources:
@@ -481,8 +482,8 @@ operator:
   environment:
     - name: NAMESPACE
       value: '{{ .Release.Namespace }}'
-    - name: CONTAINER_ROOT_DIR
-      value: /var/log
+    - name: CONTAINER_LOG_PATH
+      value: /var/log/containers
   args:
     - '-zap-encoder'
     - 'json'

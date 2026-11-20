@@ -52,6 +52,10 @@ certificates:
 
 kong:
   enabled: false
+  image:
+    repository: docker.io/kong/kong
+    tag: "3.9"
+    pullPolicy: Always
   env:
     admin_listen: "127.0.0.1:8444 http2 ssl"
     database: "off"
@@ -93,9 +97,9 @@ kong:
   proxy:
     externalTrafficPolicy: Local
     annotations:
-      #external-dns.alpha.kubernetes.io/hostname
+      #external-dns.kubernetes.io/hostname
       #set in environment/values.yaml
-      external-dns.alpha.kubernetes.io/ttl: "60"
+      external-dns.kubernetes.io/ttl: "60"
   ingressController:
     args:
     - '--log-format=json'

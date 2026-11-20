@@ -1,6 +1,6 @@
 global:
   image:
-    tag: 2.9.0
+    tag: 2.73.0
 
 node-1:
   enabled: false

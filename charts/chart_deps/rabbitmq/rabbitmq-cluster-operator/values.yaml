@@ -25,7 +25,7 @@ global:
   ##
   security:
     ## @param global.security.allowInsecureImages Allows skipping image verification
-    allowInsecureImages: false
+    allowInsecureImages: true
   ## Compatibility adaptations for Kubernetes platforms
   ##
   compatibility:
@@ -78,9 +78,9 @@ diagnosticMode:
 ##
 rabbitmqImage:
   registry: docker.io
-  repository: bitnami/rabbitmq
-  tag: 4.1.3-debian-12-r1
-  digest: ""
+  repository: rabbitmq
+  tag: 4.4.1
+  digest: sha256:183272aa2ff82718cabeef343de8d9a900931ea65fda4e563fed2a6d9efde578
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-rabbitmqImage-private-registry/
@@ -98,10 +98,10 @@ rabbitmqImage:
 ## @param credentialUpdaterImage.pullSecrets RabbitMQ Default User Credential Updater image pull secrets
 ##
 credentialUpdaterImage:
-  registry: docker.io
-  repository: bitnami/rmq-default-credential-updater
-  tag: 1.0.8-debian-12-r0
-  digest: ""
+  registry: ghcr.io
+  repository: rabbitmq/default-user-credential-updater
+  tag: 1.0.19
+  digest: sha256:cdf159cc4944ebefa43f06526f24ffb733ac78dbb0cb8c46908b1166560dd8df
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-credentialUpdaterImage-private-registry/
@@ -121,10 +121,10 @@ clusterOperator:
   ## @param clusterOperator.image.pullSecrets RabbitMQ Cluster Operator image pull secrets
   ##
   image:
-    registry: docker.io
-    repository: bitnami/rabbitmq-cluster-operator
-    tag: 2.16.1-debian-12-r0
-    digest: ""
+    registry: ghcr.io
+    repository: rabbitmq/cluster-operator
+    tag: 2.23.3
+    digest: sha256:487c7566e5341f00d17e5c2fd079b76a49869dd6d51081371c396f32dbbf5c6a
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
     ##
@@ -364,7 +364,10 @@ clusterOperator:
   ##   - name: FOO
   ##     value: "bar"
   ##
-  extraEnvVars: []
+  # Disable admission validation/defaulting until Cluster Operator webhook TLS is configured.
+  extraEnvVars:
+    - name: ENABLE_WEBHOOKS
+      value: "false"
   ## @param clusterOperator.extraEnvVarsCM Name of existing ConfigMap containing extra env vars for RabbitMQ Cluster Operator nodes
   ##
   extraEnvVarsCM: ""
@@ -663,10 +666,10 @@ msgTopologyOperator:
   ## @param msgTopologyOperator.image.pullSecrets RabbitMQ Messaging Topology Operator image pull secrets
   ##
   image:
-    registry: docker.io
-    repository: bitnami/rmq-messaging-topology-operator
-    tag: 1.17.4-debian-12-r0
-    digest: ""
+    registry: ghcr.io
+    repository: rabbitmq/messaging-topology-operator
+    tag: 1.20.6
+    digest: sha256:81a514ceff7eb4cf02cd7aacacdfcde7585599e646814db6676e7316e88c8b31
     ## Specify a imagePullPolicy
     ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
     ##

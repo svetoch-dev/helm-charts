@@ -1,26 +1,82 @@
 # 12.0.0-alpha
 
-BrakingChanges:
-* `chart_deps/prometheus/prometheus-operated`
+BreakingChanges:
+* `chart_deps/prometheus/prometheus-operated`:
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
 * `thanos`:
   * self made chart with new interface
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
-* `loki`
-  * upgrade the upstream chart from 6.51.0 to grafana-community 21.0.0 (Loki 3.7.9), pulled from `oci://ghcr.io/grafana-community/helm-charts`
+* `loki`:
+  * switch and upgrade upstream chart 6.51.0 -> grafana-community 21.4.1 (Loki 3.7.10), pulled from `oci://ghcr.io/grafana-community/helm-charts`.
   * by default uses [vedro](https://github.com/svetoch-dev/vedro) to create buckets and manage credentials
   * bucket naming changed from `<company.name>-loki-<env.short_name>` to `<company.name>-loki-<env.cloud_short_name>` 
+* `rabbitmq`:
+  * default RabbitMQ clusters switch 1 -> 3 replicas.
+  * label existing Messaging Topology Operator credentials Secrets before upgrading from 1.18.2 to 1.20.6. See the [upgrade guide](UPGRADING.md#rabbitmq-messaging-topology-operator-secret-labels).
 
 Features:
+* `fluent`:
+  * update Fluent Operator v3.5.0 -> v3.11.0.
+  * update FluentBit v4.2.0 -> v5.2.0 and pin sha.
+  * update CRDs from upstream Helm chart v3.5.0 -> v4.4.0 (Fluent Operator v3.11.0).
+  * set the operator's containerd log path `CONTAINER_LOG_PATH=/var/log/containers`.
 * `environment`: mount the infrastructure SSH Secret at `/home/runner/.ssh` for `gha-runner-app` workflows.
+* `cert-manager`: update chart and CRDs v1.19.2 -> v1.21.3; use the upstream OCI chart repository.
+* `chainlink-nodes`: update image 2.9.0 -> 2.73.0
+* `external-dns`: update image and CRD v0.21.0 -> v0.24.0.
+* `gha-operator`/`gha-runner`: update charts and CRDs 0.14.2 -> 0.15.1.
+* `gl-runner`: update chart 0.85.0 -> 0.95.0
+* `gitlab`: update chart 10.2.0 -> 10.6.1
+* `konghq`:
+  * update chart `3.0.1` -> `3.4.1`.
+  * switch the Kong Gateway image from `kong:3.9` to `docker.io/kong/kong:3.9` and set its pull policy to `Always`.
+  * update CRDs `v3.5.0` -> `v3.5.14`.
+  * `external-dns.alpha.kubernetes.io/` -> `external-dns.kubernetes.io/` annotation prefix.
+* `pomerium`:
+  * update v0.32.9 -> v0.34.0; because of how pomerium is licensed now uses ghcr.io/svetoch-dev/pomerium-ingress-controller
+  * `external-dns.alpha.kubernetes.io/` -> `external-dns.kubernetes.io/` annotation prefix.
+  * update the CRD bundle source v0.34.0 -> v0.34.1.
+* `argocd`:
+  * update v3.5.1 -> v3.6.2.
+  * update upstream chart 10.9.6 -> 10.18.2, pulled from `oci://ghcr.io/argoproj/argo-helm`.
+* `grafana`:
+  * update Grafana Operator chart and CRDs 5.25.0 -> 5.26.0, including the new GrafanaSilence CRD.
+  * update Grafana image 12.4.13 -> 12.4.15.
+  * add new `RMQ` panel `Quorum Queue Members per Queue`.
+* `prometheus`:
+  * authenticate the kubelet ServiceMonitor with the Prometheus pod's rotating ServiceAccount token through a ScrapeClass.
+  * migrate Prometheus Community charts to `oci://ghcr.io/prometheus-community/charts`.
+  * update `kube-prometheus-stack` 85.2.0 -> 93.5.0 and Prometheus Operator CRDs v0.91.0 -> v0.95.2.
+  * update exporter charts: PostgreSQL 8.0.0 -> 8.3.0, Blackbox 11.10.0 -> 11.21.3, Node 4.55.0 -> 5.1.0, and Stackdriver 4.12.2 -> 5.2.2.
+  * update `kube-state-metrics` chart 7.3.0 -> 9.0.1 and image v2.18.0 -> v2.20.0.
+  * update Prometheus v3.11.3 -> v3.16.0, Alertmanager v0.32.1 -> v0.35.0, and Thanos v0.41.0 -> v0.42.5.
+* `redis`:
+  * update Redis Operator and init-container images v0.25.0 -> v0.26.0.
+  * update operator chart appVersion and CRDs v0.25.0 -> v0.27.0.
+  * update Redis and Sentinel v8.6.1 -> v8.6.6 and Redis Exporter v1.83.0 -> v1.89.0.
+* `rabbitmq`:
+  * update RabbitMQ image 4.2.3 -> 4.4.1.
+  * pin Cluster, Cluster Operator, Messaging Topology Operator, and credential updater images to OCI index digests.
+  * update Cluster Operator 2.19.0 -> 2.23.3, Messaging Topology Operator 1.18.2 -> 1.20.6, and credential updater 1.0.10 -> 1.0.19.
+  * replace Bitnami image defaults in the operator dependency with official RabbitMQ images.
+  * replace CRDs from Bitnami chart 4.4.37 with upstream Cluster Operator v2.23.3 and Messaging Topology Operator v1.20.6 CRDs; download directly from the upstream operator repositories.
 * `chart_deps/app/common`: support ConfigMaps, PodDisruptionBudgets, NetworkPolicies, and explicit workload selectors and PVC names.
 * `chart_deps/app/core`: support StatefulSet service identity and update settings, and templated YAML argument lists + envFrom support for podTemplate
-* `pomerium` - update v0.32.9 -> v0.34.0; because of how pomerium is licensed now uses ghcr.io/svetoch-dev/pomerium-ingress-controller
-* `argocd` - update v3.5.1 -> v3.6.1 and upstream chart 10.9.6 -> 10.17.1 , pulled from `oci://ghcr.io/argoproj/argo-helm`
 
 Fixes:
-* `pomerium`: align controller RBAC with 0.34.0 for certificate management and resource patching; add namespaced lease permissions
-* `loki`: namespace wrapper helpers to preserve upstream templated `nameOverride` support and resolve the read ingress backend through the upstream service naming helper
+* `rabbitmq`:
+  * enable continuous membership reconciliation for quorum queues with a target of 3 replicas and a 60-second interval.
+  * explicitly serve Topology Operator metrics over HTTP without authentication to match the existing probes and ServiceMonitor.
+  * temporarily disable Cluster Operator admission webhooks until their TLS setup is configured; admission validation and defaulting are disabled.
+  * align Cluster Operator RBAC with upstream 2.23.3, adding missing patch permissions and deletion of roles and rolebindings.
+* `fluent`:
+  * accept GCP log timestamps without fractional seconds in the JSON parser.
+* `pomerium`:
+  * align controller RBAC with 0.34.0 for certificate management and resource patching; add namespaced lease permissions/
+* `loki`:
+  * namespace wrapper helpers to preserve upstream templated `nameOverride` support and resolve the read ingress backend through the upstream service naming helper/
+* `grafana`:
+  * fix `system` dashboard for grafana13 support (duration)
 
 # 11.8.2
 

@@ -1,3 +1,32 @@
+# Upgrade to 12.0.0-alpha
+
+## RabbitMQ Messaging Topology Operator Secret labels
+
+This release upgrades the Messaging Topology Operator from `1.18.2` to
+`1.20.6`. Before syncing the RabbitMQ chart, label existing
+operator-generated `<user>-user-credentials` Secrets with
+`rabbitmq.com/topology-operator: "true"`. The operator's Secret cache only
+includes labeled Secrets. If it misses an existing credentials Secret, it
+tries to create it again and the corresponding `User` can report
+`Ready=False` with `FailedCreateOrUpdate` and an `already exists` error.
+
+For each affected `User`, run the following against its cluster and namespace.
+Replace `example` with the namespace and `app-user` with the `User` name.
+The label can also be added after the upgrade. It only changes Secret metadata.
+
+```sh
+kubectl -n example label secret app-user-user-credentials rabbitmq.com/topology-operator=true
+```
+
+After the upgrade, verify that the operator has reconciled the user:
+
+```sh
+kubectl -n example wait --for=condition=Ready users.rabbitmq.com/app-user --timeout=2m
+```
+
+The label also applies to user-provided Secrets referenced by topology resources.
+See the [RabbitMQ Secret label requirements](https://www.rabbitmq.com/kubernetes/operator/using-topology-operator#secret-label-requirement).
+
 # Upgrade to v11
 
 ## Environment values schema
