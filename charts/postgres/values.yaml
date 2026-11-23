@@ -28,7 +28,7 @@ postgres-operator:
     kubernetes_use_configmaps: true
   configPostgresPodResources:
     default_cpu_limit: "0"
-    min_cpu_limit: ""
+    min_cpu_limit: null
   configMajorVersionUpgrade:
     major_version_upgrade_mode: "off"
     target_major_version: '17'
