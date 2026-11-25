@@ -20,7 +20,9 @@ Features:
   * update FluentBit v4.2.0 -> v5.2.0 and pin sha.
   * update CRDs from upstream Helm chart v3.5.0 -> v4.4.0 (Fluent Operator v3.11.0).
   * set the operator's containerd log path `CONTAINER_LOG_PATH=/var/log/containers`.
-* `environment`: mount the infrastructure SSH Secret at `/home/runner/.ssh` for `gha-runner-app` workflows.
+* `environment`:
+  * mount the infrastructure SSH Secret at `/home/runner/.ssh` for `gha-runner-app` workflows.
+  * use `imagePullPolicy: always`
 * `cert-manager`: update chart and CRDs v1.19.2 -> v1.21.3; use the upstream OCI chart repository.
 * `chainlink-nodes`: update image 2.9.0 -> 2.73.0
 * `external-dns`: update image and CRD v0.21.0 -> v0.24.0.
