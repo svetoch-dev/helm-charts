@@ -39,7 +39,7 @@ Features:
   * `external-dns.alpha.kubernetes.io/` -> `external-dns.kubernetes.io/` annotation prefix.
   * update the CRD bundle source v0.34.0 -> v0.34.1.
 * `argocd`:
-  * update v3.5.1 -> v3.6.2.
+  * update v3.5.1 -> v3.6.3.
   * update upstream chart 10.9.6 -> 10.18.2, pulled from `oci://ghcr.io/argoproj/argo-helm`.
 * `grafana`:
   * update Grafana Operator chart and CRDs 5.25.0 -> 5.26.0, including the new GrafanaSilence CRD.
