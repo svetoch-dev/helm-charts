@@ -20,11 +20,15 @@ Features:
   * update FluentBit v4.2.0 -> v5.2.0 and pin sha.
   * update CRDs from upstream Helm chart v3.5.0 -> v4.4.0 (Fluent Operator v3.11.0).
   * set the operator's containerd log path `CONTAINER_LOG_PATH=/var/log/containers`.
-* `environment`: mount the infrastructure SSH Secret at `/home/runner/.ssh` for `gha-runner-app` workflows.
+* `environment`:
+  * mount the infrastructure SSH Secret at `/home/runner/.ssh` for `gha-runner-app` workflows.
+  * use `imagePullPolicy: always`
 * `cert-manager`: update chart and CRDs v1.19.2 -> v1.21.3; use the upstream OCI chart repository.
 * `chainlink-nodes`: update image 2.9.0 -> 2.73.0
 * `external-dns`: update image and CRD v0.21.0 -> v0.24.0.
-* `gha-operator`/`gha-runner`: update charts and CRDs 0.14.2 -> 0.15.1.
+* `gha-operator`/`gha-runner`:
+  * update charts and CRDs 0.14.2 -> 0.15.1.
+  * `gha-runner` use imagePullPolicy: Always
 * `gl-runner`: update chart 0.85.0 -> 0.95.0
 * `gitlab`: update chart 10.2.0 -> 10.6.1
 * `konghq`:
@@ -37,7 +41,7 @@ Features:
   * `external-dns.alpha.kubernetes.io/` -> `external-dns.kubernetes.io/` annotation prefix.
   * update the CRD bundle source v0.34.0 -> v0.34.1.
 * `argocd`:
-  * update v3.5.1 -> v3.6.2.
+  * update v3.5.1 -> v3.6.3.
   * update upstream chart 10.9.6 -> 10.18.2, pulled from `oci://ghcr.io/argoproj/argo-helm`.
 * `grafana`:
   * update Grafana Operator chart and CRDs 5.25.0 -> 5.26.0, including the new GrafanaSilence CRD.

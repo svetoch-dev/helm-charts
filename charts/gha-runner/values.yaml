@@ -73,6 +73,7 @@ workflowConfigMap:
       fsGroup: 1001
     containers:
       - name: "$job"
+        imagePullPolicy: Always
         resources:
           requests:
             cpu: '1'
