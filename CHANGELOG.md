@@ -26,7 +26,9 @@ Features:
 * `cert-manager`: update chart and CRDs v1.19.2 -> v1.21.3; use the upstream OCI chart repository.
 * `chainlink-nodes`: update image 2.9.0 -> 2.73.0
 * `external-dns`: update image and CRD v0.21.0 -> v0.24.0.
-* `gha-operator`/`gha-runner`: update charts and CRDs 0.14.2 -> 0.15.1.
+* `gha-operator`/`gha-runner`: 
+  * update charts and CRDs 0.14.2 -> 0.15.1.
+  * `gha-runner` use imagePullPolicy: Always
 * `gl-runner`: update chart 0.85.0 -> 0.95.0
 * `gitlab`: update chart 10.2.0 -> 10.6.1
 * `konghq`:
