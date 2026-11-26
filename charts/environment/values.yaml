@@ -97,6 +97,7 @@ chart_apps:
           serviceAccountName: runner-app
           containers:
             - name: "$job"
+              imagePullPolicy: Always
               resources:
                 requests:
                   cpu: '1'

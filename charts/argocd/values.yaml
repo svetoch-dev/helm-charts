@@ -1,6 +1,6 @@
 global:
   image:
-    tag: v3.6.2
+    tag: v3.6.3
 
 #Cant use pomerium jwt to create users in argocd
 #until this is merged https://github.com/argoproj/argo-cd/pull/20928
